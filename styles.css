@@ -72,6 +72,12 @@ a {
   color: var(--blue);
 }
 
+.brand-mark img {
+  width: 27px;
+  height: 27px;
+  object-fit: contain;
+}
+
 .nav-links {
   display: flex;
   align-items: center;
@@ -293,6 +299,15 @@ h3 {
   background:
     linear-gradient(135deg, rgba(78, 163, 255, 0.12), transparent 45%),
     rgba(255, 255, 255, 0.052);
+}
+
+.project-cover {
+  width: calc(100% + 48px);
+  max-width: none;
+  aspect-ratio: 1.55;
+  object-fit: cover;
+  margin: -24px -24px 22px;
+  border-bottom: 1px solid var(--line);
 }
 
 .project-number {
