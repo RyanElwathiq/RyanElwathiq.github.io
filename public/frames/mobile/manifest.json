@@ -1,0 +1,855 @@
+{
+  "source": "hero-mobile.mp4",
+  "source_duration": 5.04,
+  "source_fps": 24.0,
+  "source_frames": 121,
+  "frame_count": 120,
+  "width": 1080,
+  "height": 1920,
+  "format": "webp",
+  "quality": 76,
+  "filename_pattern": "frame_%04d.webp",
+  "total_bytes": 2975462,
+  "frames": [
+    {
+      "index": 0,
+      "file": "frame_0000.webp",
+      "source_frame": 0,
+      "timestamp": 0.0,
+      "bytes": 12920
+    },
+    {
+      "index": 1,
+      "file": "frame_0001.webp",
+      "source_frame": 1,
+      "timestamp": 0.0417,
+      "bytes": 13064
+    },
+    {
+      "index": 2,
+      "file": "frame_0002.webp",
+      "source_frame": 2,
+      "timestamp": 0.0833,
+      "bytes": 12922
+    },
+    {
+      "index": 3,
+      "file": "frame_0003.webp",
+      "source_frame": 3,
+      "timestamp": 0.125,
+      "bytes": 12658
+    },
+    {
+      "index": 4,
+      "file": "frame_0004.webp",
+      "source_frame": 4,
+      "timestamp": 0.1667,
+      "bytes": 12400
+    },
+    {
+      "index": 5,
+      "file": "frame_0005.webp",
+      "source_frame": 5,
+      "timestamp": 0.2083,
+      "bytes": 11780
+    },
+    {
+      "index": 6,
+      "file": "frame_0006.webp",
+      "source_frame": 6,
+      "timestamp": 0.25,
+      "bytes": 12266
+    },
+    {
+      "index": 7,
+      "file": "frame_0007.webp",
+      "source_frame": 7,
+      "timestamp": 0.2917,
+      "bytes": 12742
+    },
+    {
+      "index": 8,
+      "file": "frame_0008.webp",
+      "source_frame": 8,
+      "timestamp": 0.3333,
+      "bytes": 14226
+    },
+    {
+      "index": 9,
+      "file": "frame_0009.webp",
+      "source_frame": 9,
+      "timestamp": 0.375,
+      "bytes": 14298
+    },
+    {
+      "index": 10,
+      "file": "frame_0010.webp",
+      "source_frame": 10,
+      "timestamp": 0.4167,
+      "bytes": 14604
+    },
+    {
+      "index": 11,
+      "file": "frame_0011.webp",
+      "source_frame": 11,
+      "timestamp": 0.4583,
+      "bytes": 14840
+    },
+    {
+      "index": 12,
+      "file": "frame_0012.webp",
+      "source_frame": 12,
+      "timestamp": 0.5,
+      "bytes": 14866
+    },
+    {
+      "index": 13,
+      "file": "frame_0013.webp",
+      "source_frame": 13,
+      "timestamp": 0.5417,
+      "bytes": 14554
+    },
+    {
+      "index": 14,
+      "file": "frame_0014.webp",
+      "source_frame": 14,
+      "timestamp": 0.5833,
+      "bytes": 14440
+    },
+    {
+      "index": 15,
+      "file": "frame_0015.webp",
+      "source_frame": 15,
+      "timestamp": 0.625,
+      "bytes": 14604
+    },
+    {
+      "index": 16,
+      "file": "frame_0016.webp",
+      "source_frame": 16,
+      "timestamp": 0.6667,
+      "bytes": 14258
+    },
+    {
+      "index": 17,
+      "file": "frame_0017.webp",
+      "source_frame": 17,
+      "timestamp": 0.7083,
+      "bytes": 14244
+    },
+    {
+      "index": 18,
+      "file": "frame_0018.webp",
+      "source_frame": 18,
+      "timestamp": 0.75,
+      "bytes": 14180
+    },
+    {
+      "index": 19,
+      "file": "frame_0019.webp",
+      "source_frame": 19,
+      "timestamp": 0.7917,
+      "bytes": 15092
+    },
+    {
+      "index": 20,
+      "file": "frame_0020.webp",
+      "source_frame": 20,
+      "timestamp": 0.8333,
+      "bytes": 15126
+    },
+    {
+      "index": 21,
+      "file": "frame_0021.webp",
+      "source_frame": 21,
+      "timestamp": 0.875,
+      "bytes": 15756
+    },
+    {
+      "index": 22,
+      "file": "frame_0022.webp",
+      "source_frame": 22,
+      "timestamp": 0.9167,
+      "bytes": 16480
+    },
+    {
+      "index": 23,
+      "file": "frame_0023.webp",
+      "source_frame": 23,
+      "timestamp": 0.9583,
+      "bytes": 17180
+    },
+    {
+      "index": 24,
+      "file": "frame_0024.webp",
+      "source_frame": 24,
+      "timestamp": 1.0,
+      "bytes": 17122
+    },
+    {
+      "index": 25,
+      "file": "frame_0025.webp",
+      "source_frame": 25,
+      "timestamp": 1.0417,
+      "bytes": 17076
+    },
+    {
+      "index": 26,
+      "file": "frame_0026.webp",
+      "source_frame": 26,
+      "timestamp": 1.0833,
+      "bytes": 17282
+    },
+    {
+      "index": 27,
+      "file": "frame_0027.webp",
+      "source_frame": 27,
+      "timestamp": 1.125,
+      "bytes": 17688
+    },
+    {
+      "index": 28,
+      "file": "frame_0028.webp",
+      "source_frame": 28,
+      "timestamp": 1.1667,
+      "bytes": 17708
+    },
+    {
+      "index": 29,
+      "file": "frame_0029.webp",
+      "source_frame": 29,
+      "timestamp": 1.2083,
+      "bytes": 18090
+    },
+    {
+      "index": 30,
+      "file": "frame_0030.webp",
+      "source_frame": 30,
+      "timestamp": 1.25,
+      "bytes": 18074
+    },
+    {
+      "index": 31,
+      "file": "frame_0031.webp",
+      "source_frame": 31,
+      "timestamp": 1.2917,
+      "bytes": 18770
+    },
+    {
+      "index": 32,
+      "file": "frame_0032.webp",
+      "source_frame": 32,
+      "timestamp": 1.3333,
+      "bytes": 18988
+    },
+    {
+      "index": 33,
+      "file": "frame_0033.webp",
+      "source_frame": 33,
+      "timestamp": 1.375,
+      "bytes": 19514
+    },
+    {
+      "index": 34,
+      "file": "frame_0034.webp",
+      "source_frame": 34,
+      "timestamp": 1.4167,
+      "bytes": 20636
+    },
+    {
+      "index": 35,
+      "file": "frame_0035.webp",
+      "source_frame": 35,
+      "timestamp": 1.4583,
+      "bytes": 21250
+    },
+    {
+      "index": 36,
+      "file": "frame_0036.webp",
+      "source_frame": 36,
+      "timestamp": 1.5,
+      "bytes": 21590
+    },
+    {
+      "index": 37,
+      "file": "frame_0037.webp",
+      "source_frame": 37,
+      "timestamp": 1.5417,
+      "bytes": 21806
+    },
+    {
+      "index": 38,
+      "file": "frame_0038.webp",
+      "source_frame": 38,
+      "timestamp": 1.5833,
+      "bytes": 22008
+    },
+    {
+      "index": 39,
+      "file": "frame_0039.webp",
+      "source_frame": 39,
+      "timestamp": 1.625,
+      "bytes": 22278
+    },
+    {
+      "index": 40,
+      "file": "frame_0040.webp",
+      "source_frame": 40,
+      "timestamp": 1.6667,
+      "bytes": 22294
+    },
+    {
+      "index": 41,
+      "file": "frame_0041.webp",
+      "source_frame": 41,
+      "timestamp": 1.7083,
+      "bytes": 22436
+    },
+    {
+      "index": 42,
+      "file": "frame_0042.webp",
+      "source_frame": 42,
+      "timestamp": 1.75,
+      "bytes": 22490
+    },
+    {
+      "index": 43,
+      "file": "frame_0043.webp",
+      "source_frame": 43,
+      "timestamp": 1.7917,
+      "bytes": 22718
+    },
+    {
+      "index": 44,
+      "file": "frame_0044.webp",
+      "source_frame": 44,
+      "timestamp": 1.8333,
+      "bytes": 22938
+    },
+    {
+      "index": 45,
+      "file": "frame_0045.webp",
+      "source_frame": 45,
+      "timestamp": 1.875,
+      "bytes": 23146
+    },
+    {
+      "index": 46,
+      "file": "frame_0046.webp",
+      "source_frame": 46,
+      "timestamp": 1.9167,
+      "bytes": 23888
+    },
+    {
+      "index": 47,
+      "file": "frame_0047.webp",
+      "source_frame": 47,
+      "timestamp": 1.9583,
+      "bytes": 24118
+    },
+    {
+      "index": 48,
+      "file": "frame_0048.webp",
+      "source_frame": 48,
+      "timestamp": 2.0,
+      "bytes": 24442
+    },
+    {
+      "index": 49,
+      "file": "frame_0049.webp",
+      "source_frame": 49,
+      "timestamp": 2.0417,
+      "bytes": 24920
+    },
+    {
+      "index": 50,
+      "file": "frame_0050.webp",
+      "source_frame": 50,
+      "timestamp": 2.0833,
+      "bytes": 24862
+    },
+    {
+      "index": 51,
+      "file": "frame_0051.webp",
+      "source_frame": 51,
+      "timestamp": 2.125,
+      "bytes": 24970
+    },
+    {
+      "index": 52,
+      "file": "frame_0052.webp",
+      "source_frame": 52,
+      "timestamp": 2.1667,
+      "bytes": 24914
+    },
+    {
+      "index": 53,
+      "file": "frame_0053.webp",
+      "source_frame": 53,
+      "timestamp": 2.2083,
+      "bytes": 24974
+    },
+    {
+      "index": 54,
+      "file": "frame_0054.webp",
+      "source_frame": 54,
+      "timestamp": 2.25,
+      "bytes": 24928
+    },
+    {
+      "index": 55,
+      "file": "frame_0055.webp",
+      "source_frame": 55,
+      "timestamp": 2.2917,
+      "bytes": 24818
+    },
+    {
+      "index": 56,
+      "file": "frame_0056.webp",
+      "source_frame": 56,
+      "timestamp": 2.3333,
+      "bytes": 24826
+    },
+    {
+      "index": 57,
+      "file": "frame_0057.webp",
+      "source_frame": 57,
+      "timestamp": 2.375,
+      "bytes": 24664
+    },
+    {
+      "index": 58,
+      "file": "frame_0058.webp",
+      "source_frame": 58,
+      "timestamp": 2.4167,
+      "bytes": 24806
+    },
+    {
+      "index": 59,
+      "file": "frame_0059.webp",
+      "source_frame": 59,
+      "timestamp": 2.4583,
+      "bytes": 24734
+    },
+    {
+      "index": 60,
+      "file": "frame_0060.webp",
+      "source_frame": 61,
+      "timestamp": 2.5417,
+      "bytes": 25492
+    },
+    {
+      "index": 61,
+      "file": "frame_0061.webp",
+      "source_frame": 62,
+      "timestamp": 2.5833,
+      "bytes": 25662
+    },
+    {
+      "index": 62,
+      "file": "frame_0062.webp",
+      "source_frame": 63,
+      "timestamp": 2.625,
+      "bytes": 26042
+    },
+    {
+      "index": 63,
+      "file": "frame_0063.webp",
+      "source_frame": 64,
+      "timestamp": 2.6667,
+      "bytes": 26286
+    },
+    {
+      "index": 64,
+      "file": "frame_0064.webp",
+      "source_frame": 65,
+      "timestamp": 2.7083,
+      "bytes": 26206
+    },
+    {
+      "index": 65,
+      "file": "frame_0065.webp",
+      "source_frame": 66,
+      "timestamp": 2.75,
+      "bytes": 26522
+    },
+    {
+      "index": 66,
+      "file": "frame_0066.webp",
+      "source_frame": 67,
+      "timestamp": 2.7917,
+      "bytes": 26782
+    },
+    {
+      "index": 67,
+      "file": "frame_0067.webp",
+      "source_frame": 68,
+      "timestamp": 2.8333,
+      "bytes": 27410
+    },
+    {
+      "index": 68,
+      "file": "frame_0068.webp",
+      "source_frame": 69,
+      "timestamp": 2.875,
+      "bytes": 27420
+    },
+    {
+      "index": 69,
+      "file": "frame_0069.webp",
+      "source_frame": 70,
+      "timestamp": 2.9167,
+      "bytes": 27610
+    },
+    {
+      "index": 70,
+      "file": "frame_0070.webp",
+      "source_frame": 71,
+      "timestamp": 2.9583,
+      "bytes": 27988
+    },
+    {
+      "index": 71,
+      "file": "frame_0071.webp",
+      "source_frame": 72,
+      "timestamp": 3.0,
+      "bytes": 28508
+    },
+    {
+      "index": 72,
+      "file": "frame_0072.webp",
+      "source_frame": 73,
+      "timestamp": 3.0417,
+      "bytes": 28360
+    },
+    {
+      "index": 73,
+      "file": "frame_0073.webp",
+      "source_frame": 74,
+      "timestamp": 3.0833,
+      "bytes": 28504
+    },
+    {
+      "index": 74,
+      "file": "frame_0074.webp",
+      "source_frame": 75,
+      "timestamp": 3.125,
+      "bytes": 28566
+    },
+    {
+      "index": 75,
+      "file": "frame_0075.webp",
+      "source_frame": 76,
+      "timestamp": 3.1667,
+      "bytes": 29134
+    },
+    {
+      "index": 76,
+      "file": "frame_0076.webp",
+      "source_frame": 77,
+      "timestamp": 3.2083,
+      "bytes": 28974
+    },
+    {
+      "index": 77,
+      "file": "frame_0077.webp",
+      "source_frame": 78,
+      "timestamp": 3.25,
+      "bytes": 29386
+    },
+    {
+      "index": 78,
+      "file": "frame_0078.webp",
+      "source_frame": 79,
+      "timestamp": 3.2917,
+      "bytes": 29648
+    },
+    {
+      "index": 79,
+      "file": "frame_0079.webp",
+      "source_frame": 80,
+      "timestamp": 3.3333,
+      "bytes": 30164
+    },
+    {
+      "index": 80,
+      "file": "frame_0080.webp",
+      "source_frame": 81,
+      "timestamp": 3.375,
+      "bytes": 29766
+    },
+    {
+      "index": 81,
+      "file": "frame_0081.webp",
+      "source_frame": 82,
+      "timestamp": 3.4167,
+      "bytes": 30178
+    },
+    {
+      "index": 82,
+      "file": "frame_0082.webp",
+      "source_frame": 83,
+      "timestamp": 3.4583,
+      "bytes": 30300
+    },
+    {
+      "index": 83,
+      "file": "frame_0083.webp",
+      "source_frame": 84,
+      "timestamp": 3.5,
+      "bytes": 30608
+    },
+    {
+      "index": 84,
+      "file": "frame_0084.webp",
+      "source_frame": 85,
+      "timestamp": 3.5417,
+      "bytes": 30244
+    },
+    {
+      "index": 85,
+      "file": "frame_0085.webp",
+      "source_frame": 86,
+      "timestamp": 3.5833,
+      "bytes": 30648
+    },
+    {
+      "index": 86,
+      "file": "frame_0086.webp",
+      "source_frame": 87,
+      "timestamp": 3.625,
+      "bytes": 30768
+    },
+    {
+      "index": 87,
+      "file": "frame_0087.webp",
+      "source_frame": 88,
+      "timestamp": 3.6667,
+      "bytes": 31436
+    },
+    {
+      "index": 88,
+      "file": "frame_0088.webp",
+      "source_frame": 89,
+      "timestamp": 3.7083,
+      "bytes": 30786
+    },
+    {
+      "index": 89,
+      "file": "frame_0089.webp",
+      "source_frame": 90,
+      "timestamp": 3.75,
+      "bytes": 31072
+    },
+    {
+      "index": 90,
+      "file": "frame_0090.webp",
+      "source_frame": 91,
+      "timestamp": 3.7917,
+      "bytes": 31334
+    },
+    {
+      "index": 91,
+      "file": "frame_0091.webp",
+      "source_frame": 92,
+      "timestamp": 3.8333,
+      "bytes": 31580
+    },
+    {
+      "index": 92,
+      "file": "frame_0092.webp",
+      "source_frame": 93,
+      "timestamp": 3.875,
+      "bytes": 31306
+    },
+    {
+      "index": 93,
+      "file": "frame_0093.webp",
+      "source_frame": 94,
+      "timestamp": 3.9167,
+      "bytes": 31752
+    },
+    {
+      "index": 94,
+      "file": "frame_0094.webp",
+      "source_frame": 95,
+      "timestamp": 3.9583,
+      "bytes": 31678
+    },
+    {
+      "index": 95,
+      "file": "frame_0095.webp",
+      "source_frame": 96,
+      "timestamp": 4.0,
+      "bytes": 31982
+    },
+    {
+      "index": 96,
+      "file": "frame_0096.webp",
+      "source_frame": 97,
+      "timestamp": 4.0417,
+      "bytes": 31468
+    },
+    {
+      "index": 97,
+      "file": "frame_0097.webp",
+      "source_frame": 98,
+      "timestamp": 4.0833,
+      "bytes": 31986
+    },
+    {
+      "index": 98,
+      "file": "frame_0098.webp",
+      "source_frame": 99,
+      "timestamp": 4.125,
+      "bytes": 32018
+    },
+    {
+      "index": 99,
+      "file": "frame_0099.webp",
+      "source_frame": 100,
+      "timestamp": 4.1667,
+      "bytes": 32442
+    },
+    {
+      "index": 100,
+      "file": "frame_0100.webp",
+      "source_frame": 101,
+      "timestamp": 4.2083,
+      "bytes": 32042
+    },
+    {
+      "index": 101,
+      "file": "frame_0101.webp",
+      "source_frame": 102,
+      "timestamp": 4.25,
+      "bytes": 32310
+    },
+    {
+      "index": 102,
+      "file": "frame_0102.webp",
+      "source_frame": 103,
+      "timestamp": 4.2917,
+      "bytes": 32308
+    },
+    {
+      "index": 103,
+      "file": "frame_0103.webp",
+      "source_frame": 104,
+      "timestamp": 4.3333,
+      "bytes": 32748
+    },
+    {
+      "index": 104,
+      "file": "frame_0104.webp",
+      "source_frame": 105,
+      "timestamp": 4.375,
+      "bytes": 32482
+    },
+    {
+      "index": 105,
+      "file": "frame_0105.webp",
+      "source_frame": 106,
+      "timestamp": 4.4167,
+      "bytes": 32904
+    },
+    {
+      "index": 106,
+      "file": "frame_0106.webp",
+      "source_frame": 107,
+      "timestamp": 4.4583,
+      "bytes": 32874
+    },
+    {
+      "index": 107,
+      "file": "frame_0107.webp",
+      "source_frame": 108,
+      "timestamp": 4.5,
+      "bytes": 33194
+    },
+    {
+      "index": 108,
+      "file": "frame_0108.webp",
+      "source_frame": 109,
+      "timestamp": 4.5417,
+      "bytes": 32874
+    },
+    {
+      "index": 109,
+      "file": "frame_0109.webp",
+      "source_frame": 110,
+      "timestamp": 4.5833,
+      "bytes": 33386
+    },
+    {
+      "index": 110,
+      "file": "frame_0110.webp",
+      "source_frame": 111,
+      "timestamp": 4.625,
+      "bytes": 33116
+    },
+    {
+      "index": 111,
+      "file": "frame_0111.webp",
+      "source_frame": 112,
+      "timestamp": 4.6667,
+      "bytes": 33792
+    },
+    {
+      "index": 112,
+      "file": "frame_0112.webp",
+      "source_frame": 113,
+      "timestamp": 4.7083,
+      "bytes": 33538
+    },
+    {
+      "index": 113,
+      "file": "frame_0113.webp",
+      "source_frame": 114,
+      "timestamp": 4.75,
+      "bytes": 33722
+    },
+    {
+      "index": 114,
+      "file": "frame_0114.webp",
+      "source_frame": 115,
+      "timestamp": 4.7917,
+      "bytes": 33402
+    },
+    {
+      "index": 115,
+      "file": "frame_0115.webp",
+      "source_frame": 116,
+      "timestamp": 4.8333,
+      "bytes": 34412
+    },
+    {
+      "index": 116,
+      "file": "frame_0116.webp",
+      "source_frame": 117,
+      "timestamp": 4.875,
+      "bytes": 33874
+    },
+    {
+      "index": 117,
+      "file": "frame_0117.webp",
+      "source_frame": 118,
+      "timestamp": 4.9167,
+      "bytes": 34076
+    },
+    {
+      "index": 118,
+      "file": "frame_0118.webp",
+      "source_frame": 119,
+      "timestamp": 4.9583,
+      "bytes": 34328
+    },
+    {
+      "index": 119,
+      "file": "frame_0119.webp",
+      "source_frame": 120,
+      "timestamp": 5.0,
+      "bytes": 34798
+    }
+  ]
+}

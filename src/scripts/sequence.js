@@ -103,6 +103,12 @@ export async function initSequence() {
 
   draw(0);
 
+  // أي تغيير بحجم الكانفاس (فتح النافذة، تدوير الجهاز، تكبير...)
+  // → منعيد الرسم فوراً عشان ما تبين الصورة مبكسلة
+  const ro = new ResizeObserver(() => draw(current));
+  ro.observe(canvas);
+  document.addEventListener('visibilitychange', () => draw(current));
+
   // باقي الفريمات بتنزل بالخلفية (٦ بنفس الوقت — توازن سرعة/ضغط)
   (async () => {
     const CONCURRENCY = 6;
