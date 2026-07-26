@@ -15,6 +15,9 @@ const blog = defineCollection({
     lang: z.enum(['en', 'ar']), // لغة المقال
     tags: z.array(z.string()).default([]), // وسوم (اختياري)
     cover: z.string().optional(),          // صورة غلاف (اختياري)
+    // فيديو بيتحرك مع السكرول بآخر المقال (اختياري)
+    // مثال: film: '/frames/blog-web/'
+    film: z.string().optional(),
     draft: z.boolean().default(false),     // true = مسودة، ما بتنشر
   }),
 });

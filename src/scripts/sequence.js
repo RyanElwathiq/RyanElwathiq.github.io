@@ -10,6 +10,9 @@
 //    data-seq-pin                      ← موجودة = الفيديو بيتثبّت (زي الهيرو)
 //                                        غايبة = بيتحرك بمكانه بدون تثبيت
 //    data-seq-length="3"               ← طول رحلة السكرول (بعدد الشاشات)
+//                                        بيشتغل بس مع data-seq-pin
+//    data-seq-end="bottom bottom"      ← (للغير مثبّت) وين تخلص رحلة الفيديو
+//                                        الافتراضي: لما السكشن يصير ظاهر كامل
 //
 //  ┌──────────── 🎛️ لوحة التحكم العامة ────────────┐
 //  │ INTRO_FADE_END  : متى يختفي النص الافتتاحي     │
@@ -157,10 +160,14 @@ async function setupOne(section) {
 
   ScrollTrigger.create({
     trigger: section,
-    // مثبّت: الرحلة تبدأ لما يوصل أعلى الشاشة
-    // غير مثبّت: الرحلة تبدأ لما يدخل من تحت وتخلص لما يطلع من فوق
+    // ─── مثبّت: الرحلة تبدأ لما يوصل أعلى الشاشة وتاخد المسافة المحددة
+    // ─── غير مثبّت: الرحلة تبدأ لما يدخل من تحت وتخلص لما يصير ظاهر بالكامل
+    //     (مهم: مش 'bottom top' لأنها بتخلي آخر الفيديو يشتغل والسكشن طالع
+    //      من الشاشة، فالزائر ما بيلحق يشوف النهاية)
     start: shouldPin ? 'top top' : 'top bottom',
-    end: shouldPin ? () => `+=${window.innerHeight * scrollLength}` : 'bottom top',
+    end: shouldPin
+      ? () => `+=${window.innerHeight * scrollLength}`
+      : section.dataset.seqEnd || 'bottom bottom',
     pin: shouldPin ? sticky || section : false,
     scrub: 0.5,
     invalidateOnRefresh: true,

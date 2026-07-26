@@ -175,6 +175,30 @@ document.querySelectorAll('[data-words]').forEach((p) => {
 //     السكرول العمودي بيتحول لحركة أفقية للبطاقات
 // ─────────────────────────────────────────────
 if (!reduceMotion) {
+  // بنقيس مسافة السحب من موقع آخر بطاقة فعلياً.
+  // (ما بنستخدم scrollWidth لأنه بيتجاهل الحشوة الأخيرة بالفلكس،
+  //  فكانت آخر بطاقة «شوف الكل» تنقص من الطرف بالنسخة الإنجليزية)
+  const measurePan = (wrap, track) => {
+    const isRtl = document.documentElement.dir === 'rtl';
+    const last = track.lastElementChild;
+    if (!last) return 0;
+
+    const prevX = gsap.getProperty(track, 'x');
+    gsap.set(track, { x: 0 }); // نصفّر الإزاحة عشان القياس يطلع صح
+
+    const w = wrap.getBoundingClientRect();
+    const l = last.getBoundingClientRect();
+    const cs = getComputedStyle(track);
+    const pad = parseFloat(isRtl ? cs.paddingInlineStart : cs.paddingInlineEnd) || 0;
+
+    const dist = isRtl
+      ? Math.max(0, w.left - l.left + pad)
+      : Math.max(0, l.right - w.right + pad);
+
+    gsap.set(track, { x: prevX });
+    return dist;
+  };
+
   ScrollTrigger.matchMedia({
     '(min-width: 768px)': () => {
       document.querySelectorAll('[data-hpan]').forEach((wrap) => {
@@ -183,15 +207,13 @@ if (!reduceMotion) {
         const isRtl = document.documentElement.dir === 'rtl';
 
         gsap.to(track, {
-          x: () => {
-            const dist = track.scrollWidth - wrap.clientWidth;
-            return isRtl ? dist : -dist; // بالعربي بنسحب بالاتجاه المعاكس
-          },
+          // بالعربي بنسحب لليمين، وبالإنجليزي لليسار
+          x: () => (isRtl ? measurePan(wrap, track) : -measurePan(wrap, track)),
           ease: 'none',
           scrollTrigger: {
             trigger: wrap,
             start: 'top top',
-            end: () => `+=${track.scrollWidth - wrap.clientWidth}`,
+            end: () => `+=${measurePan(wrap, track)}`,
             pin: true,
             scrub: 1,
             invalidateOnRefresh: true,

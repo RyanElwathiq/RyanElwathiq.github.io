@@ -1,10 +1,10 @@
 ---
 // ═══════════════════════════════════════════════════════════════
-//  قسم المواقع — فيديو رمزي بيتحرك مع السكرول + قائمة كل المواقع
+//  قسم المواقع — فيديو مثبّت بيخلص كامل + بطاقات فيها بريفيو ونبذة
 //
 //  ✏️ عشان تضيف موقع جديد: افتح src/data/work.json وضيف مشروع
 //     category = "website"  ومعه "url" لرابط الموقع
-//     وحط "status": "live" (شغّال) أو "wip" (تحت الشغل)
+//     و "status": "live" (شغّال) أو "wip" (تحت الشغل)
 //     الموقع بينضاف هون تلقائياً — ما بتحتاج تعدّل هذا الملف
 // ═══════════════════════════════════════════════════════════════
 interface Props {
@@ -20,32 +20,41 @@ const isAr = lang === 'ar';
 
 const t = isAr
   ? {
-      note: 'من أول سطر كود لآخر تفصيل بالتصميم. اضغط أي موقع تشوف قصته كاملة.',
+      note: 'من أول سطر كود لآخر تفصيل بالتصميم.',
       live: 'شغّال',
       wip: 'تحت الشغل',
-      visit: 'زيارة ↗',
+      visit: 'زيارة الموقع ↗',
+      details: 'القصة الكاملة ←',
     }
   : {
-      note: 'From the first line of code to the last design detail. Open any site to read its full story.',
+      note: 'From the first line of code to the last design detail.',
       live: 'Live',
       wip: 'In progress',
-      visit: 'Visit ↗',
+      visit: 'Visit site ↗',
+      details: 'Full story →',
     };
 ---
 
 <section class="sites" id="websites">
   <!-- ═══ الفيديو الرمزي: بلوكات بتتجمّع وتبني صفحة ═══
-       بدون data-seq-pin: بيتحرك بمكانه وانت بتمر عليه -->
-  <div class="film" data-seq data-seq-desktop="/frames/websites/">
+       data-seq-pin : بيتثبّت بالشاشة لحد ما الفيديو يخلص كامل
+       data-seq-length : طول الرحلة (1.4 = شاشة ونصف تقريباً من السكرول) -->
+  <div
+    class="film"
+    data-seq
+    data-seq-pin
+    data-seq-length="1.4"
+    data-seq-desktop="/frames/websites/"
+  >
     <canvas aria-hidden="true"></canvas>
     <div class="film-veil" aria-hidden="true"></div>
     <div class="container film-copy">
-      <h2 data-reveal>{heading}</h2>
-      <p data-reveal>{t.note}</p>
+      <h2>{heading}</h2>
+      <p>{t.note}</p>
     </div>
   </div>
 
-  <!-- ═══ قائمة المواقع ═══ -->
+  <!-- ═══ بطاقات المواقع ═══ -->
   <div class="container">
     <ul class="list" data-stagger>
       {
@@ -53,19 +62,43 @@ const t = isAr
           const href = `${isAr ? '/ar' : ''}/work/${p.id}/`;
           const isLive = p.status !== 'wip';
           return (
-            <li class="row">
-              <a class="row-main" href={href}>
-                <span class="name">{isAr ? p.titleAr : p.title}</span>
-                <span class="role">{isAr ? p.roleAr : p.role}</span>
+            <li class="card">
+              {/* بريفيو الموقع: صورة مصغّرة داخل إطار متصفح */}
+              <a class="shot" href={href} aria-label={isAr ? p.titleAr : p.title}>
+                <span class="chrome" aria-hidden="true">
+                  <i /> <i /> <i />
+                </span>
+                <img
+                  src={p.cover}
+                  alt={isAr ? p.titleAr : p.title}
+                  loading="lazy"
+                  width="720"
+                  height="440"
+                />
               </a>
-              <span class={`status ${isLive ? 'live' : 'wip'}`}>
-                {isLive ? t.live : t.wip}
-              </span>
-              {p.url && (
-                <a class="visit" href={p.url} target="_blank" rel="noreferrer">
-                  {t.visit}
-                </a>
-              )}
+
+              <div class="info">
+                <div class="top">
+                  <span class={`status ${isLive ? 'live' : 'wip'}`}>
+                    {isLive ? t.live : t.wip}
+                  </span>
+                  <span class="role">{isAr ? p.roleAr : p.role}</span>
+                </div>
+
+                <h3>
+                  <a href={href}>{isAr ? p.titleAr : p.title}</a>
+                </h3>
+                <p class="desc">{isAr ? p.descAr : p.desc}</p>
+
+                <div class="actions">
+                  <a class="details" href={href}>{t.details}</a>
+                  {p.url && (
+                    <a class="visit" href={p.url} target="_blank" rel="noreferrer">
+                      {t.visit}
+                    </a>
+                  )}
+                </div>
+              </div>
             </li>
           );
         })
@@ -79,21 +112,20 @@ const t = isAr
 <style>
   /* 🎛️ لوحة التحكم */
   .sites {
-    --film-height: clamp(320px, 52vh, 520px); /* ارتفاع شريط الفيديو */
     --heading-size: clamp(28px, 4vw, 52px); /* حجم العنوان فوق الفيديو */
-    --row-padding: 26px; /* ارتفاع صف الموقع الواحد */
-    --name-size: clamp(20px, 2.4vw, 30px); /* حجم اسم الموقع */
+    --card-gap: clamp(24px, 3vw, 44px); /* المسافة بين بطاقات المواقع */
+    --name-size: clamp(21px, 2.4vw, 30px); /* حجم اسم الموقع */
+    --shot-ratio: 16 / 10; /* نسبة صورة البريفيو */
     padding-block: var(--section-gap) 0;
   }
 
-  /* ─── شريط الفيديو ─── */
+  /* ─── الفيديو المثبّت ─── */
   .film {
     position: relative;
-    height: var(--film-height);
+    height: 100dvh;
     display: flex;
     align-items: center;
     overflow: clip;
-    margin-bottom: clamp(40px, 6vh, 64px);
   }
 
   .film canvas {
@@ -109,8 +141,8 @@ const t = isAr
     background: linear-gradient(
       to top,
       var(--bg),
-      rgba(14, 15, 18, 0.55) 45%,
-      rgba(14, 15, 18, 0.75)
+      rgba(14, 15, 18, 0.5) 45%,
+      rgba(14, 15, 18, 0.7)
     );
   }
 
@@ -134,61 +166,83 @@ const t = isAr
   .film-copy p {
     color: var(--muted);
     font-size: clamp(15px, 1.6vw, 18px);
-    max-width: 48ch;
+    max-width: 44ch;
   }
 
-  /* ─── قائمة المواقع ─── */
+  /* ─── بطاقات المواقع ─── */
   .list {
     list-style: none;
     padding: 0;
-    margin: 0;
-    border-top: 1px solid var(--line);
+    margin: clamp(48px, 7vh, 80px) 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--card-gap);
   }
 
-  .row {
+  .card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* بريفيو داخل إطار متصفح صغير */
+  .shot {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    background: var(--surface);
+    transition: border-color 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  }
+
+  .card:hover .shot {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+
+  /* شريط أزرار المتصفح الوهمية */
+  .chrome {
     display: flex;
     align-items: center;
-    gap: 20px;
-    padding-block: var(--row-padding);
+    gap: 6px;
+    padding: 11px 14px;
+    background: var(--surface-2);
     border-bottom: 1px solid var(--line);
   }
 
-  .row-main {
-    flex: 1;
+  .chrome i {
+    width: 9px;
+    height: 9px;
+    border-radius: var(--r-pill);
+    background: rgba(242, 243, 238, 0.16);
+  }
+
+  .shot img {
+    width: 100%;
+    aspect-ratio: var(--shot-ratio);
+    object-fit: cover;
+    transition: transform 0.8s var(--ease-out);
+  }
+
+  .card:hover .shot img {
+    transform: scale(1.04);
+  }
+
+  /* ─── النبذة ─── */
+  .info {
+    padding-top: 20px;
+  }
+
+  .top {
     display: flex;
-    align-items: baseline;
-    gap: 16px;
-    flex-wrap: wrap;
-    min-width: 0;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
   }
 
-  .name {
-    font-size: var(--name-size);
-    font-weight: 700;
-    letter-spacing: -0.015em;
-    transition: color 0.3s var(--ease-out);
-  }
-
-  html[lang='ar'] .name {
-    letter-spacing: 0;
-    font-weight: 800;
-  }
-
-  .row:hover .name {
-    color: var(--accent);
-  }
-
-  .role {
-    color: var(--muted);
-    font-size: 14.5px;
-  }
-
-  /* شارة الحالة */
   .status {
-    flex-shrink: 0;
-    font-size: 12.5px;
-    font-weight: 600;
-    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 13px;
     border-radius: var(--r-pill);
   }
 
@@ -202,15 +256,61 @@ const t = isAr
     color: var(--muted);
   }
 
-  .visit {
-    flex-shrink: 0;
-    font-size: 14.5px;
-    font-weight: 600;
+  .role {
+    font-size: 13.5px;
     color: var(--muted);
+  }
+
+  h3 {
+    font-size: var(--name-size);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    margin-bottom: 10px;
+  }
+
+  html[lang='ar'] h3 {
+    letter-spacing: 0;
+    font-weight: 800;
+  }
+
+  h3 a {
     transition: color 0.3s var(--ease-out);
   }
 
-  .visit:hover {
+  .card:hover h3 a {
+    color: var(--accent);
+  }
+
+  .desc {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .details,
+  .visit {
+    font-size: 14.5px;
+    font-weight: 600;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .details {
+    color: var(--muted);
+  }
+
+  .card:hover .details {
+    color: var(--accent);
+  }
+
+  .visit {
     color: var(--accent);
   }
 
@@ -218,7 +318,7 @@ const t = isAr
   .all-btn {
     display: inline-flex;
     align-items: center;
-    margin-top: clamp(28px, 4vh, 44px);
+    margin-top: clamp(32px, 4.5vh, 52px);
     font-size: 15px;
     font-weight: 600;
     color: var(--accent);
@@ -233,15 +333,14 @@ const t = isAr
     color: var(--accent-ink);
   }
 
-  /* ─── موبايل ─── */
-  @media (max-width: 640px) {
-    .row {
-      flex-wrap: wrap;
-      gap: 10px;
+  /* ─── موبايل: بطاقة بالصف ─── */
+  @media (max-width: 767px) {
+    .list {
+      grid-template-columns: 1fr;
     }
 
-    .row-main {
-      flex: 1 0 100%;
+    .film {
+      height: 88dvh;
     }
   }
 </style>
