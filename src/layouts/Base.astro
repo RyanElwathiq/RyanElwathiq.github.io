@@ -3,6 +3,7 @@
 //  القالب الأساسي — كل صفحات الموقع بتلبس هذا القالب
 //  (اللغة والاتجاه RTL/LTR بينضبطوا لحالهم حسب الصفحة)
 // ═══════════════════════════════════════════════════════════════
+import { ClientRouter } from 'astro:transitions';
 import '@fontsource-variable/space-grotesk';
 import '@fontsource-variable/alexandria';
 import '../styles/tokens.css';
@@ -29,6 +30,14 @@ const dir = lang === 'ar' ? 'rtl' : 'ltr';
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+
+    <!-- ═══════════════════════════════════════════════════════════
+         الانتقال بين الصفحات بدون إعادة تحميل كاملة.
+         يعني لما تضغط «كل التصاميم» وبعدين ترجع للرئيسية،
+         الموقع ما بيتحمّل من الصفر — بينتقل بنعومة وبينزل
+         على قسم التصاميم مباشرة.
+         ═══════════════════════════════════════════════════════════ -->
+    <ClientRouter />
 
     <!-- ═══════════════════════════════════════════════════════════
          سكربت الظهور — بيشتغل فوراً وبدون أي مكتبة خارجية

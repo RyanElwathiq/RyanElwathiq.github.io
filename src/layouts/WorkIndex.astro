@@ -26,7 +26,18 @@ const projects = work.projects
   .filter((p) => p.category === category)
   .sort((a, b) => a.order - b.order);
 
-const backHref = isAr ? '/ar/' : '/';
+// ─────────────────────────────────────────────────────────────
+//  زر الرجوع بيرجّعك لنفس القسم بالصفحة الرئيسية — مش لأولها.
+//  يعني لو كنت بصفحة «كل التصاميم» ورجعت، بتنزل على قسم
+//  التصاميم مباشرة. كل قسم إله معرّف (id) بالصفحة الرئيسية.
+// ─────────────────────────────────────────────────────────────
+const anchors = {
+  video: 'work',
+  marketing: 'growth',
+  design: 'designs',
+  website: 'websites',
+};
+const backHref = `${isAr ? '/ar' : ''}/#${anchors[category] || ''}`;
 const backLabel = isAr ? '→ الرئيسية' : '← Home';
 ---
 

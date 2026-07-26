@@ -9,14 +9,15 @@ interface Props {
   heading: string;
   allHref: string;
   allLabel: string;
+  id?: string;
 }
 
-const { lang, projects, heading, allHref, allLabel } = Astro.props;
+const { lang, projects, heading, allHref, allLabel, id } = Astro.props;
 const isAr = lang === 'ar';
 const shown = projects.slice(0, 2);
 ---
 
-<section class="cases">
+<section class="cases" id={id}>
   <div class="container">
     <div class="head">
       <h2 data-reveal>{heading}</h2>

@@ -42,6 +42,13 @@ const catPages: Record<string, string> = {
   marketing: 'marketing',
 };
 const backHref = `${isAr ? '/ar' : ''}/${catPages[p.category] || ''}/`;
+const homeAnchors: Record<string, string> = {
+  video: 'work',
+  marketing: 'growth',
+  design: 'designs',
+  website: 'websites',
+};
+const homeHref = `${isAr ? '/ar' : ''}/#${homeAnchors[p.category] || ''}`;
 const backLabel = isAr ? '→ رجوع' : '← Back';
 
 const emptyNote = isAr
@@ -58,7 +65,11 @@ const emptyNote = isAr
 
   <main id="top" class="project">
     <div class="container">
-      <a class="back" href={backHref}>{backLabel}</a>
+      <nav class="crumbs">
+        <a href={homeHref}>{isAr ? 'الرئيسية' : 'Home'}</a>
+        <span aria-hidden="true">/</span>
+        <a href={backHref}>{backLabel.replace(/^[←→]\s*/, '')}</a>
+      </nav>
 
       <!-- ═══ الترويسة ═══ -->
       <header class="head">
@@ -137,17 +148,27 @@ const emptyNote = isAr
     padding-top: calc(68px + clamp(36px, 6vh, 72px));
   }
 
-  .back {
-    display: inline-block;
+  /* مسار التنقّل: الرئيسية / القسم */
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 14.5px;
     font-weight: 600;
     color: var(--muted);
     margin-bottom: 26px;
+  }
+
+  .crumbs a {
     transition: color 0.3s var(--ease-out);
   }
 
-  .back:hover {
+  .crumbs a:hover {
     color: var(--accent);
+  }
+
+  .crumbs span {
+    opacity: 0.5;
   }
 
   .role {

@@ -20,18 +20,9 @@ import Education from '../components/Education.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 import Lightbox from '../components/Lightbox.astro';
-import work from '../data/work.json';
-
-// ┌──────────────────────────────────────────────────────────┐
-// │ 🎛️ كم عمل يظهر بالصفحة الرئيسية من كل قسم               │
-// │    الباقي بينحط تلقائياً بصفحة القسم («كل التصاميم»...)  │
-// └──────────────────────────────────────────────────────────┘
-const HOME_LIMIT = 4;
-
-// بيرجع أعمال قسم معيّن مرتبة، وبياخد أول HOME_LIMIT منها
-const byCat = (c: string) =>
-  work.projects.filter((p) => p.category === c).sort((a, b) => a.order - b.order);
-const forHome = (c: string) => byCat(c).slice(0, HOME_LIMIT);
+// 🎛️ منطق «شو يظهر بالهوم» كله بملف واحد مشروح: src/utils/work.js
+//    (الترتيب، العدد، والتحكم اليدوي بحقل "home" بملف work.json)
+import { forHome, hasMore } from '../utils/work.js';
 ---
 
 <Base
@@ -63,6 +54,7 @@ const forHome = (c: string) => byCat(c).slice(0, HOME_LIMIT);
       heading="Growth stories"
       allHref="/marketing/"
       allLabel="All growth work"
+      id="growth"
     />
 
     <DesignsGrid
@@ -71,14 +63,16 @@ const forHome = (c: string) => byCat(c).slice(0, HOME_LIMIT);
       heading="Design work"
       allHref="/designs/"
       allLabel="All designs"
+      id="designs"
     />
 
     <Websites
       lang="en"
-      projects={byCat('website')}
+      projects={forHome('website')}
       heading="Websites"
       allHref="/websites/"
       allLabel="All websites"
+      showAll={hasMore('website')}
     />
 
     <Skills lang="en" />

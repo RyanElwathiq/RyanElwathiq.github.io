@@ -9,13 +9,14 @@
 // ═══════════════════════════════════════════════════════════════
 interface Props {
   lang: 'en' | 'ar';
-  projects: any[];
+  projects: any[]; // اللي بينعرضوا بالهوم (محدودين بـ HOME_LIMIT)
   heading: string;
   allHref: string;
   allLabel: string;
+  showAll?: boolean; // هل في مواقع زيادة بصفحة القسم؟
 }
 
-const { lang, projects, heading, allHref, allLabel } = Astro.props;
+const { lang, projects, heading, allHref, allLabel, showAll = true } = Astro.props;
 const isAr = lang === 'ar';
 
 const t = isAr
@@ -62,7 +63,7 @@ const t = isAr
           const href = `${isAr ? '/ar' : ''}/work/${p.id}/`;
           const isLive = p.status !== 'wip';
           return (
-            <li class="card">
+            <li class={`card ${isLive ? '' : 'is-wip'}`}>
               {/* بريفيو الموقع: صورة مصغّرة داخل إطار متصفح */}
               <a class="shot" href={href} aria-label={isAr ? p.titleAr : p.title}>
                 <span class="chrome" aria-hidden="true">
@@ -105,7 +106,8 @@ const t = isAr
       }
     </ul>
 
-    <a class="all-btn" href={allHref} data-reveal>{allLabel}</a>
+    <!-- زر «كل المواقع» بيظهر بس إذا في مواقع زيادة عن اللي فوق -->
+    {showAll && <a class="all-btn" href={allHref} data-reveal>{allLabel}</a>}
   </div>
 </section>
 
@@ -225,6 +227,22 @@ const t = isAr
 
   .card:hover .shot img {
     transform: scale(1.04);
+  }
+
+  /* ─── المواقع تحت الشغل: باهتة وبخطوط متقطعة ───
+     عشان يبين إنها مقصودة، مش بطاقة ناقصة أو مكسورة */
+  .card.is-wip .shot {
+    border-style: dashed;
+    border-color: rgba(242, 243, 238, 0.18);
+  }
+
+  .card.is-wip .shot img {
+    opacity: 0.32;
+    filter: grayscale(0.6);
+  }
+
+  .card.is-wip:hover .shot img {
+    opacity: 0.5;
   }
 
   /* ─── النبذة ─── */

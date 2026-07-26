@@ -20,13 +20,9 @@ import Education from '../../components/Education.astro';
 import Contact from '../../components/Contact.astro';
 import Footer from '../../components/Footer.astro';
 import Lightbox from '../../components/Lightbox.astro';
-import work from '../../data/work.json';
-
-const HOME_LIMIT = 4; // كم عمل يظهر بالهوم من كل قسم
-
-const byCat = (c: string) =>
-  work.projects.filter((p) => p.category === c).sort((a, b) => a.order - b.order);
-const forHome = (c: string) => byCat(c).slice(0, HOME_LIMIT);
+// 🎛️ منطق «شو يظهر بالهوم» كله بملف واحد مشروح: src/utils/work.js
+//    (الترتيب، العدد، والتحكم اليدوي بحقل "home" بملف work.json)
+import { forHome, hasMore } from '../../utils/work.js';
 ---
 
 <Base
@@ -58,6 +54,7 @@ const forHome = (c: string) => byCat(c).slice(0, HOME_LIMIT);
       heading="قصص نمو"
       allHref="/ar/marketing/"
       allLabel="كل شغل التسويق"
+      id="growth"
     />
 
     <DesignsGrid
@@ -66,14 +63,16 @@ const forHome = (c: string) => byCat(c).slice(0, HOME_LIMIT);
       heading="شغل التصميم"
       allHref="/ar/designs/"
       allLabel="كل التصاميم"
+      id="designs"
     />
 
     <Websites
       lang="ar"
-      projects={byCat('website')}
+      projects={forHome('website')}
       heading="المواقع"
       allHref="/ar/websites/"
       allLabel="كل المواقع"
+      showAll={hasMore('website')}
     />
 
     <Skills lang="ar" />

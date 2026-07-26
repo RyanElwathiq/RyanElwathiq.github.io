@@ -11,14 +11,15 @@ interface Props {
   heading: string;
   allHref: string;
   allLabel: string;
+  id?: string;
 }
 
-const { lang, projects, heading, allHref, allLabel } = Astro.props;
+const { lang, projects, heading, allHref, allLabel, id } = Astro.props;
 const isAr = lang === 'ar';
 const behance = work.links.behance;
 ---
 
-<section class="designs">
+<section class="designs" id={id}>
   <div class="container">
     <div class="head">
       <div>

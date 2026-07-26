@@ -11,6 +11,10 @@
     "  category : video (فيديو) | design (تصميم) | website (موقع) | marketing (تسويق)",
     "  order    : ترتيب الظهور (الرقم الأصغر أول) — أول 4 بيظهروا بالهوم",
     "             والباقي بينحطوا تلقائياً بصفحة القسم",
+    "  home     : (اختياري) تحكّم يدوي بالظهور بالصفحة الرئيسية",
+    "             true  = ثبّته بالهوم مهما كان ترتيبه",
+    "             false = لا تظهره بالهوم أبداً (بصفحة قسمه فقط)",
+    "             ما حطيته = بيمشي على الترتيب والعدد عادي",
     "────────────────────────────────────────────────────────────────",
     "  story / storyAr : قصة المشروع اللي بتظهر بصفحته المستقلة",
     "        الحقول: vision (الرؤية) | goal (الهدف) | challenge (التحدي)",
@@ -190,6 +194,40 @@
         "approach": "بنيت طبقة توكنز تصميم واحدة ونظام حركة مشترك، وبعدين ربطتهم بماركب الإضافات عبر طبقة توافق. والهيرو بيستخدم سكرول-سيكوينس بأسلوب أبل بنسختين فريمات: وحدة للموبايل ووحدة للديسكتوب.",
         "result": "متجر بيقرأ كعلامة تجارية مش كقالب، بهيرو بيمسك انتباه الزائر، ومكتبة مكوّنات بتخلي كل قسم جديد متناسق مع اللي قبله."
       }
+    },
+
+    {
+      "id": "portfolio",
+      "title": "This Portfolio",
+      "titleAr": "هذا البورتفوليو",
+      "role": "Design & Front-end Build",
+      "roleAr": "تصميم وبناء واجهة",
+      "category": "website",
+      "order": 10,
+      "youtube": "",
+      "preview": "",
+      "cover": "/assets/hero-creative-direction.png",
+      "url": "https://ryanalali.me",
+      "status": "live",
+      "desc": "A bilingual portfolio built from scratch: a scroll-driven film engine, a custom design system, and Arabic-first RTL throughout.",
+      "descAr": "بورتفوليو ثنائي اللغة مبني من الصفر: محرّك أفلام يتحرك مع السكرول، نظام تصميم مخصص، ودعم عربي RTL كامل."
+    },
+
+    {
+      "id": "coming-soon-1",
+      "title": "Next Client Project",
+      "titleAr": "مشروع العميل القادم",
+      "role": "Web Design & Build",
+      "roleAr": "تصميم وبناء موقع",
+      "category": "website",
+      "order": 11,
+      "youtube": "",
+      "preview": "",
+      "cover": "/assets/project-orient.png",
+      "url": "",
+      "status": "wip",
+      "desc": "Currently in production. Details will be published once the project goes live.",
+      "descAr": "قيد التنفيذ حالياً. التفاصيل رح تنشر بعد ما يطلع المشروع للنور."
     }
   ],
   "links": {
