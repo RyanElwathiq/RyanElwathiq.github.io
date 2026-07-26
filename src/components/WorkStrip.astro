@@ -1,0 +1,153 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  شريط أعمال بالصفحة الرئيسية — قابل لإعادة الاستخدام لأي قسم
+//  عالديسكتوب: البطاقات بتنسحب أفقياً مع سكرولك (data-hpan)
+//  عالموبايل: سحب أفقي عادي بالإصبع
+//  آخر بطاقة = زر «شوف الكل» بيودي على صفحة القسم
+// ═══════════════════════════════════════════════════════════════
+import WorkCard from './WorkCard.astro';
+
+interface Props {
+  lang: 'en' | 'ar';
+  projects: any[];
+  heading: string;
+  allHref: string;
+  allLabel: string;
+  id?: string;
+  pan?: boolean; // true = سحب أفقي مثبّت عالديسكتوب
+}
+
+const { lang, projects, heading, allHref, allLabel, id, pan = false } = Astro.props;
+---
+
+<section class="strip" id={id} data-hpan={pan ? '' : undefined}>
+  <div class="head container">
+    <h2 data-reveal>{heading}</h2>
+    <a class="all-link" href={allHref} data-reveal>{allLabel}</a>
+  </div>
+
+  <div class="track container" data-hpan-track={pan ? '' : undefined} data-stagger>
+    {projects.map((p) => <WorkCard project={p} lang={lang} />)}
+
+    <!-- بطاقة «شوف الكل» -->
+    <a class="more" href={allHref}>
+      <span>{allLabel}</span>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="arrow">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
+    </a>
+  </div>
+</section>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .strip {
+    --card-width: clamp(280px, 30vw, 400px); /* عرض البطاقة */
+    --cards-gap: clamp(20px, 2.6vw, 36px); /* المسافة بين البطاقات */
+    --heading-size: clamp(28px, 4vw, 52px); /* حجم عنوان القسم */
+    padding-block: var(--section-gap) 0;
+    overflow: clip;
+  }
+
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: clamp(32px, 5vh, 56px);
+  }
+
+  h2 {
+    font-size: var(--heading-size);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  html[lang='ar'] h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .all-link {
+    flex-shrink: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 3px;
+    transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+  }
+
+  .all-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .track {
+    display: flex;
+    gap: var(--cards-gap);
+    padding-bottom: var(--section-gap);
+    will-change: transform;
+  }
+
+  .track > :global(article),
+  .more {
+    flex: 0 0 var(--card-width);
+  }
+
+  /* بطاقة «شوف الكل» */
+  .more {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    min-height: 300px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    font-size: 17px;
+    font-weight: 600;
+    transition: border-color 0.35s var(--ease-out), color 0.35s var(--ease-out);
+  }
+
+  .more:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .more:hover .arrow {
+    transform: translateX(6px);
+  }
+
+  html[dir='rtl'] .arrow {
+    transform: scaleX(-1); /* السهم بالعربي بيشاور عاليسار */
+  }
+
+  html[dir='rtl'] .more:hover .arrow {
+    transform: scaleX(-1) translateX(6px);
+  }
+
+  .arrow {
+    transition: transform 0.35s var(--ease-out);
+  }
+
+  /* موبايل: سحب طبيعي بالإصبع */
+  @media (max-width: 767px) {
+    .track {
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .track > :global(article),
+    .more {
+      scroll-snap-align: start;
+      flex-basis: 78vw;
+    }
+  }
+</style>

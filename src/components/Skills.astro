@@ -1,0 +1,196 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  المهارات — شبكة بينتو (خلايا بأحجام مختلفة) + شريط أدوات متحرك
+//  ✏️ تعديل المهارات: من مصفوفة skills | الأدوات: من مصفوفة tools
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+const heading = isAr ? 'شو بقدر أعملك' : 'What I bring';
+
+// ─── المهارات الست (عدّل من هون) ───
+const skills = isAr
+  ? [
+      { t: 'استراتيجية تسويق رقمي', d: 'خطط دخول سوق، تسويق قمعي، رحلة عميل، تخطيط حملات، ورسائل عروض.' },
+      { t: 'SEO', d: 'بحث كلمات مفتاحية، تحسين داخلي، خرائط نية البحث، واستراتيجية محتوى.' },
+      { t: 'إعلانات مدفوعة', d: 'ميتا أدز: إعداد، تقسيم جمهور، اختبار A/B، بكسل، وتتبع ROAS و CPL و CTR.' },
+      { t: 'إدارة عملاء CRM', d: 'بناء بايبلاين، تقسيم عملاء محتملين، ورحلات متابعة وتغذية.' },
+      { t: 'أنظمة محتوى', d: 'ركائز محتوى، تقاويم شهرية، بريفات إبداعية، وكتابة إعلانية.' },
+      { t: 'إنتاج إبداعي', d: 'هوية بصرية، تصميم سوشال، مونتاج فيديوهات قصيرة، وأصول بصرية بالذكاء الاصطناعي.' },
+    ]
+  : [
+      { t: 'Digital Marketing Strategy', d: 'Go-to-market plans, funnel marketing, customer journeys, campaign planning, and offer messaging.' },
+      { t: 'SEO', d: 'Keyword research, on-page optimization, search-intent mapping, and content strategy.' },
+      { t: 'Paid Media', d: 'Meta Ads setup, audience segmentation, A/B testing, Pixel, and ROAS, CPL, CTR tracking.' },
+      { t: 'CRM & Lead Management', d: 'Pipeline setup, lead segmentation, and follow-up nurturing workflows.' },
+      { t: 'Content Systems', d: 'Content pillars, monthly calendars, creative briefs, and copywriting.' },
+      { t: 'Creative Production', d: 'Brand identity, social design, short-form video editing, and AI-assisted visual assets.' },
+    ];
+
+// ─── الأدوات (بتلف بالشريط المتحرك) ───
+const tools = [
+  'Meta Ads Manager', 'Facebook Pixel', 'Google Analytics', 'Search Console', 'Google Ads',
+  'HubSpot', 'Mailchimp', 'Photoshop', 'Illustrator', 'Premiere Pro', 'After Effects',
+  'Canva', 'CapCut', 'WordPress', 'Google Workspace',
+];
+---
+
+<section class="skills">
+  <div class="container">
+    <h2 data-reveal>{heading}</h2>
+
+    <div class="bento" data-stagger>
+      <!-- الخلية الكبيرة: أول مهارة + العقدة كخلفية -->
+      <div class="cell featured">
+        <img class="knot-bg" src="/assets/logo-white.png" alt="" width="400" height="400" loading="lazy" />
+        <h3>{skills[0].t}</h3>
+        <p>{skills[0].d}</p>
+      </div>
+
+      {
+        skills.slice(1).map((s, i) => (
+          <div class={`cell ${i === 3 ? 'lime' : ''}`}>
+            <h3>{s.t}</h3>
+            <p>{s.d}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- شريط الأدوات المتحرك (بيلف بلا توقف) -->
+  <div class="marquee" aria-label={isAr ? 'الأدوات' : 'Tools'}>
+    <div class="marquee-track">
+      {[...tools, ...tools].map((tool) => <span>{tool}</span>)}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .skills {
+    --heading-size: clamp(28px, 4vw, 52px);
+    --cell-padding: clamp(24px, 2.6vw, 36px); /* الحشوة جوا كل خلية */
+    --marquee-speed: 36s; /* سرعة شريط الأدوات (أكبر = أبطأ) */
+    padding-block: var(--section-gap) 0;
+  }
+
+  h2 {
+    font-size: var(--heading-size);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: clamp(32px, 5vh, 56px);
+  }
+
+  html[lang='ar'] h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  /* ─── شبكة البينتو: 6 خلايا، الأولى مضاعفة ─── */
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .cell {
+    position: relative;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: var(--cell-padding);
+  }
+
+  .cell.featured {
+    grid-column: span 2;
+  }
+
+  /* الخلية الليمونية (تنويع بصري) */
+  .cell.lime {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .cell.lime h3,
+  .cell.lime p {
+    color: var(--accent-ink);
+  }
+
+  .knot-bg {
+    position: absolute;
+    inset-inline-end: -60px;
+    top: -40px;
+    width: 240px;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  .cell h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .cell p {
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+
+  /* ─── شريط الأدوات ─── */
+  .marquee {
+    margin-top: clamp(48px, 7vh, 80px);
+    padding-block: 22px;
+    border-block: 1px solid var(--line);
+    overflow: clip;
+  }
+
+  .marquee-track {
+    display: flex;
+    gap: 48px;
+    width: max-content;
+    animation: roll var(--marquee-speed) linear infinite;
+  }
+
+  .marquee span {
+    font-family: var(--font-en);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  @keyframes roll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* بالعربي بنعكس اتجاه اللف */
+  html[dir='rtl'] .marquee-track {
+    animation-direction: reverse;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
+  }
+
+  /* موبايل: عمود واحد */
+  @media (max-width: 767px) {
+    .bento {
+      grid-template-columns: 1fr;
+    }
+
+    .cell.featured {
+      grid-column: span 1;
+    }
+  }
+</style>

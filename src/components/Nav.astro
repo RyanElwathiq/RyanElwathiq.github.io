@@ -9,10 +9,18 @@ interface Props {
 const { lang } = Astro.props;
 const isAr = lang === 'ar';
 
-// النصوص باللغتين
+// تبديل اللغة الذكي: بينقلك لنفس الصفحة باللغة الثانية
+// (مثال: /videos/ ↔ /ar/videos/)
+const path = Astro.url.pathname;
+const switchHref = isAr
+  ? path.replace(/^\/ar\/?/, '/') || '/'
+  : path === '/'
+    ? '/ar/'
+    : `/ar${path}`;
+
 const t = isAr
-  ? { work: 'الأعمال', about: 'من أنا', contact: 'تواصل', switchLabel: 'EN', switchHref: '/' }
-  : { work: 'Work', about: 'About', contact: 'Contact', switchLabel: 'عربي', switchHref: '/ar/' };
+  ? { work: 'الأعمال', about: 'من أنا', contact: 'تواصل', switchLabel: 'EN', switchHref }
+  : { work: 'Work', about: 'About', contact: 'Contact', switchLabel: 'عربي', switchHref };
 
 const home = isAr ? '/ar/' : '/';
 ---

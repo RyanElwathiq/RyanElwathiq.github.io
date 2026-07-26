@@ -1,0 +1,71 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «من أنا» — الكلمات بتضوّي وحدة وحدة مع سكرولك (data-words)
+//  ✏️ تعديل النص: من t تحت مباشرة
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+const t = isAr
+  ? {
+      heading: 'بفكّر كاستراتيجي، وبنفّذ كصانع محتوى.',
+      body: 'ببني أنظمة تسويق من الصفر: استراتيجية علامة، تقاويم محتوى، تخطيط حملات، اختبار إعلانات، متابعة عملاء، وتقارير أداء. شغلي بيركّز على المشاريع الصغيرة والناشئة والعلامات الإقليمية اللي بدها هيكلة ووضوح وتنفيذ رقمي ثابت.',
+      extra: 'وبدرس إدارة سلاسل التوريد الرقمية بجامعة فيلادلفيا، وهاد بيعطيني منظور عمليات وأرقام بيخدم شغلي التسويقي: تفكير KPI، تصميم عمليات، وربط الطلب بالتنفيذ بتجربة العميل.',
+    }
+  : {
+      heading: 'Strategic thinking, creative execution.',
+      body: 'I build practical marketing systems from zero: brand strategy, content calendars, campaign planning, ad testing, CRM follow-up workflows, and performance reporting. My work focuses on small businesses, startups, and regional brands that need structure, clarity, and consistent digital execution.',
+      extra: 'I am also studying Digital Supply Chain Management at Philadelphia University, which adds an operations lens to my marketing: KPI thinking, process design, and connecting demand to execution and customer experience.',
+    };
+---
+
+<section class="about" id="about">
+  <div class="container">
+    <h2 data-reveal>{t.heading}</h2>
+    <p class="big" data-words>{t.body}</p>
+    <p class="extra" data-reveal>{t.extra}</p>
+  </div>
+</section>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .about {
+    --heading-size: clamp(15px, 1.5vw, 17px); /* حجم العنوان الصغير فوق */
+    --body-size: clamp(24px, 3.4vw, 44px); /* حجم النص الكبير المضوّي */
+    --body-line-gap: 1.5; /* تباعد أسطر النص الكبير */
+    --extra-size: clamp(15px, 1.5vw, 18px); /* حجم الفقرة الإضافية */
+    padding-block: var(--section-gap);
+  }
+
+  .about h2 {
+    font-size: var(--heading-size);
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 28px;
+  }
+
+  .big {
+    font-size: var(--body-size);
+    font-weight: 600;
+    line-height: var(--body-line-gap);
+    letter-spacing: -0.015em;
+    max-width: 24ch;
+    margin-bottom: 36px;
+  }
+
+  html[lang='ar'] .big {
+    letter-spacing: 0;
+    line-height: calc(var(--body-line-gap) + 0.15);
+    max-width: 30ch;
+  }
+
+  .extra {
+    color: var(--muted);
+    font-size: var(--extra-size);
+    max-width: 58ch;
+  }
+</style>

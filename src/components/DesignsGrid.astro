@@ -1,0 +1,130 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  التصاميم — شبكة بطاقات + بلاطة Behance (كل شغلك الإبداعي هناك)
+// ═══════════════════════════════════════════════════════════════
+import WorkCard from './WorkCard.astro';
+import work from '../data/work.json';
+
+interface Props {
+  lang: 'en' | 'ar';
+  projects: any[];
+  heading: string;
+  allHref: string;
+  allLabel: string;
+}
+
+const { lang, projects, heading, allHref, allLabel } = Astro.props;
+const isAr = lang === 'ar';
+const behance = work.links.behance;
+---
+
+<section class="designs">
+  <div class="container">
+    <div class="head">
+      <h2 data-reveal>{heading}</h2>
+      <a class="all-link" href={allHref} data-reveal>{allLabel}</a>
+    </div>
+
+    <div class="grid" data-stagger>
+      {projects.map((p) => <WorkCard project={p} lang={lang} />)}
+
+      <!-- بلاطة Behance -->
+      <a class="behance" href={behance} target="_blank" rel="noreferrer">
+        <span class="big">Behance</span>
+        <span class="hint">{isAr ? 'مكتبة شغلي الإبداعي كاملة ↗' : 'My full creative library ↗'}</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .designs {
+    --heading-size: clamp(28px, 4vw, 52px);
+    --grid-gap: clamp(20px, 2.6vw, 36px);
+    padding-block: var(--section-gap) 0;
+  }
+
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: clamp(32px, 5vh, 56px);
+  }
+
+  h2 {
+    font-size: var(--heading-size);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  html[lang='ar'] h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .all-link {
+    flex-shrink: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 3px;
+    transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+  }
+
+  .all-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--grid-gap);
+    align-items: stretch;
+  }
+
+  /* بلاطة Behance: ليمونية جريئة */
+  .behance {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-height: 320px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-radius: var(--r-card);
+    text-align: center;
+    padding: 24px;
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .behance:hover {
+    transform: translateY(-4px);
+  }
+
+  .behance .big {
+    font-family: var(--font-en);
+    font-size: clamp(30px, 3.4vw, 46px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .behance .hint {
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 767px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .behance {
+      min-height: 200px;
+    }
+  }
+</style>

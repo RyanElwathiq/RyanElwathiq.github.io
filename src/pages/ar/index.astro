@@ -1,10 +1,31 @@
 ---
 // ═══════════════════════════════════════════════════════════════
 //  الصفحة الرئيسية — النسخة العربية (RTL)
+//  ترتيب السيكشنات من فوق لتحت — بدك تقدّم/تأخّر قسم؟ حرّك سطره
 // ═══════════════════════════════════════════════════════════════
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
+import Stats from '../../components/Stats.astro';
+import About from '../../components/About.astro';
+import WorkStrip from '../../components/WorkStrip.astro';
+import CaseRows from '../../components/CaseRows.astro';
+import DesignsGrid from '../../components/DesignsGrid.astro';
+import WebsiteFeature from '../../components/WebsiteFeature.astro';
+import Skills from '../../components/Skills.astro';
+import Education from '../../components/Education.astro';
+import Contact from '../../components/Contact.astro';
+import Footer from '../../components/Footer.astro';
+import Lightbox from '../../components/Lightbox.astro';
+import work from '../../data/work.json';
+
+const byCat = (c: string) =>
+  work.projects.filter((p) => p.category === c).sort((a, b) => a.order - b.order);
+
+const videos = byCat('video');
+const marketing = byCat('marketing');
+const designs = byCat('design');
+const websites = byCat('website');
 ---
 
 <Base
@@ -13,7 +34,52 @@ import Hero from '../../components/Hero.astro';
   lang="ar"
 >
   <Nav lang="ar" />
-  <main>
+
+  <main id="top">
     <Hero lang="ar" />
+    <Stats lang="ar" />
+    <About lang="ar" />
+
+    <!-- الفيديوهات: سحب أفقي مع السكرول عالديسكتوب -->
+    <WorkStrip
+      lang="ar"
+      projects={videos}
+      heading="شغل الفيديو"
+      allHref="/ar/videos/"
+      allLabel="كل الفيديوهات"
+      id="work"
+      pan={true}
+    />
+
+    <CaseRows
+      lang="ar"
+      projects={marketing}
+      heading="قصص نمو"
+      allHref="/ar/marketing/"
+      allLabel="كل شغل التسويق"
+    />
+
+    <DesignsGrid
+      lang="ar"
+      projects={designs}
+      heading="شغل التصميم"
+      allHref="/ar/designs/"
+      allLabel="كل التصاميم"
+    />
+
+    <WebsiteFeature
+      lang="ar"
+      project={websites[0]}
+      heading="المواقع"
+      allHref="/ar/websites/"
+      allLabel="كل المواقع"
+    />
+
+    <Skills lang="ar" />
+    <Education lang="ar" />
+    <Contact lang="ar" />
   </main>
+
+  <Footer lang="ar" />
+  <Lightbox lang="ar" />
 </Base>

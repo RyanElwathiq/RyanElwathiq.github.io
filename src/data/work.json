@@ -147,6 +147,23 @@
       "desc": "Trained account managers on Meta Ads setup, objectives, targeting, budgets, and A/B testing, enabling the team to launch full paid campaigns.",
       "descAr": "تدريب مدراء الحسابات على إعداد إعلانات ميتا: الأهداف، الاستهداف، الميزانيات، واختبارات A/B، حتى قدر الفريق يطلق حملات مدفوعة كاملة.",
       "stats": []
+    },
+    {
+      "id": "plasmajo",
+      "title": "LUVIT Web Experience",
+      "titleAr": "تجربة موقع لوفيت",
+      "role": "Web Design & Build",
+      "roleAr": "تصميم وبناء موقع",
+      "category": "website",
+      "featured": true,
+      "order": 9,
+      "youtube": "",
+      "preview": "",
+      "cover": "/assets/project-luvit.png",
+      "url": "https://plasmajo.com",
+      "desc": "Designed and built the LUVIT e-commerce experience on WordPress: a custom design system, a GSAP motion language, and an Apple-style scroll-sequence hero.",
+      "descAr": "تصميم وبناء تجربة متجر لوفيت على ووردبريس: نظام تصميم مخصص، لغة حركة GSAP، وهيرو سكرول-سيكوينس بأسلوب أبل.",
+      "stats": []
     }
   ],
   "links": {

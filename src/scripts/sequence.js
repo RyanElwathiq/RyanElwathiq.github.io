@@ -13,9 +13,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SCROLL_LENGTH = 3;      // 👈 كم شاشة بيضل الهيرو مثبّت وانت بتسكرول
-const INTRO_FADE_END = 0.22;  // 👈 العنوان الافتتاحي بيختفي بأول 22% من الرحلة
-const OUTRO_START = 0.68;     // 👈 الجملة الختامية بتبدأ تظهر عند 68%
+const SCROLL_LENGTH = 3;        // 👈 كم شاشة بيضل الهيرو مثبّت وانت بتسكرول
+const INTRO_FADE_END = 0.24;    // 👈 العنوان الافتتاحي بيختفي بأول 24% من الرحلة
+const OUTRO_START = 0.66;       // 👈 الجملة الختامية بتبدأ تظهر عند 66%
+const INTRO_LIFT_RATIO = 0.22;  // 👈 قديش يرتفع العنوان (نسبة من ارتفاع الشاشة)
+const OUTRO_RISE_RATIO = 0.09;  // 👈 قديش تطلع الجملة الختامية من تحت
 
 // الموبايل بياخد فريمات عمودية، والديسكتوب بياخد عريضة
 const MOBILE_BREAKPOINT = 768;
@@ -148,19 +150,22 @@ export async function initSequence() {
         draw(target);
       }
 
-      // النص الافتتاحي بيذوب ويرتفع بأول جزء من الرحلة
+      // ─── النص الافتتاحي: بيرتفع ويذوب ويصغر مع سكرولك ───
+      // (نسبة الحركة بتتغير حسب حجم الشاشة عشان تضل متناسقة)
       if (intro) {
         const p = Math.min(self.progress / INTRO_FADE_END, 1);
+        const lift = window.innerHeight * INTRO_LIFT_RATIO; // مسافة الارتفاع
         intro.style.opacity = String(1 - p);
-        intro.style.transform = `translateY(${p * -60}px)`;
+        intro.style.transform = `translate3d(0, ${-p * lift}px, 0) scale(${1 - p * 0.06})`;
         intro.style.pointerEvents = p >= 1 ? 'none' : '';
       }
 
-      // الجملة الختامية بتظهر بنهاية الرحلة
+      // ─── الجملة الختامية: بتطلع من تحت وبتوضح ───
       if (outro) {
         const p = gsap.utils.clamp(0, 1, (self.progress - OUTRO_START) / (1 - OUTRO_START - 0.05));
+        const rise = window.innerHeight * OUTRO_RISE_RATIO;
         outro.style.opacity = String(p);
-        outro.style.transform = `translateY(${(1 - p) * 40}px)`;
+        outro.style.transform = `translate3d(0, ${(1 - p) * rise}px, 0)`;
       }
     },
   });

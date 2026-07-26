@@ -29,6 +29,11 @@ const dir = lang === 'ar' ? 'rtl' : 'ltr';
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+
+    <!-- بيحط كلاس .js فوراً: بدونه المحتوى بيضل ظاهر لو الجافاسكربت ما اشتغل -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
   </head>
   <body>
     <slot />

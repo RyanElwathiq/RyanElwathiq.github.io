@@ -1,0 +1,100 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  الدراسة والشهادات
+//  ✏️ تعديل النصوص: من t تحت
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+const t = isAr
+  ? {
+      heading: 'الدراسة',
+      degree: 'إدارة سلاسل التوريد الرقمية',
+      body: 'بكالوريوس، جامعة فيلادلفيا. من تموز 2025 وحتى آذار 2029 متوقعاً. اخترت هالتخصص عشان أربط استراتيجية التسويق بالعمليات والتقارير وتحليل البيانات والتنفيذ.',
+      coursesTitle: 'دورات وتدريبات',
+      courses: 'ووردبريس والتسويق الرقمي، تدريب Media Buyer، إعلانات ميتا، توليد عملاء عبر إعلانات جوجل، SEO، وأدوبي أفتر إفكتس وفوتوشوب وإليستريتور.',
+    }
+  : {
+      heading: 'Education',
+      degree: 'Digital Supply Chain Management',
+      body: "Bachelor's degree, Philadelphia University. July 2025 to March 2029 (expected). I chose supply chain to connect marketing strategy with operations, reporting, data analysis, and execution.",
+      coursesTitle: 'Courses and training',
+      courses: 'WordPress and Digital Marketing, Media Buyer training, Meta Ads, Google Ads lead generation, SEO, and Adobe After Effects, Photoshop, and Illustrator.',
+    };
+---
+
+<section class="edu">
+  <div class="container grid">
+    <div data-reveal>
+      <h2>{t.heading}</h2>
+      <h3>{t.degree}</h3>
+      <p>{t.body}</p>
+    </div>
+
+    <div class="cert" data-reveal>
+      <h3>{t.coursesTitle}</h3>
+      <p>{t.courses}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .edu {
+    --degree-size: clamp(24px, 2.8vw, 36px); /* حجم اسم التخصص */
+    padding-block: var(--section-gap) 0;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: clamp(28px, 4vw, 64px);
+    align-items: start;
+  }
+
+  h2 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    font-size: var(--degree-size);
+    font-weight: 700;
+    margin-bottom: 14px;
+    letter-spacing: -0.015em;
+  }
+
+  html[lang='ar'] h3 {
+    letter-spacing: 0;
+    font-weight: 800;
+  }
+
+  p {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+  }
+
+  .cert {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: clamp(24px, 2.6vw, 36px);
+  }
+
+  .cert h3 {
+    font-size: 18px;
+  }
+
+  @media (max-width: 767px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

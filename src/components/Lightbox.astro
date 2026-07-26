@@ -1,0 +1,70 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  نافذة تشغيل الفيديو (لايت-بوكس) — بتنفتح من أي زر data-play
+//  التشغيل والإغلاق بملف src/scripts/lightbox.js
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+---
+
+<dialog class="lightbox" data-lightbox>
+  <button class="close" data-lightbox-close aria-label={isAr ? 'إغلاق' : 'Close'}>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  </button>
+  <div class="frame" data-lightbox-frame></div>
+</dialog>
+
+<style>
+  .lightbox {
+    width: min(1100px, 92vw);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 0;
+    background: var(--surface);
+    overflow: visible;
+  }
+
+  .lightbox::backdrop {
+    background: rgba(8, 9, 11, 0.86);
+    backdrop-filter: blur(6px);
+  }
+
+  .frame {
+    aspect-ratio: 16 / 9;
+    border-radius: var(--r-card);
+    overflow: hidden;
+  }
+
+  .frame :global(iframe) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  .close {
+    position: absolute;
+    top: -48px;
+    inset-inline-end: 0;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(242, 243, 238, 0.3);
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--text);
+    transition: border-color 0.3s var(--ease-out), color 0.3s var(--ease-out);
+  }
+
+  .close:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+</style>

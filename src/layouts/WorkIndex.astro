@@ -1,0 +1,110 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  قالب الصفحات الداخلية (كل الفيديوهات / التصاميم / التسويق / المواقع)
+//  بيعرض كل مشاريع قسم معيّن من work.json
+// ═══════════════════════════════════════════════════════════════
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Lightbox from '../components/Lightbox.astro';
+import WorkCard from '../components/WorkCard.astro';
+import work from '../data/work.json';
+
+interface Props {
+  lang: 'en' | 'ar';
+  category: string; // video | design | website | marketing
+  title: string;
+  description: string;
+  intro: string;
+}
+
+const { lang, category, title, description, intro } = Astro.props;
+const isAr = lang === 'ar';
+
+// كل مشاريع هذا القسم مرتبة حسب order
+const projects = work.projects
+  .filter((p) => p.category === category)
+  .sort((a, b) => a.order - b.order);
+
+const backHref = isAr ? '/ar/' : '/';
+const backLabel = isAr ? '→ الرئيسية' : '← Home';
+---
+
+<Base title={title} description={description} lang={lang}>
+  <Nav lang={lang} />
+
+  <main id="top" class="page">
+    <div class="container">
+      <a class="back" href={backHref}>{backLabel}</a>
+      <h1 data-reveal>{title.split('|')[0].trim()}</h1>
+      <p class="intro" data-reveal>{intro}</p>
+
+      <div class="grid" data-stagger>
+        {projects.map((p) => <WorkCard project={p} lang={lang} />)}
+      </div>
+    </div>
+  </main>
+
+  <Footer lang={lang} />
+  <Lightbox lang={lang} />
+</Base>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .page {
+    --title-size: clamp(38px, 6vw, 76px);
+    --grid-gap: clamp(24px, 3vw, 44px);
+    padding-top: calc(68px + clamp(40px, 7vh, 80px));
+    min-height: 100dvh;
+  }
+
+  .back {
+    display: inline-block;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 26px;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .back:hover {
+    color: var(--accent);
+  }
+
+  h1 {
+    font-size: var(--title-size);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 16px;
+  }
+
+  html[lang='ar'] h1 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .intro {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 18px);
+    max-width: 56ch;
+    margin-bottom: clamp(40px, 6vh, 64px);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--grid-gap);
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

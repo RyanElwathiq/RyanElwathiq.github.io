@@ -1,0 +1,57 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  الفوتر
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container inner">
+    <div class="brand">
+      <img src="/assets/logo-white.png" alt="" width="26" height="26" />
+      <span>{isAr ? `© ${year} ريّان الواثق. كل الحقوق محفوظة.` : `© ${year} Rayan Elwathiq. All rights reserved.`}</span>
+    </div>
+    <a href="#top" class="top">{isAr ? 'لفوق ↑' : 'Back to top ↑'}</a>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+    padding-block: 28px;
+    margin-top: var(--section-gap);
+  }
+
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .top {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .top:hover {
+    color: var(--accent);
+  }
+</style>

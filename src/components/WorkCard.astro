@@ -1,0 +1,158 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  بطاقة عمل واحدة — بتنستخدم بكل أقسام الأعمال والصفحات الداخلية
+//  • إذا للمشروع youtube → بيظهر زر تشغيل وبيفتح اللايت-بوكس
+//  • إذا للمشروع url → بيظهر زر «زيارة الموقع»
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  project: any;
+  lang: 'en' | 'ar';
+}
+
+const { project: p, lang } = Astro.props;
+const isAr = lang === 'ar';
+
+const title = isAr ? p.titleAr : p.title;
+const role = isAr ? p.roleAr : p.role;
+const desc = isAr ? p.descAr : p.desc;
+---
+
+<article class="card">
+  <div class="cover">
+    <img src={p.cover} alt={title} loading="lazy" width="640" height="640" />
+    {
+      p.youtube && (
+        <button class="play" data-play={p.youtube} aria-label={isAr ? `شغّل فيديو ${title}` : `Play ${title} video`}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M8 5.5v13l11-6.5z" />
+          </svg>
+        </button>
+      )
+    }
+  </div>
+
+  <p class="role">{role}</p>
+  <h3>{title}</h3>
+  <p class="desc">{desc}</p>
+
+  {
+    p.stats?.length > 0 && (
+      <ul class="chips">
+        {p.stats.map((s: any) => (
+          <li>
+            <strong>{s.value}</strong> {isAr ? s.labelAr : s.label}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  {
+    p.url && (
+      <a class="visit" href={p.url} target="_blank" rel="noreferrer">
+        {isAr ? 'زيارة الموقع ↗' : 'Visit site ↗'}
+      </a>
+    )
+  }
+</article>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .card {
+    --cover-radius: var(--r-card); /* زوايا صورة الغلاف */
+    --hover-zoom: 1.05; /* قديش الصورة بتكبر عند المرور */
+    --gap-cover-text: 18px; /* المسافة بين الصورة والنص */
+  }
+
+  .cover {
+    position: relative;
+    border-radius: var(--cover-radius);
+    overflow: hidden;
+    margin-bottom: var(--gap-cover-text);
+    background: var(--surface);
+  }
+
+  .cover img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: transform 0.7s var(--ease-out);
+  }
+
+  .card:hover .cover img {
+    transform: scale(var(--hover-zoom));
+  }
+
+  /* زر التشغيل */
+  .play {
+    position: absolute;
+    inset-inline-end: 14px;
+    bottom: 14px;
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: var(--r-pill);
+    background: var(--accent);
+    color: var(--accent-ink);
+    transition: transform 0.35s var(--ease-out);
+  }
+
+  .play:hover {
+    transform: scale(1.1);
+  }
+
+  .play:active {
+    transform: scale(0.94);
+  }
+
+  .role {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  h3 {
+    font-size: clamp(19px, 1.9vw, 23px);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .desc {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .chips {
+    list-style: none;
+    padding: 0;
+    margin: 14px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chips li {
+    font-size: 12.5px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 6px 14px;
+  }
+
+  .chips strong {
+    color: var(--text);
+    font-family: var(--font-en);
+  }
+
+  .visit {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+</style>

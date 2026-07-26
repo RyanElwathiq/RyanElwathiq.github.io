@@ -1,10 +1,32 @@
 ---
 // ═══════════════════════════════════════════════════════════════
 //  الصفحة الرئيسية — النسخة الإنجليزية
+//  ترتيب السيكشنات من فوق لتحت — بدك تقدّم/تأخّر قسم؟ حرّك سطره
 // ═══════════════════════════════════════════════════════════════
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
+import Stats from '../components/Stats.astro';
+import About from '../components/About.astro';
+import WorkStrip from '../components/WorkStrip.astro';
+import CaseRows from '../components/CaseRows.astro';
+import DesignsGrid from '../components/DesignsGrid.astro';
+import WebsiteFeature from '../components/WebsiteFeature.astro';
+import Skills from '../components/Skills.astro';
+import Education from '../components/Education.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import Lightbox from '../components/Lightbox.astro';
+import work from '../data/work.json';
+
+// تجهيز البيانات لكل قسم من work.json
+const byCat = (c: string) =>
+  work.projects.filter((p) => p.category === c).sort((a, b) => a.order - b.order);
+
+const videos = byCat('video');
+const marketing = byCat('marketing');
+const designs = byCat('design');
+const websites = byCat('website');
 ---
 
 <Base
@@ -13,7 +35,52 @@ import Hero from '../components/Hero.astro';
   lang="en"
 >
   <Nav lang="en" />
-  <main>
+
+  <main id="top">
     <Hero lang="en" />
+    <Stats lang="en" />
+    <About lang="en" />
+
+    <!-- الفيديوهات: سحب أفقي مع السكرول عالديسكتوب -->
+    <WorkStrip
+      lang="en"
+      projects={videos}
+      heading="Video work"
+      allHref="/videos/"
+      allLabel="All videos"
+      id="work"
+      pan={true}
+    />
+
+    <CaseRows
+      lang="en"
+      projects={marketing}
+      heading="Growth stories"
+      allHref="/marketing/"
+      allLabel="All growth work"
+    />
+
+    <DesignsGrid
+      lang="en"
+      projects={designs}
+      heading="Design work"
+      allHref="/designs/"
+      allLabel="All designs"
+    />
+
+    <WebsiteFeature
+      lang="en"
+      project={websites[0]}
+      heading="Websites"
+      allHref="/websites/"
+      allLabel="All websites"
+    />
+
+    <Skills lang="en" />
+    <Education lang="en" />
+    <Contact lang="en" />
   </main>
+
+  <Footer lang="en" />
+  <Lightbox lang="en" />
 </Base>

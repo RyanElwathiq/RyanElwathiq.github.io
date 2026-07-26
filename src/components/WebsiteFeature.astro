@@ -1,0 +1,148 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  المواقع — بطاقة عريضة وحدة مميزة (أول مشروع website)
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+  project: any;
+  heading: string;
+  allHref: string;
+  allLabel: string;
+}
+
+const { lang, project: p, heading, allHref, allLabel } = Astro.props;
+const isAr = lang === 'ar';
+---
+
+<section class="sites">
+  <div class="container">
+    <div class="head">
+      <h2 data-reveal>{heading}</h2>
+      <a class="all-link" href={allHref} data-reveal>{allLabel}</a>
+    </div>
+
+    <a class="feature" href={p.url} target="_blank" rel="noreferrer" data-reveal>
+      <img src={p.cover} alt={isAr ? p.titleAr : p.title} loading="lazy" width="1200" height="700" />
+      <div class="overlay">
+        <div>
+          <p class="role">{isAr ? p.roleAr : p.role}</p>
+          <h3>{isAr ? p.titleAr : p.title}</h3>
+          <p class="desc">{isAr ? p.descAr : p.desc}</p>
+        </div>
+        <span class="visit">{isAr ? 'زيارة plasmajo.com ↗' : 'Visit plasmajo.com ↗'}</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .sites {
+    --feature-height: clamp(380px, 55vh, 560px); /* ارتفاع البطاقة العريضة */
+    --heading-size: clamp(28px, 4vw, 52px);
+    padding-block: var(--section-gap) 0;
+  }
+
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: clamp(32px, 5vh, 56px);
+  }
+
+  h2 {
+    font-size: var(--heading-size);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  html[lang='ar'] h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .all-link {
+    flex-shrink: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 3px;
+    transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+  }
+
+  .all-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .feature {
+    position: relative;
+    display: block;
+    height: var(--feature-height);
+    border-radius: var(--r-card);
+    overflow: hidden;
+  }
+
+  .feature img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s var(--ease-out);
+  }
+
+  .feature:hover img {
+    transform: scale(1.05);
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(24px, 3.4vw, 48px);
+    background: linear-gradient(to top, rgba(14, 15, 18, 0.88), rgba(14, 15, 18, 0.15) 55%, rgba(14, 15, 18, 0.35));
+  }
+
+  .role {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    font-size: clamp(24px, 3vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  html[lang='ar'] h3 {
+    letter-spacing: 0;
+    font-weight: 800;
+  }
+
+  .desc {
+    color: rgba(242, 243, 238, 0.75);
+    font-size: 15px;
+    max-width: 52ch;
+    margin-top: 10px;
+  }
+
+  .visit {
+    align-self: flex-start;
+    font-weight: 600;
+    font-size: 15.5px;
+    color: var(--accent-ink);
+    background: var(--accent);
+    border-radius: var(--r-pill);
+    padding: 13px 28px;
+    transition: transform 0.35s var(--ease-out);
+  }
+
+  .feature:hover .visit {
+    transform: translateY(-3px);
+  }
+</style>

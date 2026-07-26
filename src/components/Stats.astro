@@ -1,0 +1,82 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  شريط الأرقام — عدّادات بتعد لحالها لما توصلها بالسكرول
+//  ✏️ تعديل الأرقام: من مصفوفة stats تحت
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+// ─── الأرقام (عدّل من هون) ───
+// value = الرقم | suffix = اللاحقة (+ أو K أو %) | label = الشرح
+const stats = [
+  { value: 6, suffix: '+', label: isAr ? 'عملاء اشتغلت معهم' : 'Client engagements' },
+  { value: 2395, suffix: '', label: isAr ? 'متابع عضوي خلال 30 يوم' : 'Organic followers in 30 days' },
+  { value: 290, suffix: 'K', label: isAr ? 'مشاهدة على بوست واحد' : 'Views on a single post' },
+  { value: 40, suffix: '%', label: isAr ? 'أسرع بإنتاج التصاميم' : 'Faster creative turnaround' },
+];
+---
+
+<section class="stats">
+  <div class="container grid" data-stagger>
+    {
+      stats.map((s) => (
+        <div class="stat">
+          <strong data-counter={s.value} data-suffix={s.suffix}>
+            0
+          </strong>
+          <span>{s.label}</span>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .stats {
+    --number-size: clamp(38px, 4.6vw, 64px); /* حجم الرقم */
+    --gap-number-label: 6px; /* المسافة بين الرقم والشرح */
+    padding-block: clamp(64px, 9vh, 110px);
+    border-block: 1px solid var(--line);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(24px, 4vw, 56px);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-number-label);
+  }
+
+  .stat strong {
+    /* الأرقام دايماً بالخط الإنجليزي حتى بالعربي (شكلها أنضف) */
+    font-family: var(--font-en);
+    font-size: var(--number-size);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat span {
+    color: var(--muted);
+    font-size: 14.5px;
+  }
+
+  /* موبايل: عمودين */
+  @media (max-width: 700px) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+      row-gap: 40px;
+    }
+  }
+</style>
