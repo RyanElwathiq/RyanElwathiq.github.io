@@ -35,16 +35,23 @@ const MOBILE_BREAKPOINT = 768;
 const PRELOAD_CONCURRENCY = 6; // كم فريم بينزل بنفس الوقت
 
 // شغّل كل السيكوينسات الموجودة بالصفحة
+// (بترجع Promise عشان نعمل ترتيب وتحديث لكل نقاط التثبيت بعدها)
 export function initSequences() {
-  document.querySelectorAll('[data-seq]').forEach((section) => {
-    setupOne(section).catch(() => {
-      // أي فشل → منرجع للوضع الثابت بهدوء بدل ما ينكسر الموقع
-      section.classList.add('seq-static');
-    });
-  });
+  const all = [...document.querySelectorAll('[data-seq]')];
+  return Promise.all(
+    all.map((section, i) =>
+      setupOne(section, all.length - i).catch(() => {
+        // أي فشل → منرجع للوضع الثابت بهدوء بدل ما ينكسر الموقع
+        section.classList.add('seq-static');
+      })
+    )
+  );
 }
 
-async function setupOne(section) {
+// priority = أولوية التحديث. الأعلى بينحسب أول.
+// لازم العناصر اللي فوق بالصفحة تنحسب قبل اللي تحتها، وإلا بتطلع
+// الأقسام بأماكن غلط لحظة التحميل (كان قسم الفيديو يقفز بنص الهيرو)
+async function setupOne(section, priority) {
   const canvas = section.querySelector('canvas');
   if (!canvas) return;
 
@@ -54,12 +61,19 @@ async function setupOne(section) {
   const fallback = section.querySelector('[data-seq-fallback]');
   const sticky = section.querySelector('[data-seq-sticky]');
 
-  const shouldPin = section.hasAttribute('data-seq-pin');
   const scrollLength = parseFloat(section.dataset.seqLength || '3');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ─── اختيار مجلد الفريمات حسب حجم الشاشة ───
+  // ─── التثبيت ───
+  // الهيرو (data-seq-pin-always) بيتثبّت بكل الأجهزة.
+  // باقي الفيديوهات بتتثبّت بالديسكتوب بس — عالموبايل التثبيت المتعدد
+  // كان بيسبب تداخل الأقسام وتكرارها، فبتشتغل بدون تثبيت وبتضل حلوة.
   const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+  const shouldPin =
+    section.hasAttribute('data-seq-pin-always') ||
+    (section.hasAttribute('data-seq-pin') && !isMobile);
+
+  // ─── اختيار مجلد الفريمات حسب حجم الشاشة ───
   const dir =
     (isMobile && section.dataset.seqMobile) || section.dataset.seqDesktop;
   if (!dir) return;
@@ -169,8 +183,10 @@ async function setupOne(section) {
       ? () => `+=${window.innerHeight * scrollLength}`
       : section.dataset.seqEnd || 'bottom bottom',
     pin: shouldPin ? sticky || section : false,
+    anticipatePin: shouldPin ? 1 : 0,
     scrub: 0.5,
     invalidateOnRefresh: true,
+    refreshPriority: priority,
     onUpdate(self) {
       const target = Math.round(self.progress * (count - 1));
       if (target !== frame) {

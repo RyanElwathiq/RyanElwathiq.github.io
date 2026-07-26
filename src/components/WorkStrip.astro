@@ -131,13 +131,20 @@ const { lang, projects, heading, allHref, allLabel, id, pan = false } = Astro.pr
     transition: transform 0.35s var(--ease-out);
   }
 
-  /* موبايل: سحب طبيعي بالإصبع */
+  /* ─── موبايل: سحب طبيعي بالإصبع، وبطاقات أقصر ─── */
   @media (max-width: 767px) {
+    .strip {
+      /* صورة البطاقة بتصير عريضة بدل مربعة عشان ما تاخد الشاشة كلها */
+      --card-cover-ratio: 16 / 11;
+    }
+
     .track {
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
+      /* مساحة بسيطة بالآخر عشان آخر بطاقة ما تلزق بالطرف */
+      padding-inline-end: 20vw;
     }
 
     .track::-webkit-scrollbar {
@@ -147,7 +154,20 @@ const { lang, projects, heading, allHref, allLabel, id, pan = false } = Astro.pr
     .track > :global(article),
     .more {
       scroll-snap-align: start;
-      flex-basis: 78vw;
+      flex-basis: 76vw;
+    }
+
+    /* نقصّر الوصف لثلاث أسطر عشان البطاقة تضل بحجم معقول */
+    .track > :global(article .desc) {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .more {
+      min-height: 200px;
     }
   }
 </style>

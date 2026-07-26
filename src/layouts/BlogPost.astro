@@ -1,6 +1,12 @@
 ---
 // ═══════════════════════════════════════════════════════════════
-//  قالب المقال الواحد — بيلبسه كل ملف .md بمجلد src/content/blog
+//  قالب المقال الواحد
+//  • فيديو المقال بيكون بالأعلى كهيرو (بيمسك القارئ من أول لحظة)
+//  • العنوان فوق الفيديو، وبيرتفع ويذوب مع سكرولك
+//  • بعده المقال، وبآخره صندوق دعوة للتواصل
+//
+//  ✏️ عشان تضيف فيديو لمقال: حط  film: '/frames/اسم-المجلد/'
+//     بأول ملف المقال. بدون هالسطر بيظهر عنوان عادي بدون فيديو.
 // ═══════════════════════════════════════════════════════════════
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
@@ -20,69 +26,159 @@ const fmt = date.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', {
   day: 'numeric',
 });
 
-const back = isAr ? '→ كل المقالات' : '← All articles';
+// وقت القراءة التقريبي (200 كلمة بالدقيقة)
+const words = post.body?.trim().split(/\s+/).length || 0;
+const minutes = Math.max(1, Math.round(words / 200));
+
+const t = isAr
+  ? {
+      back: '→ كل المقالات',
+      read: `${minutes} دقائق قراءة`,
+      ctaTitle: 'عندك مشروع وبدك تبدأ صح؟',
+      ctaBody: 'احكيلي عن وضعك وبساعدك تحدد أول خطوة تستاهل وقتك ومصاريفك.',
+      ctaBtn: 'احكيلي',
+      more: 'كل المقالات',
+    }
+  : {
+      back: '← All articles',
+      read: `${minutes} min read`,
+      ctaTitle: 'Have a project and want to start right?',
+      ctaBody: 'Tell me about your situation and I will help you work out the first step worth your time and budget.',
+      ctaBtn: 'Get in touch',
+      more: 'All articles',
+    };
+
+const blogHref = isAr ? '/ar/blog/' : '/blog/';
+const contactHref = isAr ? '/ar/#contact' : '/#contact';
 ---
 
 <Base title={`${title} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`} description={description} lang={lang}>
   <Nav lang={lang} />
 
   <main id="top" class="post">
-    <article class="container">
-      <a class="back" href={isAr ? '/ar/blog/' : '/blog/'}>{back}</a>
+    <!-- ═══════════ الترويسة السينمائية ═══════════
+         إذا في فيديو: بيتثبّت والعنوان فوقه وبيتحرك مع السكرول
+         إذا ما في: ترويسة عادية بسيطة -->
+    {
+      film ? (
+        <header class="film" data-seq data-seq-pin data-seq-length="1.2" data-seq-desktop={film}>
+          <div class="film-sticky" data-seq-sticky>
+            <canvas aria-hidden="true"></canvas>
+            <div class="film-veil" aria-hidden="true" />
 
-      <header>
-        <time datetime={date.toISOString()}>{fmt}</time>
-        <h1>{title}</h1>
-        <p class="lede">{description}</p>
-        {
-          tags.length > 0 && (
-            <ul class="tags">
-              {tags.map((tag: string) => (
-                <li>{tag}</li>
-              ))}
-            </ul>
-          )
-        }
-      </header>
+            <div class="container film-copy" data-seq-intro>
+              <a class="back" href={blogHref}>{t.back}</a>
+              <div class="meta">
+                <time datetime={date.toISOString()}>{fmt}</time>
+                <span class="dot" aria-hidden="true" />
+                <span>{t.read}</span>
+              </div>
+              <h1>{title}</h1>
+              <p class="lede">{description}</p>
+            </div>
+          </div>
+        </header>
+      ) : (
+        <header class="plain container">
+          <a class="back" href={blogHref}>{t.back}</a>
+          <div class="meta">
+            <time datetime={date.toISOString()}>{fmt}</time>
+            <span class="dot" aria-hidden="true" />
+            <span>{t.read}</span>
+          </div>
+          <h1>{title}</h1>
+          <p class="lede">{description}</p>
+        </header>
+      )
+    }
+
+    <article class="container">
+      {
+        tags.length > 0 && (
+          <ul class="tags" data-reveal>
+            {tags.map((tag: string) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
+        )
+      }
 
       <div class="body">
         <slot />
       </div>
-    </article>
 
-    <!-- ═══ فيديو المقال (اختياري) ═══
-         بيظهر بس إذا حطيت  film: '/frames/اسم-المجلد/'  بأول ملف المقال.
-         data-seq-pin : بيتثبّت لحد ما الفيديو يخلص كامل قدام الزائر -->
-    {
-      film && (
-        <div class="film" data-seq data-seq-pin data-seq-length="1.4" data-seq-desktop={film}>
-          <canvas aria-hidden="true"></canvas>
-          <div class="film-veil" aria-hidden="true" />
+      <!-- ═══ دعوة للتواصل بآخر المقال ═══ -->
+      <aside class="cta" data-reveal>
+        <div>
+          <h2>{t.ctaTitle}</h2>
+          <p>{t.ctaBody}</p>
         </div>
-      )
-    }
+        <div class="cta-actions">
+          <a class="btn btn-primary" href={contactHref}>{t.ctaBtn}</a>
+          <a class="btn btn-ghost" href={blogHref}>{t.more}</a>
+        </div>
+      </aside>
+    </article>
   </main>
 
   <Footer lang={lang} />
 </Base>
 
 <style>
-  /* 🎛️ لوحة التحكم */
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
   .post {
-    --title-size: clamp(30px, 4.4vw, 56px); /* حجم عنوان المقال */
+    --title-size: clamp(30px, 4.6vw, 62px); /* حجم عنوان المقال */
     --text-size: clamp(16px, 1.7vw, 19px); /* حجم نص المقال */
     --text-line-gap: 1.85; /* تباعد أسطر النص */
     --content-width: 68ch; /* أقصى عرض للنص (مهم للقراءة) */
-    padding-top: calc(68px + clamp(36px, 6vh, 72px));
-    padding-bottom: var(--section-gap);
+    --film-scrim: 0.45; /* قوة التعتيم فوق فيديو الترويسة */
   }
 
+  /* ─── الترويسة السينمائية ─── */
+  .film-sticky {
+    position: relative;
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    overflow: clip;
+  }
+
+  .film canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .film-veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      var(--bg),
+      rgba(14, 15, 18, calc(var(--film-scrim) + 0.15)) 35%,
+      rgba(14, 15, 18, var(--film-scrim))
+    );
+  }
+
+  .film-copy {
+    position: relative;
+    z-index: 1;
+    padding-top: 80px; /* تحت كبسولة التنقل */
+  }
+
+  /* ─── ترويسة بدون فيديو ─── */
+  .plain {
+    padding-top: calc(80px + clamp(36px, 6vh, 72px));
+  }
+
+  /* ─── عناصر مشتركة بين الترويستين ─── */
   .back {
     display: inline-block;
     font-size: 14.5px;
     font-weight: 600;
     color: var(--muted);
-    margin-bottom: 26px;
+    margin-bottom: 22px;
     transition: color 0.3s var(--ease-out);
   }
 
@@ -90,39 +186,54 @@ const back = isAr ? '→ كل المقالات' : '← All articles';
     color: var(--accent);
   }
 
-  time {
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     font-family: var(--font-en);
     font-size: 13.5px;
     color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: var(--r-pill);
+    background: currentColor;
+    opacity: 0.6;
   }
 
   h1 {
     font-size: var(--title-size);
     font-weight: 700;
     letter-spacing: -0.025em;
-    margin: 12px 0 16px;
-    max-width: 24ch;
+    line-height: 1.1;
+    margin-bottom: 18px;
+    max-width: 22ch;
   }
 
   html[lang='ar'] h1 {
     font-weight: 800;
     letter-spacing: 0;
+    line-height: 1.35;
   }
 
   .lede {
     color: var(--muted);
     font-size: clamp(16px, 1.8vw, 20px);
     line-height: 1.7;
-    max-width: 58ch;
+    max-width: 56ch;
   }
 
+  /* ─── الوسوم ─── */
   .tags {
     list-style: none;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     padding: 0;
-    margin: 22px 0 0;
+    margin: clamp(40px, 6vh, 64px) 0 0;
   }
 
   .tags li {
@@ -136,8 +247,8 @@ const back = isAr ? '→ كل المقالات' : '← All articles';
   /* ─── نص المقال ─── */
   .body {
     max-width: var(--content-width);
-    margin-top: clamp(36px, 5vh, 56px);
-    padding-top: clamp(36px, 5vh, 56px);
+    margin-top: clamp(28px, 4vh, 44px);
+    padding-top: clamp(28px, 4vh, 44px);
     border-top: 1px solid var(--line);
     font-size: var(--text-size);
     line-height: var(--text-line-gap);
@@ -150,6 +261,14 @@ const back = isAr ? '→ كل المقالات' : '← All articles';
     color: var(--text);
     margin: 2em 0 0.6em;
     letter-spacing: -0.015em;
+    /* خط ليموني صغير قبل كل عنوان فرعي */
+    padding-inline-start: 16px;
+    border-inline-start: 3px solid var(--accent);
+  }
+
+  html[lang='ar'] .body :global(h2) {
+    letter-spacing: 0;
+    font-weight: 800;
   }
 
   .body :global(h3) {
@@ -187,11 +306,19 @@ const back = isAr ? '→ كل المقالات' : '← All articles';
     color: var(--accent);
   }
 
+  /* الاقتباس: بطاقة بارزة بلون الهوية */
   .body :global(blockquote) {
-    margin: 1.8em 0;
-    padding-inline-start: 22px;
-    border-inline-start: 2px solid var(--accent);
+    margin: 2em 0;
+    padding: 22px 26px;
+    border-inline-start: 3px solid var(--accent);
+    border-radius: var(--r-card);
+    background: var(--surface);
     color: var(--text);
+    font-size: 1.05em;
+  }
+
+  .body :global(blockquote p:last-child) {
+    margin-bottom: 0;
   }
 
   .body :global(img) {
@@ -206,32 +333,63 @@ const back = isAr ? '→ كل المقالات' : '← All articles';
     padding: 2px 7px;
   }
 
-  /* ─── فيديو المقال المثبّت ─── */
-  .film {
-    position: relative;
-    height: 100dvh;
-    margin-top: clamp(48px, 7vh, 88px);
-    overflow: clip;
+  /* ─── دعوة التواصل ─── */
+  .cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(22px, 4vw, 48px);
+    flex-wrap: wrap;
+    max-width: var(--content-width);
+    margin: clamp(48px, 7vh, 80px) 0 var(--section-gap);
+    padding: clamp(26px, 3.4vw, 44px);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: var(--surface);
   }
 
-  .film canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+  .cta h2 {
+    font-size: clamp(20px, 2.2vw, 27px);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
   }
 
-  /* تدرّج خفيف بالأطراف عشان الفيديو يذوب بالصفحة بدل ما يقطع */
-  .film-veil {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to bottom,
-      var(--bg),
-      transparent 22%,
-      transparent 78%,
-      var(--bg)
-    );
-    pointer-events: none;
+  .cta p {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.7;
+    max-width: 46ch;
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 767px) {
+    /* الفيديو ما بيتثبّت عالموبايل، فبنخليه بارتفاع مريح
+       والنص تحته مباشرة عشان القراءة تضل سهلة */
+    .film-sticky {
+      height: auto;
+      min-height: 76dvh;
+      padding-block: 30px;
+    }
+
+    .film-copy {
+      padding-top: 74px;
+    }
+
+    .cta {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .cta-actions .btn {
+      flex: 1;
+      justify-content: center;
+    }
   }
 </style>

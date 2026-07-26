@@ -88,7 +88,8 @@ const more = isAr ? 'تفاصيل المشروع ←' : 'Project details →';
 
   .cover img {
     width: 100%;
-    aspect-ratio: 1;
+    /* النسبة بتنورث من القسم اللي فوق (مثلاً الشريط بيغيّرها عالموبايل) */
+    aspect-ratio: var(--card-cover-ratio, 1);
     object-fit: cover;
     transition: transform 0.7s var(--ease-out);
   }

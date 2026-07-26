@@ -19,6 +19,10 @@ import { initLightbox } from './lightbox.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// عالموبايل شريط عنوان المتصفح بيظهر ويختفي مع السكرول وبيغيّر ارتفاع الشاشة.
+// بدون هالسطر، كل تغيير ارتفاع بيعيد حساب نقاط التثبيت وبتصير الأقسام تنط.
+ScrollTrigger.config({ ignoreMobileResize: true });
+
 const SMOOTH_DURATION = 1.15;
 const REVEAL_Y = 34;
 const REVEAL_DURATION = 0.9;
@@ -215,8 +219,11 @@ if (!reduceMotion) {
             start: 'top top',
             end: () => `+=${measurePan(wrap, track)}`,
             pin: true,
+            anticipatePin: 1,
             scrub: 1,
             invalidateOnRefresh: true,
+            // أقل من أولوية الهيرو عشان الهيرو ينحسب قبله
+            refreshPriority: 1,
           },
         });
       });
@@ -227,5 +234,15 @@ if (!reduceMotion) {
 // ─────────────────────────────────────────────
 //  7) الهيرو السينمائي + اللايت-بوكس
 // ─────────────────────────────────────────────
-initSequences();
 initLightbox();
+
+// الفيديوهات بتحمّل بشكل غير متزامن، فبعد ما تخلص كلها منرتّب نقاط
+// التثبيت ومنعيد حساب مواقعها. بدون هالخطوة كان قسم الفيديو يظهر
+// لجزء من الثانية بنص الهيرو وبعدين ينط لمكانه الصح.
+initSequences().then(() => {
+  ScrollTrigger.sort();
+  ScrollTrigger.refresh();
+});
+
+// وكمان بعد ما تخلص الصور والخطوط تحميل (بتغيّر ارتفاع الصفحة)
+window.addEventListener('load', () => ScrollTrigger.refresh());

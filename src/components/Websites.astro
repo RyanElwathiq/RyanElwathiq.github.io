@@ -333,14 +333,17 @@ const t = isAr
     color: var(--accent-ink);
   }
 
-  /* ─── موبايل: بطاقة بالصف ─── */
+  /* ─── موبايل: بطاقة بالصف، والفيديو أقصر (بدون تثبيت) ─── */
   @media (max-width: 767px) {
     .list {
       grid-template-columns: 1fr;
+      margin-top: clamp(32px, 5vh, 48px);
     }
 
+    /* عالموبايل الفيديو ما بيتثبّت، فبنخليه بارتفاع معقول
+       بدل شاشة كاملة عشان ما ياخد كل المساحة */
     .film {
-      height: 88dvh;
+      height: 62dvh;
     }
   }
 </style>

@@ -143,17 +143,21 @@ const tools = [
     line-height: 1.7;
   }
 
-  /* ─── شريط الأدوات ─── */
+  /* ─── شريط الأدوات: شريط ليموني بلون الهوية ───
+     بيملا المساحة اللي كانت فاضية بين المهارات والقسم اللي بعده */
   .marquee {
-    margin-top: clamp(48px, 7vh, 80px);
-    padding-block: 22px;
-    border-block: 1px solid var(--line);
+    margin-top: clamp(56px, 8vh, 96px);
+    padding-block: 20px;
+    background: var(--accent);
     overflow: clip;
+    /* ميلان خفيف بيكسر رتابة الخطوط الأفقية */
+    rotate: -1.2deg;
+    scale: 1.04;
   }
 
   .marquee-track {
     display: flex;
-    gap: 48px;
+    gap: 44px;
     width: max-content;
     animation: roll var(--marquee-speed) linear infinite;
   }
@@ -161,9 +165,21 @@ const tools = [
   .marquee span {
     font-family: var(--font-en);
     font-size: 15px;
-    font-weight: 500;
-    color: var(--muted);
+    font-weight: 700;
+    color: var(--accent-ink);
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 44px;
+  }
+
+  /* نقطة فاصلة بين كل أداة والتانية */
+  .marquee span::after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: var(--r-pill);
+    background: rgba(14, 15, 18, 0.4);
   }
 
   @keyframes roll {

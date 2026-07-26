@@ -172,14 +172,28 @@ const shown = projects.slice(0, 2);
     font-family: var(--font-en);
   }
 
+  /* ─── موبايل: عمود واحد، والصورة أقصر عشان القصة تبين كاملة ─── */
   @media (max-width: 767px) {
+    .cases {
+      --row-gap: 44px;
+    }
+
     .row,
     .row.flip {
       grid-template-columns: 1fr;
+      gap: 20px;
     }
 
     .row.flip .media {
       order: 0;
+    }
+
+    .media img {
+      aspect-ratio: 16 / 10;
+    }
+
+    .desc {
+      font-size: 15px;
     }
   }
 </style>

@@ -176,7 +176,8 @@ const t = isAr
     --heading-size: clamp(28px, 4vw, 52px); /* حجم العنوان الرئيسي */
     --card-padding: clamp(26px, 2.8vw, 40px); /* الحشوة جوا بطاقات التعاون */
     --modes-gap: 16px; /* المسافة بين البطاقات */
-    padding-block: var(--section-gap) 0;
+    /* مسافة أقل من فوق لأن الشريط الليموني صار يملا الفراغ */
+    padding-block: clamp(56px, 9vh, 110px) 0;
   }
 
   .head {
