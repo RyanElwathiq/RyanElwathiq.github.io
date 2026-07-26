@@ -1,7 +1,9 @@
 ---
 // ═══════════════════════════════════════════════════════════════
 //  الصفحة الرئيسية — النسخة العربية (RTL)
-//  ترتيب السيكشنات من فوق لتحت — بدك تقدّم/تأخّر قسم؟ حرّك سطره
+//
+//  ✏️ ترتيب الأقسام = ترتيب السطور تحت. بدك تقدّم قسم؟ حرّك سطره
+//  ✏️ كم عمل يظهر بالهوم؟ غيّر HOME_LIMIT تحت مباشرة
 // ═══════════════════════════════════════════════════════════════
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
@@ -11,21 +13,20 @@ import About from '../../components/About.astro';
 import WorkStrip from '../../components/WorkStrip.astro';
 import CaseRows from '../../components/CaseRows.astro';
 import DesignsGrid from '../../components/DesignsGrid.astro';
-import WebsiteFeature from '../../components/WebsiteFeature.astro';
+import Websites from '../../components/Websites.astro';
 import Skills from '../../components/Skills.astro';
+import Pricing from '../../components/Pricing.astro';
 import Education from '../../components/Education.astro';
 import Contact from '../../components/Contact.astro';
 import Footer from '../../components/Footer.astro';
 import Lightbox from '../../components/Lightbox.astro';
 import work from '../../data/work.json';
 
+const HOME_LIMIT = 4; // كم عمل يظهر بالهوم من كل قسم
+
 const byCat = (c: string) =>
   work.projects.filter((p) => p.category === c).sort((a, b) => a.order - b.order);
-
-const videos = byCat('video');
-const marketing = byCat('marketing');
-const designs = byCat('design');
-const websites = byCat('website');
+const forHome = (c: string) => byCat(c).slice(0, HOME_LIMIT);
 ---
 
 <Base
@@ -43,7 +44,7 @@ const websites = byCat('website');
     <!-- الفيديوهات: سحب أفقي مع السكرول عالديسكتوب -->
     <WorkStrip
       lang="ar"
-      projects={videos}
+      projects={forHome('video')}
       heading="شغل الفيديو"
       allHref="/ar/videos/"
       allLabel="كل الفيديوهات"
@@ -53,7 +54,7 @@ const websites = byCat('website');
 
     <CaseRows
       lang="ar"
-      projects={marketing}
+      projects={forHome('marketing')}
       heading="قصص نمو"
       allHref="/ar/marketing/"
       allLabel="كل شغل التسويق"
@@ -61,21 +62,22 @@ const websites = byCat('website');
 
     <DesignsGrid
       lang="ar"
-      projects={designs}
+      projects={forHome('design')}
       heading="شغل التصميم"
       allHref="/ar/designs/"
       allLabel="كل التصاميم"
     />
 
-    <WebsiteFeature
+    <Websites
       lang="ar"
-      project={websites[0]}
+      projects={byCat('website')}
       heading="المواقع"
       allHref="/ar/websites/"
       allLabel="كل المواقع"
     />
 
     <Skills lang="ar" />
+    <Pricing lang="ar" />
     <Education lang="ar" />
     <Contact lang="ar" />
   </main>

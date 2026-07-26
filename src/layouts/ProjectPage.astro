@@ -1,0 +1,271 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  قالب صفحة المشروع الواحد
+//  بيعرض: الغلاف + الفيديو (لو موجود) + قصة المشروع + الأرقام
+//
+//  ✏️ محتوى القصة بيجي من work.json → story / storyAr
+//     أي قسم فاضي ما بيظهر أبداً، فما في خوف تترك إشي فاضي
+// ═══════════════════════════════════════════════════════════════
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Lightbox from '../components/Lightbox.astro';
+
+interface Props {
+  project: any;
+  lang: 'en' | 'ar';
+}
+
+const { project: p, lang } = Astro.props;
+const isAr = lang === 'ar';
+
+const title = isAr ? p.titleAr : p.title;
+const role = isAr ? p.roleAr : p.role;
+const desc = isAr ? p.descAr : p.desc;
+const story = (isAr ? p.storyAr : p.story) || {};
+
+// عناوين أقسام القصة باللغتين
+const labels = isAr
+  ? { vision: 'الرؤية', goal: 'الهدف', challenge: 'التحدي', approach: 'المقاربة', result: 'النتيجة' }
+  : { vision: 'Vision', goal: 'Goal', challenge: 'Challenge', approach: 'Approach', result: 'Result' };
+
+// بس الأقسام اللي فيها محتوى فعلي
+const blocks = ['vision', 'goal', 'challenge', 'approach', 'result']
+  .filter((k) => story[k])
+  .map((k) => ({ label: labels[k as keyof typeof labels], text: story[k] }));
+
+// رابط الرجوع لصفحة القسم اللي المشروع تابع إله
+const catPages: Record<string, string> = {
+  video: 'videos',
+  design: 'designs',
+  website: 'websites',
+  marketing: 'marketing',
+};
+const backHref = `${isAr ? '/ar' : ''}/${catPages[p.category] || ''}/`;
+const backLabel = isAr ? '→ رجوع' : '← Back';
+
+const emptyNote = isAr
+  ? 'تفاصيل هذا المشروع قيد الإضافة.'
+  : 'Full write-up for this project is coming soon.';
+---
+
+<Base
+  title={`${title} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`}
+  description={desc}
+  lang={lang}
+>
+  <Nav lang={lang} />
+
+  <main id="top" class="project">
+    <div class="container">
+      <a class="back" href={backHref}>{backLabel}</a>
+
+      <!-- ═══ الترويسة ═══ -->
+      <header class="head">
+        <p class="role" data-reveal>{role}</p>
+        <h1 data-reveal>{title}</h1>
+        <p class="lede" data-reveal>{desc}</p>
+
+        <div class="head-actions" data-reveal>
+          {
+            p.youtube && (
+              <button class="btn btn-primary" data-play={p.youtube}>
+                {isAr ? 'شغّل الفيديو' : 'Play video'}
+              </button>
+            )
+          }
+          {
+            p.url && (
+              <a class="btn btn-ghost" href={p.url} target="_blank" rel="noreferrer">
+                {isAr ? 'زيارة الموقع ↗' : 'Visit site ↗'}
+              </a>
+            )
+          }
+        </div>
+      </header>
+
+      <!-- ═══ الغلاف ═══ -->
+      <div class="cover" data-reveal>
+        <img src={p.cover} alt={title} width="1400" height="800" />
+      </div>
+
+      <!-- ═══ الأرقام (لو موجودة) ═══ -->
+      {
+        p.stats?.length > 0 && (
+          <div class="stats" data-stagger>
+            {p.stats.map((s: any) => (
+              <div class="stat">
+                <strong>{s.value}</strong>
+                <span>{isAr ? s.labelAr : s.label}</span>
+              </div>
+            ))}
+          </div>
+        )
+      }
+
+      <!-- ═══ قصة المشروع ═══ -->
+      {
+        blocks.length > 0 ? (
+          <div class="story">
+            {blocks.map((b) => (
+              <section class="block" data-reveal>
+                <h2>{b.label}</h2>
+                <p>{b.text}</p>
+              </section>
+            ))}
+          </div>
+        ) : (
+          <p class="empty" data-reveal>
+            {emptyNote}
+          </p>
+        )
+      }
+    </div>
+  </main>
+
+  <Footer lang={lang} />
+  <Lightbox lang={lang} />
+</Base>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .project {
+    --title-size: clamp(36px, 5.6vw, 76px); /* حجم اسم المشروع */
+    --lede-size: clamp(16px, 1.8vw, 21px); /* حجم الوصف تحت الاسم */
+    --block-gap: clamp(36px, 5vh, 64px); /* المسافة بين أقسام القصة */
+    --label-width: 180px; /* عرض عمود العناوين (الرؤية/الهدف...) */
+    padding-top: calc(68px + clamp(36px, 6vh, 72px));
+  }
+
+  .back {
+    display: inline-block;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 26px;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .back:hover {
+    color: var(--accent);
+  }
+
+  .role {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: var(--title-size);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 18px;
+  }
+
+  html[lang='ar'] h1 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .lede {
+    color: var(--muted);
+    font-size: var(--lede-size);
+    line-height: 1.7;
+    max-width: 58ch;
+  }
+
+  .head-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+
+  .cover {
+    margin-top: clamp(40px, 6vh, 64px);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .cover img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  /* ─── الأرقام ─── */
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(28px, 5vw, 72px);
+    margin-top: clamp(36px, 5vh, 56px);
+    padding-bottom: clamp(36px, 5vh, 56px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat strong {
+    font-family: var(--font-en);
+    font-size: clamp(30px, 3.4vw, 46px);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+  }
+
+  .stat span {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* ─── قصة المشروع: عنوان بعمود ونص بعمود ─── */
+  .story {
+    margin-top: clamp(48px, 7vh, 80px);
+  }
+
+  .block {
+    display: grid;
+    grid-template-columns: var(--label-width) 1fr;
+    gap: 24px;
+    padding-bottom: var(--block-gap);
+  }
+
+  .block + .block {
+    padding-top: var(--block-gap);
+    border-top: 1px solid var(--line);
+  }
+
+  .block h2 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .block p {
+    font-size: clamp(16px, 1.7vw, 19px);
+    line-height: 1.8;
+    max-width: 62ch;
+    color: var(--muted);
+  }
+
+  .empty {
+    margin-top: clamp(48px, 7vh, 80px);
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  @media (max-width: 767px) {
+    .block {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+  }
+</style>

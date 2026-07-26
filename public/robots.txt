@@ -1,0 +1,6 @@
+# يسمح لمحركات البحث تفهرس كل الموقع
+User-agent: *
+Allow: /
+
+# خريطة الموقع (بتتولد تلقائياً عند كل بناء)
+Sitemap: https://ryanalali.me/sitemap-index.xml

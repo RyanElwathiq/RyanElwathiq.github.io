@@ -15,25 +15,35 @@ const isAr = lang === 'ar';
 const title = isAr ? p.titleAr : p.title;
 const role = isAr ? p.roleAr : p.role;
 const desc = isAr ? p.descAr : p.desc;
+
+// رابط صفحة المشروع المستقلة (بتتولد تلقائياً من work.json)
+const href = `${isAr ? '/ar' : ''}/work/${p.id}/`;
+const more = isAr ? 'تفاصيل المشروع ←' : 'Project details →';
 ---
 
 <article class="card">
-  <div class="cover">
+  <a class="cover" href={href} aria-label={title}>
     <img src={p.cover} alt={title} loading="lazy" width="640" height="640" />
-    {
-      p.youtube && (
-        <button class="play" data-play={p.youtube} aria-label={isAr ? `شغّل فيديو ${title}` : `Play ${title} video`}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M8 5.5v13l11-6.5z" />
-          </svg>
-        </button>
-      )
-    }
-  </div>
+  </a>
+
+  {
+    p.youtube && (
+      <button
+        class="play"
+        data-play={p.youtube}
+        aria-label={isAr ? `شغّل فيديو ${title}` : `Play ${title} video`}
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M8 5.5v13l11-6.5z" />
+        </svg>
+      </button>
+    )
+  }
 
   <p class="role">{role}</p>
-  <h3>{title}</h3>
+  <h3><a href={href}>{title}</a></h3>
   <p class="desc">{desc}</p>
+  <a class="more" href={href}>{more}</a>
 
   {
     p.stats?.length > 0 && (
@@ -64,8 +74,12 @@ const desc = isAr ? p.descAr : p.desc;
     --gap-cover-text: 18px; /* المسافة بين الصورة والنص */
   }
 
-  .cover {
+  .card {
     position: relative;
+  }
+
+  .cover {
+    display: block;
     border-radius: var(--cover-radius);
     overflow: hidden;
     margin-bottom: var(--gap-cover-text);
@@ -120,10 +134,32 @@ const desc = isAr ? p.descAr : p.desc;
     margin-bottom: 8px;
   }
 
+  h3 a {
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .card:hover h3 a {
+    color: var(--accent);
+  }
+
   .desc {
     color: var(--muted);
     font-size: 15px;
     line-height: 1.65;
+  }
+
+  /* رابط «تفاصيل المشروع» */
+  .more {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .card:hover .more {
+    color: var(--accent);
   }
 
   .chips {

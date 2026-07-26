@@ -2,6 +2,7 @@
 //  إعدادات Astro — ما في داعي تعدّل على هذا الملف
 // ═══════════════════════════════════════════════════════════════
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   // عنوان الموقع النهائي (الدومين تبعك)
@@ -16,4 +17,14 @@ export default defineConfig({
       prefixDefaultLocale: false,
     },
   },
+
+  integrations: [
+    // بيولّد sitemap.xml تلقائياً لجوجل (مهم للـ SEO والإعلانات)
+    sitemap({
+      i18n: {
+        defaultLocale: 'en',
+        locales: { en: 'en', ar: 'ar' },
+      },
+    }),
+  ],
 });

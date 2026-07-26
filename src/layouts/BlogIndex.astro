@@ -1,0 +1,192 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  صفحة قائمة المقالات
+//
+//  ✏️ عشان تضيف مقال: اعمل ملف .md جديد بمجلد src/content/blog
+//     وانسخ أول 8 أسطر من أي مقال موجود وعدّلها. وبس.
+// ═══════════════════════════════════════════════════════════════
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+// مقالات هاي اللغة فقط، بدون المسودات، الأحدث أولاً
+const posts = (await getCollection('blog'))
+  .filter((p) => p.data.lang === lang && !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const t = isAr
+  ? {
+      title: 'المدونة',
+      desc: 'مقالات عن التسويق الرقمي والنمو العضوي وأنظمة المحتوى والإعلانات المدفوعة.',
+      intro: 'شو تعلمته من الشغل الحقيقي: أنظمة، أرقام، وأخطاء تستاهل ما تعيدها.',
+      empty: 'أول المقالات قيد الكتابة.',
+      back: '→ الرئيسية',
+      read: 'اقرأ المقال ←',
+    }
+  : {
+      title: 'Blog',
+      desc: 'Articles on digital marketing, organic growth, content systems, and paid media.',
+      intro: 'What I learned from real work: systems, numbers, and mistakes worth not repeating.',
+      empty: 'The first articles are being written.',
+      back: '← Home',
+      read: 'Read article →',
+    };
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+---
+
+<Base
+  title={`${t.title} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`}
+  description={t.desc}
+  lang={lang}
+>
+  <Nav lang={lang} />
+
+  <main id="top" class="blog">
+    <div class="container">
+      <a class="back" href={isAr ? '/ar/' : '/'}>{t.back}</a>
+      <h1 data-reveal>{t.title}</h1>
+      <p class="intro" data-reveal>{t.intro}</p>
+
+      {
+        posts.length === 0 ? (
+          <p class="empty">{t.empty}</p>
+        ) : (
+          <ul class="list" data-stagger>
+            {posts.map((post) => (
+              <li>
+                <a href={`${isAr ? '/ar' : ''}/blog/${post.id}/`}>
+                  <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
+                  <h2>{post.data.title}</h2>
+                  <p>{post.data.description}</p>
+                  <span class="read">{t.read}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </main>
+
+  <Footer lang={lang} />
+</Base>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .blog {
+    --title-size: clamp(38px, 6vw, 76px);
+    --post-title-size: clamp(21px, 2.4vw, 30px);
+    --row-padding: clamp(26px, 3.4vh, 40px);
+    padding-top: calc(68px + clamp(40px, 7vh, 80px));
+    min-height: 100dvh;
+  }
+
+  .back {
+    display: inline-block;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 26px;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .back:hover {
+    color: var(--accent);
+  }
+
+  h1 {
+    font-size: var(--title-size);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 16px;
+  }
+
+  html[lang='ar'] h1 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .intro {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 18px);
+    max-width: 56ch;
+    margin-bottom: clamp(40px, 6vh, 64px);
+  }
+
+  .list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .list li {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .list a {
+    display: block;
+    padding-block: var(--row-padding);
+  }
+
+  time {
+    font-family: var(--font-en);
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  .list h2 {
+    font-size: var(--post-title-size);
+    font-weight: 700;
+    margin: 10px 0;
+    max-width: 34ch;
+    letter-spacing: -0.015em;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  html[lang='ar'] .list h2 {
+    letter-spacing: 0;
+    font-weight: 800;
+  }
+
+  .list a:hover h2 {
+    color: var(--accent);
+  }
+
+  .list p {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.7;
+    max-width: 62ch;
+  }
+
+  .read {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .list a:hover .read {
+    color: var(--accent);
+  }
+
+  .empty {
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,247 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  قسم المواقع — فيديو رمزي بيتحرك مع السكرول + قائمة كل المواقع
+//
+//  ✏️ عشان تضيف موقع جديد: افتح src/data/work.json وضيف مشروع
+//     category = "website"  ومعه "url" لرابط الموقع
+//     وحط "status": "live" (شغّال) أو "wip" (تحت الشغل)
+//     الموقع بينضاف هون تلقائياً — ما بتحتاج تعدّل هذا الملف
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+  projects: any[];
+  heading: string;
+  allHref: string;
+  allLabel: string;
+}
+
+const { lang, projects, heading, allHref, allLabel } = Astro.props;
+const isAr = lang === 'ar';
+
+const t = isAr
+  ? {
+      note: 'من أول سطر كود لآخر تفصيل بالتصميم. اضغط أي موقع تشوف قصته كاملة.',
+      live: 'شغّال',
+      wip: 'تحت الشغل',
+      visit: 'زيارة ↗',
+    }
+  : {
+      note: 'From the first line of code to the last design detail. Open any site to read its full story.',
+      live: 'Live',
+      wip: 'In progress',
+      visit: 'Visit ↗',
+    };
+---
+
+<section class="sites" id="websites">
+  <!-- ═══ الفيديو الرمزي: بلوكات بتتجمّع وتبني صفحة ═══
+       بدون data-seq-pin: بيتحرك بمكانه وانت بتمر عليه -->
+  <div class="film" data-seq data-seq-desktop="/frames/websites/">
+    <canvas aria-hidden="true"></canvas>
+    <div class="film-veil" aria-hidden="true"></div>
+    <div class="container film-copy">
+      <h2 data-reveal>{heading}</h2>
+      <p data-reveal>{t.note}</p>
+    </div>
+  </div>
+
+  <!-- ═══ قائمة المواقع ═══ -->
+  <div class="container">
+    <ul class="list" data-stagger>
+      {
+        projects.map((p) => {
+          const href = `${isAr ? '/ar' : ''}/work/${p.id}/`;
+          const isLive = p.status !== 'wip';
+          return (
+            <li class="row">
+              <a class="row-main" href={href}>
+                <span class="name">{isAr ? p.titleAr : p.title}</span>
+                <span class="role">{isAr ? p.roleAr : p.role}</span>
+              </a>
+              <span class={`status ${isLive ? 'live' : 'wip'}`}>
+                {isLive ? t.live : t.wip}
+              </span>
+              {p.url && (
+                <a class="visit" href={p.url} target="_blank" rel="noreferrer">
+                  {t.visit}
+                </a>
+              )}
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <a class="all-btn" href={allHref} data-reveal>{allLabel}</a>
+  </div>
+</section>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .sites {
+    --film-height: clamp(320px, 52vh, 520px); /* ارتفاع شريط الفيديو */
+    --heading-size: clamp(28px, 4vw, 52px); /* حجم العنوان فوق الفيديو */
+    --row-padding: 26px; /* ارتفاع صف الموقع الواحد */
+    --name-size: clamp(20px, 2.4vw, 30px); /* حجم اسم الموقع */
+    padding-block: var(--section-gap) 0;
+  }
+
+  /* ─── شريط الفيديو ─── */
+  .film {
+    position: relative;
+    height: var(--film-height);
+    display: flex;
+    align-items: center;
+    overflow: clip;
+    margin-bottom: clamp(40px, 6vh, 64px);
+  }
+
+  .film canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .film-veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      var(--bg),
+      rgba(14, 15, 18, 0.55) 45%,
+      rgba(14, 15, 18, 0.75)
+    );
+  }
+
+  .film-copy {
+    position: relative;
+    z-index: 1;
+  }
+
+  .film-copy h2 {
+    font-size: var(--heading-size);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+
+  html[lang='ar'] .film-copy h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .film-copy p {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 18px);
+    max-width: 48ch;
+  }
+
+  /* ─── قائمة المواقع ─── */
+  .list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-block: var(--row-padding);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .row-main {
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .name {
+    font-size: var(--name-size);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  html[lang='ar'] .name {
+    letter-spacing: 0;
+    font-weight: 800;
+  }
+
+  .row:hover .name {
+    color: var(--accent);
+  }
+
+  .role {
+    color: var(--muted);
+    font-size: 14.5px;
+  }
+
+  /* شارة الحالة */
+  .status {
+    flex-shrink: 0;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: var(--r-pill);
+  }
+
+  .status.live {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .status.wip {
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+
+  .visit {
+    flex-shrink: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .visit:hover {
+    color: var(--accent);
+  }
+
+  /* زر «كل المواقع» */
+  .all-btn {
+    display: inline-flex;
+    align-items: center;
+    margin-top: clamp(28px, 4vh, 44px);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--r-pill);
+    padding: 12px 26px;
+    transition: background-color 0.35s var(--ease-out), color 0.35s var(--ease-out);
+  }
+
+  .all-btn:hover {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 640px) {
+    .row {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .row-main {
+      flex: 1 0 100%;
+    }
+  }
+</style>

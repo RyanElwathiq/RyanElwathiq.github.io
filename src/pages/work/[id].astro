@@ -1,0 +1,30 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  صفحة مشروع مستقلة (إنجليزي) — بتتولد تلقائياً لكل مشروع
+//  الرابط بيصير: /work/معرّف-المشروع/   مثال: /work/orient/
+//
+//  ⚠️ ما بتحتاج تعمل ملف جديد لكل مشروع — بس ضيف المشروع بـ work.json
+//     وصفحته بتتولد لحالها.
+//
+//  ✏️ عشان تعبّي تفاصيل المشروع (الرؤية، الهدف، التحدي، النتيجة):
+//     افتح src/data/work.json ← لاقي المشروع ← ضيف جواه:
+//        "story":   { ... }  بالإنجليزي
+//        "storyAr": { ... }  بالعربي
+//     الحقول: vision / goal / challenge / approach / result
+//     وأي حقل بتتركه فاضي أو بتشيله — قسمه ما بيظهر بالصفحة أصلاً
+// ═══════════════════════════════════════════════════════════════
+import ProjectPage from '../../layouts/ProjectPage.astro';
+import work from '../../data/work.json';
+
+// Astro بيبني صفحة لكل مشروع من هون
+export function getStaticPaths() {
+  return work.projects.map((p) => ({
+    params: { id: p.id },
+    props: { project: p },
+  }));
+}
+
+const { project } = Astro.props;
+---
+
+<ProjectPage project={project} lang="en" />

@@ -1,0 +1,360 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «كيف بشتغل» — طرق التعاون والأسعار + ليش أنا بالتحديد
+//
+//  ✏️ كل النصوص من t تحت مباشرة — عدّل براحتك
+//  ملاحظة: ما بنحط أسعار بالأرقام عمداً. السعر بينبنى على حجم الشغل،
+//  وذكر رقم ثابت بيقلّل قيمتك ويخوّف عملاء الشغل الكبير.
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+const t = isAr
+  ? {
+      kicker: 'كيف بشتغل',
+      heading: 'تعاون مرن، ومعيار واحد ما بتغيّره: الجودة.',
+      sub: 'بشتغل ريموت من عمّان مع عملاء بالأردن وبرا. اختار الصيغة اللي بتناسب مشروعك، وبنتفق على النطاق والسعر قبل ما نبدأ.',
+      modes: [
+        {
+          name: 'بالمشروع',
+          tag: 'الأكثر طلباً',
+          desc: 'نطاق واضح، تسليمات محددة، وسعر ثابت متفق عليه من البداية. مناسب للهويات، المواقع، الفيديوهات، وإطلاق الحملات.',
+          points: ['سعر ثابت بدون مفاجآت', 'جدول تسليم واضح', 'مراجعات متفق عليها'],
+        },
+        {
+          name: 'اشتراك شهري',
+          tag: '',
+          desc: 'وجود تسويقي مستمر: محتوى، إعلانات، متابعة، وتقارير أداء شهرية. مناسب للعلامات اللي بدها زخم ثابت مش دفعة وحدة.',
+          points: ['ساعات مخصصة لك شهرياً', 'تقرير أداء كل شهر', 'أولوية بالتنفيذ'],
+        },
+        {
+          name: 'استشارة أو تدريب',
+          tag: '',
+          desc: 'جلسات لبناء الاستراتيجية أو تدريب فريقك على إعلانات ميتا وأنظمة المحتوى. تدفع مقابل المعرفة، وفريقك بيكمل بنفسه.',
+          points: ['بالساعة أو بالجلسة', 'تسجيل ومواد مرافقة', 'متابعة بعد الجلسة'],
+        },
+      ],
+      whyTitle: 'ليش أنا بالتحديد',
+      why: [
+        {
+          t: 'بفكر وبنفّذ',
+          d: 'أغلب الناس إما استراتيجي ما بيعرف ينفّذ، أو منفّذ بلا خطة. أنا بكتب الاستراتيجية وبعدين بقعد أنفّذها بإيدي: تصميم، مونتاج، إعلانات، وتقارير.',
+        },
+        {
+          t: 'أرقام مش وعود',
+          d: 'كل مشروع بشتغله بيطلع منه رقم بقدر أوقف وراه. 2,395 متابع عضوي بـ 30 يوم و 290 ألف مشاهدة على بوست واحد — بدون أي إنفاق إعلاني.',
+        },
+        {
+          t: 'أسرع بدون ما تنزل الجودة',
+          d: 'بنيت سير عمل مدعوم بالذكاء الاصطناعي قلّل وقت الإنتاج 40% وحافظ على ثبات الهوية. يعني بتاخد شغل أكثر بنفس الوقت.',
+        },
+        {
+          t: 'عقلية عمليات',
+          d: 'دراستي بسلاسل التوريد الرقمية خلّتني أشتغل بمنطق KPI وعمليات — مش بس «محتوى حلو». بتعرف وين صرف كل دينار وشو رجّع.',
+        },
+      ],
+      jobTitle: 'وبالنسبة للتوظيف',
+      jobBody:
+        'شغلي الأساسي حالياً حر ومع عملاء، بس منفتح للفرص بدوام كامل أو جزئي — ريموت أو هجين — إذا كان الدور والعرض بيستاهلوا. لو عندك فريق بتبني فيه إشي جدي، احكيلي.',
+      cta: 'احكيلي عن مشروعك',
+      ctaJob: 'عندي عرض وظيفة',
+    }
+  : {
+      kicker: 'How I work',
+      heading: 'Flexible engagements, one standard that never moves: quality.',
+      sub: 'I work remotely from Amman with clients in Jordan and abroad. Pick the format that fits your project, and we agree on scope and price before anything starts.',
+      modes: [
+        {
+          name: 'Per project',
+          tag: 'Most requested',
+          desc: 'Clear scope, defined deliverables, and a fixed price agreed up front. Best for brand identities, websites, video work, and campaign launches.',
+          points: ['Fixed price, no surprises', 'Clear delivery schedule', 'Agreed revision rounds'],
+        },
+        {
+          name: 'Monthly retainer',
+          tag: '',
+          desc: 'Ongoing marketing presence: content, ads, follow-up, and monthly performance reporting. Best for brands that need steady momentum, not a one-off push.',
+          points: ['Dedicated hours each month', 'Monthly performance report', 'Priority turnaround'],
+        },
+        {
+          name: 'Consulting or training',
+          tag: '',
+          desc: 'Sessions to build the strategy or train your team on Meta Ads and content systems. You pay for the knowledge, then your team carries it forward.',
+          points: ['Hourly or per session', 'Recording and materials', 'Follow-up support'],
+        },
+      ],
+      whyTitle: 'Why me specifically',
+      why: [
+        {
+          t: 'I think and I build',
+          d: 'Most people are either strategists who cannot execute, or executors without a plan. I write the strategy, then sit down and build it myself: design, editing, ads, and reporting.',
+        },
+        {
+          t: 'Numbers, not promises',
+          d: 'Every project leaves a number I can stand behind. 2,395 organic followers in 30 days and 290K views on a single post, with zero ad spend.',
+        },
+        {
+          t: 'Faster without dropping quality',
+          d: 'I built an AI-assisted workflow that cut production time by 40% while keeping brand consistency. That means more output in the same window.',
+        },
+        {
+          t: 'An operations mindset',
+          d: 'Studying digital supply chain taught me to work in KPIs and processes, not just "nice content". You will know where every dinar went and what it returned.',
+        },
+      ],
+      jobTitle: 'On full-time roles',
+      jobBody:
+        'My main focus right now is client work, but I am open to full-time or part-time roles, remote or hybrid, when the role and the offer are worth it. If you are building something serious, tell me about it.',
+      cta: 'Tell me about your project',
+      ctaJob: 'I have a role in mind',
+    };
+---
+
+<section class="pricing" id="pricing">
+  <div class="container">
+    <!-- ═══ الترويسة ═══ -->
+    <div class="head">
+      <p class="kicker" data-reveal>{t.kicker}</p>
+      <h2 data-reveal>{t.heading}</h2>
+      <p class="sub" data-reveal>{t.sub}</p>
+    </div>
+
+    <!-- ═══ طرق التعاون الثلاث ═══ -->
+    <div class="modes" data-stagger>
+      {
+        t.modes.map((m) => (
+          <div class={`mode ${m.tag ? 'highlight' : ''}`}>
+            {m.tag && <span class="tag">{m.tag}</span>}
+            <h3>{m.name}</h3>
+            <p class="mode-desc">{m.desc}</p>
+            <ul>
+              {m.points.map((pt) => (
+                <li>{pt}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- ═══ ليش أنا ═══ -->
+    <div class="why">
+      <h3 class="why-title" data-reveal>{t.whyTitle}</h3>
+      <div class="why-grid" data-stagger>
+        {
+          t.why.map((w) => (
+            <div class="why-item">
+              <h4>{w.t}</h4>
+              <p>{w.d}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- ═══ التوظيف ═══ -->
+    <div class="job" data-reveal>
+      <div>
+        <h3>{t.jobTitle}</h3>
+        <p>{t.jobBody}</p>
+      </div>
+      <div class="job-actions">
+        <a class="btn btn-primary" href="#contact">{t.cta}</a>
+        <a class="btn btn-ghost" href="#contact">{t.ctaJob}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .pricing {
+    --heading-size: clamp(28px, 4vw, 52px); /* حجم العنوان الرئيسي */
+    --card-padding: clamp(26px, 2.8vw, 40px); /* الحشوة جوا بطاقات التعاون */
+    --modes-gap: 16px; /* المسافة بين البطاقات */
+    padding-block: var(--section-gap) 0;
+  }
+
+  .head {
+    max-width: 60ch;
+    margin-bottom: clamp(40px, 6vh, 64px);
+  }
+
+  .kicker {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: var(--heading-size);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+  }
+
+  html[lang='ar'] h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .sub {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 18px);
+    line-height: 1.75;
+  }
+
+  /* ─── بطاقات طرق التعاون ─── */
+  .modes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--modes-gap);
+  }
+
+  .mode {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: var(--card-padding);
+  }
+
+  /* البطاقة المميزة (الأكثر طلباً) */
+  .mode.highlight {
+    border-color: var(--accent);
+  }
+
+  .tag {
+    position: absolute;
+    top: -11px;
+    inset-inline-start: var(--card-padding);
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: var(--r-pill);
+  }
+
+  .mode h3 {
+    font-size: 21px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .mode-desc {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .mode ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .mode li {
+    position: relative;
+    padding-inline-start: 22px;
+    font-size: 14.5px;
+    color: var(--text);
+  }
+
+  /* علامة صح ليمونية قبل كل نقطة */
+  .mode li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    top: 8px;
+    width: 9px;
+    height: 5px;
+    border-inline-start: 2px solid var(--accent);
+    border-bottom: 2px solid var(--accent);
+    transform: rotate(-45deg);
+  }
+
+  /* ─── ليش أنا ─── */
+  .why {
+    margin-top: clamp(56px, 8vh, 96px);
+  }
+
+  .why-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 28px;
+  }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(28px, 3.4vw, 56px);
+  }
+
+  .why-item h4 {
+    font-size: clamp(19px, 2vw, 24px);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .why-item p {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 52ch;
+  }
+
+  /* ─── التوظيف ─── */
+  .job {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(24px, 4vw, 56px);
+    flex-wrap: wrap;
+    margin-top: clamp(56px, 8vh, 96px);
+    padding: clamp(28px, 3.4vw, 48px);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: var(--surface);
+  }
+
+  .job h3 {
+    font-size: clamp(20px, 2.2vw, 26px);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .job p {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 58ch;
+  }
+
+  .job-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 900px) {
+    .modes,
+    .why-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .modes {
+      gap: 28px;
+    }
+  }
+</style>

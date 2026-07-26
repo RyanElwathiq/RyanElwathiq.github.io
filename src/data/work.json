@@ -9,8 +9,17 @@
     "             اتركه فاضي \"\" إذا ما جهزته بعد",
     "  cover    : صورة الغلاف من مجلد public/assets",
     "  category : video (فيديو) | design (تصميم) | website (موقع) | marketing (تسويق)",
-    "  featured : true = يظهر بالصفحة الرئيسية | false = بصفحة قسمه فقط",
-    "  order    : ترتيب الظهور (الرقم الأصغر أول)",
+    "  order    : ترتيب الظهور (الرقم الأصغر أول) — أول 4 بيظهروا بالهوم",
+    "             والباقي بينحطوا تلقائياً بصفحة القسم",
+    "────────────────────────────────────────────────────────────────",
+    "  story / storyAr : قصة المشروع اللي بتظهر بصفحته المستقلة",
+    "        الحقول: vision (الرؤية) | goal (الهدف) | challenge (التحدي)",
+    "                approach (المقاربة) | result (النتيجة)",
+    "        أي حقل بتشيله أو بتتركه فاضي = ما بيظهر بالصفحة أصلاً",
+    "        صفحة كل مشروع بتتولد لحالها على: /work/الـ-id/",
+    "────────────────────────────────────────────────────────────────",
+    "  url     : رابط الموقع (لمشاريع المواقع فقط)",
+    "  status  : للمواقع فقط — live (شغّال) أو wip (تحت الشغل)",
     "════════════════════════════════════════════════════════════════"
   ],
   "projects": [
@@ -161,9 +170,26 @@
       "preview": "",
       "cover": "/assets/project-luvit.png",
       "url": "https://plasmajo.com",
+      "status": "live",
       "desc": "Designed and built the LUVIT e-commerce experience on WordPress: a custom design system, a GSAP motion language, and an Apple-style scroll-sequence hero.",
       "descAr": "تصميم وبناء تجربة متجر لوفيت على ووردبريس: نظام تصميم مخصص، لغة حركة GSAP، وهيرو سكرول-سيكوينس بأسلوب أبل.",
-      "stats": []
+      "stats": [],
+
+      "_مثال": "👇 هيك بتنكتب قصة المشروع. انسخ الشكل هذا لأي مشروع ثاني.",
+      "story": {
+        "vision": "A skincare brand entering a crowded market needed a store that felt like the product: clean, calm, and unmistakably its own. The reference was an underwater world, so water became the design language for everything.",
+        "goal": "Replace a generic template store with a branded experience that raises perceived value, works on mobile first, and stays fast on Jordanian networks.",
+        "challenge": "The store runs on WordPress with plugins that render their own markup, so a normal theme change was not enough. The design had to survive WooCommerce and checkout pages without breaking them.",
+        "approach": "Built a single design-token layer plus one shared motion system, then mapped it onto plugin markup through a compatibility layer. The hero uses an Apple-style scroll sequence with separate mobile and desktop frame sets.",
+        "result": "A store that reads as a brand instead of a template, with a hero that holds attention and a component library that keeps every new section consistent."
+      },
+      "storyAr": {
+        "vision": "علامة عناية بالبشرة داخلة سوق مزدحم كانت بحاجة متجر يحسّ زي المنتج نفسه: نظيف، هادي، وواضح إنه إلها هي. المرجع كان عالم تحت الماء، فصار الماء هو لغة التصميم بكل إشي.",
+        "goal": "استبدال متجر بقالب جاهز عادي بتجربة مبنية على الهوية، ترفع القيمة المدركة، وتشتغل موبايل-أولاً وتضل سريعة على شبكات الأردن.",
+        "challenge": "المتجر على ووردبريس مع إضافات بتبني الماركب تبعها بنفسها، يعني تغيير الثيم لحاله ما كان بيكفي. التصميم كان لازم يعيش فوق WooCommerce وصفحات الدفع بدون ما يكسرها.",
+        "approach": "بنيت طبقة توكنز تصميم واحدة ونظام حركة مشترك، وبعدين ربطتهم بماركب الإضافات عبر طبقة توافق. والهيرو بيستخدم سكرول-سيكوينس بأسلوب أبل بنسختين فريمات: وحدة للموبايل ووحدة للديسكتوب.",
+        "result": "متجر بيقرأ كعلامة تجارية مش كقالب، بهيرو بيمسك انتباه الزائر، ومكتبة مكوّنات بتخلي كل قسم جديد متناسق مع اللي قبله."
+      }
     }
   ],
   "links": {

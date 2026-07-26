@@ -19,10 +19,25 @@ const switchHref = isAr
     : `/ar${path}`;
 
 const t = isAr
-  ? { work: 'الأعمال', about: 'من أنا', contact: 'تواصل', switchLabel: 'EN', switchHref }
-  : { work: 'Work', about: 'About', contact: 'Contact', switchLabel: 'عربي', switchHref };
+  ? {
+      work: 'الأعمال',
+      pricing: 'كيف بشتغل',
+      blog: 'المدونة',
+      contact: 'تواصل',
+      switchLabel: 'EN',
+      switchHref,
+    }
+  : {
+      work: 'Work',
+      pricing: 'How I work',
+      blog: 'Blog',
+      contact: 'Contact',
+      switchLabel: 'عربي',
+      switchHref,
+    };
 
 const home = isAr ? '/ar/' : '/';
+const blogHref = isAr ? '/ar/blog/' : '/blog/';
 ---
 
 <header class="nav" data-nav>
@@ -34,7 +49,8 @@ const home = isAr ? '/ar/' : '/';
 
     <nav class="links" aria-label={isAr ? 'التنقل الرئيسي' : 'Main navigation'}>
       <a href={`${home}#work`}>{t.work}</a>
-      <a href={`${home}#about`}>{t.about}</a>
+      <a href={`${home}#pricing`}>{t.pricing}</a>
+      <a href={blogHref}>{t.blog}</a>
       <a href={`${home}#contact`}>{t.contact}</a>
       <a class="lang-pill" href={t.switchHref} aria-label={isAr ? 'Switch to English' : 'التبديل إلى العربية'}>
         {t.switchLabel}

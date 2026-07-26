@@ -1,7 +1,11 @@
 ---
 // ═══════════════════════════════════════════════════════════════
-//  «من أنا» — الكلمات بتضوّي وحدة وحدة مع سكرولك (data-words)
+//  «من أنا» — عمودين:
+//   • يسار: نص مختصر، الكلمات بتضوّي وحدة وحدة مع سكرولك (data-words)
+//   • يمين: فيديو رمزي بيتحرك مع السكرول (فوضى ← منحنى نمو ← عقدة)
+//
 //  ✏️ تعديل النص: من t تحت مباشرة
+//  ✏️ تعديل المقاسات: من 🎛️ لوحة التحكم بقسم style
 // ═══════════════════════════════════════════════════════════════
 interface Props {
   lang: 'en' | 'ar';
@@ -10,42 +14,83 @@ interface Props {
 const { lang } = Astro.props;
 const isAr = lang === 'ar';
 
+// ─────────────── النصوص (عدّل من هون) ───────────────
 const t = isAr
   ? {
-      heading: 'بفكّر كاستراتيجي، وبنفّذ كصانع محتوى.',
-      body: 'ببني أنظمة تسويق من الصفر: استراتيجية علامة، تقاويم محتوى، تخطيط حملات، اختبار إعلانات، متابعة عملاء، وتقارير أداء. شغلي بيركّز على المشاريع الصغيرة والناشئة والعلامات الإقليمية اللي بدها هيكلة ووضوح وتنفيذ رقمي ثابت.',
-      extra: 'وبدرس إدارة سلاسل التوريد الرقمية بجامعة فيلادلفيا، وهاد بيعطيني منظور عمليات وأرقام بيخدم شغلي التسويقي: تفكير KPI، تصميم عمليات، وربط الطلب بالتنفيذ بتجربة العميل.',
+      kicker: 'من أنا',
+      body: 'ببني أنظمة تسويق من الصفر: استراتيجية علامة، تقويم محتوى، حملات، إعلانات، ومتابعة عملاء. شغلي مع المشاريع الصغيرة والناشئة اللي بدها هيكلة ووضوح وتنفيذ ثابت.',
+      extra:
+        'وبدرس إدارة سلاسل التوريد الرقمية بجامعة فيلادلفيا، وهاد بيعطيني منظور عمليات وأرقام بيخدم شغلي التسويقي.',
+      caption: 'من الفوضى، لمنحنى نمو، لنظام متماسك.',
     }
   : {
-      heading: 'Strategic thinking, creative execution.',
-      body: 'I build practical marketing systems from zero: brand strategy, content calendars, campaign planning, ad testing, CRM follow-up workflows, and performance reporting. My work focuses on small businesses, startups, and regional brands that need structure, clarity, and consistent digital execution.',
-      extra: 'I am also studying Digital Supply Chain Management at Philadelphia University, which adds an operations lens to my marketing: KPI thinking, process design, and connecting demand to execution and customer experience.',
+      kicker: 'About',
+      body: 'I build marketing systems from zero: brand strategy, content calendars, campaigns, paid ads, and lead follow-up. I work with small businesses and startups that need structure, clarity, and consistent execution.',
+      extra:
+        'I am also studying Digital Supply Chain Management at Philadelphia University, which adds an operations and numbers lens to my marketing work.',
+      caption: 'From noise, to a growth curve, to a system that holds.',
     };
 ---
 
 <section class="about" id="about">
-  <div class="container">
-    <h2 data-reveal>{t.heading}</h2>
-    <p class="big" data-words>{t.body}</p>
-    <p class="extra" data-reveal>{t.extra}</p>
+  <div class="container grid">
+    <!-- ═══ العمود الأول: النص ═══ -->
+    <div class="copy">
+      <h2 data-reveal>{t.kicker}</h2>
+      <p class="big" data-words>{t.body}</p>
+      <p class="extra" data-reveal>{t.extra}</p>
+    </div>
+
+    <!-- ═══ العمود الثاني: الفيديو الرمزي ═══
+         بدون data-seq-pin: يعني بيتحرك بمكانه وانت بتمر عليه (بدون تثبيت) -->
+    <figure
+      class="media"
+      data-seq
+      data-seq-desktop="/frames/about/"
+    >
+      <canvas aria-hidden="true"></canvas>
+
+      <!-- احتياط: لو الفريمات مش موجودة بتظهر العقدة الثابتة -->
+      <img
+        class="fallback"
+        data-seq-fallback
+        src="/assets/logo-white.png"
+        alt=""
+        width="400"
+        height="400"
+        loading="lazy"
+      />
+
+      <figcaption>{t.caption}</figcaption>
+    </figure>
   </div>
 </section>
 
 <style>
   /* 🎛️ لوحة التحكم */
   .about {
-    --heading-size: clamp(15px, 1.5vw, 17px); /* حجم العنوان الصغير فوق */
-    --body-size: clamp(24px, 3.4vw, 44px); /* حجم النص الكبير المضوّي */
-    --body-line-gap: 1.5; /* تباعد أسطر النص الكبير */
-    --extra-size: clamp(15px, 1.5vw, 18px); /* حجم الفقرة الإضافية */
+    --kicker-size: 15px; /* حجم كلمة «من أنا» الصغيرة */
+    --body-size: clamp(21px, 2.2vw, 32px); /* حجم النص الكبير المضوّي */
+    --body-line-gap: 1.55; /* تباعد أسطر النص الكبير */
+    --extra-size: 15px; /* حجم الفقرة الصغيرة */
+    --media-ratio: 3 / 4; /* نسبة الفيديو (عرض / ارتفاع) */
+    --columns: 1.15fr 0.85fr; /* عرض عمود النص مقابل عمود الفيديو */
+    --columns-gap: clamp(32px, 5vw, 80px); /* المسافة بين العمودين */
     padding-block: var(--section-gap);
   }
 
+  .grid {
+    display: grid;
+    grid-template-columns: var(--columns);
+    gap: var(--columns-gap);
+    align-items: center;
+  }
+
   .about h2 {
-    font-size: var(--heading-size);
+    font-size: var(--kicker-size);
     font-weight: 600;
     color: var(--accent);
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
 
   .big {
@@ -53,19 +98,65 @@ const t = isAr
     font-weight: 600;
     line-height: var(--body-line-gap);
     letter-spacing: -0.015em;
-    max-width: 24ch;
-    margin-bottom: 36px;
+    margin-bottom: 28px;
   }
 
   html[lang='ar'] .big {
     letter-spacing: 0;
     line-height: calc(var(--body-line-gap) + 0.15);
-    max-width: 30ch;
   }
 
   .extra {
     color: var(--muted);
     font-size: var(--extra-size);
-    max-width: 58ch;
+    max-width: 52ch;
+    line-height: 1.75;
+  }
+
+  /* ─── عمود الفيديو ─── */
+  .media {
+    position: relative;
+    margin: 0;
+  }
+
+  .media canvas {
+    width: 100%;
+    aspect-ratio: var(--media-ratio);
+    border-radius: var(--r-card);
+    background: var(--surface);
+    display: block;
+  }
+
+  .fallback {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 45%;
+    height: auto;
+    opacity: 0;
+    transition: opacity 1s var(--ease-out);
+    pointer-events: none;
+  }
+
+  /* لما ما تكون الفريمات موجودة: نخفي الكانفاس ونبين العقدة */
+  .media:global(.seq-static) canvas {
+    background: var(--surface);
+  }
+
+  figcaption {
+    margin-top: 16px;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+
+  /* ─── موبايل: عمود واحد، الفيديو تحت النص ─── */
+  @media (max-width: 767px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .media {
+      --media-ratio: 4 / 3; /* عالموبايل الفيديو بيصير عريض شوي */
+    }
   }
 </style>

@@ -1,0 +1,20 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  صفحة مشروع مستقلة (عربي) — بتتولد تلقائياً لكل مشروع
+//  الرابط بيصير: /ar/work/معرّف-المشروع/
+//  (نفس الشرح الموجود بملف src/pages/work/[id].astro)
+// ═══════════════════════════════════════════════════════════════
+import ProjectPage from '../../../layouts/ProjectPage.astro';
+import work from '../../../data/work.json';
+
+export function getStaticPaths() {
+  return work.projects.map((p) => ({
+    params: { id: p.id },
+    props: { project: p },
+  }));
+}
+
+const { project } = Astro.props;
+---
+
+<ProjectPage project={project} lang="ar" />

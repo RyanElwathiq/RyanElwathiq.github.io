@@ -14,7 +14,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css'; // ستايلات Lenis الأساسية (مطلوبة عشان السكرول يشتغل صح)
-import { initSequence } from './sequence.js';
+import { initSequences } from './sequence.js';
 import { initLightbox } from './lightbox.js';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -205,5 +205,5 @@ if (!reduceMotion) {
 // ─────────────────────────────────────────────
 //  7) الهيرو السينمائي + اللايت-بوكس
 // ─────────────────────────────────────────────
-initSequence();
+initSequences();
 initLightbox();

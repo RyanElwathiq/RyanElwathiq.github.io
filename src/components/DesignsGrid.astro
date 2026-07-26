@@ -21,8 +21,18 @@ const behance = work.links.behance;
 <section class="designs">
   <div class="container">
     <div class="head">
-      <h2 data-reveal>{heading}</h2>
-      <a class="all-link" href={allHref} data-reveal>{allLabel}</a>
+      <div>
+        <h2 data-reveal>{heading}</h2>
+        <!-- سطر توضيحي: بيقول للزائر إن كل تصميم إله صفحة، وإن في المزيد -->
+        <p class="note" data-reveal>
+          {
+            isAr
+              ? 'اضغط أي تصميم تشوف صفحته كاملة: الرؤية والهدف والنتيجة.'
+              : 'Open any design to read its full page: the vision, the goal, and the result.'
+          }
+        </p>
+      </div>
+      <a class="all-btn" href={allHref} data-reveal>{allLabel}</a>
     </div>
 
     <div class="grid" data-stagger>
@@ -47,7 +57,7 @@ const behance = work.links.behance;
 
   .head {
     display: flex;
-    align-items: baseline;
+    align-items: flex-end;
     justify-content: space-between;
     gap: 24px;
     margin-bottom: clamp(32px, 5vh, 56px);
@@ -64,19 +74,43 @@ const behance = work.links.behance;
     letter-spacing: 0;
   }
 
-  .all-link {
-    flex-shrink: 0;
-    font-size: 15px;
-    font-weight: 600;
+  .note {
+    margin-top: 10px;
     color: var(--muted);
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 3px;
-    transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+    font-size: 15px;
+    max-width: 46ch;
   }
 
-  .all-link:hover {
+  /* زر «كل التصاميم»: زر واضح مش مجرد رابط باهت */
+  .all-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
     color: var(--accent);
-    border-color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: var(--r-pill);
+    padding: 12px 26px;
+    white-space: nowrap;
+    transition: background-color 0.35s var(--ease-out), color 0.35s var(--ease-out);
+  }
+
+  .all-btn:hover {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  @media (max-width: 640px) {
+    .head {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .all-btn {
+      justify-content: center;
+    }
   }
 
   .grid {

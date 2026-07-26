@@ -2,41 +2,64 @@
 //  محرك السكرول-سيكوينس (زي أبل): فيديو مفكفك لفريمات WebP
 //  بينرسم على Canvas وبيتحرك فريم-فريم مع سكرول الزائر
 //
-//  ┌─────────────── لوحة التحكم — عدّل من هون ───────────────┐
-//  │ SCROLL_LENGTH : طول رحلة السكرول (3 = ثلاث شاشات)        │
-//  │ INTRO_FADE_END: النص الافتتاحي بيختفي عند هالنسبة (0-1)  │
-//  │ OUTRO_START   : النص الختامي بيبدأ يظهر عند هالنسبة      │
-//  └───────────────────────────────────────────────────────────┘
+//  بيشتغل على أي عدد من الفيديوهات بالصفحة. كل عنصر عليه data-seq
+//  بيصير سيكوينس مستقل، وإعداداته بتنقرأ من خصائصه بالـ HTML:
+//
+//    data-seq-desktop="/frames/xxx/"   ← مجلد فريمات الشاشات الكبيرة
+//    data-seq-mobile="/frames/yyy/"    ← مجلد فريمات الموبايل (اختياري)
+//    data-seq-pin                      ← موجودة = الفيديو بيتثبّت (زي الهيرو)
+//                                        غايبة = بيتحرك بمكانه بدون تثبيت
+//    data-seq-length="3"               ← طول رحلة السكرول (بعدد الشاشات)
+//
+//  ┌──────────── 🎛️ لوحة التحكم العامة ────────────┐
+//  │ INTRO_FADE_END  : متى يختفي النص الافتتاحي     │
+//  │ OUTRO_START     : متى تظهر الجملة الختامية      │
+//  │ INTRO_LIFT_RATIO: قديش يرتفع النص الافتتاحي    │
+//  │ OUTRO_RISE_RATIO: قديش تطلع الجملة الختامية    │
+//  │ MOBILE_BREAKPOINT: حد التبديل لفريمات الموبايل │
+//  └────────────────────────────────────────────────┘
 // ═══════════════════════════════════════════════════════════════
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SCROLL_LENGTH = 3;        // 👈 كم شاشة بيضل الهيرو مثبّت وانت بتسكرول
-const INTRO_FADE_END = 0.24;    // 👈 العنوان الافتتاحي بيختفي بأول 24% من الرحلة
-const OUTRO_START = 0.66;       // 👈 الجملة الختامية بتبدأ تظهر عند 66%
-const INTRO_LIFT_RATIO = 0.22;  // 👈 قديش يرتفع العنوان (نسبة من ارتفاع الشاشة)
-const OUTRO_RISE_RATIO = 0.09;  // 👈 قديش تطلع الجملة الختامية من تحت
-
-// الموبايل بياخد فريمات عمودية، والديسكتوب بياخد عريضة
+const INTRO_FADE_END = 0.24;
+const OUTRO_START = 0.66;
+const INTRO_LIFT_RATIO = 0.22;
+const OUTRO_RISE_RATIO = 0.09;
 const MOBILE_BREAKPOINT = 768;
+const PRELOAD_CONCURRENCY = 6; // كم فريم بينزل بنفس الوقت
 
-export async function initSequence() {
-  const section = document.querySelector('[data-seq]');
-  if (!section) return;
+// شغّل كل السيكوينسات الموجودة بالصفحة
+export function initSequences() {
+  document.querySelectorAll('[data-seq]').forEach((section) => {
+    setupOne(section).catch(() => {
+      // أي فشل → منرجع للوضع الثابت بهدوء بدل ما ينكسر الموقع
+      section.classList.add('seq-static');
+    });
+  });
+}
 
+async function setupOne(section) {
   const canvas = section.querySelector('canvas');
+  if (!canvas) return;
+
   const ctx = canvas.getContext('2d');
   const intro = section.querySelector('[data-seq-intro]');
   const outro = section.querySelector('[data-seq-outro]');
   const fallback = section.querySelector('[data-seq-fallback]');
+  const sticky = section.querySelector('[data-seq-sticky]');
 
+  const shouldPin = section.hasAttribute('data-seq-pin');
+  const scrollLength = parseFloat(section.dataset.seqLength || '3');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ─── اختيار مجلد الفريمات حسب حجم الشاشة ───
   const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
-  const dir = isMobile ? section.dataset.seqMobile : section.dataset.seqDesktop;
+  const dir =
+    (isMobile && section.dataset.seqMobile) || section.dataset.seqDesktop;
+  if (!dir) return;
 
   // ─── تحميل المانيفست (وصف الفريمات) ───
   let manifest;
@@ -45,17 +68,16 @@ export async function initSequence() {
     if (!res.ok) throw new Error('no manifest');
     manifest = await res.json();
   } catch {
-    // ما في فريمات؟ منوقع بهدوء على الخلفية الثابتة (العقدة)
+    // ما في فريمات؟ منوقع بهدوء على الصورة الاحتياطية
     if (fallback) fallback.style.opacity = '1';
     section.classList.add('seq-static');
     return;
   }
 
   const count = manifest.frame_count;
-  const pad = String(manifest.filename_pattern.match(/%0(\d+)d/)[1]);
-  const name = (i) => `${dir}frame_${String(i).padStart(Number(pad), '0')}.webp`;
+  const padLen = Number(manifest.filename_pattern.match(/%0(\d+)d/)[1]);
+  const name = (i) => `${dir}frame_${String(i).padStart(padLen, '0')}.webp`;
 
-  // ─── تحميل الصور: الفريم الأول فوراً، والباقي بالخلفية ───
   const images = new Array(count);
   const loaded = new Array(count).fill(false);
   let current = 0;
@@ -74,7 +96,7 @@ export async function initSequence() {
 
   await load(0); // أول فريم لازم يبين فوراً
 
-  // ─── الرسم بأسلوب "cover" (يغطي الشاشة مهما كان قياسها) ───
+  // ─── الرسم بأسلوب "cover" (يغطي المساحة كاملة مهما كان قياسها) ───
   function draw(i) {
     // لو الفريم المطلوب لسا ما نزل، منرسم أقرب فريم جاهز قبله
     let k = i;
@@ -83,8 +105,9 @@ export async function initSequence() {
     if (!img) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const cw = canvas.clientWidth * dpr;
-    const ch = canvas.clientHeight * dpr;
+    const cw = Math.round(canvas.clientWidth * dpr);
+    const ch = Math.round(canvas.clientHeight * dpr);
+    if (cw === 0 || ch === 0) return;
     if (canvas.width !== cw || canvas.height !== ch) {
       canvas.width = cw;
       canvas.height = ch;
@@ -105,24 +128,21 @@ export async function initSequence() {
 
   draw(0);
 
-  // أي تغيير بحجم الكانفاس (فتح النافذة، تدوير الجهاز، تكبير...)
-  // → منعيد الرسم فوراً عشان ما تبين الصورة مبكسلة
-  const ro = new ResizeObserver(() => draw(current));
-  ro.observe(canvas);
+  // أي تغيير بحجم الكانفاس → إعادة رسم فورية (عشان ما تبين الصورة مبكسلة)
+  new ResizeObserver(() => draw(current)).observe(canvas);
   document.addEventListener('visibilitychange', () => draw(current));
 
-  // باقي الفريمات بتنزل بالخلفية (٦ بنفس الوقت — توازن سرعة/ضغط)
+  // باقي الفريمات بتنزل بالخلفية
   (async () => {
-    const CONCURRENCY = 6;
     let next = 1;
     async function worker() {
       while (next < count) {
         const i = next++;
         await load(i);
-        if (i === current) draw(i); // لو وصلنا وهو المطلوب حالياً، ارسمه
+        if (i === current) draw(i);
       }
     }
-    await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+    await Promise.all(Array.from({ length: PRELOAD_CONCURRENCY }, worker));
   })();
 
   // ─── وضع «تقليل الحركة»: صورة ثابتة بدون تثبيت ولا سكرَب ───
@@ -133,43 +153,44 @@ export async function initSequence() {
   }
 
   // ─── ربط السكرول بالفريمات ───
-  const state = { frame: 0 };
+  let frame = 0;
 
   ScrollTrigger.create({
     trigger: section,
-    start: 'top top',
-    end: () => `+=${window.innerHeight * SCROLL_LENGTH}`,
-    pin: section.querySelector('[data-seq-sticky]'),
+    // مثبّت: الرحلة تبدأ لما يوصل أعلى الشاشة
+    // غير مثبّت: الرحلة تبدأ لما يدخل من تحت وتخلص لما يطلع من فوق
+    start: shouldPin ? 'top top' : 'top bottom',
+    end: shouldPin ? () => `+=${window.innerHeight * scrollLength}` : 'bottom top',
+    pin: shouldPin ? sticky || section : false,
     scrub: 0.5,
+    invalidateOnRefresh: true,
     onUpdate(self) {
-      // نسبة السكرول (0 → 1) بتتحول لرقم فريم
       const target = Math.round(self.progress * (count - 1));
-      if (target !== state.frame) {
-        state.frame = target;
+      if (target !== frame) {
+        frame = target;
         current = target;
         draw(target);
       }
 
-      // ─── النص الافتتاحي: بيرتفع ويذوب ويصغر مع سكرولك ───
-      // (نسبة الحركة بتتغير حسب حجم الشاشة عشان تضل متناسقة)
+      // النص الافتتاحي: بيرتفع ويصغر ويذوب مع سكرولك
       if (intro) {
         const p = Math.min(self.progress / INTRO_FADE_END, 1);
-        const lift = window.innerHeight * INTRO_LIFT_RATIO; // مسافة الارتفاع
+        const lift = window.innerHeight * INTRO_LIFT_RATIO;
         intro.style.opacity = String(1 - p);
         intro.style.transform = `translate3d(0, ${-p * lift}px, 0) scale(${1 - p * 0.06})`;
         intro.style.pointerEvents = p >= 1 ? 'none' : '';
       }
 
-      // ─── الجملة الختامية: بتطلع من تحت وبتوضح ───
+      // الجملة الختامية: بتطلع من تحت وبتوضح
       if (outro) {
-        const p = gsap.utils.clamp(0, 1, (self.progress - OUTRO_START) / (1 - OUTRO_START - 0.05));
-        const rise = window.innerHeight * OUTRO_RISE_RATIO;
+        const p = gsap.utils.clamp(
+          0,
+          1,
+          (self.progress - OUTRO_START) / (1 - OUTRO_START - 0.05)
+        );
         outro.style.opacity = String(p);
-        outro.style.transform = `translate3d(0, ${(1 - p) * rise}px, 0)`;
+        outro.style.transform = `translate3d(0, ${(1 - p) * OUTRO_RISE_RATIO * window.innerHeight}px, 0)`;
       }
     },
   });
-
-  // عند تغيير قياس النافذة منعيد الرسم (والـ ScrollTrigger بيظبط حاله)
-  window.addEventListener('resize', () => draw(state.frame), { passive: true });
 }
