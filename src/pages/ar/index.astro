@@ -1,6 +1,10 @@
 ---
-// الصفحة الرئيسية (عربي) — نسخة مبدئية للتأكد من عمل البناء
+// ═══════════════════════════════════════════════════════════════
+//  الصفحة الرئيسية — النسخة العربية (RTL)
+// ═══════════════════════════════════════════════════════════════
 import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Hero from '../../components/Hero.astro';
 ---
 
 <Base
@@ -8,7 +12,8 @@ import Base from '../../layouts/Base.astro';
   description="بورتفوليو ريّان الواثق: تسويق رقمي، نمو، SEO، إدارة علاقات العملاء، إعلانات مدفوعة، استراتيجية إبداعية، هوية بصرية، ومونتاج فيديو."
   lang="ar"
 >
-  <main style="min-height:100dvh;display:grid;place-items:center;font-family:system-ui;">
-    <p>الموقع الجديد قيد البناء…</p>
+  <Nav lang="ar" />
+  <main>
+    <Hero lang="ar" />
   </main>
 </Base>

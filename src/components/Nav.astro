@@ -1,0 +1,105 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  شريط التنقل — لوجو + روابط + مبدّل اللغة
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+// النصوص باللغتين
+const t = isAr
+  ? { work: 'الأعمال', about: 'من أنا', contact: 'تواصل', switchLabel: 'EN', switchHref: '/' }
+  : { work: 'Work', about: 'About', contact: 'Contact', switchLabel: 'عربي', switchHref: '/ar/' };
+
+const home = isAr ? '/ar/' : '/';
+---
+
+<header class="nav" data-nav>
+  <div class="container nav-inner">
+    <a class="brand" href={home} aria-label="Rayan Elwathiq">
+      <img src="/assets/logo-white.png" alt="" width="34" height="34" />
+      <span class="brand-name">{isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}</span>
+    </a>
+
+    <nav class="links" aria-label={isAr ? 'التنقل الرئيسي' : 'Main navigation'}>
+      <a href={`${home}#work`}>{t.work}</a>
+      <a href={`${home}#about`}>{t.about}</a>
+      <a href={`${home}#contact`}>{t.contact}</a>
+      <a class="lang-pill" href={t.switchHref} aria-label={isAr ? 'Switch to English' : 'التبديل إلى العربية'}>
+        {t.switchLabel}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    top: 0;
+    inset-inline: 0;
+    z-index: var(--z-nav);
+    height: 68px;
+    display: flex;
+    align-items: center;
+    /* زجاج خفيف فوق المحتوى */
+    background: color-mix(in srgb, var(--bg) 72%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .links {
+    display: flex;
+    align-items: center;
+    gap: clamp(18px, 3vw, 34px);
+    font-size: 15px;
+  }
+
+  .links a:not(.lang-pill) {
+    color: var(--muted);
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .links a:not(.lang-pill):hover {
+    color: var(--text);
+  }
+
+  /* زر تبديل اللغة */
+  .lang-pill {
+    padding: 7px 18px;
+    border-radius: var(--r-pill);
+    border: 1px solid rgba(242, 243, 238, 0.25);
+    font-size: 13.5px;
+    font-weight: 600;
+    transition: border-color 0.3s var(--ease-out), color 0.3s var(--ease-out);
+  }
+
+  .lang-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* موبايل: نخفي اسم البراند ونضيّق المسافات */
+  @media (max-width: 640px) {
+    .brand-name {
+      display: none;
+    }
+  }
+</style>

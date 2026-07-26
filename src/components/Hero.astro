@@ -1,0 +1,157 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  الـ HERO — أول إشي بيشوفه الزائر
+//  العقدة (اللوجو) عايمة بالخلف، بتدور ببطء وبتنزاح مع السكرول
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+---
+
+<section class="hero" data-hero>
+  <!-- العقدة الخلفية: نسخة ضخمة شبه شفافة من اللوجو -->
+  <div class="knot" data-knot aria-hidden="true">
+    <img src="/assets/logo-white.png" alt="" width="900" height="900" loading="eager" />
+  </div>
+
+  <div class="container hero-inner">
+    {
+      isAr ? (
+        <h1 class="headline">
+          <span class="line-mask"><span class="line" data-hero-line>تسويق يبني،</span></span>
+          <span class="line-mask">
+            <span class="line" data-hero-line>
+              ونتائج <em>بتنقاس بالأرقام.</em>
+            </span>
+          </span>
+        </h1>
+      ) : (
+        <h1 class="headline">
+          <span class="line-mask"><span class="line" data-hero-line>Growth you can</span></span>
+          <span class="line-mask">
+            <span class="line" data-hero-line>
+              <em>actually measure.</em>
+            </span>
+          </span>
+        </h1>
+      )
+    }
+
+    <p class="sub" data-reveal data-hero-fade>
+      {
+        isAr
+          ? 'ريّان الواثق. تسويق رقمي ونمو من عمّان: سوشال ميديا، إعلانات مدفوعة، مونتاج، وهويات بصرية.'
+          : 'Rayan Elwathiq. Digital marketing and growth from Amman: social media, paid ads, video editing, and brand identities.'
+      }
+    </p>
+
+    <div class="actions" data-reveal data-hero-fade>
+      <a class="btn btn-primary" href="#work">{isAr ? 'شوف أعمالي' : 'View my work'}</a>
+      <a class="btn btn-ghost" href="#contact">{isAr ? 'تواصل معي' : 'Contact me'}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    padding-top: 68px; /* ارتفاع شريط التنقل */
+    overflow: clip;
+  }
+
+  /* ─── العقدة الخلفية ─── */
+  .knot {
+    position: absolute;
+    top: 50%;
+    inset-inline-end: -12%;
+    translate: 0 -50%;
+    width: clamp(340px, 52vw, 780px);
+    opacity: 0;             /* بتظهر بالأنيميشن */
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .knot img {
+    width: 100%;
+    height: auto;
+    /* بالـ CSS منخلي العقدة البيضاء باهتة كإنها منحوتة بالخلفية */
+    opacity: 0.07;
+  }
+
+  /* ─── النصوص ─── */
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .headline {
+    font-weight: 700;
+    font-size: clamp(44px, 8.6vw, 108px);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    margin-bottom: 28px;
+  }
+
+  /* العربي: سطور أقصر ومسافة أسطر أوسع شوي لطبيعة الحروف */
+  html[lang='ar'] .headline {
+    font-weight: 800;
+    line-height: 1.22;
+    letter-spacing: 0;
+    font-size: clamp(38px, 7.4vw, 92px);
+  }
+
+  /* كل سطر جوا "قناع" عشان أنيميشن الظهور من تحت */
+  .line-mask {
+    display: block;
+    overflow: clip;
+    /* احتياط للحروف النازلة بالعربي */
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+
+  .line {
+    display: inline-block;
+    will-change: transform;
+  }
+
+  .headline em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .sub {
+    color: var(--muted);
+    font-size: clamp(16px, 1.6vw, 19px);
+    max-width: 46ch;
+    margin-bottom: 40px;
+  }
+
+  .actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 640px) {
+    .knot {
+      inset-inline-end: -38%;
+      width: 130vw;
+    }
+
+    .actions {
+      width: 100%;
+    }
+
+    .actions .btn {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+</style>

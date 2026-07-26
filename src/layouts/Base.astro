@@ -3,6 +3,11 @@
 //  القالب الأساسي — كل صفحات الموقع بتلبس هذا القالب
 //  (اللغة والاتجاه RTL/LTR بينضبطوا لحالهم حسب الصفحة)
 // ═══════════════════════════════════════════════════════════════
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/alexandria';
+import '../styles/tokens.css';
+import '../styles/global.css';
+
 interface Props {
   title: string;
   description: string;
@@ -21,8 +26,17 @@ const dir = lang === 'ar' ? 'rtl' : 'ltr';
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/png" href="/assets/logo-white.png" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
   </head>
   <body>
     <slot />
+
+    <!-- طبقة الحبيبات السينمائية -->
+    <div class="grain" aria-hidden="true"></div>
+
+    <!-- نظام الحركة -->
+    <script src="../scripts/motion.js"></script>
   </body>
 </html>
