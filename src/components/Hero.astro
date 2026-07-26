@@ -1,7 +1,15 @@
 ---
 // ═══════════════════════════════════════════════════════════════
-//  الـ HERO — أول إشي بيشوفه الزائر
-//  العقدة (اللوجو) عايمة بالخلف، بتدور ببطء وبتنزاح مع السكرول
+//  الـ HERO — سكرول-سيكوينس سينمائي (زي أبل)
+//
+//  كيف بيشتغل:
+//  • الفيديو مفكفك لفريمات بمجلد  public/frames/desktop  و  /mobile
+//  • وانت بتسكرول، الفريمات بتتحرك وحدة وحدة (الزائر «بيحيك» العقدة)
+//  • النص الافتتاحي بيذوب، وبنهاية الرحلة بتظهر الجملة الختامية
+//
+//  ✏️ تعديل النصوص: من قسم "النصوص" تحت مباشرة
+//  ✏️ تعديل المقاسات والتباعد: من "لوحة التحكم" بقسم <style>
+//  ✏️ تعديل طول الرحلة وسرعتها: من أول ملف src/scripts/sequence.js
 // ═══════════════════════════════════════════════════════════════
 interface Props {
   lang: 'en' | 'ar';
@@ -9,70 +17,155 @@ interface Props {
 
 const { lang } = Astro.props;
 const isAr = lang === 'ar';
+
+// ─────────────── النصوص (عدّل من هون) ───────────────
+const t = isAr
+  ? {
+      line1: 'تسويق يبني،',
+      line2Pre: 'ونتائج ',
+      line2Em: 'بتنقاس بالأرقام.',
+      sub: 'ريّان الواثق. تسويق رقمي ونمو من عمّان: سوشال ميديا، إعلانات مدفوعة، مونتاج، وهويات بصرية.',
+      cta1: 'شوف أعمالي',
+      cta2: 'تواصل معي',
+      outroPre: 'استراتيجية، محتوى، ونمو.',
+      outroEm: 'مجدولين ببعض.',
+    }
+  : {
+      line1: 'Growth you can',
+      line2Pre: '',
+      line2Em: 'actually measure.',
+      sub: 'Rayan Elwathiq. Digital marketing and growth from Amman: social media, paid ads, video editing, and brand identities.',
+      cta1: 'View my work',
+      cta2: 'Contact me',
+      outroPre: 'Strategy, content, and growth.',
+      outroEm: 'Woven into one.',
+    };
 ---
 
-<section class="hero" data-hero>
-  <!-- العقدة الخلفية: نسخة ضخمة شبه شفافة من اللوجو -->
-  <div class="knot" data-knot aria-hidden="true">
-    <img src="/assets/logo-white.png" alt="" width="900" height="900" loading="eager" />
-  </div>
+<!-- data-seq-desktop / data-seq-mobile : مسارات مجلدات الفريمات -->
+<section
+  class="hero"
+  data-seq
+  data-seq-desktop="/frames/desktop/"
+  data-seq-mobile="/frames/mobile/"
+>
+  <!-- الجزء المثبّت: بيضل قدامك طول رحلة السكرول -->
+  <div class="sticky" data-seq-sticky>
+    <!-- الكانفاس: هون بتنرسم فريمات الفيديو -->
+    <canvas class="seq-canvas" aria-hidden="true"></canvas>
 
-  <div class="container hero-inner">
-    {
-      isAr ? (
-        <h1 class="headline">
-          <span class="line-mask"><span class="line" data-hero-line>تسويق يبني،</span></span>
-          <span class="line-mask">
-            <span class="line" data-hero-line>
-              ونتائج <em>بتنقاس بالأرقام.</em>
-            </span>
-          </span>
-        </h1>
-      ) : (
-        <h1 class="headline">
-          <span class="line-mask"><span class="line" data-hero-line>Growth you can</span></span>
-          <span class="line-mask">
-            <span class="line" data-hero-line>
-              <em>actually measure.</em>
-            </span>
-          </span>
-        </h1>
-      )
-    }
+    <!-- احتياط: لو الفريمات مش موجودة بتظهر العقدة الثابتة بدالها -->
+    <div class="knot" data-seq-fallback aria-hidden="true">
+      <img src="/assets/logo-white.png" alt="" width="900" height="900" loading="eager" />
+    </div>
 
-    <p class="sub" data-reveal data-hero-fade>
-      {
-        isAr
-          ? 'ريّان الواثق. تسويق رقمي ونمو من عمّان: سوشال ميديا، إعلانات مدفوعة، مونتاج، وهويات بصرية.'
-          : 'Rayan Elwathiq. Digital marketing and growth from Amman: social media, paid ads, video editing, and brand identities.'
-      }
-    </p>
+    <!-- تعتيم خفيف فوق الفيديو عشان النص يضل مقروء دايماً -->
+    <div class="scrim" aria-hidden="true"></div>
 
-    <div class="actions" data-reveal data-hero-fade>
-      <a class="btn btn-primary" href="#work">{isAr ? 'شوف أعمالي' : 'View my work'}</a>
-      <a class="btn btn-ghost" href="#contact">{isAr ? 'تواصل معي' : 'Contact me'}</a>
+    <!-- ═══ النص الافتتاحي (بيذوب مع بداية السكرول) ═══ -->
+    <div class="container overlay intro" data-seq-intro>
+      <h1 class="headline">
+        <span class="line-mask"><span class="line" data-hero-line>{t.line1}</span></span>
+        <span class="line-mask">
+          <span class="line" data-hero-line>{t.line2Pre}<em>{t.line2Em}</em></span>
+        </span>
+      </h1>
+
+      <p class="sub" data-reveal data-hero-fade>{t.sub}</p>
+
+      <div class="actions" data-reveal data-hero-fade>
+        <a class="btn btn-primary" href="#work">{t.cta1}</a>
+        <a class="btn btn-ghost" href="#contact">{t.cta2}</a>
+      </div>
+    </div>
+
+    <!-- ═══ الجملة الختامية (بتظهر بنهاية رحلة السكرول) ═══ -->
+    <div class="container overlay outro" data-seq-outro aria-hidden="true">
+      <p class="outro-text">
+        {t.outroPre}<br />
+        <em>{t.outroEm}</em>
+      </p>
     </div>
   </div>
 </section>
 
 <style>
+  /* ╔═══════════════════════════════════════════════════════════╗
+     ║              🎛️ لوحة التحكم — عدّل من هون                  ║
+     ╠═══════════════════════════════════════════════════════════╣
+     ║  كل رقم مشروح جنبه. غيّر واحفظ وشوف النتيجة فوراً          ║
+     ╚═══════════════════════════════════════════════════════════╝ */
   .hero {
-    position: relative;
-    min-height: 100dvh;
-    display: flex;
-    align-items: center;
-    padding-top: 68px; /* ارتفاع شريط التنقل */
-    overflow: clip;
+    /* حجم العنوان الرئيسي: (أصغر حد، نسبة من الشاشة، أكبر حد) */
+    --headline-size: clamp(44px, 8.6vw, 104px);
+
+    /* المسافة العمودية بين سطور العنوان (1 = ملاصق، 1.3 = مريح) */
+    --headline-line-gap: 1.04;
+
+    /* التباعد بين حروف العنوان (بالإنجليزي سالب أحلى، بالعربي صفر) */
+    --headline-letter-spacing: -0.03em;
+
+    /* المسافة بين العنوان والوصف (بيكسل) */
+    --gap-headline-sub: 28px;
+
+    /* المسافة بين الوصف والأزرار */
+    --gap-sub-actions: 40px;
+
+    /* حجم نص الوصف */
+    --sub-size: clamp(16px, 1.6vw, 19px);
+
+    /* أقصى عرض لسطر الوصف (بالحرف — أقصر = أسطر أضيق) */
+    --sub-max-width: 46ch;
+
+    /* حجم الجملة الختامية */
+    --outro-size: clamp(30px, 4.6vw, 64px);
+
+    /* قوة التعتيم فوق الفيديو (0 = بدون، 0.6 = غامق كثير) */
+    --scrim-opacity: 0.34;
   }
 
-  /* ─── العقدة الخلفية ─── */
+  /* ═══ البنية (ما بتحتاج تلمسها غالباً) ═══ */
+  .hero {
+    position: relative;
+  }
+
+  .sticky {
+    position: relative;
+    height: 100dvh;
+    overflow: clip;
+    display: flex;
+    align-items: center;
+  }
+
+  .seq-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* التعتيم: أغمق تحت النص، خفيف بالنص */
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(14, 15, 18, calc(var(--scrim-opacity) + 0.25)),
+      rgba(14, 15, 18, var(--scrim-opacity)) 40%,
+      rgba(14, 15, 18, 0.08)
+    );
+    pointer-events: none;
+  }
+
+  /* ═══ العقدة الاحتياطية (لما ما يكون في فريمات) ═══ */
   .knot {
     position: absolute;
     top: 50%;
     inset-inline-end: -12%;
     translate: 0 -50%;
     width: clamp(340px, 52vw, 780px);
-    opacity: 0;             /* بتظهر بالأنيميشن */
+    opacity: 0;
+    transition: opacity 1.2s var(--ease-out);
     pointer-events: none;
     user-select: none;
   }
@@ -80,37 +173,43 @@ const isAr = lang === 'ar';
   .knot img {
     width: 100%;
     height: auto;
-    /* بالـ CSS منخلي العقدة البيضاء باهتة كإنها منحوتة بالخلفية */
     opacity: 0.07;
   }
 
-  /* ─── النصوص ─── */
-  .hero-inner {
+  /* ═══ طبقات النص ═══ */
+  .overlay {
     position: relative;
     z-index: 1;
+    width: 100%;
+  }
+
+  .outro {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 14dvh;
+    opacity: 0;
+    text-align: center;
   }
 
   .headline {
     font-weight: 700;
-    font-size: clamp(44px, 8.6vw, 108px);
-    line-height: 1.02;
-    letter-spacing: -0.03em;
-    margin-bottom: 28px;
+    font-size: var(--headline-size);
+    line-height: var(--headline-line-gap);
+    letter-spacing: var(--headline-letter-spacing);
+    margin-bottom: var(--gap-headline-sub);
   }
 
-  /* العربي: سطور أقصر ومسافة أسطر أوسع شوي لطبيعة الحروف */
+  /* العربي: خط أثقل، أسطر أوسع، بدون تقارب حروف */
   html[lang='ar'] .headline {
     font-weight: 800;
-    line-height: 1.22;
+    line-height: calc(var(--headline-line-gap) + 0.18);
     letter-spacing: 0;
-    font-size: clamp(38px, 7.4vw, 92px);
+    font-size: clamp(38px, 7.4vw, 88px);
   }
 
-  /* كل سطر جوا "قناع" عشان أنيميشن الظهور من تحت */
   .line-mask {
     display: block;
     overflow: clip;
-    /* احتياط للحروف النازلة بالعربي */
     padding-bottom: 0.08em;
     margin-bottom: -0.08em;
   }
@@ -120,16 +219,17 @@ const isAr = lang === 'ar';
     will-change: transform;
   }
 
-  .headline em {
+  .headline em,
+  .outro-text em {
     font-style: normal;
     color: var(--accent);
   }
 
   .sub {
     color: var(--muted);
-    font-size: clamp(16px, 1.6vw, 19px);
-    max-width: 46ch;
-    margin-bottom: 40px;
+    font-size: var(--sub-size);
+    max-width: var(--sub-max-width);
+    margin-bottom: var(--gap-sub-actions);
   }
 
   .actions {
@@ -138,7 +238,29 @@ const isAr = lang === 'ar';
     flex-wrap: wrap;
   }
 
-  /* ─── موبايل ─── */
+  .outro-text {
+    font-weight: 700;
+    font-size: var(--outro-size);
+    line-height: 1.18;
+    letter-spacing: -0.02em;
+  }
+
+  html[lang='ar'] .outro-text {
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 1.35;
+  }
+
+  /* ═══ وضع بدون فريمات أو «تقليل حركة»: هيرو ثابت عادي ═══ */
+  .hero:global(.seq-static) .seq-canvas {
+    display: none;
+  }
+
+  .hero:global(.seq-static) .outro {
+    display: none;
+  }
+
+  /* ═══ موبايل ═══ */
   @media (max-width: 640px) {
     .knot {
       inset-inline-end: -38%;
@@ -152,6 +274,10 @@ const isAr = lang === 'ar';
     .actions .btn {
       flex: 1;
       justify-content: center;
+    }
+
+    .outro {
+      bottom: 18dvh;
     }
   }
 </style>
