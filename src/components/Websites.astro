@@ -118,6 +118,11 @@ const t = isAr
     --card-gap: clamp(24px, 3vw, 44px); /* المسافة بين بطاقات المواقع */
     --name-size: clamp(21px, 2.4vw, 30px); /* حجم اسم الموقع */
     --shot-ratio: 16 / 10; /* نسبة صورة البريفيو */
+    /* ⬛ التعتيم العام فوق الفيديو كله (0 = الفيديو بكامل وضوحه) */
+    --film-scrim: 0;
+    /* ⬛ تعتيم موضعي خلف النص فقط (ضروري لقراءة العنوان) */
+    --text-scrim: 0.6;
+    --text-scrim-width: 58%;
     padding-block: var(--section-gap) 0;
   }
 
@@ -137,15 +142,32 @@ const t = isAr
     height: 100%;
   }
 
+  /* التعتيم فوق الفيديو — بينضبط من --film-scrim فوق.
+     التدرّج بالأطراف بيضل موجود عشان الفيديو يذوب بالصفحة
+     بدل ما ينقطع فجأة (هذا مش تعتيم، هذا وصل بصري). */
   .film-veil {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      to top,
-      var(--bg),
-      rgba(14, 15, 18, 0.5) 45%,
-      rgba(14, 15, 18, 0.7)
-    );
+    background:
+      /* وصل بصري بالأطراف عشان الفيديو يذوب بالصفحة (مش تعتيم) */
+      linear-gradient(to top, var(--bg), transparent 16%, transparent 86%, var(--bg)),
+      /* تعتيم موضعي خلف النص فقط */
+        linear-gradient(
+          to var(--text-side, right),
+          rgba(14, 15, 18, var(--text-scrim)) 0%,
+          rgba(14, 15, 18, calc(var(--text-scrim) * 0.72)) 32%,
+          transparent var(--text-scrim-width)
+        ),
+      /* تعتيم عام (صفر افتراضياً) */
+        linear-gradient(
+          to top,
+          rgba(14, 15, 18, var(--film-scrim)),
+          rgba(14, 15, 18, var(--film-scrim))
+        );
+  }
+
+  html[dir='rtl'] .film-veil {
+    --text-side: left;
   }
 
   .film-copy {

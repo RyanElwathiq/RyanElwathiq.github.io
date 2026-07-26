@@ -124,8 +124,16 @@ const t = isAr
     /* حجم الجملة الختامية */
     --outro-size: clamp(30px, 4.6vw, 64px);
 
-    /* قوة التعتيم فوق الفيديو (0 = بدون، 0.6 = غامق كثير) */
-    --scrim-opacity: 0.34;
+    /* ⬛ التعتيم العام فوق الفيديو كله (0 = الفيديو بكامل وضوحه) */
+    --scrim-opacity: 0;
+
+    /* ⬛ تعتيم موضعي خلف النص فقط — الفيديو بيضل واضح بباقي الشاشة.
+       ⚠️ ضروري: الفيديو فيه ومضات ليمونية فاتحة، وبدون هالطبقة
+          بيصير تباين العنوان 1.02 (يعني بيختفي تماماً).
+          مع 0.62 بيصير 8.9 وهاد ممتاز حسب معايير الوصولية.
+       --text-scrim-width = قديش يمتد التعتيم من جهة النص */
+    --text-scrim: 0.72;
+    --text-scrim-width: 74%;
   }
 
   /* ═══ البنية (ما بتحتاج تلمسها غالباً) ═══ */
@@ -148,17 +156,32 @@ const t = isAr
     height: 100%;
   }
 
-  /* التعتيم: أغمق تحت النص، خفيف بالنص */
+  /* طبقتين:
+     1) تعتيم عام فوق الفيديو كله  → --scrim-opacity
+     2) تعتيم موضعي خلف النص فقط   → --text-scrim
+     التاني بيبدأ غامق من جهة النص وبيذوب لشفاف، فالفيديو بيضل
+     واضح بالجهة الثانية وبنفس الوقت النص مقروء دايماً. */
   .scrim {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      to top,
-      rgba(14, 15, 18, calc(var(--scrim-opacity) + 0.25)),
-      rgba(14, 15, 18, var(--scrim-opacity)) 40%,
-      rgba(14, 15, 18, 0.08)
-    );
+    background:
+      linear-gradient(
+        to var(--text-side, right),
+        rgba(14, 15, 18, var(--text-scrim)) 0%,
+        rgba(14, 15, 18, calc(var(--text-scrim) * 0.75)) 35%,
+        transparent var(--text-scrim-width)
+      ),
+      linear-gradient(
+        to top,
+        rgba(14, 15, 18, var(--scrim-opacity)),
+        rgba(14, 15, 18, var(--scrim-opacity))
+      );
     pointer-events: none;
+  }
+
+  /* بالعربي النص عاليمين، فالتعتيم لازم يبدأ من اليمين */
+  html[dir='rtl'] .scrim {
+    --text-side: left;
   }
 
   /* ═══ العقدة الاحتياطية (لما ما يكون في فريمات) ═══ */
@@ -230,7 +253,8 @@ const t = isAr
   }
 
   .sub {
-    color: var(--muted);
+    /* أفتح من --muted العادي: النص فوق فيديو متغيّر، فبيحتاج تباين أعلى */
+    color: #cdd1c8;
     font-size: var(--sub-size);
     max-width: var(--sub-max-width);
     margin-bottom: var(--gap-sub-actions);

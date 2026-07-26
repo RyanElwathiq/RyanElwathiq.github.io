@@ -142,7 +142,9 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     --text-size: clamp(16px, 1.7vw, 19px); /* حجم نص المقال */
     --text-line-gap: 1.85; /* تباعد أسطر النص */
     --content-width: 68ch; /* أقصى عرض للنص (مهم للقراءة) */
-    --film-scrim: 0.45; /* قوة التعتيم فوق فيديو الترويسة */
+    --film-scrim: 0; /* ⬛ التعتيم العام فوق الفيديو (0 = بدون) */
+    --text-scrim: 0.66; /* ⬛ تعتيم موضعي خلف عنوان المقال فقط */
+    --text-scrim-width: 66%;
   }
 
   /* ─── الترويسة السينمائية ─── */
@@ -164,12 +166,26 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
   .film-veil {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      to top,
-      var(--bg),
-      rgba(14, 15, 18, calc(var(--film-scrim) + 0.15)) 35%,
-      rgba(14, 15, 18, var(--film-scrim))
-    );
+    background:
+      /* وصل بصري بالأسفل (مش تعتيم) */
+      linear-gradient(to top, var(--bg), transparent 18%),
+      /* تعتيم موضعي خلف النص فقط */
+        linear-gradient(
+          to var(--text-side, right),
+          rgba(14, 15, 18, var(--text-scrim)) 0%,
+          rgba(14, 15, 18, calc(var(--text-scrim) * 0.75)) 34%,
+          transparent var(--text-scrim-width)
+        ),
+      /* تعتيم عام (صفر افتراضياً) */
+        linear-gradient(
+          to top,
+          rgba(14, 15, 18, var(--film-scrim)),
+          rgba(14, 15, 18, var(--film-scrim))
+        );
+  }
+
+  html[dir='rtl'] .film-veil {
+    --text-side: left;
   }
 
   .film-copy {
