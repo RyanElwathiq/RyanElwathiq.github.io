@@ -72,51 +72,11 @@ if (!reduceMotion) {
 
 // ─────────────────────────────────────────────
 //  3) ظهور العناصر مع السكرول
-//     حط  data-reveal  على أي عنصر بدك يظهر بنعومة
-//     حط  data-stagger على حاوية عشان أولادها يظهروا واحد ورا واحد
+//     ⚠️ انتقل لسكربت صغير جوا <head> بملف Base.astro
+//     (IntersectionObserver + CSS) عشان النصوص تبين فوراً
+//     بدون ما تستنى مكتبة GSAP تحمّل.
+//     data-reveal = عنصر منفرد | data-stagger = مجموعة بالتتابع
 // ─────────────────────────────────────────────
-if (!reduceMotion) {
-  // عناصر منفردة
-  ScrollTrigger.batch('[data-reveal]:not([data-hero-fade])', {
-    start: 'top 88%',
-    once: true,
-    onEnter: (els) =>
-      gsap.to(els, {
-        opacity: 1,
-        y: 0,
-        duration: REVEAL_DURATION,
-        stagger: STAGGER_GAP,
-        ease: 'power3.out',
-        overwrite: true,
-      }),
-  });
-  gsap.set('[data-reveal]:not([data-hero-fade])', { y: REVEAL_Y });
-
-  // مجموعات: الأولاد بيظهروا بالتتابع
-  document.querySelectorAll('[data-stagger]').forEach((group) => {
-    const kids = group.children;
-    gsap.set(kids, { opacity: 0, y: REVEAL_Y });
-    ScrollTrigger.create({
-      trigger: group,
-      start: 'top 85%',
-      once: true,
-      onEnter: () =>
-        gsap.to(kids, {
-          opacity: 1,
-          y: 0,
-          duration: REVEAL_DURATION,
-          stagger: STAGGER_GAP,
-          ease: 'power3.out',
-        }),
-    });
-  });
-} else {
-  // «تقليل الحركة»: كل إشي ظاهر فوراً
-  document.querySelectorAll('[data-reveal], [data-stagger] > *').forEach((el) => {
-    el.style.opacity = '1';
-    el.style.transform = 'none';
-  });
-}
 
 // ─────────────────────────────────────────────
 //  4) عدّادات الأرقام
@@ -134,19 +94,44 @@ document.querySelectorAll('[data-counter]').forEach((el) => {
     return;
   }
 
-  const state = { v: 0 };
-  ScrollTrigger.create({
-    trigger: el,
-    start: 'top 88%',
-    once: true,
-    onEnter: () =>
-      gsap.to(state, {
-        v: target,
-        duration: COUNTER_TIME,
-        ease: 'power2.out',
-        onUpdate: () => (el.textContent = fmt(state.v)),
-      }),
-  });
+  // العد بيبدأ لما العنصر يوصل الشاشة. مربوط بـ IntersectionObserver
+  // مش بمكتبة الحركة، عشان الرقم يبين حتى لو GSAP اتأخر بالتحميل.
+  let done = false;
+  const run = () => {
+    if (done) return;
+    done = true;
+    const state = { v: 0 };
+    gsap.to(state, {
+      v: target,
+      duration: COUNTER_TIME,
+      ease: 'power2.out',
+      onUpdate: () => (el.textContent = fmt(state.v)),
+    });
+  };
+
+  const r = el.getBoundingClientRect();
+  if (r.top < window.innerHeight && r.bottom > 0) {
+    run(); // ظاهر أصلاً → ابدأ فوراً
+  } else {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          run();
+        });
+      },
+      { rootMargin: '0px 0px -8% 0px' }
+    );
+    io.observe(el);
+    // شبكة أمان: لو المراقبة ما اشتغلت، الرقم بيظهر كامل بدل ما يضل صفر
+    setTimeout(() => {
+      if (!done) {
+        const rr = el.getBoundingClientRect();
+        if (rr.top < window.innerHeight && rr.bottom > 0) run();
+      }
+    }, 1500);
+  }
 });
 
 // ─────────────────────────────────────────────

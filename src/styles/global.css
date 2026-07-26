@@ -118,18 +118,38 @@ button {
   background-size: 200px 200px;
 }
 
-/* ─── حالة ما قبل الأنيميشن (بتنشال بالجافاسكربت) ───
-   مربوطة بكلاس .js اللي بينحط على <html> أول ما الجافاسكربت يشتغل.
-   يعني لو الجافاسكربت فشل أو انقفل، كل المحتوى بيضل ظاهر عادي. */
-html.js [data-reveal] {
+/* ═══ ظهور العناصر مع السكرول ═══
+   بيشتغل بـ CSS + IntersectionObserver صغير جوا الصفحة نفسها،
+   مش بمكتبة الحركة. يعني النص بيبين **فوراً** لما توصله حتى لو
+   مكتبة GSAP لسا عم تحمّل.
+   ومربوط بكلاس .js: لو الجافاسكربت فشل، كل المحتوى بيضل ظاهر. */
+html.js [data-reveal],
+html.js [data-stagger] > * {
   opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.75s var(--ease-out),
+    transform 0.75s var(--ease-out);
+}
+
+/* التتابع: كل عنصر بالمجموعة بيتأخر شوي عن اللي قبله */
+html.js [data-stagger] > * {
+  transition-delay: calc(var(--i, 0) * 0.07s);
+}
+
+html.js [data-reveal].is-in,
+html.js [data-stagger] > .is-in {
+  opacity: 1;
+  transform: none;
 }
 
 /* لو المستخدم مفعّل «تقليل الحركة»: كل إشي يظهر فوراً بدون أنيميشن */
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal] {
+  html.js [data-reveal],
+  html.js [data-stagger] > * {
     opacity: 1 !important;
     transform: none !important;
+    transition: none !important;
   }
 
   *,

@@ -52,21 +52,63 @@ In plain terms: if you do not have a website, **you do not exist** to an entire 
 
 The businesses publishing real content on their own sites today are the ones these tools will cite a year or two from now. **That window is closing gradually.**
 
-## "But websites are expensive and complicated"
+## "But a website is expensive"
 
-That was true in 2015. Today:
+Yes. It genuinely is. And that is not a flaw in the product, it is the nature of it.
 
-- Hosting and a domain can cost the equivalent of a few dinars a month
-- Sites can run with no server at all and still load fast
-- The content you already write for social becomes the foundation of your pages
+The problem is that you are doing the wrong arithmetic. You are asking "how much will I pay?" when the real question is **"how much will it return, and how much am I losing every month without it?"**
 
-Cost is not the real obstacle. The real obstacle is that a website is **not urgent**. It does not pay off tomorrow like a post does; it pays off in six months. That is exactly why most people postpone it, and exactly why the ones who do not get ahead.
+### A website is not a page. It is a branch.
+
+Imagine opening a second location for your business. What do you need?
+
+- **Rent** — hosting and a domain
+- **Fit-out and finishing** — design and visual identity
+- **Floor planning** — where the product sits, where the counter goes, how a customer moves through the space. That is exactly what UX work is: where the button lands, what a visitor sees first, and how you get them to a decision in the fewest steps
+- **A sign on the street** — your visibility in search
+- **Staff answering around the clock** — the FAQ, order, and booking pages that work while you sleep
+
+A physical branch costs tens of thousands, serves one neighbourhood, and closes at ten. **A website costs a fraction of that, serves the entire country and anywhere with internet, and never closes.**
+
+So when you see a number like 5,000 dinars, do not compare it to the price of "designing a page." Compare it to the cost of opening a branch.
+
+### Run the numbers with me
+
+If the site brings you **one extra client per month**, and your profit per client is 150 dinars:
+
+- Per year = **1,800 dinars**
+- Over three years = **5,400 dinars**
+
+From **one** client a month. And a website does not expire after a year. It keeps working, and its search position improves as it grows, which means **it brings in more each year, not less**.
+
+Now flip the equation: **how much are you losing right now?** Every month you delay, people searched for your service, found your competitor, and bought from them. **You never see that loss on your statement, because it never happened.** That is the most dangerous kind of loss there is.
+
+### The real cost is not the build, it is the decisions
+
+Anyone can drop a ready-made template on a domain for a hundred dinars. Then you discover it is slow, it does not surface in search, and nobody contacts you through it.
+
+**You are not paying for pages. You are paying for the questions answered before the first line is written:**
+
+- Who exactly is your audience, and what objection stops them from buying?
+- What must they see in the first three seconds?
+- Which words are they actually searching for, rather than the ones we assume?
+- How will we measure whether this worked?
+
+Those decisions are the difference between a site that brings work and a site that sits on a shelf. **That is what you are paying for.**
+
+### The real obstacle: it is not urgent
+
+A website does not pay off tomorrow the way a post does. It pays off in six months, and then keeps paying for years.
+
+That is exactly why most people postpone it. And exactly why the ones who build it today get ahead of the ones still thinking about it.
 
 ## The practical takeaway
 
-- **Social media is discovery.** It is excellent at making people aware of you.
+- **Social media is discovery.** It is excellent at making people aware of you, but you are renting that space.
 - **A website is ownership, trust, and conversion.** It is where a follow becomes a purchase, a visit becomes data, and data becomes a decision.
 
 It is not one or the other. Social brings people in. Your site converts them and keeps them.
 
-If you are running a business on social only and are not sure where to start with a site, [tell me about it](/#contact) and I will help you work out the right first step for your situation.
+> A website is not an expense you take out of the budget. **It is an asset you add to the business.** It works around the clock, it compounds over time, and it stays yours no matter how the algorithms change.
+
+If you are running a business on social only and are not sure whether now is the right time, [tell me about it](/#contact) and we will do the maths together: what it costs, what it returns, and where it makes sense to start.

@@ -182,15 +182,22 @@ const tools = [
     background: rgba(14, 15, 18, 0.4);
   }
 
+  /* اللف بيتحرك بمقدار نصف الشريط (لأن قائمة الأدوات مكررة مرتين)
+     فبيرجع لنفس المكان بالضبط ويكمل بلا انقطاع */
   @keyframes roll {
     to {
-      transform: translateX(-50%);
+      transform: translateX(var(--roll-to));
     }
   }
 
-  /* بالعربي بنعكس اتجاه اللف */
+  .marquee-track {
+    --roll-to: -50%;
+  }
+
+  /* ⚠️ بالعربي (RTL) الشريط بيبدأ من اليمين، فلازم يتحرك لليمين.
+     بدون هالسطر كان نص الشريط يطلع فاضي بالنسخة العربية. */
   html[dir='rtl'] .marquee-track {
-    animation-direction: reverse;
+    --roll-to: 50%;
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -30,9 +30,100 @@ const dir = lang === 'ar' ? 'rtl' : 'ltr';
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
 
-    <!-- بيحط كلاس .js فوراً: بدونه المحتوى بيضل ظاهر لو الجافاسكربت ما اشتغل -->
+    <!-- ═══════════════════════════════════════════════════════════
+         سكربت الظهور — بيشتغل فوراً وبدون أي مكتبة خارجية
+         عشان النصوص تبين باللحظة اللي توصلها فيها، حتى لو مكتبة
+         الحركة (GSAP) لسا عم تحمّل. هاد هو سبب سرعة الإحساس بالموقع.
+         ═══════════════════════════════════════════════════════════ -->
     <script is:inline>
       document.documentElement.classList.add('js');
+
+      (function () {
+        var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function show(el) {
+          el.classList.add('is-in');
+        }
+
+        function reveal(el) {
+          if (el.hasAttribute('data-stagger')) {
+            Array.prototype.forEach.call(el.children, show);
+          } else {
+            show(el);
+          }
+        }
+
+        // هل العنصر ظاهر بالشاشة هلق؟
+        function inView(el) {
+          var r = el.getBoundingClientRect();
+          return r.top < innerHeight && r.bottom > 0;
+        }
+
+        function start() {
+          var targets = [].slice.call(
+            document.querySelectorAll('[data-reveal], [data-stagger]')
+          );
+
+          // نرقّم أولاد كل مجموعة عشان يظهروا واحد ورا التاني
+          document.querySelectorAll('[data-stagger]').forEach(function (g) {
+            Array.prototype.forEach.call(g.children, function (c, i) {
+              c.style.setProperty('--i', i);
+            });
+          });
+
+          if (reduce || !('IntersectionObserver' in window)) {
+            targets.forEach(reveal);
+            return;
+          }
+
+          // 1) اللي ظاهر بالشاشة هلق بيبين فوراً بدون أي انتظار
+          targets = targets.filter(function (el) {
+            if (!inView(el)) return true;
+            reveal(el);
+            return false;
+          });
+
+          // 2) الباقي بينراقب وبيظهر لما توصله
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (e) {
+                if (!e.isIntersecting) return;
+                io.unobserve(e.target);
+                reveal(e.target);
+              });
+            },
+            // rootMargin سالب من تحت = يبدأ الظهور قبل ما يوصل الطرف بشوي
+            { rootMargin: '0px 0px -12% 0px', threshold: 0.01 }
+          );
+
+          targets.forEach(function (el) {
+            io.observe(el);
+          });
+
+          // 3) شبكة أمان: لو لأي سبب المراقبة ما اشتغلت (تبويب بالخلفية،
+          //    متصفح غريب، خطأ مؤقت) — أي عنصر ظاهر بالشاشة وما بان
+          //    بينكشف فوراً. يعني مستحيل يضل النص مخفي والزائر واقف عنده.
+          function safetyNet() {
+            targets = targets.filter(function (el) {
+              if (!inView(el)) return true;
+              io.unobserve(el);
+              reveal(el);
+              return false;
+            });
+          }
+
+          addEventListener('scroll', safetyNet, { passive: true });
+          addEventListener('visibilitychange', safetyNet);
+          addEventListener('load', safetyNet);
+          setTimeout(safetyNet, 1200);
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', start);
+        } else {
+          start();
+        }
+      })();
     </script>
   </head>
   <body>
