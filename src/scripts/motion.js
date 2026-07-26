@@ -38,11 +38,13 @@ let cleanups = [];
 //  تنظيف كل شي قبل الانتقال لصفحة ثانية
 // ─────────────────────────────────────────────
 function destroy() {
-  ScrollTrigger.getAll().forEach((t) => t.kill());
+  // kill(true) بتشيل كمان مساحات التثبيت (pin-spacer) من الصفحة.
+  // بدونها بتضل مساحات فاضية بالصفحة الجديدة وبتتداخل الأقسام.
+  ScrollTrigger.getAll().forEach((t) => t.kill(true));
+  ScrollTrigger.clearScrollMemory('manual');
   cleanups.forEach((fn) => fn());
   cleanups = [];
   if (lenis) {
-    gsap.ticker.remove(lenis.raf);
     lenis.destroy();
     lenis = null;
   }
@@ -54,28 +56,52 @@ function destroy() {
 function setupSmoothScroll() {
   if (reduceMotion) return;
 
-  lenis = new Lenis({ duration: SMOOTH_DURATION, smoothWheel: true });
-  const raf = (time) => lenis.raf(time * 1000);
-  lenis.raf = lenis.raf.bind(lenis);
+  const instance = new Lenis({ duration: SMOOTH_DURATION, smoothWheel: true });
+  lenis = instance;
 
-  lenis.on('scroll', ScrollTrigger.update);
+  const raf = (time) => instance.raf(time * 1000);
+  instance.on('scroll', ScrollTrigger.update);
   gsap.ticker.add(raf);
   gsap.ticker.lagSmoothing(0);
   cleanups.push(() => gsap.ticker.remove(raf));
 
+  // ⚠️⚠️ أهم سطر بالملف ⚠️⚠️
+  // Lenis بيحفظ ارتفاع الصفحة عنده مرة وحدة. والأقسام المثبّتة
+  // (الهيرو، شريط الفيديو، فيديو المواقع) بتضيف آلاف البكسلات
+  // للصفحة **بعد** ما يحسب. فكان يفضل شايف الصفحة أقصر مما هي،
+  // وبيرفض ينزل أبعد من الحد القديم — وهاد اللي كان يخلي زر
+  // «كيف بشتغل» يوقف قبل القسم بـ 2000 بكسل.
+  // فكل ما ScrollTrigger يعيد الحساب، منخلي Lenis يعيد قياس الصفحة.
+  const onRefresh = () => instance.resize();
+  ScrollTrigger.addEventListener('refresh', onRefresh);
+  cleanups.push(() => ScrollTrigger.removeEventListener('refresh', onRefresh));
+
   window.__lenis = lenis;
   window.__gsap = gsap;
 
-  // روابط الأنكور (#work، #designs…) بتسكرول بنعومة مع تعويض النافبار
+  // روابط الأنكور (#work، #designs، #pricing…) بتسكرول بنعومة مع تعويض النافبار
   const onClick = (e) => {
     const a = e.target.closest('a[href*="#"]');
     if (!a) return;
+
     const url = new URL(a.href, location.href);
     if (url.pathname !== location.pathname || !url.hash) return;
+
     const target = document.querySelector(url.hash);
     if (!target) return;
+
     e.preventDefault();
-    lenis.scrollTo(target, { offset: -NAV_OFFSET });
+    history.pushState(null, '', url.hash);
+
+    // ⚠️ Lenis بيحسب مسافة الحركة مرة وحدة بالبداية. وبما إن الأقسام
+    //    المثبّتة (الهيرو، شريط الفيديو، فيديو المواقع) بتغيّر مواقع
+    //    اللي بعدها وإحنا عم نمرق فيها، الحركة كانت توقف بمكان غلط —
+    //    وهاد اللي كان يخلي «كيف بشتغل» يوقف قبل القسم بـ 2000 بكسل.
+    //    الحل: نتحرك أول، وبعدين نصحّح على دفعات لحد ما نستقر.
+    lenis.resize(); // نحدّث ارتفاع الصفحة عند Lenis قبل الحركة
+    const y0 = target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+    lenis.scrollTo(y0, { duration: ANCHOR_DURATION });
+    settleTo(url.hash, ANCHOR_RETRIES);
   };
   document.addEventListener('click', onClick);
   cleanups.push(() => document.removeEventListener('click', onClick));
@@ -85,28 +111,29 @@ function setupSmoothScroll() {
 //  2) لما توصل الصفحة ومعها أنكور (#designs مثلاً)
 //     منقفز على القسم مباشرة بدل ما نبلّش من فوق
 // ─────────────────────────────────────────────
-// مواعيد التصحيح (بالملي ثانية) — بنصحّح الموقع عند كل وحدة منها
+// مواعيد التصحيح (بالملي ثانية)
+// عند فتح صفحة بأنكور: منصحّح من البداية وعلى دفعات متقاربة
 const HASH_RETRIES = [0, 50, 120, 250, 450, 750, 1100, 1600, 2200, 3000];
+// عند الضغط على زر أنكور: منستنى الحركة تخلص وبعدين منصحّح
+const ANCHOR_DURATION = 1;
+const ANCHOR_RETRIES = [1100, 1300, 1550, 1900, 2400, 3000];
 
-function jumpToHash() {
-  if (!location.hash) return;
-  const target = document.querySelector(location.hash);
-  if (!target) return;
-
-  // ⚠️ ارتفاع الصفحة بيتغيّر وهي عم تتشكّل (الفيديوهات بتحجز مساحات
-  //    التثبيت، والصور بتحمّل). فمنط، منقيس من جديد، ومنصحّح على دفعات
-  //    لحد ما نستقر على القسم الصح بالضبط.
+// بيصحّح موقع السكرول على دفعات لحد ما القسم يستقر تحت النافبار بالضبط
+function settleTo(hash, schedule) {
   const timers = [];
   let settled = false;
 
   const step = () => {
     if (settled) return;
-    const el = document.querySelector(location.hash);
+    const el = document.querySelector(hash);
     if (!el) return;
+
+    // نتأكد إن Lenis عارف الارتفاع الحقيقي قبل ما نطلب منه يتحرك
+    if (lenis) lenis.resize();
 
     const y = el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
     const drift = Math.abs(y - window.scrollY);
-    if (drift < 3) {
+    if (drift < 4) {
       settled = true;
       return;
     }
@@ -115,8 +142,16 @@ function jumpToHash() {
     else window.scrollTo(0, y);
   };
 
-  HASH_RETRIES.forEach((ms) => timers.push(setTimeout(step, ms)));
+  schedule.forEach((ms) => timers.push(setTimeout(step, ms)));
   cleanups.push(() => timers.forEach(clearTimeout));
+}
+
+// ⚠️ ارتفاع الصفحة بيتغيّر وهي عم تتشكّل (الفيديوهات بتحجز مساحات
+//    التثبيت، والصور بتحمّل). فمنط، منقيس من جديد، ومنصحّح على دفعات.
+function jumpToHash() {
+  if (!location.hash) return;
+  if (!document.querySelector(location.hash)) return;
+  settleTo(location.hash, HASH_RETRIES);
 }
 
 // ─────────────────────────────────────────────
@@ -290,15 +325,20 @@ function init() {
   });
 
   jumpToHash();
+
+  // ⚠️ بعد الانتقال بين الصفحات، ارتفاعات الأقسام بتضل تتغيّر لجزء من
+  //    الثانية (مساحات التثبيت بتتحسب، الصور بتحمّل). بدون إعادة حساب
+  //    متكررة كانت الأقسام تتداخل ببعضها لحظة السكرول.
+  [120, 400, 900, 1800].forEach((ms) => {
+    const t = setTimeout(() => ScrollTrigger.refresh(), ms);
+    cleanups.push(() => clearTimeout(t));
+  });
 }
 
-// أول تحميل للموقع
-init();
+// astro:page-load بتشتغل بأول تحميل وبعد كل انتقال بين الصفحات
+document.addEventListener('astro:page-load', init);
 
-// عند كل انتقال لصفحة جديدة (بدون إعادة تحميل)
-document.addEventListener('astro:after-swap', init);
-
-// قبل مغادرة الصفحة: ننظّف كل شي عشان ما يتراكم
+// قبل مغادرة الصفحة: ننظّف كل شي عشان ما يتراكم ويتداخل
 document.addEventListener('astro:before-swap', destroy);
 
 // بعد ما تخلص الصور والخطوط تحميل (بتغيّر ارتفاع الصفحة)

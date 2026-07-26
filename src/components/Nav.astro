@@ -6,18 +6,23 @@
 // ═══════════════════════════════════════════════════════════════
 interface Props {
   lang: 'en' | 'ar';
+  // رابط بديل لتبديل اللغة (بتستخدمه صفحات المقالات لأن اسم
+  // ملف المقال بيختلف بين اللغتين)
+  switchTo?: string;
 }
 
-const { lang } = Astro.props;
+const { lang, switchTo } = Astro.props;
 const isAr = lang === 'ar';
 
 // تبديل اللغة الذكي: بينقلك لنفس الصفحة باللغة الثانية
 const path = Astro.url.pathname;
-const switchHref = isAr
-  ? path.replace(/^\/ar\/?/, '/') || '/'
-  : path === '/'
-    ? '/ar/'
-    : `/ar${path}`;
+const switchHref =
+  switchTo ||
+  (isAr
+    ? path.replace(/^\/ar\/?/, '/') || '/'
+    : path === '/'
+      ? '/ar/'
+      : `/ar${path}`);
 
 const home = isAr ? '/ar/' : '/';
 const blogHref = isAr ? '/ar/blog/' : '/blog/';

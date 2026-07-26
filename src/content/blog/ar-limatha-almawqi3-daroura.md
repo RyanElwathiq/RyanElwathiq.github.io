@@ -6,6 +6,7 @@ lang: 'ar'
 tags: ['مواقع', 'استراتيجية رقمية', 'ذكاء اصطناعي', 'SEO']
 cover: '/frames/blog-web/frame_0060.webp'
 film: '/frames/blog-web/'
+alt: 'en-why-every-business-needs-a-website'
 draft: false
 ---
 

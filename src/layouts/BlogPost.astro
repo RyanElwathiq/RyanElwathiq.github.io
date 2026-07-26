@@ -17,8 +17,19 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, date, lang, tags, film } = post.data;
+const { title, description, date, lang, tags, film, alt } = post.data;
 const isAr = lang === 'ar';
+
+// ⚠️ اسم ملف المقال بيختلف بين العربي والإنجليزي، فتبديل اللغة
+//    لازم يعرف اسم الملف المقابل. بنقرأه من حقل alt بأول المقال.
+//    إذا ما كان موجود، بيرجّعك لقائمة المقالات باللغة الثانية.
+const switchTo = alt
+  ? isAr
+    ? `/blog/${alt}/`
+    : `/ar/blog/${alt}/`
+  : isAr
+    ? '/blog/'
+    : '/ar/blog/';
 
 const fmt = date.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', {
   year: 'numeric',
@@ -53,7 +64,7 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 ---
 
 <Base title={`${title} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`} description={description} lang={lang}>
-  <Nav lang={lang} />
+  <Nav lang={lang} switchTo={switchTo} />
 
   <main id="top" class="post">
     <!-- ═══════════ الترويسة السينمائية ═══════════

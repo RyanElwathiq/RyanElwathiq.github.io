@@ -10,10 +10,12 @@ interface Props {
   allHref: string;
   allLabel: string;
   id?: string;
+  showAll?: boolean;
 }
 
-const { lang, projects, heading, allHref, allLabel, id } = Astro.props;
+const { lang, projects, heading, allHref, allLabel, id, showAll = true } = Astro.props;
 const isAr = lang === 'ar';
+// بيعرض أول قصتين بس عشان تضل الصفحة الرئيسية مركّزة
 const shown = projects.slice(0, 2);
 ---
 
@@ -21,7 +23,7 @@ const shown = projects.slice(0, 2);
   <div class="container">
     <div class="head">
       <h2 data-reveal>{heading}</h2>
-      <a class="all-link" href={allHref} data-reveal>{allLabel}</a>
+      {showAll && <a class="all-link" href={allHref} data-reveal>{allLabel}</a>}
     </div>
 
     {

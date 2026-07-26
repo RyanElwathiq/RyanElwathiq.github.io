@@ -6,6 +6,7 @@ lang: 'en'
 tags: ['websites', 'digital strategy', 'AI', 'SEO']
 cover: '/frames/blog-web/frame_0060.webp'
 film: '/frames/blog-web/'
+alt: 'ar-limatha-almawqi3-daroura'
 draft: false
 ---
 

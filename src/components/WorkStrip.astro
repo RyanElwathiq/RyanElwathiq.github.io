@@ -15,27 +15,50 @@ interface Props {
   allLabel: string;
   id?: string;
   pan?: boolean; // true = سحب أفقي مثبّت عالديسكتوب
+  showAll?: boolean; // في أعمال زيادة بصفحة القسم؟
 }
 
-const { lang, projects, heading, allHref, allLabel, id, pan = false } = Astro.props;
+const {
+  lang,
+  projects,
+  heading,
+  allHref,
+  allLabel,
+  id,
+  pan = false,
+  showAll = true,
+} = Astro.props;
 ---
 
 <section class="strip" id={id} data-hpan={pan ? '' : undefined}>
   <div class="head container">
     <h2 data-reveal>{heading}</h2>
-    <a class="all-link" href={allHref} data-reveal>{allLabel}</a>
+    {showAll && <a class="all-link" href={allHref} data-reveal>{allLabel}</a>}
   </div>
 
   <div class="track container" data-hpan-track={pan ? '' : undefined} data-stagger>
     {projects.map((p) => <WorkCard project={p} lang={lang} />)}
 
-    <!-- بطاقة «شوف الكل» -->
-    <a class="more" href={allHref}>
-      <span>{allLabel}</span>
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="arrow">
-        <path d="M5 12h14M13 6l6 6-6 6" />
-      </svg>
-    </a>
+    <!-- بطاقة «شوف الكل» — بتظهر بس إذا في أعمال زيادة -->
+    {
+      showAll && (
+        <a class="more" href={allHref}>
+          <span>{allLabel}</span>
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+            class="arrow"
+          >
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </a>
+      )
+    }
   </div>
 </section>
 

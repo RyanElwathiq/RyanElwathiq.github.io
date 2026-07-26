@@ -46,6 +46,7 @@ import { forHome, hasMore } from '../../utils/work.js';
       allLabel="كل الفيديوهات"
       id="work"
       pan={true}
+      showAll={hasMore('video')}
     />
 
     <CaseRows
@@ -55,6 +56,7 @@ import { forHome, hasMore } from '../../utils/work.js';
       allHref="/ar/marketing/"
       allLabel="كل شغل التسويق"
       id="growth"
+      showAll={hasMore('marketing', 2)}
     />
 
     <DesignsGrid
@@ -64,6 +66,7 @@ import { forHome, hasMore } from '../../utils/work.js';
       allHref="/ar/designs/"
       allLabel="كل التصاميم"
       id="designs"
+      showAll={hasMore('design')}
     />
 
     <Websites

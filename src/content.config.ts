@@ -18,6 +18,9 @@ const blog = defineCollection({
     // فيديو بيتحرك مع السكرول بآخر المقال (اختياري)
     // مثال: film: '/frames/blog-web/'
     film: z.string().optional(),
+    // اسم ملف نفس المقال باللغة الثانية (بدون .md)
+    // بيخلي زر تبديل اللغة ينقلك لنفس المقال مش لقائمة المقالات
+    alt: z.string().optional(),
     draft: z.boolean().default(false),     // true = مسودة، ما بتنشر
   }),
 });

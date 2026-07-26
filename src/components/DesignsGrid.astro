@@ -12,9 +12,10 @@ interface Props {
   allHref: string;
   allLabel: string;
   id?: string;
+  showAll?: boolean;
 }
 
-const { lang, projects, heading, allHref, allLabel, id } = Astro.props;
+const { lang, projects, heading, allHref, allLabel, id, showAll = true } = Astro.props;
 const isAr = lang === 'ar';
 const behance = work.links.behance;
 ---
@@ -33,7 +34,7 @@ const behance = work.links.behance;
           }
         </p>
       </div>
-      <a class="all-btn" href={allHref} data-reveal>{allLabel}</a>
+      {showAll && <a class="all-btn" href={allHref} data-reveal>{allLabel}</a>}
     </div>
 
     <div class="grid" data-stagger>
