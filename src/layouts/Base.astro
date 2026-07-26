@@ -1,0 +1,28 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  القالب الأساسي — كل صفحات الموقع بتلبس هذا القالب
+//  (اللغة والاتجاه RTL/LTR بينضبطوا لحالهم حسب الصفحة)
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  title: string;
+  description: string;
+  lang?: 'en' | 'ar';
+}
+
+const { title, description, lang = 'en' } = Astro.props;
+const dir = lang === 'ar' ? 'rtl' : 'ltr';
+---
+
+<!doctype html>
+<html lang={lang} dir={dir}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/png" href="/assets/logo-white.png" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
