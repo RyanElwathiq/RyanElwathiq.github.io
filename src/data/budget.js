@@ -51,8 +51,16 @@ export const channels = [
     saturation: 1200,
     compound: 5.5, // الـ SEO أبطأ إشي وأقوى إشي على المدى الطويل
     color: '#5BC8F5',
-    en: { name: 'Website + SEO', note: 'The land you own. Slowest to start, strongest to last.' },
-    ar: { name: 'الموقع والـ SEO', note: 'الأرض اللي بتملكها. أبطأ إشي بالبداية وأقوى إشي بالنهاية.' },
+    // ⚠️ الوصف هون بيوضّح إنه صرف شهري مستمر مش بناء موقع من الصفر —
+    //    لأن الزائر ممكن يقرا «٢٠٠ دينار» ويفهمها سعر موقع كامل
+    en: {
+      name: 'Website + SEO',
+      note: 'Ongoing monthly: pages, improvements, and search ranking. Not building a site from scratch.',
+    },
+    ar: {
+      name: 'الموقع والـ SEO',
+      note: 'صرف شهري مستمر: صفحات وتحسينات وترتيب بجوجل — مش بناء موقع من الصفر.',
+    },
   },
   {
     key: 'brand',
@@ -61,8 +69,14 @@ export const channels = [
     saturation: 500, // بعد حد معيّن، صرف أكثر على الهوية ما بيغيّر شي
     compound: 1.4,
     color: '#F5A65B',
-    en: { name: 'Brand + creative', note: 'Buys almost no reach. Multiplies every other channel.' },
-    ar: { name: 'الهوية والمواد الإبداعية', note: 'ما بتشتري وصول تقريباً، بس بتضاعف كل القنوات الثانية.' },
+    en: {
+      name: 'Brand + creative',
+      note: 'Monthly design and creative output. Buys almost no reach, multiplies every other channel.',
+    },
+    ar: {
+      name: 'الهوية والمواد الإبداعية',
+      note: 'إنتاج تصميم ومواد كل شهر. ما بتشتري وصول تقريباً، بس بتضاعف كل القنوات الثانية.',
+    },
   },
   {
     key: 'creators',

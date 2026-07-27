@@ -21,9 +21,27 @@ const COPY = {
     kicker: 'محاكاة',
     title: 'عندك ميزانية تسويق. وين بتحطها؟',
     sub: 'وزّع ميزانيتك على القنوات الخمس وشوف شو بترجّعلك. لما تخلص، بوريك توزيعي أنا وليش.',
-    budgetLabel: 'ميزانيتك الشهرية:',
+    budgetLabel: 'ميزانية التنفيذ الشهرية:',
     zeroSum: 'كل دينار بتزيده على قناة، بيطلع من القنوات الثانية — زي الواقع بالضبط.',
     dinar: 'د',
+    // ═══ صندوق التوضيح فوق — أهم نص باللعبة ═══
+    briefTitle: 'قبل ما تلعب — ثلاث نقاط لازم تكون واضحة',
+    brief: [
+      {
+        h: 'الرقم شهري ومتكرر.',
+        p: 'لو اخترت ١٠٠٠ دينار، هاي ميزانية كل شهر — مش دفعة وحدة. ولهيك رقم الشهر الأول ورقم الشهر السادس بيطلعوا مختلفين.',
+      },
+      {
+        h: '«الموقع والـ SEO» صرف شهري مستمر.',
+        p: 'صفحات جديدة، تحسينات، محتوى، وترتيب بجوجل. بناء موقع من الصفر مشروع لحاله وله ميزانية لحالها — لا تقرا ٢٠٠ دينار هون على إنها سعر موقع.',
+      },
+      {
+        h: 'هاي ميزانية التنفيذ، مش أتعابي.',
+        p: 'المبلغ اللي بتوزّعه بيروح لميتا، وللتصوير والإنتاج، وللاستضافة والأدوات — مصاريف بتدفعها بغض النظر عن مين بيشتغل معك. أتعابي مقابل القرارات اللي بتخلّي هالمصاريف ترجّع بدل ما تضيع، وبنتفق عليها لحال حسب حجم الشغل.',
+      },
+    ],
+    feeReminder:
+      'تذكير أخير: الأرقام فوق ميزانية تنفيذ شهرية. أتعابي (الاستراتيجية والإدارة والتنفيذ) منفصلة عنها، وبنتفق عليها بعد ما نحكي عن مشروعك.',
     results: 'النتيجة المتوقّعة',
     statReach: 'وصول بالشهر الأول',
     statLeads: 'عميل محتمل بالشهر الأول',
@@ -49,7 +67,7 @@ const COPY = {
     ctaText: 'بدك توزيع مبني على مشروعك إنت مش على متوسطات؟',
     ctaBtn: 'احكيلي عن مشروعك',
     disclaimer:
-      'هاي محاكاة تعليمية مبنية على متوسطات السوق الأردني وتجربتي بالشغل. الأرقام تقريبية وبتتغيّر حسب مجالك ومنتجك وجودة التنفيذ. «عميل محتمل» = رسالة أو استفسار أو تعبئة نموذج — مش عملية بيع مكتملة.',
+      'هاي محاكاة تعليمية مبنية على متوسطات السوق الأردني وتجربتي بالشغل. الأرقام تقريبية وبتتغيّر حسب مجالك ومنتجك وجودة التنفيذ، وهي ميزانية تنفيذ شهرية ما بتشمل أتعابي. «عميل محتمل» = رسالة أو استفسار أو تعبئة نموذج — مش عملية بيع مكتملة.',
     more: 'افتح اللعبة كاملة ←',
     // ملاحظات بتظهر حسب توزيعك
     notes: {
@@ -87,9 +105,26 @@ const COPY = {
     kicker: 'Simulation',
     title: 'You have a marketing budget. Where does it go?',
     sub: 'Split your budget across the five channels and watch what comes back. When you are done, I will show you my split and why.',
-    budgetLabel: 'Monthly budget:',
+    budgetLabel: 'Monthly delivery budget:',
     zeroSum: 'Every dinar you add to one channel comes out of another — exactly like real life.',
     dinar: 'JD',
+    briefTitle: 'Before you play — three things to be clear about',
+    brief: [
+      {
+        h: 'This number is monthly and recurring.',
+        p: 'Picking 1,000 JD means 1,000 every month, not a one-off payment. That is exactly why the month-one and month-six numbers come out different.',
+      },
+      {
+        h: '"Website + SEO" is ongoing monthly spend.',
+        p: 'New pages, improvements, content, and search ranking work. Building a website from scratch is a separate project with its own budget — do not read 200 JD here as the price of a website.',
+      },
+      {
+        h: 'This is the delivery budget, not my fee.',
+        p: 'What you allocate goes to Meta, to production and shooting, to hosting and tools — costs you pay regardless of who works with you. My fee covers the decisions that make that spend come back instead of disappear, and we agree on it separately based on scope.',
+      },
+    ],
+    feeReminder:
+      'One last reminder: the numbers above are a monthly delivery budget. My fee for strategy, management, and execution sits outside it, and we agree on it after we talk about your business.',
     results: 'Projected result',
     statReach: 'Reach in month 1',
     statLeads: 'Leads in month 1',
@@ -115,7 +150,7 @@ const COPY = {
     ctaText: 'Want a split built on your business instead of averages?',
     ctaBtn: 'Tell me about your business',
     disclaimer:
-      'This is an educational simulation based on Jordanian market averages and my own client work. Numbers are estimates and shift with your industry, product, and execution quality. A "lead" means a message, enquiry, or form fill — not a closed sale.',
+      'This is an educational simulation based on Jordanian market averages and my own client work. Numbers are estimates and shift with your industry, product, and execution quality, and this is a monthly delivery budget that does not include my fee. A "lead" means a message, enquiry, or form fill — not a closed sale.',
     more: 'Open the full simulator →',
     notes: {
       close: {
@@ -273,6 +308,22 @@ export default function BudgetGame({
         <p className="bud-kicker">{t.kicker}</p>
         {compact ? <h2 className="bud-title">{t.title}</h2> : <h1 className="bud-title">{t.title}</h1>}
         <p className="bud-sub">{t.sub}</p>
+      </div>
+
+      {/* ═══════════════════════════════════════════════════════════
+          صندوق التوضيح — ⚠️ لا تحذفه.
+          بيمنع الزائر يفهم إنه رقم اللعبة هو سعر الخدمة، وبيوضّح
+          إنه الميزانية شهرية متكرّرة وإنها ميزانية تنفيذ مش أتعاب.
+          ═══════════════════════════════════════════════════════════ */}
+      <div className="bud-brief">
+        <p className="bud-brief-title">{t.briefTitle}</p>
+        <ol className="bud-brief-list">
+          {t.brief.map((b, i) => (
+            <li key={i}>
+              <b>{b.h}</b> {b.p}
+            </li>
+          ))}
+        </ol>
       </div>
 
       {/* ═══ اختيار الميزانية ═══ */}
@@ -465,6 +516,10 @@ export default function BudgetGame({
               );
             })}
           </div>
+
+          {/* ⚠️ التذكير بالأتعاب بيتكرّر هون عمداً — هاي اللحظة اللي
+              بيقرّر فيها الزائر، ولازم يكون الفرق واضح قبلها */}
+          <p className="bud-fee">{t.feeReminder}</p>
 
           <div className="bud-cta">
             <a className="btn btn-primary" href={contactHref}>
