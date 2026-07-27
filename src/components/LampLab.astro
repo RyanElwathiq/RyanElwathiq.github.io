@@ -10,6 +10,9 @@
 //  ✏️ النصوص من قسم t تحت مباشرة
 // ═══════════════════════════════════════════════════════════════
 import { industries, goals } from '../scripts/idea-engine.js';
+import work from '../data/work.json';
+
+const email = work.links.email;
 
 interface Props {
   lang: 'en' | 'ar';
@@ -30,6 +33,9 @@ const t = isAr
       q2: 'شو بدك من المحتوى؟',
       q3: 'اسم مشروعك (اختياري)',
       q3ph: 'مثلاً: كافيه الركن',
+      q4: 'إشي ثاني بتحب أعرفه؟ (اختياري)',
+      q4ph: 'مثلاً: جمهوري شباب من 18 لـ 25، ومشكلتي إن الناس بتيجي مرة وما بترجع…',
+      q4hint: 'كل ما تحكي أكثر، كل ما صارت الفكرة أقرب لمشروعك — وبتوصلني معك لو حبيت تتواصل.',
       generate: 'ولّد لي فكرة',
       again: 'فكرة ثانية',
       restart: 'غيّر إجاباتي',
@@ -53,6 +59,9 @@ const t = isAr
       q2: 'What do you want from the content?',
       q3: 'Business name (optional)',
       q3ph: 'e.g. Corner Cafe',
+      q4: 'Anything else I should know? (optional)',
+      q4ph: 'e.g. my audience is 18 to 25, and my problem is people come once and never return…',
+      q4hint: 'The more you tell me, the closer the idea gets — and it reaches me if you decide to get in touch.',
       generate: 'Generate an idea',
       again: 'Another idea',
       restart: 'Change my answers',
@@ -130,6 +139,20 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
           <input id="biz-name" type="text" placeholder={t.q3ph} data-biz maxlength="40" />
         </div>
 
+        <!-- مربع حر: الزائر بيكتب أي إشي عن مشروعه.
+             حالياً بينحفظ وبينبعت مع رسالة التواصل، ولما نربط
+             الذكاء الاصطناعي بيصير هو المدخل الأساسي للتخصيص. -->
+        <div class="field">
+          <label for="biz-notes">{t.q4}</label>
+          <textarea
+            id="biz-notes"
+            rows="3"
+            maxlength="400"
+            placeholder={t.q4ph}
+            data-notes></textarea>
+          <p class="hint">{t.q4hint}</p>
+        </div>
+
         <button class="btn btn-primary go" data-generate type="button">{t.generate}</button>
       </div>
 
@@ -155,9 +178,13 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 
         <p class="disclaimer">{t.disclaimer}</p>
 
+        <!-- الزر بيفتح إيميل معبّى بإجاباته والفكرة اللي طلعتله،
+             فما بيضطر يعيد شرح مشروعه من الصفر -->
         <div class="ask">
           <span>{t.cta}</span>
-          <a class="btn btn-ghost" href={contactHref}>{t.ctaBtn}</a>
+          <a class="btn btn-ghost" href={`mailto:${email}`} data-ask-mail data-email={email}>
+            {t.ctaBtn}
+          </a>
         </div>
       </div>
     </div>
@@ -213,10 +240,13 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     pointer-events: none;
   }
 
+  /* ⚠️ منستخدم left/transform الفيزيائيين مش inset-inline-start.
+     الخصائص المنطقية بتنقلب بالعربي، وكان الزر يطلع مزاح عن
+     الحبل بدل ما يكون بطرفه. الحبل عمودي فما بيهمه الاتجاه. */
   .cord {
     position: absolute;
     top: 0;
-    inset-inline-start: 0;
+    left: 0;
     width: 40px;
     height: 200px;
     overflow: visible;
@@ -237,8 +267,8 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
   .handle {
     position: absolute;
     top: var(--cord-length);
-    inset-inline-start: 50%;
-    translate: -50% 0;
+    left: 20px; /* مركز الحبل بالضبط (نص عرض 40px) */
+    transform: translateX(-50%);
     display: grid;
     place-items: center;
     gap: 8px;
@@ -377,7 +407,8 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     color: var(--accent-ink);
   }
 
-  input[type='text'] {
+  input[type='text'],
+  textarea {
     width: 100%;
     max-width: 340px;
     padding: 13px 18px;
@@ -390,13 +421,32 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     transition: border-color 0.3s var(--ease-out);
   }
 
-  input[type='text']::placeholder {
-    color: rgba(160, 164, 155, 0.75);
+  textarea {
+    max-width: 520px;
+    border-radius: var(--r-card);
+    line-height: 1.7;
+    resize: vertical;
+    min-height: 96px;
   }
 
-  input[type='text']:focus {
+  input[type='text']::placeholder,
+  textarea::placeholder {
+    color: rgba(160, 164, 155, 0.7);
+  }
+
+  input[type='text']:focus,
+  textarea:focus {
     outline: none;
     border-color: var(--accent);
+  }
+
+  .hint {
+    margin-top: 10px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    opacity: 0.8;
+    max-width: 52ch;
   }
 
   .go {
@@ -544,6 +594,8 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     const form = lab.querySelector('[data-lab-form]') as HTMLElement;
     const result = lab.querySelector('[data-lab-result]') as HTMLElement;
     const bizInput = lab.querySelector('[data-biz]') as HTMLInputElement;
+    const notesInput = lab.querySelector('[data-notes]') as HTMLTextAreaElement;
+    const askMail = lab.querySelector('[data-ask-mail]') as HTMLAnchorElement;
 
     const isAr = document.documentElement.lang === 'ar';
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -685,6 +737,33 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
       set('[data-r-angle]', idea.angle);
       set('[data-r-proof]', idea.proof);
       set('[data-r-closer]', idea.closer);
+
+      // نعبّي إيميل التواصل بإجاباته والفكرة، عشان يوصلني السياق
+      // كامل بدل ما يكتب «مرحبا» وبس
+      if (askMail) {
+        const label = (sel: string) =>
+          (lab.querySelector(sel + '.is-on') as HTMLElement)?.textContent?.trim() || '';
+        const notes = (notesInput?.value || '').trim();
+        const subject = isAr ? 'استفسار من مختبر الأفكار' : 'Enquiry from the idea lab';
+        const body = [
+          isAr ? 'مرحبا ريّان،' : 'Hi Rayan,',
+          '',
+          `${isAr ? 'المجال' : 'Industry'}: ${label('[data-industry]')}`,
+          `${isAr ? 'الهدف' : 'Goal'}: ${label('[data-goal]')}`,
+          `${isAr ? 'المشروع' : 'Business'}: ${answers.biz || '-'}`,
+          notes ? `${isAr ? 'تفاصيل' : 'Details'}: ${notes}` : '',
+          '',
+          `${isAr ? 'الفكرة اللي طلعتلي' : 'The idea I got'}: ${idea.hook}`,
+          '',
+          isAr ? 'بحب أحكي معك أكثر عن مشروعي.' : 'I would like to talk about my project.',
+        ]
+          .filter(Boolean)
+          .join('\n');
+
+        askMail.href =
+          `mailto:${askMail.dataset.email}` +
+          `?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      }
 
       form.hidden = true;
       result.hidden = false;
