@@ -34,11 +34,17 @@ export function initSignalBar() {
   //  ١) الساعة — توقيت عمّان مهما كان جهاز الزائر وين
   // ─────────────────────────────────────────────
   if (clock) {
-    const fmt = new Intl.DateTimeFormat(isAr ? 'ar-EG' : 'en-GB', {
+    // ✏️ نظام 12 ساعة (بيطلع معه ص/م أو AM/PM).
+    //    بدك ترجّعه 24 ساعة؟ خلّي hour12 تساوي false
+    //    ⚠️ hour: 'numeric' مش '2-digit' — عشان تطلع «٣:٤٥ م»
+    //       مش «٠٣:٤٥ م»، لأن الصفر قبل الرقم بنظام 12 ساعة بشع
+    // en-US مش en-GB: بريطانيا بتكتب «pm» صغيرة، وأمريكا «PM» كبيرة
+    // وهي أوضح بحجم الخط الصغير تبع الشريط
+    const fmt = new Intl.DateTimeFormat(isAr ? 'ar-EG' : 'en-US', {
       timeZone: 'Asia/Amman',
-      hour: '2-digit',
+      hour: 'numeric',
       minute: '2-digit',
-      hour12: false,
+      hour12: true,
     });
     const tick = () => (clock.textContent = fmt.format(new Date()));
     tick();

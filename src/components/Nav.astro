@@ -134,6 +134,11 @@ const switchLabel = isAr ? 'EN' : 'عربي';
     justify-content: center;
     padding-inline: 16px;
     pointer-events: none; /* المساحة الفاضية حواليها ما بتحجب الضغط */
+
+    /* نفس علاج شريط الإشارة: طبقة رسم مستقلة عشان الكبسولة
+       ما ترتجّ وأنت بتمرّر عالموبايل (شريط المتصفح بيختفي ويرجع) */
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   /* ─── الكبسولة نفسها: زجاج بعمق ─── */
