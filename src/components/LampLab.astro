@@ -427,6 +427,9 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     max-width: 62ch;
     opacity: 0.12;
     filter: blur(1.5px);
+    /* ⚠️ مقفول للتفاعل لحد ما تضوي — قبل هيك كان الزائر يقدر
+       يضغط الخيارات ويولّد فكرة والقسم لسا عتمة */
+    pointer-events: none;
     transition:
       opacity 0.9s var(--ease-out),
       filter 0.9s var(--ease-out);
@@ -435,6 +438,7 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
   .lab[data-lit] .content {
     opacity: 1;
     filter: none;
+    pointer-events: auto;
   }
 
   .kicker {
@@ -675,13 +679,8 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     }
   }
 
-  /* ─── تقليل الحركة: القسم مضوي من البداية ─── */
-  @media (prefers-reduced-motion: reduce) {
-    .content {
-      opacity: 1;
-      filter: none;
-    }
-  }
+  /* ─── تقليل الحركة: القسم بيضوي لحاله عند التحميل
+     (بينحط data-lit بالجافاسكربت) فما بنحتاج قاعدة خاصة هون ─── */
 </style>
 
 <script>
@@ -761,15 +760,31 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     const LABEL_ON = isAr ? 'اضغط للإضاءة' : 'Tap to light';
     const LABEL_OFF = isAr ? 'اضغط للإطفاء' : 'Tap to switch off';
 
-    const toggleLight = () => {
-      const lit = lab.hasAttribute('data-lit');
-      if (lit) lab.removeAttribute('data-lit');
-      else lab.setAttribute('data-lit', '');
+    const content = lab.querySelector('[data-lab-content]') as HTMLElement;
 
-      const nowLit = !lit;
+    const setLit = (nowLit: boolean) => {
+      if (nowLit) lab.setAttribute('data-lit', '');
+      else lab.removeAttribute('data-lit');
+
+      // ⚠️ inert بيمنع التركيز بالكيبورد وقارئات الشاشة كمان،
+      //    مش بس الضغط بالماوس. بدونها كان الزائر يقدر يوصل
+      //    للخيارات بزر Tab والقسم لسا مطفي.
+      if (content) {
+        if (nowLit) content.removeAttribute('inert');
+        else content.setAttribute('inert', '');
+      }
+
       switchBtn?.setAttribute('aria-pressed', String(nowLit));
       if (switchLabel) switchLabel.textContent = nowLit ? LABEL_OFF : LABEL_ON;
     };
+
+    const toggleLight = () => setLit(!lab.hasAttribute('data-lit'));
+
+    // نبدأ مقفول
+    setLit(false);
+
+    // «تقليل الحركة»: منضويه لحاله عشان يضل قابل للاستخدام
+    if (reduce) setLit(true);
 
     // مفتاح الموبايل: ضغطة وحدة بتضوي
     switchBtn?.addEventListener('click', toggleLight);
@@ -850,9 +865,14 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
       start();
     });
 
+    // قفل منطقي: ما في تفاعل مع المختبر قبل ما يضوي.
+    // (الـ CSS بيمنع الضغط أصلاً، وهاد سطر أمان إضافي)
+    const isLit = () => lab.hasAttribute('data-lit');
+
     // ─── اختيار الأجوبة ───
     lab.querySelectorAll('[data-industry]').forEach((b) => {
       b.addEventListener('click', () => {
+        if (!isLit()) return;
         lab.querySelectorAll('[data-industry]').forEach((o) => o.classList.remove('is-on'));
         b.classList.add('is-on');
         answers.industry = (b as HTMLElement).dataset.industry || '';
@@ -861,6 +881,7 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 
     lab.querySelectorAll('[data-goal]').forEach((b) => {
       b.addEventListener('click', () => {
+        if (!isLit()) return;
         lab.querySelectorAll('[data-goal]').forEach((o) => o.classList.remove('is-on'));
         b.classList.add('is-on');
         answers.goal = (b as HTMLElement).dataset.goal || '';
@@ -869,6 +890,7 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 
     // ─── التوليد ───
     const show = () => {
+      if (!isLit()) return;
       answers.biz = bizInput?.value || '';
       const idea = generateIdea(answers, isAr ? 'ar' : 'en');
       const set = (sel: string, val: string) => {
