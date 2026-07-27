@@ -101,10 +101,31 @@ function setupSmoothScroll() {
     //    اللي بعدها وإحنا عم نمرق فيها، الحركة كانت توقف بمكان غلط —
     //    وهاد اللي كان يخلي «كيف بشتغل» يوقف قبل القسم بـ 2000 بكسل.
     //    الحل: نتحرك أول، وبعدين نصحّح على دفعات لحد ما نستقر.
-    lenis.resize(); // نحدّث ارتفاع الصفحة عند Lenis قبل الحركة
+    // ⚠️ لو الزائر ضغط قبل ما تستقر الصفحة، بتكون مساحات التثبيت
+    //    لسا ما انحسبت، فـ Lenis بيشوف الصفحة أقصر مما هي وبيقصّ
+    //    الحركة — فالزر بيبين كأنه ما بيعمل إشي. فمنجبر إعادة
+    //    الحساب أول ما يضغط، وهاي بتحدّث Lenis كمان.
+    ScrollTrigger.refresh();
+    lenis.resize();
+
     const y0 = target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
     lenis.scrollTo(y0, { duration: ANCHOR_DURATION });
     settleTo(url.hash, ANCHOR_RETRIES);
+
+    // شبكة أمان أخيرة: لو ما تحرّكنا لأي سبب، منستخدم سكرول
+    // المتصفح العادي بدل ما نترك الزر ميت
+    const fallback = setTimeout(() => {
+      const el = document.querySelector(url.hash);
+      if (!el) return;
+      const drift = Math.abs(el.getBoundingClientRect().top - NAV_OFFSET);
+      if (drift > 120) {
+        window.scrollTo({
+          top: el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET,
+          behavior: 'smooth',
+        });
+      }
+    }, 1800);
+    cleanups.push(() => clearTimeout(fallback));
   };
   document.addEventListener('click', onClick);
   cleanups.push(() => document.removeEventListener('click', onClick));
