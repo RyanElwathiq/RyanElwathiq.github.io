@@ -1,0 +1,163 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  صفحة «لعبة الميزانية» الكاملة — النسخة الإنجليزية
+//  (النسخة العربية: src/pages/ar/budget.astro)
+//
+//  ✏️ اللعبة نفسها: src/components/BudgetGame.jsx
+//  ✏️ الأرقام: src/data/budget.js
+//  ✏️ نصوص هذه الصفحة: بمتغيّر t تحت مباشرة
+// ═══════════════════════════════════════════════════════════════
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import BudgetSection from '../components/BudgetSection.astro';
+
+const t = {
+  back: '← Back home',
+  rulesTitle: 'What is behind the numbers',
+  rulesSub:
+    'No black box. These are the five rules the simulator runs on, and every one of them is something I have watched happen on real accounts.',
+  rules: [
+    {
+      n: '01',
+      h: 'Every channel has a ceiling',
+      p: 'Past a certain spend, each extra dinar in the same channel returns less than the one before it. This is why doubling your ad budget almost never doubles your leads.',
+    },
+    {
+      n: '02',
+      h: 'A website multiplies everything else',
+      p: 'Ads stop the scroll, the website closes. With no website, every other channel runs at roughly 60% of its power. With a good one, it climbs above 100%.',
+    },
+    {
+      n: '03',
+      h: 'Brand work does not sell, it makes selling cheaper',
+      p: 'Identity and creative buy almost no reach on their own. What they do is make every person who already reached you believe you — which lifts every channel at once.',
+    },
+    {
+      n: '04',
+      h: 'Nobody buys on first contact',
+      p: 'Someone sees your ad, later finds your content, then lands on your site. That is when they trust you. Spreading across channels beats piling everything into one.',
+    },
+    {
+      n: '05',
+      h: 'Some spending stops the day you stop paying',
+      p: 'Ads end when the card stops. Content and SEO keep working and compound. That is why the month-one number and the month-six number tell two different stories.',
+    },
+  ],
+};
+---
+
+<Base
+  title="Budget simulator | Rayan Elwathiq"
+  description="Split a marketing budget across five channels and see the projected reach, leads, and cost per lead — then compare it against how I would split it."
+  lang="en"
+>
+  <Nav lang="en" />
+
+  <main id="top" class="page">
+    <div class="container">
+      <a class="back" href="/">{t.back}</a>
+    </div>
+
+    <BudgetSection lang="en" id="budget" eager />
+
+    <!-- ═══ شرح المنطق ورا الحسبة ═══ -->
+    <section class="rules">
+      <div class="container">
+        <h2 data-reveal>{t.rulesTitle}</h2>
+        <p class="rules-sub" data-reveal>{t.rulesSub}</p>
+
+        <div class="rules-grid" data-stagger>
+          {
+            t.rules.map((r) => (
+              <div class="rule">
+                <span class="rule-n">{r.n}</span>
+                <h3>{r.h}</h3>
+                <p>{r.p}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer lang="en" />
+</Base>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .page {
+    --top-space: 118px; /* مسافة تحت شريط الإشارة وكبسولة التنقل */
+  }
+
+  .page {
+    padding-top: var(--top-space);
+  }
+
+  .back {
+    display: inline-block;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 8px;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .back:hover {
+    color: var(--accent);
+  }
+
+  /* ─── قواعد الحسبة ─── */
+  .rules {
+    padding-block: clamp(40px, 6vh, 70px) var(--section-gap);
+    border-top: 1px solid var(--line);
+  }
+
+  .rules h2 {
+    font-size: clamp(24px, 3.2vw, 40px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+
+  html[lang='ar'] .rules h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .rules-sub {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 18px);
+    line-height: 1.75;
+    max-width: 62ch;
+    margin-bottom: clamp(34px, 5vh, 54px);
+  }
+
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(26px, 3vw, 44px);
+  }
+
+  .rule-n {
+    display: block;
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .rule h3 {
+    font-size: clamp(18px, 1.9vw, 22px);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .rule p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+</style>

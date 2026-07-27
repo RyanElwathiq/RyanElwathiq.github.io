@@ -3,6 +3,8 @@
 // ═══════════════════════════════════════════════════════════════
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import react from '@astrojs/react';
+import mdx from '@astrojs/mdx';
 
 export default defineConfig({
   // عنوان الموقع النهائي (الدومين تبعك)
@@ -19,6 +21,14 @@ export default defineConfig({
   },
 
   integrations: [
+    // ⚛️ React — بنستخدمه بس بالأجزاء التفاعلية (لعبة الميزانية مثلاً).
+    //    باقي الموقع بيضل HTML خالص بدون أي جافاسكربت زيادة.
+    react(),
+
+    // 📝 MDX — بيخلي ملفات المقالات تقدر تحطّ فيها مكوّنات جاهزة
+    //    (مثل لعبة الميزانية جوّا المقال). المقالات العادية بتضل .md
+    mdx(),
+
     // بيولّد sitemap.xml تلقائياً لجوجل (مهم للـ SEO والإعلانات)
     sitemap({
       i18n: {

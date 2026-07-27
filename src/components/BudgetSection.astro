@@ -1,0 +1,69 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  الغلاف حول «لعبة الميزانية»
+//
+//  اللعبة نفسها مكتوبة بـ React (BudgetGame.jsx). هذا الملف بس
+//  بيحطّها جوّا سيكشن بمقاسات الموقع وبيمرّرلها اللغة والروابط.
+//
+//  ✏️ كيف تستعملها بأي صفحة:
+//     <BudgetSection lang="ar" compact />        ← نسخة مختصرة
+//     <BudgetSection lang="ar" eager />          ← نسخة كاملة
+//
+//  الخصائص:
+//     compact : true = نسخة مختصرة (للصفحة الرئيسية والمقال)
+//     eager   : true = تحمّل فوراً (للصفحة المخصصة للّعبة)
+//               false = تحمّل لما الزائر يوصلها بالسكرول (أسرع)
+//     bare    : true = بدون سيكشن ولا حواف (للاستخدام جوّا مقال)
+// ═══════════════════════════════════════════════════════════════
+import BudgetGame from './BudgetGame.jsx';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+  compact?: boolean;
+  eager?: boolean;
+  bare?: boolean;
+}
+
+const { lang, id = 'budget', compact = false, eager = false, bare = false } = Astro.props;
+const isAr = lang === 'ar';
+
+const contactHref = isAr ? '/ar/#contact' : '/#contact';
+const moreHref = isAr ? '/ar/budget/' : '/budget/';
+
+const props = { lang, compact, contactHref, moreHref };
+---
+
+{
+  bare ? (
+    <div class="bud-bare">
+      {eager ? <BudgetGame client:load {...props} /> : <BudgetGame client:visible {...props} />}
+    </div>
+  ) : (
+    <section class="budget-section" id={id}>
+      <div class="container">
+        {eager ? <BudgetGame client:load {...props} /> : <BudgetGame client:visible {...props} />}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  /* 🎛️ المسافات فوق وتحت السيكشن */
+  .budget-section {
+    padding-block: clamp(64px, 10vh, 120px);
+  }
+
+  /* لما تكون اللعبة جوّا مقال: خطّين رفيعين فوق وتحت عشان
+     يفصلوها بصرياً عن نص المقال وتبان كأداة مش كفقرة */
+  .bud-bare {
+    margin-block: clamp(34px, 5vh, 56px);
+    padding-block: clamp(28px, 4vh, 44px);
+    border-block: 1px solid var(--line);
+  }
+
+  /* جوّا المقال العنوان بينزل حجمه عشان ما يطغى على عناوين المقال */
+  .bud-bare :global(.bud-title) {
+    font-size: clamp(22px, 2.8vw, 32px);
+  }
+</style>

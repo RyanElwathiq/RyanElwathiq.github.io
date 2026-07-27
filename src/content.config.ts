@@ -6,8 +6,10 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const blog = defineCollection({
-  // كل ملفات .md جوا مجلد src/content/blog بتصير مقالات
-  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
+  // كل ملفات .md (والـ .mdx) جوا مجلد src/content/blog بتصير مقالات
+  // ملاحظة: .mdx = نفس الـ .md بالضبط، بس بيسمحلك تحطّ مكوّنات
+  //         تفاعلية جوّا المقال (مثل لعبة الميزانية).
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
   schema: z.object({
     title: z.string(),         // عنوان المقال
     description: z.string(),   // وصف قصير (مهم لجوجل)

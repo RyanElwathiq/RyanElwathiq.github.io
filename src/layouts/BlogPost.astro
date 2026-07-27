@@ -287,7 +287,18 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     color: var(--muted);
   }
 
-  .body :global(h2) {
+  /* ═══════════════════════════════════════════════════════════
+     ⚠️ ليش كل القواعد تحت مكتوبة بـ «‎>‎» (ابن مباشر)؟
+
+     لأن المقال ممكن يكون جوّاه أدوات تفاعلية (مثل لعبة الميزانية).
+     لو كتبنا `.body p` عادي، ستايل نص المقال بينزل جوّا اللعبة
+     وبيكسّر مسافاتها وألوانها — جرّبناها وصار زر التواصل ليموني
+     على ليموني وما بان.
+
+     «‎>‎» بتعني: طبّق الستايل على الفقرات والعناوين اللي طالعة من
+     المقال نفسه بس، وما تفوت جوّا أي مكوّن محطوط بالمقال.
+     ═══════════════════════════════════════════════════════════ */
+  .body > :global(h2) {
     font-size: clamp(22px, 2.4vw, 30px);
     font-weight: 700;
     color: var(--text);
@@ -298,48 +309,56 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     border-inline-start: 3px solid var(--accent);
   }
 
-  html[lang='ar'] .body :global(h2) {
+  html[lang='ar'] .body > :global(h2) {
     letter-spacing: 0;
     font-weight: 800;
   }
 
-  .body :global(h3) {
+  .body > :global(h3) {
     font-size: clamp(18px, 2vw, 23px);
     font-weight: 700;
     color: var(--text);
     margin: 1.6em 0 0.5em;
   }
 
-  .body :global(p) {
+  .body > :global(p) {
     margin-bottom: 1.3em;
   }
 
-  .body :global(strong) {
+  .body > :global(p strong),
+  .body > :global(ul strong),
+  .body > :global(ol strong),
+  .body > :global(blockquote strong) {
     color: var(--text);
   }
 
-  .body :global(a) {
+  .body > :global(p a),
+  .body > :global(ul a),
+  .body > :global(ol a),
+  .body > :global(blockquote a) {
     color: var(--accent);
     text-decoration: underline;
     text-underline-offset: 3px;
   }
 
-  .body :global(ul),
-  .body :global(ol) {
+  .body > :global(ul),
+  .body > :global(ol) {
     margin: 0 0 1.5em;
     padding-inline-start: 1.4em;
   }
 
-  .body :global(li) {
+  .body > :global(ul li),
+  .body > :global(ol li) {
     margin-bottom: 0.6em;
   }
 
-  .body :global(li::marker) {
+  .body > :global(ul li::marker),
+  .body > :global(ol li::marker) {
     color: var(--accent);
   }
 
   /* الاقتباس: بطاقة بارزة بلون الهوية */
-  .body :global(blockquote) {
+  .body > :global(blockquote) {
     margin: 2em 0;
     padding: 22px 26px;
     border-inline-start: 3px solid var(--accent);
@@ -349,16 +368,19 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     font-size: 1.05em;
   }
 
-  .body :global(blockquote p:last-child) {
+  .body > :global(blockquote p:last-child) {
     margin-bottom: 0;
   }
 
-  .body :global(img) {
+  .body > :global(img),
+  .body > :global(p img) {
     border-radius: var(--r-card);
     margin: 1.8em 0;
   }
 
-  .body :global(code) {
+  .body > :global(p code),
+  .body > :global(ul code),
+  .body > :global(ol code) {
     font-size: 0.9em;
     background: var(--surface);
     border-radius: 5px;

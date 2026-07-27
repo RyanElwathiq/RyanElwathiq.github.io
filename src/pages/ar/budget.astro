@@ -1,0 +1,154 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  صفحة «لعبة الميزانية» الكاملة — النسخة العربية
+//  (النسخة الإنجليزية: src/pages/budget.astro)
+//
+//  ✏️ اللعبة نفسها: src/components/BudgetGame.jsx
+//  ✏️ الأرقام: src/data/budget.js
+//  ✏️ نصوص هذه الصفحة: بمتغيّر t تحت مباشرة
+// ═══════════════════════════════════════════════════════════════
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import BudgetSection from '../../components/BudgetSection.astro';
+
+const t = {
+  back: '→ رجوع للرئيسية',
+  rulesTitle: 'شو ورا الأرقام',
+  rulesSub:
+    'ما في صندوق أسود. هاي الخمس قواعد اللي بتشتغل عليها المحاكاة، وكل وحدة فيهن إشي شفته بيصير على حسابات حقيقية.',
+  rules: [
+    {
+      n: '٠١',
+      h: 'كل قناة إلها سقف',
+      p: 'بعد حد معيّن من الصرف، كل دينار زيادة بنفس القناة بيرجّع أقل من اللي قبله. لهيك مضاعفة ميزانية الإعلان بالنادر بتضاعف العملاء.',
+    },
+    {
+      n: '٠٢',
+      h: 'الموقع بيضاعف كل إشي ثاني',
+      p: 'الإعلان بيوقّف الشخص، والموقع هو اللي بيقنعه. بدون موقع، كل قنواتك بتشتغل بـ 60٪ من قوّتها تقريباً. ومع موقع منيح، بتطلع فوق الـ 100٪.',
+    },
+    {
+      n: '٠٣',
+      h: 'الهوية ما بتبيع، بس بتخلّي البيع أرخص',
+      p: 'الهوية والمواد الإبداعية ما بتشتري وصول لحالها. بتخلّي كل شخص أصلاً وصلك يصدّقك — وهاد بيرفع نتيجة كل القنوات دفعة وحدة.',
+    },
+    {
+      n: '٠٤',
+      h: 'محدا بيشتري من أول لقاء',
+      p: 'الشخص بيشوف إعلانك، وبعد فترة بيلاقي محتواك، وبعدين بيفوت عالموقع. وقتها بيصدّقك. التوزيع على قنوات بيغلب تكديس كل إشي بمكان واحد.',
+    },
+    {
+      n: '٠٥',
+      h: 'في صرف بيوقف نفس اليوم اللي بتوقف تدفع فيه',
+      p: 'الإعلان بينتهي لما تنتهي البطاقة. المحتوى والـ SEO بيضلوا شغالين وبيتراكموا. لهيك رقم الشهر الأول ورقم الشهر السادس بيحكوا قصتين مختلفتين.',
+    },
+  ],
+};
+---
+
+<Base
+  title="لعبة الميزانية | ريّان الواثق"
+  description="وزّع ميزانية تسويق على خمس قنوات وشوف الوصول والعملاء وتكلفة العميل المتوقّعة — وبعدين قارنها بتوزيعي أنا."
+  lang="ar"
+>
+  <Nav lang="ar" />
+
+  <main id="top" class="page">
+    <div class="container">
+      <a class="back" href="/ar/">{t.back}</a>
+    </div>
+
+    <BudgetSection lang="ar" id="budget" eager />
+
+    <!-- ═══ شرح المنطق ورا الحسبة ═══ -->
+    <section class="rules">
+      <div class="container">
+        <h2 data-reveal>{t.rulesTitle}</h2>
+        <p class="rules-sub" data-reveal>{t.rulesSub}</p>
+
+        <div class="rules-grid" data-stagger>
+          {
+            t.rules.map((r) => (
+              <div class="rule">
+                <span class="rule-n">{r.n}</span>
+                <h3>{r.h}</h3>
+                <p>{r.p}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer lang="ar" />
+</Base>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .page {
+    --top-space: 118px; /* مسافة تحت شريط الإشارة وكبسولة التنقل */
+    padding-top: var(--top-space);
+  }
+
+  .back {
+    display: inline-block;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 8px;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .back:hover {
+    color: var(--accent);
+  }
+
+  /* ─── قواعد الحسبة ─── */
+  .rules {
+    padding-block: clamp(40px, 6vh, 70px) var(--section-gap);
+    border-top: 1px solid var(--line);
+  }
+
+  .rules h2 {
+    font-size: clamp(24px, 3.2vw, 40px);
+    font-weight: 800;
+    margin-bottom: 14px;
+  }
+
+  .rules-sub {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 18px);
+    line-height: 1.75;
+    max-width: 62ch;
+    margin-bottom: clamp(34px, 5vh, 54px);
+  }
+
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(26px, 3vw, 44px);
+  }
+
+  .rule-n {
+    display: block;
+    font-family: var(--font-ar);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .rule h3 {
+    font-size: clamp(18px, 1.9vw, 22px);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .rule p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+</style>

@@ -1,0 +1,606 @@
+/* ═══════════════════════════════════════════════════════════════
+   لعبة الميزانية — التصميم
+
+   ⚠️ ليش ملف CSS منفصل وما هو جوّا المكوّن؟
+      لأن اللعبة مكتوبة بـ React (ملف .jsx)، و React ما بيدعم
+      الستايل المحلي زي ملفات .astro. فحطّينا كل التصميم هون.
+      كل الأسماء بتبدأ بـ bud- عشان ما تتضارب مع باقي الموقع.
+
+   ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗
+   غيّر من المتغيّرات تحت وكل اللعبة بتتغيّر معها
+   ╚══════════════════════════════════════════════╝
+   ═══════════════════════════════════════════════════════════════ */
+
+.bud {
+  --bud-gap: clamp(20px, 2.6vw, 34px); /* المسافة بين العمودين */
+  --bud-pad: clamp(20px, 2.4vw, 32px); /* الحشوة جوّا الصناديق */
+  --bud-radius: var(--r-card); /* استدارة الزوايا */
+  --bud-track: 10px; /* سماكة شريط السلايدر */
+  --bud-thumb: 26px; /* حجم مقبض السحب */
+  --bud-bar: 14px; /* ارتفاع شريط التوزيع الملوّن */
+  --bud-stat: clamp(26px, 3.4vw, 42px); /* حجم أرقام النتائج */
+}
+
+/* ═══════════════ الترويسة ═══════════════ */
+.bud-head {
+  max-width: 62ch;
+  margin-bottom: clamp(28px, 4vh, 44px);
+}
+
+.bud-kicker {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.bud-title {
+  font-size: clamp(26px, 4vw, 50px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+  margin-bottom: 16px;
+}
+
+html[lang='ar'] .bud-title {
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.bud-sub {
+  color: var(--muted);
+  font-size: clamp(15px, 1.6vw, 18px);
+  line-height: 1.75;
+}
+
+/* ═══════════════ اختيار الميزانية ═══════════════ */
+.bud-budget {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.bud-budget-label {
+  font-size: 14.5px;
+  color: var(--muted);
+}
+
+.bud-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bud-chip {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition:
+    color 0.25s var(--ease-out),
+    border-color 0.25s var(--ease-out),
+    background 0.25s var(--ease-out);
+}
+
+.bud-chip:hover {
+  color: var(--text);
+  border-color: var(--muted);
+}
+
+.bud-chip[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ═══════════════ شريط التوزيع الملوّن ═══════════════ */
+.bud-stack {
+  display: flex;
+  height: var(--bud-bar);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  background: var(--surface-2);
+  margin-bottom: 10px;
+}
+
+.bud-stack-seg {
+  height: 100%;
+  transition: width 0.25s var(--ease-out);
+}
+
+/* الجزء غير الموزّع: مقلّم عشان يبيّن إنه فاضي */
+.bud-stack-rest {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(242, 243, 238, 0.14) 0 6px,
+    transparent 6px 12px
+  );
+}
+
+.bud-remain {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-bottom: 26px;
+  max-width: 62ch;
+}
+
+/* ═══════════════ الشبكة: سلايدرات + نتائج ═══════════════ */
+.bud-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--bud-gap);
+  align-items: start;
+}
+
+/* ═══════════════ السلايدرات ═══════════════ */
+.bud-sliders {
+  display: grid;
+  gap: 20px;
+}
+
+.bud-row {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--bud-radius);
+  padding: clamp(16px, 1.8vw, 22px);
+}
+
+.bud-row-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.bud-name {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.bud-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-pill);
+  flex: none;
+}
+
+.bud-amount {
+  font-family: var(--font-en);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.bud-amount span {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.bud-note {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+/* ─── السلايدر نفسه ─── */
+.bud-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: var(--bud-thumb);
+  background: transparent;
+  cursor: grab;
+  display: block;
+  /* بيخلي السحب الأفقي للسلايدر يشتغل، والسحب العمودي
+     يضل يمرّر الصفحة عادي (مهم جداً عالموبايل) */
+  touch-action: pan-y;
+}
+
+.bud-range:active {
+  cursor: grabbing;
+}
+
+/* المسار — كروم/سفاري */
+.bud-range::-webkit-slider-runnable-track {
+  height: var(--bud-track);
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+}
+
+/* المقبض — كروم/سفاري */
+.bud-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: var(--bud-thumb);
+  height: var(--bud-thumb);
+  margin-top: calc((var(--bud-track) - var(--bud-thumb)) / 2);
+  border-radius: var(--r-pill);
+  background: var(--c, var(--accent));
+  border: 3px solid var(--bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.18s var(--ease-out);
+}
+
+.bud-range:hover::-webkit-slider-thumb,
+.bud-range:focus-visible::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
+/* المسار والمقبض — فايرفوكس */
+.bud-range::-moz-range-track {
+  height: var(--bud-track);
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+}
+
+.bud-range::-moz-range-thumb {
+  width: var(--bud-thumb);
+  height: var(--bud-thumb);
+  border-radius: var(--r-pill);
+  background: var(--c, var(--accent));
+  border: 3px solid var(--bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.bud-range:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: var(--r-pill);
+}
+
+/* ═══════════════ لوحة النتائج ═══════════════ */
+.bud-panel {
+  position: sticky;
+  top: 110px; /* تحت شريط الإشارة وكبسولة التنقل */
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--bud-radius);
+  padding: var(--bud-pad);
+}
+
+.bud-panel-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+html[lang='ar'] .bud-panel-title {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.bud-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 14px;
+}
+
+.bud-stat-label {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.bud-stat-value {
+  font-family: var(--font-en);
+  font-size: var(--bud-stat);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.bud-stat-value.is-accent {
+  color: var(--accent);
+}
+
+.bud-stat-unit {
+  font-size: 0.42em;
+  font-weight: 500;
+  color: var(--muted);
+  margin-inline-start: 4px;
+  letter-spacing: 0;
+}
+
+/* ─── المضاعِفات ─── */
+.bud-mults {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+}
+
+.bud-mult {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.bud-mult-name {
+  flex: none;
+  width: 6.5em;
+  color: var(--muted);
+}
+
+.bud-mult-bar {
+  flex: 1;
+  height: 5px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.bud-mult-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  transition: width 0.3s var(--ease-out);
+}
+
+/* أقل من 1 = المضاعف بيأكل من نتيجتك، فبيصير أحمر */
+.bud-mult-fill.is-low {
+  background: #ff6b5b;
+}
+
+.bud-mult-val {
+  flex: none;
+  font-family: var(--font-en);
+  font-size: 12.5px;
+  font-weight: 700;
+  width: 3.2em;
+  text-align: end;
+  color: var(--text);
+}
+
+.bud-actions {
+  margin-top: 24px;
+  display: grid;
+  gap: 10px;
+}
+
+.bud-actions .btn {
+  justify-content: center;
+}
+
+.bud-reset {
+  font: inherit;
+  font-size: 13px;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  padding: 4px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.bud-reset:hover {
+  color: var(--text);
+}
+
+/* ═══════════════ المقارنة (بتظهر بعد الضغط) ═══════════════ */
+.bud-compare {
+  margin-top: clamp(28px, 4vh, 44px);
+  border: 1px solid var(--accent);
+  border-radius: var(--bud-radius);
+  padding: var(--bud-pad);
+  background: var(--surface);
+  /* حركة ظهور ناعمة */
+  animation: bud-in 0.5s var(--ease-out) both;
+}
+
+@keyframes bud-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bud-compare {
+    animation: none;
+  }
+}
+
+.bud-compare-title {
+  font-size: clamp(19px, 2.2vw, 26px);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.bud-compare-sub {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+  max-width: 60ch;
+}
+
+.bud-versus {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 26px;
+}
+
+.bud-vs-row {
+  display: grid;
+  grid-template-columns: 7.5em 1fr auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.bud-vs-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.bud-vs-name.is-mine {
+  color: var(--accent);
+}
+
+.bud-vs-score {
+  font-family: var(--font-en);
+  font-size: 17px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ─── ملاحظات على توزيعك ─── */
+.bud-notes {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 26px;
+}
+
+.bud-note-card {
+  border-inline-start: 3px solid var(--accent);
+  padding-inline-start: 16px;
+}
+
+.bud-note-card h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.bud-note-card p {
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.7;
+  max-width: 62ch;
+}
+
+.bud-cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ═══════════════ التنويه ═══════════════ */
+.bud-disclaimer {
+  margin-top: 22px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+  opacity: 0.85;
+  max-width: 66ch;
+}
+
+.bud-more {
+  display: inline-block;
+  margin-top: 18px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.bud-more:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ═══════════════ موبايل ═══════════════ */
+@media (max-width: 900px) {
+  .bud-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* ─── عالموبايل: لوحة النتائج بتصير شريط رفيع ملزوق تحت ───
+     السبب: بدك تشوف الأرقام وهي بتتغيّر وإنت بتحرّك السلايدر.
+     لو كانت فوق أو تحت الصفحة، ما رح تشوف الأثر أبداً. */
+  .bud-panel {
+    position: sticky;
+    top: auto;
+    bottom: 0;
+    z-index: 2;
+    /* ⚠️ بتضل بآخر الشبكة (بعد السلايدرات) مش قبلها.
+       لو حطّيناها قبل، بيضل مكانها الأصلي فاضي فوق ٱلسلايدرات
+       وبيبيّن كأنه فراغ غلط بالتصميم. */
+    padding: 14px 16px;
+    /* تعتيم خلفي عشان السلايدرات اللي بتمر تحتها تضل مقروءة */
+    background: rgba(21, 23, 28, 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: var(--bud-radius) var(--bud-radius) 0 0;
+    box-shadow: 0 -14px 34px rgba(0, 0, 0, 0.45);
+  }
+
+  /* بنخفي العنوان والمضاعِفات عشان الشريط يضل رفيع */
+  .bud-panel-title,
+  .bud-mults {
+    display: none;
+  }
+
+  /* ثلاث أرقام بصف واحد */
+  .bud-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0 10px;
+    text-align: center;
+  }
+
+  .bud-stat-label {
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+
+  .bud-stat-value {
+    --bud-stat: clamp(20px, 6.4vw, 28px);
+  }
+
+  .bud-actions {
+    margin-top: 12px;
+    grid-auto-flow: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .bud-actions .btn {
+    padding-block: 11px;
+  }
+
+  .bud-vs-row {
+    grid-template-columns: 5.5em 1fr;
+  }
+
+  .bud-vs-score {
+    grid-column: 2;
+    text-align: end;
+  }
+}
+
+/* بشاشات صغيرة كتير بنشيل رقم الشهر السادس من الشريط السفلي
+   عشان الرقمين الأهم (العملاء والتكلفة) يضلوا واضحين */
+@media (max-width: 420px) {
+  .bud-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bud-stats > :nth-child(3) {
+    display: none;
+  }
+}

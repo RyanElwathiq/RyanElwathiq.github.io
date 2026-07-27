@@ -31,6 +31,7 @@ const blogHref = isAr ? '/ar/blog/' : '/blog/';
 const t = isAr
   ? {
       work: 'الأعمال',
+      budget: 'لعبة الميزانية',
       lab: 'مختبر الأفكار',
       pricing: 'كيف بشتغل',
       faq: 'أسئلة شائعة',
@@ -41,6 +42,7 @@ const t = isAr
     }
   : {
       work: 'Work',
+      budget: 'Budget game',
       lab: 'Idea lab',
       pricing: 'How I work',
       faq: 'FAQ',
@@ -62,8 +64,9 @@ const links = [
 // ✏️ روابط قائمة الموبايل — كاملة، لأن الشاشة كاملة وفيها مساحة
 const sheetLinks = [
   { label: t.work, href: `${home}#work` },
-  { label: t.lab, href: `${home}#lab` },
   { label: t.pricing, href: `${home}#pricing` },
+  { label: t.budget, href: isAr ? '/ar/budget/' : '/budget/' },
+  { label: t.lab, href: `${home}#lab` },
   { label: t.faq, href: `${home}#faq` },
   { label: t.blog, href: blogHref },
   { label: t.contact, href: `${home}#contact` },

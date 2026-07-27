@@ -16,6 +16,7 @@ import DesignsGrid from '../components/DesignsGrid.astro';
 import Websites from '../components/Websites.astro';
 import Skills from '../components/Skills.astro';
 import Pricing from '../components/Pricing.astro';
+import BudgetSection from '../components/BudgetSection.astro';
 import LampLab from '../components/LampLab.astro';
 import Faq from '../components/Faq.astro';
 import Education from '../components/Education.astro';
@@ -34,6 +35,7 @@ const marks = [
   { id: 'designs', label: 'Design' },
   { id: 'websites', label: 'Web' },
   { id: 'pricing', label: 'How I work' },
+  { id: 'budget', label: 'Budget' },
   { id: 'lab', label: 'Idea lab' },
   { id: 'faq', label: 'FAQ' },
   { id: 'contact', label: 'Contact' },
@@ -96,6 +98,8 @@ const marks = [
 
     <Skills lang="en" />
     <Pricing lang="en" />
+    <!-- لعبة الميزانية: نسخة مختصرة هون، والكاملة على /budget/ -->
+    <BudgetSection lang="en" id="budget" compact />
     <LampLab lang="en" id="lab" />
     <Faq lang="en" id="faq" />
     <Education lang="en" />
