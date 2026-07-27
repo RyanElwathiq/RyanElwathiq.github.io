@@ -1,0 +1,319 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  شريط الإشارة — مؤشر تقدّم أعلى الصفحة
+//
+//  الفكرة: خيط ليموني بينجدل كل ما تنزل بالصفحة، وبآخر الصفحة
+//  بتكتمل العقدة (اللوجو) وبتضوي. يعني المؤشر نفسه بيحكي قصة
+//  البراند: خيوط متفرقة بتصير نظام متماسك.
+//
+//  وفيه كمان: علامات بأسماء الأقسام (بتشتغل كنافيغيشن)،
+//  شارة نسبة بتمشي معك، وحالة التوفّر مع ساعة عمّان الحية.
+//
+//  ✏️ الأقسام بتتحدد من خاصية sections اللي بتنبعتله من الصفحة
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+  // الأقسام اللي بتظهر كعلامات على الشريط (اختياري)
+  sections?: { id: string; label: string }[];
+}
+
+const { lang, sections = [] } = Astro.props;
+const isAr = lang === 'ar';
+
+const t = isAr
+  ? { available: 'متاح لمشاريع جديدة', amman: 'عمّان' }
+  : { available: 'Available for work', amman: 'Amman' };
+
+// ─── توليد مسار الجديلة (موجتان متعاكستان بتتقاطعا) ───
+// عرض مرجعي 1000 وارتفاع 24، وبينشد على عرض الشاشة
+const W = 1000;
+const H = 24;
+const MID = H / 2;
+const AMP = 6.5; // ارتفاع الموجة
+const WAVES = 26; // كم مرة يتقاطع الخيطان
+const STEPS = 400;
+
+function strand(phase: number) {
+  let d = '';
+  for (let i = 0; i <= STEPS; i++) {
+    const x = (i / STEPS) * W;
+    const y = MID + Math.sin((i / STEPS) * Math.PI * 2 * WAVES + phase) * AMP;
+    d += (i === 0 ? 'M' : 'L') + x.toFixed(2) + ' ' + y.toFixed(2);
+  }
+  return d;
+}
+
+const strandA = strand(0);
+const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعوا بالنص
+---
+
+<div class="signal" data-signal>
+  <!-- ═══ المسار: الجديلة ═══ -->
+  <div class="track" data-signal-track>
+    <svg class="braid" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+      <!-- الجديلة الباهتة: المسافة اللي لسا ما قطعتها -->
+      <path class="ghost" d={strandA} />
+      <path class="ghost" d={strandB} />
+      <!-- الجديلة الليمونية: بتنرسم مع نزولك -->
+      <path class="live" d={strandA} data-strand pathLength="1" />
+      <path class="live" d={strandB} data-strand pathLength="1" />
+    </svg>
+
+    <!-- علامات الأقسام (بتشتغل كروابط تنقّل) -->
+    <div class="marks" data-signal-marks>
+      {
+        sections.map((s) => (
+          <button class="mark" data-mark={s.id} type="button">
+            <span class="tick" aria-hidden="true" />
+            <span class="name">{s.label}</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- شارة النسبة اللي بتمشي معك -->
+    <span class="pct" data-signal-pct>0%</span>
+  </div>
+
+  <!-- ═══ العقدة: بتكتمل وبتضوي بآخر الصفحة ═══ -->
+  <div class="knot" data-signal-knot aria-hidden="true">
+    <img src="/assets/logo-white.png" alt="" width="22" height="22" />
+  </div>
+
+  <!-- ═══ الحالة والساعة ═══ -->
+  <div class="status">
+    <span class="dot" aria-hidden="true"></span>
+    <span class="avail">{t.available}</span>
+    <span class="sep" aria-hidden="true">·</span>
+    <span class="clock"><span data-signal-clock>--:--</span> {t.amman}</span>
+  </div>
+</div>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .signal {
+    --bar-height: 34px; /* ارتفاع الشريط */
+    --thread-width: 1.6px; /* سماكة الخيط */
+    --ghost-opacity: 0.16; /* وضوح الجديلة غير المقطوعة */
+    --mark-size: 10.5px; /* حجم أسماء الأقسام */
+    --status-size: 11.5px; /* حجم نص الحالة والساعة */
+  }
+
+  .signal {
+    position: fixed;
+    top: 0;
+    inset-inline: 0;
+    z-index: calc(var(--z-nav) + 1);
+    height: var(--bar-height);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-inline: 14px;
+
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* ─── المسار ─── */
+  .track {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    min-width: 0;
+  }
+
+  .braid {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* بالعربي الجديلة بتنرسم من اليمين لليسار */
+  html[dir='rtl'] .braid {
+    transform: scaleX(-1);
+  }
+
+  .braid path {
+    fill: none;
+    stroke-width: var(--thread-width);
+    vector-effect: non-scaling-stroke;
+    stroke-linecap: round;
+  }
+
+  .ghost {
+    stroke: var(--text);
+    opacity: var(--ghost-opacity);
+  }
+
+  .live {
+    stroke: var(--accent);
+    /* بتبدأ مخفية بالكامل، والجافاسكربت بيكشفها مع السكرول */
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent) 55%, transparent));
+  }
+
+  /* ─── علامات الأقسام ─── */
+  .marks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .mark {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 6px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-en);
+    font-size: var(--mark-size);
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: auto;
+    transform: translateX(-50%);
+    transition: color 0.3s var(--ease-out);
+  }
+
+  html[lang='ar'] .mark {
+    font-family: var(--font-ar);
+  }
+
+  html[dir='rtl'] .mark {
+    transform: translateX(50%);
+  }
+
+  .mark:hover,
+  .mark[data-passed] {
+    color: var(--text);
+  }
+
+  .tick {
+    width: 1px;
+    height: 9px;
+    background: currentColor;
+    opacity: 0.55;
+  }
+
+  /* ─── شارة النسبة ─── */
+  .pct {
+    position: absolute;
+    top: 50%;
+    inset-inline-start: 0;
+    translate: -50% -50%;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: var(--font-en);
+    font-size: 10.5px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 4px 7px;
+    border-radius: 5px;
+    pointer-events: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  }
+
+  html[dir='rtl'] .pct {
+    translate: 50% -50%;
+  }
+
+  /* ─── العقدة بالآخر ─── */
+  .knot {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    opacity: 0.22;
+    transition:
+      opacity 0.5s var(--ease-out),
+      filter 0.5s var(--ease-out),
+      transform 0.6s var(--ease-out);
+  }
+
+  /* لما توصل آخر الصفحة: العقدة بتكتمل وبتضوي */
+  .knot[data-complete] {
+    opacity: 1;
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 7px color-mix(in srgb, var(--accent) 75%, transparent));
+  }
+
+  /* ─── الحالة والساعة ─── */
+  .status {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-en);
+    font-size: var(--status-size);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  html[lang='ar'] .avail {
+    font-family: var(--font-ar);
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--r-pill);
+    background: var(--accent);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+    animation: pulse 2.4s ease-out infinite;
+  }
+
+  @keyframes pulse {
+    70% {
+      box-shadow: 0 0 0 7px transparent;
+    }
+    100% {
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot {
+      animation: none;
+    }
+  }
+
+  .sep {
+    opacity: 0.4;
+  }
+
+  /* ─── شاشات متوسطة: نخفي أسماء الأقسام ─── */
+  @media (max-width: 1100px) {
+    .mark .name {
+      display: none;
+    }
+  }
+
+  /* ─── موبايل: خيط ونسبة ونقطة الحالة فقط ─── */
+  @media (max-width: 700px) {
+    .signal {
+      --bar-height: 28px;
+      gap: 10px;
+      padding-inline: 10px;
+    }
+
+    .marks,
+    .avail,
+    .sep,
+    .knot {
+      display: none;
+    }
+
+    .status {
+      font-size: 10.5px;
+    }
+  }
+</style>

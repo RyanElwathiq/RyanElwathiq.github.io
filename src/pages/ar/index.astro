@@ -23,12 +23,24 @@ import Lightbox from '../../components/Lightbox.astro';
 // 🎛️ منطق «شو يظهر بالهوم» كله بملف واحد مشروح: src/utils/work.js
 //    (الترتيب، العدد، والتحكم اليدوي بحقل "home" بملف work.json)
 import { forHome, hasMore } from '../../utils/work.js';
+
+// ✏️ علامات شريط الإشارة فوق — كل علامة بتنقل لقسمها
+const marks = [
+  { id: 'about', label: 'من أنا' },
+  { id: 'work', label: 'فيديو' },
+  { id: 'growth', label: 'نمو' },
+  { id: 'designs', label: 'تصميم' },
+  { id: 'websites', label: 'مواقع' },
+  { id: 'pricing', label: 'كيف بشتغل' },
+  { id: 'contact', label: 'تواصل' },
+];
 ---
 
 <Base
   title="ريّان الواثق | تسويق رقمي ونمو"
   description="بورتفوليو ريّان الواثق: تسويق رقمي، نمو، SEO، إدارة علاقات العملاء، إعلانات مدفوعة، استراتيجية إبداعية، هوية بصرية، ومونتاج فيديو."
   lang="ar"
+  sections={marks}
 >
   <Nav lang="ar" />
 

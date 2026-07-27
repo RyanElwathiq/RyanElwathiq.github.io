@@ -18,6 +18,7 @@ import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import { initSequences } from './sequence.js';
 import { initLightbox } from './lightbox.js';
+import { initSignalBar, refreshSignalBar } from './signal.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,7 +28,9 @@ ScrollTrigger.config({ ignoreMobileResize: true });
 
 const SMOOTH_DURATION = 1.15;
 const COUNTER_TIME = 1.6;
-const NAV_OFFSET = 86;
+// المسافة اللي بنتركها فوق القسم لما ننط عليه
+// = ارتفاع شريط الإشارة + كبسولة التنقل + مسافة تنفّس
+const NAV_OFFSET = 118;
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -314,6 +317,7 @@ function init() {
   setupWordGlow();
   setupHorizontalPan();
   initLightbox();
+  cleanups.push(initSignalBar());
 
   // الفيديوهات بتحمّل بشكل غير متزامن، فبعد ما تخلص كلها منرتّب
   // نقاط التثبيت ومنعيد حساب مواقعها. بدون هالخطوة كان قسم الفيديو
@@ -321,6 +325,8 @@ function init() {
   initSequences().then(() => {
     ScrollTrigger.sort();
     ScrollTrigger.refresh();
+    // ارتفاع الصفحة تغيّر بعد التثبيت → شريط الإشارة لازم يعيد الحساب
+    refreshSignalBar();
     jumpToHash();
   });
 

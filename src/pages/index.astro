@@ -23,12 +23,24 @@ import Lightbox from '../components/Lightbox.astro';
 // 🎛️ منطق «شو يظهر بالهوم» كله بملف واحد مشروح: src/utils/work.js
 //    (الترتيب، العدد، والتحكم اليدوي بحقل "home" بملف work.json)
 import { forHome, hasMore } from '../utils/work.js';
+
+// ✏️ علامات شريط الإشارة فوق — كل علامة بتنقل لقسمها
+const marks = [
+  { id: 'about', label: 'About' },
+  { id: 'work', label: 'Video' },
+  { id: 'growth', label: 'Growth' },
+  { id: 'designs', label: 'Design' },
+  { id: 'websites', label: 'Web' },
+  { id: 'pricing', label: 'How I work' },
+  { id: 'contact', label: 'Contact' },
+];
 ---
 
 <Base
   title="Rayan Elwathiq | Digital Marketing & Growth"
   description="Rayan Elwathiq portfolio: digital marketing, growth, SEO, CRM, paid media, creative strategy, branding, and video editing."
   lang="en"
+  sections={marks}
 >
   <Nav lang="en" />
 

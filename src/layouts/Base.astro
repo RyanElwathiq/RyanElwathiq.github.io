@@ -4,6 +4,7 @@
 //  (اللغة والاتجاه RTL/LTR بينضبطوا لحالهم حسب الصفحة)
 // ═══════════════════════════════════════════════════════════════
 import { ClientRouter } from 'astro:transitions';
+import SignalBar from '../components/SignalBar.astro';
 import '@fontsource-variable/space-grotesk';
 import '@fontsource-variable/alexandria';
 import '../styles/tokens.css';
@@ -13,9 +14,11 @@ interface Props {
   title: string;
   description: string;
   lang?: 'en' | 'ar';
+  // أقسام الصفحة اللي بتظهر كعلامات على شريط الإشارة
+  sections?: { id: string; label: string }[];
 }
 
-const { title, description, lang = 'en' } = Astro.props;
+const { title, description, lang = 'en', sections = [] } = Astro.props;
 const dir = lang === 'ar' ? 'rtl' : 'ltr';
 ---
 
@@ -136,6 +139,9 @@ const dir = lang === 'ar' ? 'rtl' : 'ltr';
     </script>
   </head>
   <body>
+    <!-- شريط الإشارة: مؤشر التقدّم أعلى كل صفحة -->
+    <SignalBar lang={lang} sections={sections} />
+
     <slot />
 
     <!-- نظام الحركة -->
