@@ -1,0 +1,87 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  صفحة «حاسبة الخسارة» — النسخة الإنجليزية
+//  (النسخة العربية: src/pages/ar/loss.astro)
+//
+//  💡 مصمّمة تكون صفحة هبوط لإعلانات جوجل — بس الحاسبة، بدون
+//     أي إشي بيشتّت الزائر.
+// ═══════════════════════════════════════════════════════════════
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import LossSection from '../components/LossSection.astro';
+
+const t = {
+  back: '← Back home',
+  readTitle: 'Want the full picture?',
+  readBody:
+    'I wrote an article on why a website moved from nice-to-have to necessary, and why relying on social alone builds your business on rented land.',
+  readBtn: 'Read the article',
+};
+---
+
+<Base
+  title="Loss calculator | What is running a business without a website costing you?"
+  description="Work out what your business loses every month without a website: people who searched and never found you, people who hesitated, and enquiries that arrived while you were closed."
+  lang="en"
+>
+  <Nav lang="en" />
+
+  <main id="top" class="page">
+    <div class="container">
+      <a class="back" href="/">{t.back}</a>
+    </div>
+
+    <LossSection lang="en" id="loss" eager />
+
+    <section class="read">
+      <div class="container">
+        <h2 data-reveal>{t.readTitle}</h2>
+        <p data-reveal>{t.readBody}</p>
+        <a class="btn btn-ghost" href="/signals/en-why-every-business-needs-a-website/" data-reveal>
+          {t.readBtn}
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer lang="en" />
+</Base>
+
+<style>
+  .page {
+    padding-top: 118px;
+  }
+
+  .back {
+    display: inline-block;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .back:hover {
+    color: var(--accent);
+  }
+
+  .read {
+    padding-block: clamp(40px, 6vh, 70px) var(--section-gap);
+    border-top: 1px solid var(--line);
+  }
+
+  .read h2 {
+    font-size: clamp(22px, 3vw, 34px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+
+  .read p {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 18px);
+    line-height: 1.75;
+    max-width: 58ch;
+    margin-bottom: 24px;
+  }
+</style>

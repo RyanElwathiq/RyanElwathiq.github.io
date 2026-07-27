@@ -32,6 +32,7 @@ const t = isAr
   ? {
       work: 'الأعمال',
       brief: 'ابدأ مشروعك',
+      loss: 'حاسبة الخسارة',
       budget: 'لعبة الميزانية',
       lab: 'مختبر الأفكار',
       pricing: 'كيف بشتغل',
@@ -44,6 +45,7 @@ const t = isAr
   : {
       work: 'Work',
       brief: 'Start a project',
+      loss: 'Loss calculator',
       budget: 'Budget game',
       lab: 'Idea lab',
       pricing: 'How I work',
@@ -69,6 +71,7 @@ const sheetLinks = [
   { label: t.pricing, href: `${home}#pricing` },
   { label: t.brief, href: isAr ? '/ar/brief/' : '/brief/' },
   { label: t.budget, href: isAr ? '/ar/budget/' : '/budget/' },
+  { label: t.loss, href: isAr ? '/ar/loss/' : '/loss/' },
   { label: t.lab, href: `${home}#lab` },
   { label: t.faq, href: `${home}#faq` },
   { label: t.blog, href: blogHref },

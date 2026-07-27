@@ -13,6 +13,7 @@ draft: false
 {/* ⚠️ هذا السطر بيستدعي لعبة الميزانية عشان نقدر نحطّها جوّا المقال.
        لا تحذفه إذا بدك اللعبة تضل ظاهرة. */}
 import BudgetSection from '../../components/BudgetSection.astro';
+import LossSection from '../../components/LossSection.astro';
 
 I get asked this a lot: "My Instagram and TikTok are doing fine. Why would I need a website?"
 
@@ -91,6 +92,9 @@ Now flip the equation: **how much are you losing right now?** Every month you de
 {/* ═══ لعبة الميزانية جوّا المقال ═══
        compact = النسخة المختصرة. بدك تشيلها من المقال؟ احذف السطر تحت. */}
 <BudgetSection lang="en" id="budget-article" compact bare />
+
+{/* ═══ حاسبة الخسارة جوّا المقال ═══ */}
+<LossSection lang="en" id="loss-article" bare />
 
 
 ### The real cost is not the build, it is the decisions

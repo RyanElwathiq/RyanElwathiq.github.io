@@ -14,6 +14,7 @@ draft: false
        لا تحذفه إذا بدك اللعبة تضل ظاهرة. وإذا عملت مقال جديد وما
        بدك فيه لعبة، ما بتحتاج تنسخ هذا السطر أصلاً. */}
 import BudgetSection from '../../components/BudgetSection.astro';
+import LossSection from '../../components/LossSection.astro';
 
 في سؤال بسألوني إياه كتير: «عندي إنستغرام وتيك توك وشغالين منيح، ليش بدي موقع؟»
 
@@ -92,6 +93,11 @@ import BudgetSection from '../../components/BudgetSection.astro';
 {/* ═══ لعبة الميزانية جوّا المقال ═══
        compact = النسخة المختصرة. بدك تشيلها من المقال؟ احذف السطر تحت. */}
 <BudgetSection lang="ar" id="budget-article" compact bare />
+
+{/* ═══ حاسبة الخسارة جوّا المقال ═══
+       بتيجي بعد لعبة الميزانية مباشرة لأن المقال هون بالضبط
+       عم يحكي عن «قديش عم تخسر». بدك تشيلها؟ احذف السطر تحت. */}
+<LossSection lang="ar" id="loss-article" bare />
 
 
 ### والتكلفة الحقيقية مش بالبناء، بالقرارات
