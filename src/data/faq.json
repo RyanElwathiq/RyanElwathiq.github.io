@@ -1,0 +1,96 @@
+{
+  "_readme": [
+    "════════════════════════════════════════════════════════════════",
+    "  الأسئلة الشائعة — عدّل من هون",
+    "════════════════════════════════════════════════════════════════",
+    "  q / qAr : السؤال بالإنجليزي والعربي",
+    "  a / aAr : الجواب بالإنجليزي والعربي",
+    "  tag / tagAr : تصنيف السؤال — بيظهر كفلتر فوق الأسئلة",
+    "  open : (اختياري) true = يكون مفتوح من البداية",
+    "  انسخ أي سؤال والصقه عشان تضيف واحد جديد. انتبه للفاصلة بينهم.",
+    "════════════════════════════════════════════════════════════════"
+  ],
+  "items": [
+    {
+      "tag": "Working together",
+      "tagAr": "طريقة الشغل",
+      "q": "How does a project usually start?",
+      "qAr": "كيف بيبدأ المشروع عادةً؟",
+      "a": "With a conversation, not a quote. I need to understand what you sell, who buys it, and what has already been tried before I can say what is worth doing. After that you get a written scope with deliverables, a timeline, and a fixed price, so nothing moves later.",
+      "aAr": "بمكالمة، مش بعرض سعر. لازم أفهم شو بتبيع، ومين بيشتري منك، وشو اللي جرّبته قبل، قبل ما أقدر أحكي شو الأولوية. بعدها بتاخد نطاق شغل مكتوب فيه التسليمات والجدول الزمني والسعر الثابت، فما بيتغيّر إشي بعدين.",
+      "open": true
+    },
+    {
+      "tag": "Pricing",
+      "tagAr": "الأسعار",
+      "q": "Why is there no price list on the site?",
+      "qAr": "ليش ما في قائمة أسعار بالموقع؟",
+      "a": "Because the same deliverable is not the same amount of work for every business. A brand identity for a new shop and one for a company with five branches share a name and nothing else. A fixed list would either overcharge the small project or undersell the big one. Tell me the scope and you get a real number, usually within a day.",
+      "aAr": "لأن نفس التسليم مش نفس الشغل لكل مشروع. هوية لمحل جديد وهوية لشركة عندها خمس فروع بيشتركوا بالاسم وبس. القائمة الثابتة إما بتظلم المشروع الصغير أو بتبخس الكبير. احكيلي النطاق وبتاخد رقم حقيقي، عادةً خلال يوم."
+    },
+    {
+      "tag": "Pricing",
+      "tagAr": "الأسعار",
+      "q": "What is the smallest project you take?",
+      "qAr": "شو أصغر مشروع بتشتغله؟",
+      "a": "There is no minimum, but there is a threshold of usefulness. Editing three reels will not change your numbers if the content system behind them is missing. I will tell you honestly when the budget is better spent on one thing done properly than on five things done partially.",
+      "aAr": "ما في حد أدنى، بس في حد للفايدة. مونتاج ثلاث ريلز ما رح يغيّر أرقامك إذا نظام المحتوى وراهم ناقص. وبقولك بصراحة لما تكون الميزانية أفضل تنصرف على إشي واحد مظبوط بدل خمسة ناقصين."
+    },
+    {
+      "tag": "Timeline",
+      "tagAr": "الوقت",
+      "q": "How long does a project take?",
+      "qAr": "قديش بياخد المشروع وقت؟",
+      "a": "A brand identity is two to three weeks. A website is three to six weeks depending on how much content exists. Growth work is different: the setup takes two weeks, but results are measured over ninety days, not seven. Anyone promising you numbers in a week is selling you a spike, not growth.",
+      "aAr": "الهوية البصرية أسبوعين لثلاثة. الموقع من ثلاث لست أسابيع حسب المحتوى الجاهز. شغل النمو غير: الإعداد أسبوعين، بس النتائج بتنقاس على تسعين يوم مش سبعة. أي حدا بيوعدك بأرقام خلال أسبوع بيبيعلك قفزة مؤقتة مش نمو."
+    },
+    {
+      "tag": "Timeline",
+      "tagAr": "الوقت",
+      "q": "How many revisions do I get?",
+      "qAr": "كم تعديل بيحقّلي؟",
+      "a": "Two rounds on each deliverable, and they are enough because we agree on direction before execution starts. Revisions exist to sharpen a direction you already approved, not to restart it. If the direction itself was wrong, that is on me and I fix it at no cost.",
+      "aAr": "جولتين على كل تسليم، وبتكفي لأننا بنتفق على الاتجاه قبل ما يبدأ التنفيذ. التعديلات موجودة عشان تشحذ اتجاه وافقت عليه، مش عشان تبدأه من جديد. وإذا الاتجاه نفسه كان غلط، هاي مسؤوليتي وبصلّحها بدون تكلفة."
+    },
+    {
+      "tag": "Working together",
+      "tagAr": "طريقة الشغل",
+      "q": "Do you work with clients outside Jordan?",
+      "qAr": "بتشتغل مع عملاء برا الأردن؟",
+      "a": "Yes. Everything I do runs remotely, and I already work across time zones. The only thing that changes is the meeting window, which we agree on once and keep.",
+      "aAr": "آه. كل شغلي بيمشي عن بعد، وأصلاً بشتغل مع فروقات توقيت. الشي الوحيد اللي بيتغيّر هو وقت الاجتماعات، وبنتفق عليه مرة وبنمشي عليه."
+    },
+    {
+      "tag": "Working together",
+      "tagAr": "طريقة الشغل",
+      "q": "Who owns the files at the end?",
+      "qAr": "مين بيملك الملفات بالنهاية؟",
+      "a": "You do, fully. Source files, project files, accounts, and passwords are handed over on delivery. I do not hold anything hostage to keep you on a retainer.",
+      "aAr": "إنت، بالكامل. الملفات المصدرية وملفات المشاريع والحسابات وكلمات المرور بتنسلّم مع التسليم. ما بحتجز إشي عشان أضمن بقاءك على اشتراك."
+    },
+    {
+      "tag": "Results",
+      "tagAr": "النتائج",
+      "q": "Can you guarantee results?",
+      "qAr": "بتضمن النتائج؟",
+      "a": "No, and be careful with anyone who does. I can guarantee the work, the standard, and the reporting. Results depend on your product, your price, and your market too. What I can promise is that you will always know exactly what was done, what it cost, and what it returned.",
+      "aAr": "لأ، وخد بالك من أي حدا بيضمنلك. بضمن الشغل والمستوى والتقارير. النتيجة بتعتمد كمان على منتجك وسعرك وسوقك. اللي بقدر أوعدك فيه إنك رح تعرف دايماً شو انعمل بالضبط، وقديش كلّف، وشو رجّع."
+    },
+    {
+      "tag": "Results",
+      "tagAr": "النتائج",
+      "q": "Do I need ads, or is organic enough?",
+      "qAr": "بحتاج إعلانات، ولا العضوي بيكفي؟",
+      "a": "Organic builds an asset you keep, ads buy attention while you pay. Most businesses need both but in the right order: build the content system first, then put budget behind what already proved it works. Running ads on weak content is how budgets disappear.",
+      "aAr": "العضوي بيبنيلك أصل بيضل ملكك، والإعلانات بتشتري انتباه طول ما بتدفع. أغلب المشاريع بتحتاج الاثنين بس بالترتيب الصح: ابنِ نظام المحتوى أول، وبعدها حط ميزانية ورا اللي أثبت إنه بيشتغل. تشغيل إعلانات على محتوى ضعيف هو الطريقة الأسرع لحرق الميزانية."
+    },
+    {
+      "tag": "Working together",
+      "tagAr": "طريقة الشغل",
+      "q": "Are you open to a full-time role?",
+      "qAr": "منفتح لوظيفة بدوام كامل؟",
+      "a": "My focus is client work, but I will consider a full-time or part-time role, remote or hybrid, when the role and the offer are worth it. If you are building something serious, tell me about it.",
+      "aAr": "تركيزي على شغل العملاء، بس بفكر بفرصة دوام كامل أو جزئي، ريموت أو هجين، إذا كان الدور والعرض بيستاهلوا. لو عم تبني إشي جدي، احكيلي عنه."
+    }
+  ]
+}

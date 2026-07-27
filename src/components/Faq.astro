@@ -1,0 +1,529 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  الأسئلة الشائعة — بتصميم لوحين مش أكورديون عادي
+//
+//  الفكرة: الأسئلة بعمود، والجواب بلوح ثابت بجنبها بيتبدّل
+//  وانت بتتنقل بينها. يعني الصفحة ما بتقفز ولا بتطول، والجواب
+//  بيضل قدام عينك بمكان واحد.
+//
+//  • فلاتر بالأعلى بتفلتر الأسئلة حسب التصنيف
+//  • تنقّل بالكيبورد (أسهم فوق وتحت)
+//  • عالموبايل بيتحوّل لأكورديون عادي (أنسب للشاشة الضيقة)
+//
+//  ✏️ الأسئلة والأجوبة من ملف src/data/faq.json
+// ═══════════════════════════════════════════════════════════════
+import faq from '../data/faq.json';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'faq' } = Astro.props;
+const isAr = lang === 'ar';
+
+const items = faq.items;
+
+// التصنيفات الفريدة (بالترتيب اللي ظهرت فيه)
+const tags: string[] = [];
+items.forEach((it: any) => {
+  const t = isAr ? it.tagAr : it.tag;
+  if (!tags.includes(t)) tags.push(t);
+});
+
+const t = isAr
+  ? { kicker: 'أسئلة شائعة', heading: 'الأسئلة اللي بتجيني دايماً.', all: 'الكل', ask: 'سؤالك مش هون؟', askCta: 'اسألني مباشرة' }
+  : { kicker: 'FAQ', heading: 'The questions I get asked most.', all: 'All', ask: 'Question not here?', askCta: 'Ask me directly' };
+
+const contactHref = isAr ? '/ar/#contact' : '/#contact';
+---
+
+<section class="faq" id={id}>
+  <div class="container">
+    <!-- ═══ الترويسة ═══ -->
+    <div class="head">
+      <p class="kicker" data-reveal>{t.kicker}</p>
+      <h2 data-reveal>{t.heading}</h2>
+    </div>
+
+    <!-- ═══ فلاتر التصنيف ═══ -->
+    <div class="filters" data-reveal>
+      <button class="chip is-on" data-filter="*" type="button">{t.all}</button>
+      {tags.map((tag) => <button class="chip" data-filter={tag} type="button">{tag}</button>)}
+    </div>
+
+    <!-- ═══ اللوحان ═══ -->
+    <div class="panes" data-faq>
+      <!-- عمود الأسئلة -->
+      <ul class="list" data-faq-list>
+        {
+          items.map((it: any, i: number) => (
+            <li class="row" data-tag={isAr ? it.tagAr : it.tag}>
+              <button
+                class={`q ${i === 0 ? 'is-active' : ''}`}
+                type="button"
+                data-q={i}
+                aria-expanded={i === 0 ? 'true' : 'false'}
+              >
+                <span class="num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="text">{isAr ? it.qAr : it.q}</span>
+                <span class="arrow" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M9 6l6 6-6 6" />
+                  </svg>
+                </span>
+              </button>
+
+              {/* الجواب المطوي — بيظهر هون عالموبايل فقط */}
+              <div class="inline-a" data-inline={i}>
+                <p>{isAr ? it.aAr : it.a}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+
+      <!-- لوح الجواب الثابت (ديسكتوب) -->
+      <div class="answer" data-faq-answer>
+        <div class="answer-inner">
+          {
+            items.map((it: any, i: number) => (
+              <div class={`a ${i === 0 ? 'is-shown' : ''}`} data-a={i}>
+                <span class="a-tag">{isAr ? it.tagAr : it.tag}</span>
+                <h3>{isAr ? it.qAr : it.q}</h3>
+                <p>{isAr ? it.aAr : it.a}</p>
+              </div>
+            ))
+          }
+
+          <!-- دعوة بأسفل اللوح -->
+          <div class="ask">
+            <span>{t.ask}</span>
+            <a href={contactHref}>{t.askCta} →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .faq {
+    --heading-size: clamp(28px, 4vw, 52px); /* حجم العنوان */
+    --q-size: clamp(15px, 1.6vw, 17.5px); /* حجم نص السؤال */
+    --a-size: clamp(16px, 1.7vw, 19px); /* حجم نص الجواب */
+    --row-pad: 18px; /* ارتفاع صف السؤال */
+    --panes-gap: clamp(28px, 4vw, 64px); /* المسافة بين العمودين */
+    --split: 1.05fr 1fr; /* عرض عمود الأسئلة مقابل الجواب */
+    padding-block: var(--section-gap) 0;
+  }
+
+  .head {
+    margin-bottom: 26px;
+  }
+
+  .kicker {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  h2 {
+    font-size: var(--heading-size);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    max-width: 20ch;
+  }
+
+  html[lang='ar'] h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  /* ─── الفلاتر ─── */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: clamp(28px, 4vh, 44px);
+  }
+
+  .chip {
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: var(--r-pill);
+    transition:
+      color 0.3s var(--ease-out),
+      border-color 0.3s var(--ease-out),
+      background-color 0.3s var(--ease-out);
+  }
+
+  .chip:hover {
+    color: var(--text);
+    border-color: rgba(242, 243, 238, 0.3);
+  }
+
+  .chip.is-on {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  /* ─── اللوحان ─── */
+  .panes {
+    display: grid;
+    grid-template-columns: var(--split);
+    gap: var(--panes-gap);
+    align-items: start;
+  }
+
+  /* ─── عمود الأسئلة ─── */
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .row {
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* الصفوف المفلترة بتنخفي */
+  .row[hidden] {
+    display: none;
+  }
+
+  .q {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: var(--row-pad) 0;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: var(--q-size);
+    font-weight: 600;
+    text-align: start;
+    transition: color 0.3s var(--ease-out), padding-inline 0.35s var(--ease-out);
+  }
+
+  .q:hover {
+    color: var(--text);
+  }
+
+  /* السؤال المفتوح: ليموني ومزاح شوي للداخل */
+  .q.is-active {
+    color: var(--accent);
+    padding-inline-start: 12px;
+  }
+
+  /* خط ليموني بيمتد على حافة السؤال المفتوح */
+  .q::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    top: 50%;
+    translate: 0 -50%;
+    width: 2px;
+    height: 0;
+    background: var(--accent);
+    border-radius: var(--r-pill);
+    transition: height 0.35s var(--ease-out);
+  }
+
+  .q.is-active::before {
+    height: 62%;
+  }
+
+  .num {
+    flex-shrink: 0;
+    font-family: var(--font-en);
+    font-size: 11.5px;
+    font-weight: 700;
+    opacity: 0.5;
+  }
+
+  .text {
+    flex: 1;
+  }
+
+  .arrow {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  }
+
+  html[dir='rtl'] .arrow {
+    transform: scaleX(-1);
+  }
+
+  .q.is-active .arrow,
+  .q:hover .arrow {
+    opacity: 1;
+  }
+
+  /* ─── لوح الجواب ─── */
+  .answer {
+    position: sticky;
+    top: 120px; /* تحت شريط الإشارة وكبسولة التنقل */
+  }
+
+  .answer-inner {
+    position: relative;
+    padding: clamp(26px, 3vw, 40px);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: linear-gradient(160deg, var(--surface-2), var(--surface));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 24px 60px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+  }
+
+  /* وهج ليموني خافت بالزاوية */
+  .answer-inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      110% 80% at 100% 0%,
+      color-mix(in srgb, var(--accent) 8%, transparent),
+      transparent 55%
+    );
+  }
+
+  /* الأجوبة مكدّسة فوق بعض، وحدة بس بتظهر */
+  .a {
+    display: none;
+  }
+
+  .a.is-shown {
+    display: block;
+    animation: fadeUp 0.45s var(--ease-out);
+  }
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .a.is-shown {
+      animation: none;
+    }
+  }
+
+  .a-tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    border-radius: var(--r-pill);
+    padding: 5px 14px;
+    margin-bottom: 18px;
+  }
+
+  .a h3 {
+    font-size: clamp(19px, 2vw, 24px);
+    font-weight: 700;
+    margin-bottom: 14px;
+    line-height: 1.35;
+  }
+
+  html[lang='ar'] .a h3 {
+    font-weight: 800;
+  }
+
+  .a p {
+    color: var(--muted);
+    font-size: var(--a-size);
+    line-height: 1.8;
+  }
+
+  /* دعوة بأسفل اللوح */
+  .ask {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: clamp(24px, 3vh, 36px);
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 14.5px;
+  }
+
+  .ask span {
+    color: var(--muted);
+  }
+
+  .ask a {
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  /* ─── الجواب المطوي (موبايل فقط) ─── */
+  .inline-a {
+    display: none;
+    overflow: hidden;
+  }
+
+  .inline-a p {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.8;
+    padding-bottom: var(--row-pad);
+    padding-inline-start: 12px;
+  }
+
+  /* ═══════════ موبايل: أكورديون عادي ═══════════ */
+  @media (max-width: 860px) {
+    .panes {
+      grid-template-columns: 1fr;
+    }
+
+    /* نخفي لوح الجواب الثابت ونبيّن الأجوبة المطوية */
+    .answer {
+      display: none;
+    }
+
+    .inline-a[data-open] {
+      display: block;
+      animation: fadeUp 0.35s var(--ease-out);
+    }
+
+    .arrow {
+      opacity: 1;
+      transform: rotate(90deg);
+      transition: transform 0.35s var(--ease-out);
+    }
+
+    html[dir='rtl'] .arrow {
+      transform: scaleX(-1) rotate(-90deg);
+    }
+
+    .q.is-active .arrow {
+      transform: rotate(-90deg);
+    }
+
+    html[dir='rtl'] .q.is-active .arrow {
+      transform: scaleX(-1) rotate(90deg);
+    }
+  }
+</style>
+
+<script>
+  // ═══════════════════════════════════════════════════════════════
+  //  منطق الأسئلة الشائعة
+  //  • ضغط سؤال = يفتح جوابه (باللوح عالديسكتوب، ومطوي عالموبايل)
+  //  • الفلاتر بتخفي الأسئلة غير المطابقة
+  //  • أسهم الكيبورد بتنقّل بين الأسئلة
+  // ═══════════════════════════════════════════════════════════════
+  function initFaq() {
+    const root = document.querySelector('[data-faq]');
+    if (!root) return;
+
+    // ⚠️ هالسكربت بينادى مرتين عند أول تحميل (مرة مباشرة ومرة من
+    //    astro:page-load)، وبدون هالحارس كانت المستمعات تتسجّل
+    //    مرتين — فسهم الكيبورد كان يقفز سؤالين بدل واحد.
+    if (root.hasAttribute('data-faq-ready')) return;
+    root.setAttribute('data-faq-ready', '');
+
+    const section = root.closest('.faq');
+    const questions = [...root.querySelectorAll('[data-q]')] as HTMLElement[];
+    const answers = [...root.querySelectorAll('[data-a]')] as HTMLElement[];
+    const inlines = [...root.querySelectorAll('[data-inline]')] as HTMLElement[];
+    const chips = [...(section?.querySelectorAll('[data-filter]') || [])] as HTMLElement[];
+
+    const isMobile = () => window.matchMedia('(max-width: 860px)').matches;
+
+    function open(index: number) {
+      questions.forEach((q) => {
+        const on = q.dataset.q === String(index);
+        q.classList.toggle('is-active', on);
+        q.setAttribute('aria-expanded', String(on));
+      });
+      answers.forEach((a) => a.classList.toggle('is-shown', a.dataset.a === String(index)));
+      inlines.forEach((el) => {
+        if (el.dataset.inline === String(index)) el.setAttribute('data-open', '');
+        else el.removeAttribute('data-open');
+      });
+    }
+
+    function close() {
+      questions.forEach((q) => {
+        q.classList.remove('is-active');
+        q.setAttribute('aria-expanded', 'false');
+      });
+      inlines.forEach((el) => el.removeAttribute('data-open'));
+    }
+
+    questions.forEach((q) => {
+      q.addEventListener('click', () => {
+        const i = Number(q.dataset.q);
+        // عالموبايل: الضغط على سؤال مفتوح بيسكّره
+        if (isMobile() && q.classList.contains('is-active')) close();
+        else open(i);
+      });
+    });
+
+    // ─── الفلاتر ───
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const val = chip.dataset.filter;
+        chips.forEach((c) => c.classList.toggle('is-on', c === chip));
+
+        const rows = [...root.querySelectorAll('.row')] as HTMLElement[];
+        let firstVisible: number | null = null;
+
+        rows.forEach((row) => {
+          const match = val === '*' || row.dataset.tag === val;
+          row.hidden = !match;
+          if (match && firstVisible === null) {
+            const btn = row.querySelector('[data-q]') as HTMLElement | null;
+            if (btn) firstVisible = Number(btn.dataset.q);
+          }
+        });
+
+        // نفتح أول سؤال ظاهر عشان اللوح ما يضل فاضي
+        if (firstVisible !== null && !isMobile()) open(firstVisible);
+      });
+    });
+
+    // ─── التنقّل بالكيبورد ───
+    root.addEventListener('keydown', (e) => {
+      const key = (e as KeyboardEvent).key;
+      if (key !== 'ArrowDown' && key !== 'ArrowUp') return;
+      const visible = questions.filter((q) => !(q.closest('.row') as HTMLElement)?.hidden);
+      const current = visible.findIndex((q) => q.classList.contains('is-active'));
+      if (current === -1) return;
+      e.preventDefault();
+      const next = key === 'ArrowDown' ? current + 1 : current - 1;
+      const target = visible[(next + visible.length) % visible.length];
+      if (target) {
+        open(Number(target.dataset.q));
+        target.focus();
+      }
+    });
+  }
+
+  initFaq();
+  document.addEventListener('astro:page-load', initFaq);
+</script>

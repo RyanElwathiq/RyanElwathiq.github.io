@@ -16,6 +16,7 @@ import DesignsGrid from '../components/DesignsGrid.astro';
 import Websites from '../components/Websites.astro';
 import Skills from '../components/Skills.astro';
 import Pricing from '../components/Pricing.astro';
+import Faq from '../components/Faq.astro';
 import Education from '../components/Education.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
@@ -32,6 +33,7 @@ const marks = [
   { id: 'designs', label: 'Design' },
   { id: 'websites', label: 'Web' },
   { id: 'pricing', label: 'How I work' },
+  { id: 'faq', label: 'FAQ' },
   { id: 'contact', label: 'Contact' },
 ];
 ---
@@ -92,6 +94,7 @@ const marks = [
 
     <Skills lang="en" />
     <Pricing lang="en" />
+    <Faq lang="en" id="faq" />
     <Education lang="en" />
     <Contact lang="en" />
   </main>
