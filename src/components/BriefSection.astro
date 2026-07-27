@@ -1,0 +1,46 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  الغلاف حول نموذج الطلب
+//
+//  ✏️ الاستعمال:
+//     <BriefSection lang="ar" />          ← بالصفحة الرئيسية
+//     <BriefSection lang="ar" eager />    ← بالصفحة المخصصة
+//
+//  ⚠️ نفس النموذج بالضبط بالمكانين — ملف واحد، فأي تعديل
+//     بيظهر بالاثنين. والأزرار اللي بتودي لصفحة /brief/ ضلّت
+//     شغالة زي ما هي.
+// ═══════════════════════════════════════════════════════════════
+import Brief from './Brief.jsx';
+import work from '../data/work.json';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+  eager?: boolean;
+  bare?: boolean;
+}
+
+const { lang, id = 'brief', eager = false, bare = false } = Astro.props;
+const { email, phone } = work.links;
+const whatsapp = `https://wa.me/${phone.replace(/[^0-9]/g, '')}`;
+const props = { lang, email, whatsapp };
+---
+
+{
+  bare ? (
+    eager ? <Brief client:load {...props} /> : <Brief client:visible {...props} />
+  ) : (
+    <section class="brief-section" id={id}>
+      <div class="container">
+        {eager ? <Brief client:load {...props} /> : <Brief client:visible {...props} />}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .brief-section {
+    padding-block: clamp(64px, 10vh, 120px);
+    border-top: 1px solid var(--line);
+  }
+</style>

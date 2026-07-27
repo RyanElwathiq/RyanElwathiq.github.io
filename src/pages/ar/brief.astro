@@ -11,11 +11,11 @@
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Footer from '../../components/Footer.astro';
-import Brief from '../../components/Brief.jsx';
-import work from '../../data/work.json';
+import BriefSection from '../../components/BriefSection.astro';
 
-const { email, phone } = work.links;
-const whatsapp = `https://wa.me/${phone.replace(/[^0-9]/g, '')}`;
+
+
+
 ---
 
 <Base
@@ -28,7 +28,7 @@ const whatsapp = `https://wa.me/${phone.replace(/[^0-9]/g, '')}`;
   <main id="top" class="page">
     <div class="container">
       <a class="back" href="/ar/#contact">→ رجوع</a>
-      <Brief client:load lang="ar" email={email} whatsapp={whatsapp} />
+      <BriefSection lang="ar" eager bare />
     </div>
   </main>
 
