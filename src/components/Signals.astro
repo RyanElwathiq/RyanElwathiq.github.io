@@ -144,6 +144,22 @@ const t = isAr
       )
     }
 
+    <!-- ═══ الفيديو الرمزي: ضجيج بيتحوّل لإشارة (لوب صامت) ═══
+         ⚠️ فيديو عادي بيلف على حاله — مش مربوط بالسكرول عمداً.
+         ✏️ بدك تبدّله؟ حط الملف الجديد مكان:
+            public/previews/signals-loop.mp4 -->
+    <figure class="loop" data-reveal>
+      <video
+        src="/previews/signals-loop.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        aria-hidden="true"
+      ></video>
+    </figure>
+
     <!-- ═══ الخاتمة ═══ -->
     <div class="foot" data-reveal>
       <a class="btn btn-primary" href={indexHref}>{t.cta}</a>
@@ -364,6 +380,32 @@ const t = isAr
     margin-bottom: var(--gap);
   }
 
+  /* ─── الفيديو الرمزي ─── */
+  .loop {
+    margin: 0 0 var(--gap);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    /* وصل بصري: الفيديو خلفيته فحمية مثل الموقع فبيندمج،
+       والخط الفاصل بيعطيه حضور بطاقة */
+    background: var(--bg);
+  }
+
+  .loop video {
+    width: 100%;
+    display: block;
+    /* الفيديو 16:9 — منقصّه أعرض وأقصر عشان يبين كشريط إشارة
+       مش كفيديو يوتيوب. غيّر الرقم لو بدك أطول/أقصر */
+    aspect-ratio: 21 / 7;
+    object-fit: cover;
+  }
+
+  @media (max-width: 640px) {
+    .loop video {
+      aspect-ratio: 16 / 8;
+    }
+  }
+
   /* ─── الخاتمة ─── */
   .foot {
     display: flex;
@@ -490,12 +532,23 @@ const t = isAr
         ctx.shadowBlur = 0;
       };
 
-      // التقدّم = قديش القسم مرق بالشاشة
+      // ═══════════════════════════════════════════════════════
+      //  التقدّم: مبني على مكان **الخط نفسه** بالشاشة، مش القسم.
+      //
+      //  ⚠️ النسخة الأولى كانت تقيس مرور القسم كامل — والقسم طويل،
+      //     فالتحوّل ما كان يكمل إلا بعد ما الخط يطلع من الشاشة
+      //     أصلاً. يعني الزائر ما يشوف الحركة أبداً (خصوصاً
+      //     عالموبايل). هلق:
+      //     • الخط بيبدأ يتحوّل أول ما يدخل من تحت
+      //     • وبيكمل 100% وهو لسا بنص الشاشة، قدام عينك
+      // ═══════════════════════════════════════════════════════
+      const waveEl = canvas.parentElement || canvas;
       const progress = () => {
-        const r = section.getBoundingClientRect();
-        const total = r.height + window.innerHeight;
-        const passed = window.innerHeight - r.top;
-        return Math.min(1, Math.max(0, passed / total));
+        const r = waveEl.getBoundingClientRect();
+        const vh = window.innerHeight;
+        // 0 لما أعلى الخط عند أسفل الشاشة، 1 لما يوصل 45% من ارتفاعها
+        const p = (vh - r.top) / (vh - vh * 0.45);
+        return Math.min(1, Math.max(0, p));
       };
 
       resize();

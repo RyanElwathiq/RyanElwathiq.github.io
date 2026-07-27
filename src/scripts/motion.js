@@ -272,7 +272,18 @@ function setupWordGlow() {
     // لو انقسم أصلاً (رجعنا للصفحة بدون تحميل) ما نعيد التقسيم
     if (!p.querySelector('.w')) {
       const words = p.textContent.trim().split(/\s+/);
-      p.innerHTML = words.map((w) => `<span class="w">${w}</span>`).join(' ');
+      // ⚠️ منبني العناصر بدل ما نكتب HTML كنص.
+      //    لو كتبنا HTML، أي جملة فيها رمز زي & أو < كانت بتنكسر
+      //    أو بتنعرض غلط. هيك الكلمة بتنحط كنص خالص مهما كانت.
+      const frag = document.createDocumentFragment();
+      words.forEach((w, i) => {
+        if (i) frag.append(' ');
+        const span = document.createElement('span');
+        span.className = 'w';
+        span.textContent = w;
+        frag.append(span);
+      });
+      p.replaceChildren(frag);
     }
     const spans = p.querySelectorAll('.w');
     if (reduceMotion) return;

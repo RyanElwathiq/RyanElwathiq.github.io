@@ -21,14 +21,17 @@ const isAr = lang === 'ar';
 
 const t = isAr
   ? {
-      note: 'من أول سطر كود لآخر تفصيل بالتصميم.',
+      // ✏️ الجزء بين notePre و noteEm بيطلع بلون الهوية الليموني
+      notePre: 'من أول سطر كود ',
+      noteEm: 'لآخر تفصيل بالتصميم.',
       live: 'شغّال',
       wip: 'تحت الشغل',
       visit: 'زيارة الموقع ↗',
       details: 'القصة الكاملة ←',
     }
   : {
-      note: 'From the first line of code to the last design detail.',
+      notePre: 'From the first line of code ',
+      noteEm: 'to the last design detail.',
       live: 'Live',
       wip: 'In progress',
       visit: 'Visit site ↗',
@@ -50,8 +53,12 @@ const t = isAr
     <canvas aria-hidden="true"></canvas>
     <div class="film-veil" aria-hidden="true"></div>
     <div class="container film-copy">
-      <h2>{heading}</h2>
-      <p>{t.note}</p>
+      <!-- لوح زجاجي عرضي بنفس روح لوح الهيرو — خط ليموني على
+           الحافة، وجزء من النص بلون الهوية -->
+      <div class="copy-panel">
+        <h2>{heading}</h2>
+        <p>{t.notePre}<em>{t.noteEm}</em></p>
+      </div>
     </div>
   </div>
 
@@ -175,11 +182,51 @@ const t = isAr
     z-index: 1;
   }
 
+  /* ─── اللوح الزجاجي (نفس روح لوح الهيرو) ─── */
+  .copy-panel {
+    position: relative;
+    isolation: isolate;
+    display: inline-block;
+    max-width: min(560px, 100%);
+    padding: clamp(22px, 2.8vw, 40px) clamp(26px, 3.2vw, 48px);
+    border-radius: 22px;
+    background: linear-gradient(160deg, rgba(27, 30, 36, 0.72), rgba(14, 15, 18, 0.62));
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    border: 1px solid rgba(242, 243, 238, 0.12);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.13),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.45),
+      0 22px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  /* خط ليموني على الحافة من جهة النص — توقيع الهوية */
+  .copy-panel::before {
+    content: '';
+    position: absolute;
+    inset-block: clamp(22px, 2.8vw, 40px);
+    inset-inline-start: 0;
+    width: 3px;
+    border-radius: var(--r-pill);
+    background: linear-gradient(
+      to bottom,
+      var(--accent),
+      color-mix(in srgb, var(--accent) 30%, transparent)
+    );
+  }
+
+  /* لو الضبابية مش مدعومة: خلفية صلبة */
+  @supports not (backdrop-filter: blur(4px)) {
+    .copy-panel {
+      background: rgba(14, 15, 18, 0.92);
+    }
+  }
+
   .film-copy h2 {
     font-size: var(--heading-size);
     font-weight: 700;
     letter-spacing: -0.02em;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
   html[lang='ar'] .film-copy h2 {
@@ -188,9 +235,16 @@ const t = isAr
   }
 
   .film-copy p {
-    color: var(--muted);
+    /* أفتح من --muted: النص فوق فيديو، بيحتاج تباين أعلى */
+    color: #cdd1c8;
     font-size: clamp(15px, 1.6vw, 18px);
     max-width: 44ch;
+  }
+
+  /* الجزء الليموني من الجملة */
+  .film-copy p em {
+    font-style: normal;
+    color: var(--accent);
   }
 
   /* ─── بطاقات المواقع ─── */

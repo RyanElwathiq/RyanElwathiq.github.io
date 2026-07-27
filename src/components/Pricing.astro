@@ -57,6 +57,7 @@ const t = isAr
           d: 'دراستي بسلاسل التوريد الرقمية خلّتني أشتغل بمنطق KPI وعمليات — مش بس «محتوى حلو». بتعرف وين صرف كل دينار وشو رجّع.',
         },
       ],
+      modeGo: 'ابدأ بهاي الصيغة ←',
       jobTitle: 'وبالنسبة للتوظيف',
       jobBody:
         'شغلي الأساسي حالياً حر ومع عملاء، بس منفتح للفرص بدوام كامل أو جزئي — ريموت أو هجين — إذا كان الدور والعرض بيستاهلوا. لو عندك فريق بتبني فيه إشي جدي، احكيلي.',
@@ -106,6 +107,7 @@ const t = isAr
           d: 'Studying digital supply chain taught me to work in KPIs and processes, not just "nice content". You will know where every dinar went and what it returned.',
         },
       ],
+      modeGo: 'Start with this format →',
       jobTitle: 'On full-time roles',
       jobBody:
         'My main focus right now is client work, but I am open to full-time or part-time roles, remote or hybrid, when the role and the offer are worth it. If you are building something serious, tell me about it.',
@@ -123,11 +125,13 @@ const t = isAr
       <p class="sub" data-reveal>{t.sub}</p>
     </div>
 
-    <!-- ═══ طرق التعاون الثلاث ═══ -->
+    <!-- ═══ طرق التعاون الثلاث ═══
+         البطاقات روابط حقيقية: الضغط على أي وحدة بينزل على قسم
+         التواصل — لأن اللي بيقرأها وعجبته صيغة، هاد هو قراره -->
     <div class="modes" data-stagger>
       {
         t.modes.map((m) => (
-          <div class={`mode ${m.tag ? 'highlight' : ''}`}>
+          <a class={`mode ${m.tag ? 'highlight' : ''}`} href="#contact">
             {m.tag && <span class="tag">{m.tag}</span>}
             <h3>{m.name}</h3>
             <p class="mode-desc">{m.desc}</p>
@@ -136,7 +140,8 @@ const t = isAr
                 <li>{pt}</li>
               ))}
             </ul>
-          </div>
+            <span class="mode-go" aria-hidden="true">{t.modeGo}</span>
+          </a>
         ))
       }
     </div>
@@ -219,27 +224,111 @@ const t = isAr
 
   .mode {
     position: relative;
+    display: block;
+    color: inherit;
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--r-card);
     padding: var(--card-padding);
+    cursor: pointer;
+    transition:
+      border-color 0.35s var(--ease-out),
+      transform 0.35s var(--ease-out),
+      box-shadow 0.35s var(--ease-out),
+      background 0.35s var(--ease-out);
+  }
+
+  /* ─── التفاعل: حواف ليمونية + ارتفاع خفيف ─── */
+  .mode:hover,
+  .mode:focus-visible {
+    border-color: var(--accent);
+    background: var(--surface-2);
+    transform: translateY(-4px);
+    box-shadow:
+      0 0 0 1px var(--accent),
+      0 18px 44px rgba(0, 0, 0, 0.45),
+      0 0 26px color-mix(in srgb, var(--accent) 16%, transparent);
+  }
+
+  /* لحظة الضغط: بتنضغط شوي — إحساس زر حقيقي */
+  .mode:active {
+    transform: translateY(-1px) scale(0.99);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mode,
+    .mode:hover {
+      transform: none;
+    }
   }
 
   /* البطاقة المميزة (الأكثر طلباً) */
   .mode.highlight {
     border-color: var(--accent);
+    background: linear-gradient(
+      175deg,
+      color-mix(in srgb, var(--accent) 7%, var(--surface)),
+      var(--surface) 45%
+    );
   }
 
   .tag {
     position: absolute;
-    top: -11px;
+    top: -13px;
     inset-inline-start: var(--card-padding);
     background: var(--accent);
     color: var(--accent-ink);
     font-size: 12px;
     font-weight: 700;
-    padding: 4px 14px;
+    padding: 5px 16px;
     border-radius: var(--r-pill);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 45%, transparent);
+    /* نبضة وهج هادية بتلفت العين للبطاقة الأهم */
+    animation: tag-pulse 2.6s ease-in-out infinite;
+  }
+
+  @keyframes tag-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 30%, transparent);
+    }
+    50% {
+      box-shadow: 0 0 26px color-mix(in srgb, var(--accent) 65%, transparent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tag {
+      animation: none;
+    }
+  }
+
+  /* ─── سطر «ابدأ بهاي الصيغة» — بيبين عند المرور بس ─── */
+  .mode-go {
+    display: block;
+    margin-top: 20px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateY(4px);
+    transition:
+      opacity 0.3s var(--ease-out),
+      transform 0.3s var(--ease-out);
+  }
+
+  .mode:hover .mode-go,
+  .mode:focus-visible .mode-go {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* عالشاشات اللمسية ما في hover — بيضل ظاهر دايماً */
+  @media (hover: none) {
+    .mode-go {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   .mode h3 {

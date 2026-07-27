@@ -38,8 +38,8 @@ const marks = [
   { id: 'pricing', label: 'How I work' },
   { id: 'budget', label: 'Budget' },
   { id: 'lab', label: 'Idea lab' },
-  { id: 'faq', label: 'FAQ' },
   { id: 'signals', label: 'Signals' },
+  { id: 'faq', label: 'FAQ' },
   { id: 'contact', label: 'Contact' },
 ];
 ---
@@ -103,9 +103,10 @@ const marks = [
     <!-- لعبة الميزانية: نسخة مختصرة هون، والكاملة على /budget/ -->
     <BudgetSection lang="en" id="budget" compact />
     <LampLab lang="en" id="lab" />
-    <Faq lang="en" id="faq" />
     <Signals lang="en" id="signals" />
     <Education lang="en" />
+    <!-- ⚠️ قاعدة ثابتة: الأسئلة الشائعة دايماً آخر قسم قبل التواصل -->
+    <Faq lang="en" id="faq" />
     <Contact lang="en" />
   </main>
 

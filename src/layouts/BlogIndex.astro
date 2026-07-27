@@ -57,7 +57,11 @@ const fmt = (d: Date) =>
 
   <main id="top" class="blog">
     <div class="container">
-      <a class="back" href={isAr ? '/ar/' : '/'}>{t.back}</a>
+      <!-- ⚠️ الرجوع بيوديك على **قسم إشارات** بالرئيسية مش على أولها —
+           نفس منطق «كل التصاميم»: الزائر بيرجع لنفس المكان اللي
+           كان فيه بدون ما الصفحة تنعاد من الصفر. اللي بده أول
+           الصفحة بيضغط اللوجو بالكبسولة. -->
+      <a class="back" href={isAr ? '/ar/#signals' : '/#signals'}>{t.back}</a>
       <h1 data-reveal>{t.title}</h1>
       <p class="intro" data-reveal>{t.intro}</p>
 

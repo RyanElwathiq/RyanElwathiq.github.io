@@ -11,12 +11,21 @@ export function initLightbox() {
   const closeBtn = dialog.querySelector('[data-lightbox-close]');
 
   function open(videoId) {
+    // ⚠️ أرقام اليوتيوب بتتكتب بإيدك بملف work.json. لو انلزق معها
+    //    رابط كامل أو رمز غريب، منشيله هون — بنقبل بس الحروف
+    //    والأرقام والشرطات (وهاد شكل رقم اليوتيوب الحقيقي).
+    const safeId = String(videoId || '').replace(/[^A-Za-z0-9_-]/g, '');
+    if (!safeId) return;
+
     // منبني الآيفريم وقت الفتح بس (أداء أفضل، ما في تحميل مسبق)
-    frameWrap.innerHTML = `<iframe
-      src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1"
-      title="Video player"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen></iframe>`;
+    const frame = document.createElement('iframe');
+    frame.src = `https://www.youtube-nocookie.com/embed/${safeId}?autoplay=1&rel=0&modestbranding=1`;
+    frame.title = 'Video player';
+    frame.allow =
+      'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    frame.allowFullscreen = true;
+    frameWrap.replaceChildren(frame);
+
     dialog.showModal();
     document.documentElement.style.overflow = 'hidden';
   }
@@ -26,7 +35,7 @@ export function initLightbox() {
   }
 
   dialog.addEventListener('close', () => {
-    frameWrap.innerHTML = ''; // وقف الفيديو فوراً عند الإغلاق
+    frameWrap.replaceChildren(); // وقف الفيديو فوراً عند الإغلاق
     document.documentElement.style.overflow = '';
   });
 
