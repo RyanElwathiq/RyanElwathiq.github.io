@@ -31,6 +31,7 @@ const blogHref = isAr ? '/ar/signals/' : '/signals/';
 const t = isAr
   ? {
       work: 'الأعمال',
+      brief: 'ابدأ مشروعك',
       budget: 'لعبة الميزانية',
       lab: 'مختبر الأفكار',
       pricing: 'كيف بشتغل',
@@ -42,6 +43,7 @@ const t = isAr
     }
   : {
       work: 'Work',
+      brief: 'Start a project',
       budget: 'Budget game',
       lab: 'Idea lab',
       pricing: 'How I work',
@@ -65,6 +67,7 @@ const links = [
 const sheetLinks = [
   { label: t.work, href: `${home}#work` },
   { label: t.pricing, href: `${home}#pricing` },
+  { label: t.brief, href: isAr ? '/ar/brief/' : '/brief/' },
   { label: t.budget, href: isAr ? '/ar/budget/' : '/budget/' },
   { label: t.lab, href: `${home}#lab` },
   { label: t.faq, href: `${home}#faq` },

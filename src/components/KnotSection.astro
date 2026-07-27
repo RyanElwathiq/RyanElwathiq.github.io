@@ -1,0 +1,31 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  الغلاف حول العقدة ثلاثية الأبعاد
+//
+//  ⚠️ client:visible مقصودة: مكتبة الرسم ثلاثي الأبعاد كبيرة،
+//     فما بتتحمّل إلا لما الزائر يوصل للقسم فعلاً. يعني باقي
+//     الموقع بيضل خفيف زي ما هو.
+//
+//  ✏️ العقدة نفسها: src/components/Knot.jsx
+// ═══════════════════════════════════════════════════════════════
+import Knot from './Knot.jsx';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'knot' } = Astro.props;
+---
+
+<section class="knot-section" id={id}>
+  <div class="container">
+    <Knot client:visible lang={lang} />
+  </div>
+</section>
+
+<style>
+  .knot-section {
+    padding-block: clamp(60px, 9vh, 110px);
+  }
+</style>

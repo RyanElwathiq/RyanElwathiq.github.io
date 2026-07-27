@@ -15,6 +15,7 @@ import CaseRows from '../components/CaseRows.astro';
 import DesignsGrid from '../components/DesignsGrid.astro';
 import Websites from '../components/Websites.astro';
 import Skills from '../components/Skills.astro';
+import KnotSection from '../components/KnotSection.astro';
 import Pricing from '../components/Pricing.astro';
 import BudgetSection from '../components/BudgetSection.astro';
 import LampLab from '../components/LampLab.astro';
@@ -35,6 +36,7 @@ const marks = [
   { id: 'growth', label: 'Growth' },
   { id: 'designs', label: 'Design' },
   { id: 'websites', label: 'Web' },
+  { id: 'knot', label: '3D' },
   { id: 'pricing', label: 'How I work' },
   { id: 'budget', label: 'Budget' },
   { id: 'lab', label: 'Idea lab' },
@@ -99,6 +101,8 @@ const marks = [
     />
 
     <Skills lang="en" />
+    <!-- العقدة ثلاثية الأبعاد: إثبات عملي بعد قائمة المهارات -->
+    <KnotSection lang="en" id="knot" />
     <Pricing lang="en" />
     <!-- لعبة الميزانية: نسخة مختصرة هون، والكاملة على /budget/ -->
     <BudgetSection lang="en" id="budget" compact />

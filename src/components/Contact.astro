@@ -18,6 +18,7 @@ const t = isAr
   ? {
       heading: 'خلينا نبني إشي بيكبر.',
       sub: 'متاح لفرص عن بعد وهجينة، تدريب أو توظيف: تسويق رقمي، نمو، محتوى، هوية، وإنتاج إبداعي.',
+      brief: 'احكيلي عن مشروعك',
       email: 'راسلني',
       call: 'اتصل بي',
       resources: [
@@ -30,6 +31,7 @@ const t = isAr
   : {
       heading: "Let's build something that grows.",
       sub: 'Open to remote, hybrid, internship, and job opportunities: digital marketing, growth, content, branding, and creative production.',
+      brief: 'Tell me about your project',
       email: 'Email me',
       call: 'Call me',
       resources: [
@@ -56,8 +58,12 @@ const t = isAr
     <h2 data-reveal>{t.heading}</h2>
     <p class="sub" data-reveal>{t.sub}</p>
 
+    <!-- ⚠️ الزر الأول بيودي على نموذج الطلب المفصّل، وباقي الطرق
+         (إيميل، اتصال، لينكدإن) ضلّت زي ما هي — النموذج **إضافة**
+         مش بديل، لأن في ناس بتفضّل تحكي مباشرة. -->
     <div class="actions" data-reveal>
-      <a class="btn btn-primary" href={`mailto:${links.email}`}>{t.email}</a>
+      <a class="btn btn-primary" href={isAr ? '/ar/brief/' : '/brief/'}>{t.brief}</a>
+      <a class="btn btn-ghost" href={`mailto:${links.email}`}>{t.email}</a>
       <a class="btn btn-ghost" href={`tel:${links.phone}`}>{t.call}</a>
       <a class="btn btn-ghost" href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
     </div>

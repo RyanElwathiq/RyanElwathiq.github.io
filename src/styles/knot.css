@@ -1,0 +1,139 @@
+/* ═══════════════════════════════════════════════════════════════
+   العقدة ثلاثية الأبعاد — التصميم
+   ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗
+   ═══════════════════════════════════════════════════════════════ */
+
+.knot3d {
+  --stage-h: clamp(320px, 52vh, 520px); /* ارتفاع منطقة المجسّم */
+  --stage-radius: var(--r-card);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(28px, 4vw, 64px);
+  align-items: center;
+}
+
+.knot3d-kicker {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.knot3d h2 {
+  font-size: clamp(26px, 3.6vw, 46px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.14;
+  margin-bottom: 16px;
+}
+
+html[lang='ar'] .knot3d h2 {
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.42;
+}
+
+.knot3d-sub {
+  color: var(--muted);
+  font-size: clamp(15px, 1.6vw, 18px);
+  line-height: 1.75;
+  max-width: 46ch;
+}
+
+/* ─── المسرح ─── */
+.knot3d-stage {
+  position: relative;
+  height: var(--stage-h);
+  border: 1px solid var(--line);
+  border-radius: var(--stage-radius);
+  overflow: hidden;
+  cursor: grab;
+  /* ⚠️ عالموبايل: السحب العمودي بيضل يمرّر الصفحة، والأفقي بيلفّ
+     العقدة. بدون هالسطر كان الزائر بيعلق ما بيقدر يمرّر. */
+  touch-action: pan-y;
+  background:
+    radial-gradient(
+      100% 100% at 50% 45%,
+      color-mix(in srgb, var(--accent) 7%, transparent),
+      transparent 60%
+    ),
+    var(--surface);
+}
+
+.knot3d-stage.is-grabbing {
+  cursor: grabbing;
+}
+
+.knot3d-stage canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ─── تلميح السحب ─── */
+.knot3d-hint {
+  position: absolute;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  bottom: 16px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  padding: 7px 16px;
+  pointer-events: none;
+  animation: knot-hint 3.4s ease-in-out infinite;
+}
+
+@keyframes knot-hint {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .knot3d-hint {
+    animation: none;
+    opacity: 0.8;
+  }
+}
+
+/* ─── البديل لو الجهاز ما بيدعم 3D ─── */
+.knot3d-fallback {
+  display: grid;
+  place-items: center;
+  gap: 18px;
+  text-align: center;
+  padding: clamp(30px, 6vh, 60px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--surface);
+}
+
+.knot3d-fallback img {
+  opacity: 0.85;
+}
+
+.knot3d-fallback p {
+  color: var(--muted);
+  font-size: 14.5px;
+  max-width: 40ch;
+}
+
+/* ─── موبايل ─── */
+@media (max-width: 860px) {
+  .knot3d {
+    grid-template-columns: 1fr;
+  }
+
+  .knot3d {
+    --stage-h: clamp(280px, 44vh, 400px);
+  }
+}
