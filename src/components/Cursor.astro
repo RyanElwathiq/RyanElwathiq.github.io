@@ -1,0 +1,197 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  المؤشّر المخصّص — نقطة بتلحق الماوس + حلقة بتتبعها بتأخير
+//
+//  • النقطة بتوقف عند بوز الماوس بالضبط
+//  • الحلقة بتلحقها بنعومة (تأخير محسوب) — هي اللي بتعطي الإحساس
+//  • الاثنين بيكبروا لما تمرّ على إشي بينضغط (رابط، زر، سلايدر…)
+//
+//  ⚠️ بيشتغل بس على أجهزة فيها ماوس حقيقي. عالموبايل والتابلت
+//     ما بيظهر إطلاقاً (ما في مؤشّر أصلاً)، وكمان بينطفي إذا
+//     الزائر مطفّي الحركة من إعدادات جهازه.
+//
+//  ┌──────────── 🎛️ لوحة التحكم ────────────┐
+//  │ كل المقاسات والسرعات بمتغيّرات CSS تحت │
+//  └─────────────────────────────────────────┘
+// ═══════════════════════════════════════════════════════════════
+---
+
+<div class="cursor" data-cursor aria-hidden="true">
+  <span class="ring" data-cursor-ring></span>
+  <span class="dot" data-cursor-dot></span>
+</div>
+
+<style>
+  .cursor {
+    /* 🎛️ المقاسات */
+    --dot-size: 7px; /* حجم النقطة */
+    --ring-size: 34px; /* حجم الحلقة */
+    --ring-hover: 62px; /* حجم الحلقة فوق العناصر */
+    --dot-hover: 11px; /* حجم النقطة فوق العناصر */
+    --ring-border: 1.5px; /* سماكة حافة الحلقة */
+
+    position: fixed;
+    inset: 0;
+    z-index: 9999; /* فوق كل إشي */
+    pointer-events: none; /* ⚠️ ضروري: ما يحجب الضغط عن الصفحة */
+    display: none; /* بيتفعّل بالجافاسكربت لأجهزة الماوس بس */
+  }
+
+  /* بيتفعّل بس لما السكربت يتأكد إنه في ماوس */
+  :global(html[data-cursor-on]) .cursor {
+    display: block;
+  }
+
+  /* منخفي سهم الماوس الأصلي — النقطة صارت هي المؤشّر.
+     ⚠️ بنخليه ظاهر بخانات الكتابة، لأن مؤشّر الكتابة (I) بيوضّح
+        للزائر وين رح يكتب وهاي معلومة ما بتعوّضها النقطة. */
+  :global(html[data-cursor-on]),
+  :global(html[data-cursor-on] a),
+  :global(html[data-cursor-on] button) {
+    cursor: none;
+  }
+
+  :global(html[data-cursor-on] input),
+  :global(html[data-cursor-on] textarea),
+  :global(html[data-cursor-on] select) {
+    cursor: auto;
+  }
+
+  .dot,
+  .ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    /* الموقع بينحط بالجافاسكربت عبر translate */
+    will-change: transform;
+  }
+
+  .dot {
+    width: var(--dot-size);
+    height: var(--dot-size);
+    margin: calc(var(--dot-size) / -2) 0 0 calc(var(--dot-size) / -2);
+    background: var(--accent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent);
+    transition: width 0.25s var(--ease-out), height 0.25s var(--ease-out),
+      margin 0.25s var(--ease-out);
+  }
+
+  .ring {
+    width: var(--ring-size);
+    height: var(--ring-size);
+    margin: calc(var(--ring-size) / -2) 0 0 calc(var(--ring-size) / -2);
+    border: var(--ring-border) solid color-mix(in srgb, var(--accent) 55%, transparent);
+    transition: width 0.3s var(--ease-out), height 0.3s var(--ease-out),
+      margin 0.3s var(--ease-out), border-color 0.3s var(--ease-out),
+      background 0.3s var(--ease-out);
+  }
+
+  /* ─── فوق عنصر تفاعلي: الاثنين بيكبروا ─── */
+  :global(html[data-cursor-hot]) .ring {
+    width: var(--ring-hover);
+    height: var(--ring-hover);
+    margin: calc(var(--ring-hover) / -2) 0 0 calc(var(--ring-hover) / -2);
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  :global(html[data-cursor-hot]) .dot {
+    width: var(--dot-hover);
+    height: var(--dot-hover);
+    margin: calc(var(--dot-hover) / -2) 0 0 calc(var(--dot-hover) / -2);
+  }
+
+  /* ─── لحظة الضغط: بتنكمش ─── */
+  :global(html[data-cursor-down]) .ring {
+    width: calc(var(--ring-size) * 0.7);
+    height: calc(var(--ring-size) * 0.7);
+    margin: calc(var(--ring-size) * -0.35) 0 0 calc(var(--ring-size) * -0.35);
+  }
+
+  /* لو الزائر مطفّي الحركة: ما بنعرض إشي */
+  @media (prefers-reduced-motion: reduce) {
+    .cursor {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  // ═══════════════════════════════════════════════════════════════
+  //  ⚠️ بيتفعّل مرة وحدة بس (على window مش على العنصر) لأن العنصر
+  //     بيتبدّل مع كل انتقال صفحة، بينما الماوس والحركة مستمرين.
+  // ═══════════════════════════════════════════════════════════════
+  function initCursor() {
+    const w = window as any;
+    if (w.__cursorReady) return;
+
+    // أجهزة اللمس ما إلها مؤشّر — ولا الأجهزة اللي مطفّية الحركة
+    const hasMouse = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!hasMouse || reduce) return;
+
+    w.__cursorReady = true;
+    const root = document.documentElement;
+    root.setAttribute('data-cursor-on', '');
+
+    // آخر مكان للماوس، ومكان الحلقة (بتلحق بتأخير)
+    let mx = innerWidth / 2;
+    let my = innerHeight / 2;
+    let rx = mx;
+    let ry = my;
+    let raf = 0;
+
+    // 🎛️ نعومة ملاحقة الحلقة: 1 = تلزق بالماوس، 0.1 = بطيئة كتير
+    const EASE = 0.18;
+
+    const loop = () => {
+      rx += (mx - rx) * EASE;
+      ry += (my - ry) * EASE;
+
+      const dot = document.querySelector('[data-cursor-dot]') as HTMLElement | null;
+      const ring = document.querySelector('[data-cursor-ring]') as HTMLElement | null;
+      // العناصر بتتبدّل مع الانتقال بين الصفحات، فمنجيبها كل إطار
+      if (dot) dot.style.transform = `translate3d(${mx}px, ${my}px, 0)`;
+      if (ring) ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
+
+      raf = requestAnimationFrame(loop);
+    };
+
+    // ⚠️ الاختيار هون بيحدد شو بيعتبر «تفاعلي». زدنا عليه السلايدرات
+    //    وبطاقات الأسعار وعلامات شريط الإشارة عشان كلها بتنضغط.
+    const HOT =
+      'a, button, input, select, textarea, summary, label, [role="button"], .mode, .bud-range, [data-mark]';
+
+    const onMove = (e: MouseEvent) => {
+      mx = e.clientX;
+      my = e.clientY;
+      const el = e.target as HTMLElement | null;
+      const hot = !!el?.closest?.(HOT);
+      root.toggleAttribute('data-cursor-hot', hot);
+    };
+
+    addEventListener('mousemove', onMove, { passive: true });
+    addEventListener('mousedown', () => root.setAttribute('data-cursor-down', ''));
+    addEventListener('mouseup', () => root.removeAttribute('data-cursor-down'));
+
+    // لما يطلع الماوس برّا نافذة المتصفح منخفي المؤشّر
+    addEventListener('mouseleave', () => root.removeAttribute('data-cursor-on'));
+    addEventListener('mouseenter', () => root.setAttribute('data-cursor-on', ''));
+
+    // لو وصل جهاز لمس واشتغل عليه، منطفي المؤشّر المخصّص
+    addEventListener(
+      'touchstart',
+      () => {
+        root.removeAttribute('data-cursor-on');
+        cancelAnimationFrame(raf);
+      },
+      { passive: true, once: true }
+    );
+
+    loop();
+  }
+
+  initCursor();
+  document.addEventListener('astro:page-load', initCursor);
+</script>
