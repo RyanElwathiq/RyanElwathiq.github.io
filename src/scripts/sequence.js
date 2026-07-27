@@ -172,16 +172,22 @@ async function setupOne(section, priority) {
   // ─── ربط السكرول بالفريمات ───
   let frame = 0;
 
+  // هل العنصر بأعلى الصفحة؟ (بيغيّر نطاق الرحلة — شوف تحت)
+  const atPageTop = section.getBoundingClientRect().top + window.scrollY < window.innerHeight * 0.5;
+
   ScrollTrigger.create({
     trigger: section,
     // ─── مثبّت: الرحلة تبدأ لما يوصل أعلى الشاشة وتاخد المسافة المحددة
     // ─── غير مثبّت: الرحلة تبدأ لما يدخل من تحت وتخلص لما يصير ظاهر بالكامل
     //     (مهم: مش 'bottom top' لأنها بتخلي آخر الفيديو يشتغل والسكشن طالع
     //      من الشاشة، فالزائر ما بيلحق يشوف النهاية)
-    start: shouldPin ? 'top top' : 'top bottom',
+    // ⚠️ للعناصر غير المثبّتة اللي بأعلى الصفحة تماماً: نطاق
+    //    'top bottom' → 'bottom bottom' بيخلص قبل ما يبدأ الزائر
+    //    ينزل أصلاً، فالفيديو بيطلع ثابت. فمنبدأ من أعلى الشاشة.
+    start: shouldPin ? 'top top' : atPageTop ? 'top top' : 'top bottom',
     end: shouldPin
       ? () => `+=${window.innerHeight * scrollLength}`
-      : section.dataset.seqEnd || 'bottom bottom',
+      : section.dataset.seqEnd || (atPageTop ? 'bottom top' : 'bottom bottom'),
     pin: shouldPin ? sticky || section : false,
     anticipatePin: shouldPin ? 1 : 0,
     scrub: 0.5,

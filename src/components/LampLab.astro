@@ -86,7 +86,7 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 
   <div class="container inner">
     <!-- ═══ الحبل واللمبة ═══ -->
-    <div class="cord-wrap">
+    <div class="cord-wrap" data-cord-wrap>
       <svg class="cord" viewBox="0 0 40 200" aria-hidden="true">
         <path data-cord-path d="M20 0 L20 150" />
       </svg>
@@ -231,13 +231,24 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
   }
 
   /* ─── الحبل واللمبة ─── */
+  /* ⚠️ كل عمود الحبل قابل للسحب — مش بس الكرة اللي بآخره.
+     قبل هيك كان الحبل مجرد شكل، فلما تمسكه الصفحة بتنزل. */
   .cord-wrap {
     position: absolute;
     top: 0;
-    inset-inline-end: clamp(28px, 9vw, 140px);
-    width: 40px;
-    height: calc(var(--cord-length) + 46px);
-    pointer-events: none;
+    inset-inline-end: clamp(20px, 8vw, 132px);
+    width: 56px;
+    height: calc(var(--cord-length) + 70px);
+    pointer-events: auto;
+    cursor: grab;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .cord-wrap:active {
+    cursor: grabbing;
   }
 
   /* ⚠️ منستخدم left/transform الفيزيائيين مش inset-inline-start.
@@ -246,10 +257,11 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
   .cord {
     position: absolute;
     top: 0;
-    left: 0;
+    left: 8px; /* نص الـ 56px ناقص نص عرض الـ svg */
     width: 40px;
     height: 200px;
     overflow: visible;
+    pointer-events: none;
   }
 
   .cord path {
@@ -267,7 +279,7 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
   .handle {
     position: absolute;
     top: var(--cord-length);
-    left: 20px; /* مركز الحبل بالضبط (نص عرض 40px) */
+    left: 28px; /* مركز عمود السحب (نص عرض 56px) */
     transform: translateX(-50%);
     display: grid;
     place-items: center;
@@ -597,6 +609,8 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     lab.setAttribute('data-lab-ready', '');
 
     const handle = lab.querySelector('[data-cord]') as HTMLElement;
+    // عمود السحب: كل المساحة اللي فيها الحبل والكرة
+    const grab = lab.querySelector('[data-cord-wrap]') as HTMLElement;
     const cordPath = lab.querySelector('[data-cord-path]') as SVGPathElement;
     const form = lab.querySelector('[data-lab-form]') as HTMLElement;
     const result = lab.querySelector('[data-lab-result]') as HTMLElement;
@@ -681,7 +695,10 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
       originY = e.clientY;
       travelled = 0;
       startY = e.clientY - y;
-      handle.setPointerCapture(e.pointerId);
+      // لو فشل الالتقاط لأي سبب، منكمل عادي بدل ما ينكسر السحب
+      try {
+        grab.setPointerCapture(e.pointerId);
+      } catch {}
       lenis()?.stop();
       start();
     };
@@ -717,10 +734,15 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
       start();
     };
 
-    handle.addEventListener('pointerdown', onDown);
-    handle.addEventListener('pointermove', onMove);
-    handle.addEventListener('pointerup', onUp);
-    handle.addEventListener('pointercancel', onUp);
+    grab.addEventListener('pointerdown', onDown);
+    grab.addEventListener('pointermove', onMove);
+    grab.addEventListener('pointerup', onUp);
+    grab.addEventListener('pointercancel', onUp);
+    grab.addEventListener('lostpointercapture', onUp);
+
+    // تأمين إضافي للموبايل: بنمنع المتصفح من تحويل السحب لسكرول.
+    // touch-action لحاله ما بيكفي مع كل المتصفحات.
+    grab.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 
     // دعم الكيبورد (Enter و Space)
     handle.addEventListener('keydown', (e) => {

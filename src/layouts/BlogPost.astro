@@ -72,7 +72,12 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
          إذا ما في: ترويسة عادية بسيطة -->
     {
       film ? (
-        <header class="film" data-seq data-seq-pin data-seq-length="1.2" data-seq-desktop={film}>
+        <!-- data-seq-pin-always: بيتثبّت على كل الأجهزة.
+             ⚠️ ضروري هون لأن الفيديو بأعلى الصفحة تماماً. بدون
+                تثبيت، رحلة السكرول بتخلص قبل ما الزائر يبدأ ينزل،
+                فالفيديو كان يطلع ثابت عالموبايل. وهاي الصفحة فيها
+                فيديو واحد بس، فما في خطر تداخل تثبيتات. -->
+        <header class="film" data-seq data-seq-pin-always data-seq-length="1.2" data-seq-desktop={film}>
           <div class="film-sticky" data-seq-sticky>
             <canvas aria-hidden="true"></canvas>
             <div class="film-veil" aria-hidden="true" />
@@ -397,12 +402,11 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 
   /* ─── موبايل ─── */
   @media (max-width: 767px) {
-    /* الفيديو ما بيتثبّت عالموبايل، فبنخليه بارتفاع مريح
-       والنص تحته مباشرة عشان القراءة تضل سهلة */
+    /* الفيديو مثبّت عالموبايل كمان، فبياخد شاشة كاملة
+       بس بارتفاع أقل شوي عشان يبين إن في محتوى تحته */
     .film-sticky {
-      height: auto;
-      min-height: 76dvh;
-      padding-block: 30px;
+      height: 88dvh;
+      padding-block: 20px;
     }
 
     .film-copy {
