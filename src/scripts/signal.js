@@ -30,6 +30,69 @@ export function initSignalBar() {
   // ملاحظة: الكشف التدريجي للجديلة صار بالقص (clip-path)
   // مش بالخط المتقطّع — بنحط النسبة بمتغيّر --p وCSS بيقص الباقي.
 
+  // ═══════════════════════════════════════════════════════════════
+  //  ٠) تثبيت الشريط والكبسولة على «الشاشة المرئية»
+  //
+  //  المشكلة اللي بتحلّها هاي:
+  //  عالموبايل، شريط عنوان المتصفح بينسحب لفوق وأنت نازل بالصفحة.
+  //  وقتها المتصفح **ما بيحرّك** العناصر الثابتة (position:fixed)
+  //  معه — بيخليها مربوطة بأعلى «صفحة التخطيط» اللي صارت مخفية
+  //  فوق حافة الشاشة. فالشريط بينقصّ من فوق وبتختفي محتوياته،
+  //  وبيرجع طبيعي أول ما تطلع لأن الشريط تبع المتصفح بيرجع.
+  //
+  //  ⚠️ ما بتشوف هالمشكلة أبداً عالكمبيوتر، ولا حتى بأدوات فحص
+  //     الموبايل — لأنها بتصير بس مع شريط المتصفح الحقيقي.
+  //
+  //  الحل: بنقيس كل لحظة قديش «الشاشة المرئية» نازلة عن «صفحة
+  //  التخطيط»، وبننزّل الشريط والكبسولة بنفس المقدار. عالكمبيوتر
+  //  الفرق دايماً صفر، فما بيصير ولا إشي.
+  // ═══════════════════════════════════════════════════════════════
+  const vv = window.visualViewport;
+  if (vv) {
+    const navPill = document.querySelector('.nav');
+
+    let lastDrop = -1;
+
+    const pinToVisualTop = () => {
+      // بنقيس المسافة بطريقتين ومناخذ الأكبر، لأن المتصفحات
+      // بتبلّغ عنها بشكل مختلف:
+      //  • offsetTop : المسافة بين أعلى الشاشة المرئية وأعلى
+      //                صفحة التخطيط (هاي الأدق لحالة شريط المتصفح)
+      //  • pageTop - scrollY : نفس القياس بس محسوب من إحداثيات
+      //                        الصفحة (احتياط لو الأولى رجّعت صفر)
+      const byOffset = vv.offsetTop || 0;
+      const byPage = (vv.pageTop ?? 0) - window.scrollY;
+      const drop = Math.max(0, Math.round(Math.max(byOffset, byPage)));
+
+      // ما منلمس الستايل إلا لما يتغيّر الرقم فعلاً — بدون هالشرط
+      // منكتب على العنصر بكل إطار سكرول وبيصير الموقع أثقل
+      if (drop === lastDrop) return;
+      lastDrop = drop;
+
+      const t = drop > 0 ? `translate3d(0, ${drop}px, 0)` : 'translateZ(0)';
+      bar.style.transform = t;
+      if (navPill) navPill.style.transform = t;
+    };
+
+    // بنسمع من كل المصادر: الشاشة المرئية بترسل أحداثها لحالها،
+    // والسكرول العادي بيمسك الحالات اللي ما بترسل حدث
+    vv.addEventListener('resize', pinToVisualTop);
+    vv.addEventListener('scroll', pinToVisualTop);
+    window.addEventListener('scroll', pinToVisualTop, { passive: true });
+    window.addEventListener('resize', pinToVisualTop);
+    pinToVisualTop();
+
+    cleanups.push(() => {
+      vv.removeEventListener('resize', pinToVisualTop);
+      vv.removeEventListener('scroll', pinToVisualTop);
+      window.removeEventListener('scroll', pinToVisualTop);
+      window.removeEventListener('resize', pinToVisualTop);
+      // منرجّع الشريط لوضعه الطبيعي قبل الانتقال لصفحة ثانية
+      bar.style.transform = '';
+      if (navPill) navPill.style.transform = '';
+    });
+  }
+
   // ─────────────────────────────────────────────
   //  ١) الساعة — توقيت عمّان مهما كان جهاز الزائر وين
   // ─────────────────────────────────────────────
