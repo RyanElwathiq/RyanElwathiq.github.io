@@ -35,11 +35,16 @@ const AMP = 2.6; // ارتفاع الموجة
 const WAVES = 16; // كم مرة يتقاطع الخيطان
 const STEPS = 460;
 
+// ⚠️ بالعربي بنبني المسار من اليمين لليسار (يبدأ عند x=W وينتهي عند 0).
+//    قبل هيك كنا نعكس الشكل كله بالـ CSS، وهاد كان بيخلي الخيط
+//    ينرسم من الجهة المعاكسة لشارة النسبة. هلق نقطة بداية المسار
+//    نفسها صارت بجهة البداية الصح، فالاثنين متزامنين تماماً.
 function strand(phase: number) {
   let d = '';
   for (let i = 0; i <= STEPS; i++) {
-    const x = (i / STEPS) * W;
-    const y = MID + Math.sin((i / STEPS) * Math.PI * 2 * WAVES + phase) * AMP;
+    const t = i / STEPS;
+    const x = isAr ? W - t * W : t * W;
+    const y = MID + Math.sin(t * Math.PI * 2 * WAVES + phase) * AMP;
     d += (i === 0 ? 'M' : 'L') + x.toFixed(2) + ' ' + y.toFixed(2);
   }
   return d;
@@ -139,10 +144,8 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
     height: 100%;
   }
 
-  /* بالعربي الجديلة بتنرسم من اليمين لليسار */
-  html[dir='rtl'] .braid {
-    transform: scaleX(-1);
-  }
+  /* ملاحظة: ما منعكس الشكل بالـ CSS — المسار نفسه مبني
+     بالاتجاه الصح حسب اللغة (شوف دالة strand فوق) */
 
   .braid path {
     fill: none;
