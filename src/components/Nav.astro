@@ -29,12 +29,42 @@ const blogHref = isAr ? '/ar/blog/' : '/blog/';
 
 // ─────────────── النصوص (عدّل من هون) ───────────────
 const t = isAr
-  ? { work: 'الأعمال', pricing: 'كيف بشتغل', blog: 'المدونة', contact: 'تواصل', menu: 'القائمة', close: 'إغلاق' }
-  : { work: 'Work', pricing: 'How I work', blog: 'Blog', contact: 'Contact', menu: 'Menu', close: 'Close' };
+  ? {
+      work: 'الأعمال',
+      lab: 'مختبر الأفكار',
+      pricing: 'كيف بشتغل',
+      faq: 'أسئلة شائعة',
+      blog: 'المدونة',
+      contact: 'تواصل',
+      menu: 'القائمة',
+      close: 'إغلاق',
+    }
+  : {
+      work: 'Work',
+      lab: 'Idea lab',
+      pricing: 'How I work',
+      faq: 'FAQ',
+      blog: 'Blog',
+      contact: 'Contact',
+      menu: 'Menu',
+      close: 'Close',
+    };
 
+// ✏️ روابط الكبسولة عالديسكتوب — مختصرة عشان تضل الكبسولة أنيقة
+//    (باقي الأقسام موجودة كعلامات على شريط الإشارة فوق)
 const links = [
   { label: t.work, href: `${home}#work` },
   { label: t.pricing, href: `${home}#pricing` },
+  { label: t.blog, href: blogHref },
+  { label: t.contact, href: `${home}#contact` },
+];
+
+// ✏️ روابط قائمة الموبايل — كاملة، لأن الشاشة كاملة وفيها مساحة
+const sheetLinks = [
+  { label: t.work, href: `${home}#work` },
+  { label: t.lab, href: `${home}#lab` },
+  { label: t.pricing, href: `${home}#pricing` },
+  { label: t.faq, href: `${home}#faq` },
   { label: t.blog, href: blogHref },
   { label: t.contact, href: `${home}#contact` },
 ];
@@ -73,7 +103,7 @@ const switchLabel = isAr ? 'EN' : 'عربي';
   </button>
 
   <nav class="sheet-links" aria-label={isAr ? 'قائمة التنقل' : 'Navigation menu'}>
-    {links.map((l, i) => <a href={l.href} style={`--i:${i}`}>{l.label}</a>)}
+    {sheetLinks.map((l, i) => <a href={l.href} style={`--i:${i}`}>{l.label}</a>)}
   </nav>
 
   <a class="sheet-lang" href={switchHref}>{switchLabel}</a>
@@ -278,7 +308,8 @@ const switchLabel = isAr ? 'EN' : 'عربي';
   }
 
   .sheet-links a {
-    font-size: clamp(28px, 8vw, 40px);
+    /* أصغر شوي من قبل عشان الستة روابط يزبطوا بالشاشة */
+    font-size: clamp(24px, 6.6vw, 34px);
     font-weight: 700;
     letter-spacing: -0.02em;
     /* دخول متتابع: كل رابط بيطلع بعد اللي قبله */

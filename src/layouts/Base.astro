@@ -16,10 +16,17 @@ interface Props {
   lang?: 'en' | 'ar';
   // أقسام الصفحة اللي بتظهر كعلامات على شريط الإشارة
   sections?: { id: string; label: string }[];
+  // صورة معاينة مخصصة لهالصفحة (اختياري) — مثال: '/assets/x.png'
+  image?: string;
 }
 
-const { title, description, lang = 'en', sections = [] } = Astro.props;
+const { title, description, lang = 'en', sections = [], image } = Astro.props;
 const dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+// ─── روابط مطلقة (واتساب وفيسبوك بيرفضوا الروابط النسبية) ───
+const site = Astro.site ?? new URL('https://ryanalali.me');
+const ogImage = new URL(image ?? '/og.jpg', site).href;
+const pageUrl = new URL(Astro.url.pathname, site).href;
 ---
 
 <!doctype html>
@@ -30,9 +37,26 @@ const dir = lang === 'ar' ? 'rtl' : 'ltr';
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/png" href="/assets/logo-white.png" />
+    <!-- ═══ معاينة الروابط (واتساب · فيسبوك · لينكدإن · تويتر) ═══
+         ⚠️ الصورة لازم تكون برابط مطلق، وإلا بتطلع المعاينة بيضا -->
+    <link rel="canonical" href={pageUrl} />
+    <meta property="og:site_name" content={lang === 'ar' ? 'ريّان الواثق' : 'Rayan Elwathiq'} />
+    <meta property="og:locale" content={lang === 'ar' ? 'ar_JO' : 'en_US'} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={pageUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <meta name="theme-color" content="#0E0F12" />
 
     <!-- ═══════════════════════════════════════════════════════════
          الانتقال بين الصفحات بدون إعادة تحميل كاملة.
