@@ -1,0 +1,66 @@
+# ═══════════════════════════════════════════════════════════════
+#  النشر التلقائي على GitHub Pages
+#
+#  شو بيعمل: كل ما ترفع تعديل على فرع main، هذا الملف بيشتغل
+#  لحاله على سيرفرات GitHub، بيبني الموقع، وبينشره على
+#  ryanalali.me — بدون ما تعمل إشي.
+#
+#  ⚠️ ما بتحتاج تعدّل على هذا الملف أبداً.
+# ═══════════════════════════════════════════════════════════════
+name: نشر الموقع
+
+on:
+  # يشتغل تلقائياً عند كل رفع على main
+  push:
+    branches: [main]
+  # ويمكن تشغيله يدوياً من تبويب Actions
+  workflow_dispatch:
+
+# الصلاحيات المطلوبة للنشر
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# لو في نشرة شغالة، خلي الجديدة تستنى بدل ما تلغيها
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # ─── ١) البناء ───
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: تحميل ملفات المشروع
+        uses: actions/checkout@v4
+
+      - name: تجهيز Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: تنصيب المكتبات
+        run: npm ci
+
+      - name: بناء الموقع
+        run: npm run build
+
+      - name: رفع الناتج
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  # ─── ٢) النشر ───
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: النشر على GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
