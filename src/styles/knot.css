@@ -38,6 +38,104 @@ html[lang='ar'] .knot3d h2 {
   font-size: clamp(15px, 1.6vw, 18px);
   line-height: 1.75;
   max-width: 46ch;
+  margin-bottom: 26px;
+}
+
+/* ─── مقياس قوّة الإشارة ─── */
+.knot3d-meter {
+  max-width: 340px;
+  margin-bottom: 22px;
+}
+
+.knot3d-meter-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.knot3d-meter-top b {
+  font-family: var(--font-en);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.knot3d-bar {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+.knot3d-bar span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 60%, transparent);
+  /* ⚠️ بدون انتقال — الشريط بيتحدث ٦٠ مرة بالثانية من محرّك
+     الرسم، وأي انتقال بيخلّيه متأخر عن حركة إيدك */
+}
+
+.knot3d-meter.is-locked .knot3d-bar span {
+  box-shadow: 0 0 26px var(--accent);
+}
+
+/* ─── لوحة الفوز ─── */
+.knot3d-win {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding: 20px 22px;
+  margin-bottom: 22px;
+  border: 1px solid var(--accent);
+  border-radius: var(--r-card);
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  animation: knot-win 0.45s var(--ease-out) both;
+}
+
+@keyframes knot-win {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+.knot3d-win strong {
+  font-size: clamp(18px, 2.2vw, 24px);
+  font-weight: 800;
+}
+
+.knot3d-win span {
+  font-size: 14.5px;
+  color: var(--muted);
+}
+
+.knot3d-win .knot3d-best {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.knot3d-win .btn {
+  margin-top: 8px;
+}
+
+.knot3d-why {
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.7;
+  max-width: 46ch;
+  opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .knot3d-win {
+    animation: none;
+  }
 }
 
 /* ─── المسرح ─── */
@@ -62,6 +160,14 @@ html[lang='ar'] .knot3d h2 {
 
 .knot3d-stage.is-grabbing {
   cursor: grabbing;
+}
+
+/* لحظة القفل: وهج ليموني حوالين المسرح */
+.knot3d-stage.is-locked {
+  cursor: default;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 60px color-mix(in srgb, var(--accent) 22%, transparent);
+  transition: box-shadow 0.5s var(--ease-out), border-color 0.5s var(--ease-out);
 }
 
 .knot3d-stage canvas {
