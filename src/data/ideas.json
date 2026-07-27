@@ -1,0 +1,185 @@
+{
+  "_readme": [
+    "════════════════════════════════════════════════════════════════",
+    "  مولّد الأفكار — قاعدة المعرفة",
+    "════════════════════════════════════════════════════════════════",
+    "  هاد الملف هو 'عقل' المولّد. كل ما تضيف عليه، الأفكار بتصير أذكى.",
+    "",
+    "  industries : المجالات اللي بيختار منها الزائر",
+    "               pains = أوجاع الجمهور | desires = رغباته",
+    "               proof = شو بيثبت الجودة بهذا المجال",
+    "  goals      : هدف الزائر من المحتوى",
+    "  formats    : أشكال المحتوى (ريل، كاروسيل، بوست...)",
+    "  hooks      : قوالب الخطافات — {pain} {desire} {biz} بتتبدّل تلقائياً",
+    "  angles     : الزاوية اللي بتنبني عليها الفكرة",
+    "",
+    "  ⚠️ لاحقاً رح نوصل هذا المولّد بنموذج ذكاء اصطناعي حقيقي عبر",
+    "     Cloudflare Worker. هالملف بيضل مفيد كنسخة احتياطية سريعة.",
+    "════════════════════════════════════════════════════════════════"
+  ],
+
+  "industries": [
+    {
+      "id": "food",
+      "label": "Restaurant or cafe",
+      "labelAr": "مطعم أو كافيه",
+      "pains": ["نفس الأكل بكل مكان", "أسعار مش واضحة", "ما بيعرفوا شو يطلبوا"],
+      "painsEn": ["everywhere tastes the same", "unclear pricing", "not knowing what to order"],
+      "desires": ["تجربة تستاهل التصوير", "طعم بيتذكروه", "مكان بيصير عادة"],
+      "desiresEn": ["an experience worth photographing", "a taste they remember", "a place that becomes a habit"],
+      "proof": ["تحضير الطبق من الصفر", "المكوّن الخام", "رد فعل أول لقمة"],
+      "proofEn": ["the dish built from scratch", "the raw ingredient", "the first-bite reaction"]
+    },
+    {
+      "id": "retail",
+      "label": "Shop or e-commerce",
+      "labelAr": "متجر أو تجارة إلكترونية",
+      "pains": ["الصورة غير الواقع", "الشحن بيتأخر", "المقاس ما بيزبط"],
+      "painsEn": ["the photo lies", "slow shipping", "the size never fits"],
+      "desires": ["منتج بيوصل زي الصورة", "شراء بدون قلق", "إشي ما عند الكل"],
+      "desiresEn": ["a product that arrives as pictured", "buying without worry", "something not everyone has"],
+      "proof": ["فتح الطرد", "المنتج بالاستخدام اليومي", "المقارنة قبل وبعد"],
+      "proofEn": ["the unboxing", "the product in daily use", "a before and after"]
+    },
+    {
+      "id": "clinic",
+      "label": "Clinic or personal brand",
+      "labelAr": "عيادة أو علامة شخصية",
+      "pains": ["معلومات مغلوطة بالإنترنت", "الخوف من الإجراء", "ما بيعرفوا مين يصدّقوا"],
+      "painsEn": ["misinformation online", "fear of the procedure", "not knowing who to trust"],
+      "desires": ["حدا بيشرح بصراحة", "نتيجة حقيقية مش مفلترة", "راحة بال"],
+      "desiresEn": ["someone who explains honestly", "a real unfiltered result", "peace of mind"],
+      "proof": ["شرح حالة حقيقية", "تفنيد معلومة شائعة", "يوم بالعيادة"],
+      "proofEn": ["walking through a real case", "debunking a common myth", "a day at the clinic"]
+    },
+    {
+      "id": "services",
+      "label": "Services or contracting",
+      "labelAr": "خدمات أو مقاولات",
+      "pains": ["وعود ما بتنفّذ", "التكلفة بتزيد بالطريق", "شغل بينخرب بعد شهر"],
+      "painsEn": ["promises that are not kept", "costs that creep up", "work that fails after a month"],
+      "desires": ["حدا بيلتزم بالموعد", "سعر واضح من البداية", "شغل بيضل"],
+      "desiresEn": ["someone who meets the deadline", "a clear price up front", "work that lasts"],
+      "proof": ["الشغل خطوة بخطوة", "الفرق قبل وبعد", "شو بيصير لما نغلط"],
+      "proofEn": ["the job step by step", "the before and after", "what happens when it goes wrong"]
+    },
+    {
+      "id": "education",
+      "label": "Education or training",
+      "labelAr": "تعليم أو تدريب",
+      "pains": ["دورات ما بتفيد", "معلومة نظرية بلا تطبيق", "الوقت ضايع"],
+      "painsEn": ["courses that lead nowhere", "theory with no practice", "wasted time"],
+      "desires": ["مهارة بتنفع بالشغل", "تعلّم بوقت قصير", "دليل إن الطريقة بتشتغل"],
+      "desiresEn": ["a skill that pays", "learning in less time", "proof the method works"],
+      "proof": ["نتيجة متدرّب حقيقي", "الدرس بدقيقة", "الخطأ الشائع وتصحيحه"],
+      "proofEn": ["a real trainee result", "the lesson in one minute", "the common mistake and its fix"]
+    },
+    {
+      "id": "realestate",
+      "label": "Real estate",
+      "labelAr": "عقارات",
+      "pains": ["الصور مضللة", "الموقع مش زي ما انوصف", "أسعار مبالغ فيها"],
+      "painsEn": ["misleading photos", "the location is not as described", "inflated prices"],
+      "desires": ["يشوف العقار كأنه واقف فيه", "أرقام صريحة", "حدا بيحكي عيوب العقار كمان"],
+      "desiresEn": ["seeing it as if standing there", "honest numbers", "someone who names the downsides too"],
+      "proof": ["جولة كاملة بدون قص", "شرح الحي والخدمات", "حساب العائد بصراحة"],
+      "proofEn": ["an uncut full tour", "explaining the neighbourhood", "an honest return calculation"]
+    }
+  ],
+
+  "goals": [
+    { "id": "awareness", "label": "Reach new people", "labelAr": "أوصل لناس جديدة" },
+    { "id": "trust", "label": "Build trust", "labelAr": "أبني ثقة" },
+    { "id": "sales", "label": "Drive sales or bookings", "labelAr": "أزيد المبيعات أو الحجوزات" },
+    { "id": "retention", "label": "Keep existing customers", "labelAr": "أحافظ على عملائي" }
+  ],
+
+  "formats": {
+    "awareness": [
+      { "label": "A 15-second reel", "labelAr": "ريل 15 ثانية" },
+      { "label": "A silent before-and-after clip", "labelAr": "مقطع صامت قبل وبعد" },
+      { "label": "A one-shot POV video", "labelAr": "فيديو بلقطة واحدة من منظورك" }
+    ],
+    "trust": [
+      { "label": "A carousel breaking down one decision", "labelAr": "كاروسيل بيشرح قرار واحد" },
+      { "label": "A talking-head clip under 40 seconds", "labelAr": "مقطع كلام أقل من 40 ثانية" },
+      { "label": "A behind-the-scenes story series", "labelAr": "سلسلة ستوريز من وراء الكواليس" }
+    ],
+    "sales": [
+      { "label": "A demo reel ending on one clear offer", "labelAr": "ريل عرض بينتهي بعرض واحد واضح" },
+      { "label": "A comparison carousel", "labelAr": "كاروسيل مقارنة" },
+      { "label": "A customer-question reply video", "labelAr": "فيديو رد على سؤال عميل" }
+    ],
+    "retention": [
+      { "label": "A quick tip your customers can use today", "labelAr": "نصيحة سريعة بينفّذها عميلك اليوم" },
+      { "label": "A customer spotlight post", "labelAr": "بوست بيسلّط الضوء على عميل" },
+      { "label": "A what-we-changed-because-of-you post", "labelAr": "بوست: شو غيّرنا بسببكم" }
+    ]
+  },
+
+  "hooks": {
+    "awareness": [
+      "لا تشتري من {biz} قبل ما تشوف هذا",
+      "{pain}؟ هاد السبب الحقيقي",
+      "جرّبنا الطريقة الغلط عمداً، وهاي النتيجة"
+    ],
+    "awarenessEn": [
+      "Do not buy from any {biz} before you see this",
+      "{pain}? Here is the real reason",
+      "We did it the wrong way on purpose. Here is what happened"
+    ],
+    "trust": [
+      "أكثر سؤال بيجيني: {pain}",
+      "بقولك شو ما بحكيه غيري",
+      "غلطنا مرة، وهيك تصرّفنا",
+      "قبل ما تجرب {biz}، لازم تعرف هذا",
+      "شو بيصير جوا {biz} قبل ما يوصلك الشغل"
+    ],
+    "trustEn": [
+      "The question I get most: {pain}",
+      "Here is what nobody else will tell you",
+      "We got it wrong once. Here is what we did about it",
+      "Before you try {biz}, you should know this",
+      "What happens inside {biz} before the work reaches you"
+    ],
+    "sales": [
+      "شو بتاخد فعلاً لما تدفع عنا",
+      "قبل ما تقارن الأسعار، شوف الفرق",
+      "{desire}؟ هيك منوصلك لها",
+      "ليش الناس بتختار {biz}؟ مش للسبب اللي بتفكر فيه",
+      "{pain}. هيك بنحلها بـ {biz}"
+    ],
+    "salesEn": [
+      "What you actually get when you pay us",
+      "Before you compare prices, look at this",
+      "{desire}? This is how we get you there",
+      "Why people choose {biz}, and it is not the reason you think",
+      "{pain}. Here is how {biz} solves it"
+    ],
+    "retention": [
+      "لو عميل عنا، هاي النصيحة إلك",
+      "شي بتعمله غلط ومحدا حكالك",
+      "غيّرنا هذا الإشي بسبب ملاحظاتكم"
+    ],
+    "retentionEn": [
+      "If you are already a customer, this one is for you",
+      "One thing you are doing wrong that nobody mentioned",
+      "We changed this because of your feedback"
+    ]
+  },
+
+  "angles": [
+    { "label": "Show the process, not the result", "labelAr": "اعرض العملية مش النتيجة" },
+    { "label": "Name the objection out loud, then answer it", "labelAr": "اذكر الاعتراض بصوت عالي وبعدين جاوبه" },
+    { "label": "Compare the cheap way against your way", "labelAr": "قارن الطريقة الرخيصة بطريقتك" },
+    { "label": "Let a customer say it instead of you", "labelAr": "خلّي عميل يقولها بدالك" },
+    { "label": "Teach one thing completely, give it away free", "labelAr": "علّم إشي واحد كامل، وأعطيه مجاناً" },
+    { "label": "Show what goes wrong when it is done badly", "labelAr": "اعرض شو بيصير لما ينعمل غلط" }
+  ],
+
+  "closers": [
+    { "label": "End on a question, reply to every comment", "labelAr": "اختم بسؤال، ورد على كل تعليق" },
+    { "label": "End on one action, not three", "labelAr": "اختم بفعل واحد، مش ثلاثة" },
+    { "label": "Pin the offer in the first comment", "labelAr": "ثبّت العرض بأول تعليق" }
+  ]
+}

@@ -1,0 +1,706 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  قسم اللمبة — «خليني أعطيك فكرة»
+//
+//  قسم مستقل بيبدأ عتمة. فيه حبل لمبة معلّق بيتأرجح بفيزياء
+//  حقيقية. تسحبه ← الضوء بينتشر ← بيطلعلك ثلاث أسئلة سريعة عن
+//  مشروعك ← بنولّدلك فكرة محتوى مخصصة إلك.
+//
+//  ✏️ الأسئلة والخيارات من ملف src/data/ideas.json
+//  ✏️ النصوص من قسم t تحت مباشرة
+// ═══════════════════════════════════════════════════════════════
+import { industries, goals } from '../scripts/idea-engine.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'lab' } = Astro.props;
+const isAr = lang === 'ar';
+
+// ─────────────── النصوص (عدّل من هون) ───────────────
+const t = isAr
+  ? {
+      kicker: 'تجربة',
+      heading: 'اسحب الحبل، خليني أعطيك فكرة.',
+      sub: 'ثلاث أسئلة سريعة عن مشروعك، وبطلعلك فكرة محتوى جاهزة تنفّذها اليوم.',
+      pull: 'اسحب',
+      q1: 'شو مجال مشروعك؟',
+      q2: 'شو بدك من المحتوى؟',
+      q3: 'اسم مشروعك (اختياري)',
+      q3ph: 'مثلاً: كافيه الركن',
+      generate: 'ولّد لي فكرة',
+      again: 'فكرة ثانية',
+      restart: 'غيّر إجاباتي',
+      labelHook: 'الخطاف',
+      labelFormat: 'الشكل',
+      labelAngle: 'الزاوية',
+      labelProof: 'الإثبات',
+      labelCloser: 'الخاتمة',
+      forBiz: 'فكرة لـ',
+      disclaimer:
+        'هاي تجربة سريعة، والفكرة مش بالضرورة تناسب مشروعك تماماً. الأفكار اللي بتجيب نتيجة فعلية بتحتاج دراسة لمشروعك ومنافسيك وجمهورك.',
+      cta: 'بدك أفكار مبنية على دراسة حقيقية؟',
+      ctaBtn: 'احكيلي عن مشروعك',
+    }
+  : {
+      kicker: 'Experiment',
+      heading: 'Pull the cord, let me give you an idea.',
+      sub: 'Three quick questions about your business, and you get a content idea you could shoot today.',
+      pull: 'Pull',
+      q1: 'What is your business?',
+      q2: 'What do you want from the content?',
+      q3: 'Business name (optional)',
+      q3ph: 'e.g. Corner Cafe',
+      generate: 'Generate an idea',
+      again: 'Another idea',
+      restart: 'Change my answers',
+      labelHook: 'Hook',
+      labelFormat: 'Format',
+      labelAngle: 'Angle',
+      labelProof: 'Proof',
+      labelCloser: 'Closer',
+      forBiz: 'An idea for',
+      disclaimer:
+        'This is a quick experiment and the idea will not necessarily fit your business exactly. Ideas that actually move numbers need a real look at your business, your competitors, and your audience.',
+      cta: 'Want ideas built on an actual study?',
+      ctaBtn: 'Tell me about your business',
+    };
+
+const contactHref = isAr ? '/ar/#contact' : '/#contact';
+---
+
+<section class="lab" id={id} data-lab>
+  <!-- الوهج اللي بينتشر لما تضوي اللمبة -->
+  <div class="glow" aria-hidden="true"></div>
+
+  <div class="container inner">
+    <!-- ═══ الحبل واللمبة ═══ -->
+    <div class="cord-wrap">
+      <svg class="cord" viewBox="0 0 40 200" aria-hidden="true">
+        <path data-cord-path d="M20 0 L20 150" />
+      </svg>
+      <button class="handle" data-cord type="button" aria-label={t.pull}>
+        <span class="bulb" aria-hidden="true"></span>
+        <span class="pull-label">{t.pull}</span>
+      </button>
+    </div>
+
+    <!-- ═══ المحتوى (بيظهر بعد الإضاءة) ═══ -->
+    <div class="content" data-lab-content>
+      <p class="kicker">{t.kicker}</p>
+      <h2>{t.heading}</h2>
+      <p class="sub">{t.sub}</p>
+
+      <!-- الأسئلة -->
+      <div class="form" data-lab-form>
+        <div class="field">
+          <label>{t.q1}</label>
+          <div class="opts">
+            {
+              industries.map((i: any, n: number) => (
+                <button
+                  class={`opt ${n === 0 ? 'is-on' : ''}`}
+                  type="button"
+                  data-industry={i.id}
+                >
+                  {isAr ? i.labelAr : i.label}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="field">
+          <label>{t.q2}</label>
+          <div class="opts">
+            {
+              goals.map((g: any, n: number) => (
+                <button class={`opt ${n === 0 ? 'is-on' : ''}`} type="button" data-goal={g.id}>
+                  {isAr ? g.labelAr : g.label}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="biz-name">{t.q3}</label>
+          <input id="biz-name" type="text" placeholder={t.q3ph} data-biz maxlength="40" />
+        </div>
+
+        <button class="btn btn-primary go" data-generate type="button">{t.generate}</button>
+      </div>
+
+      <!-- ═══ النتيجة ═══ -->
+      <div class="result" data-lab-result hidden>
+        <div class="card">
+          <!-- سطر بيقول الفكرة لمين — بيظهر بس إذا كتب اسم مشروعه -->
+          <p class="for-biz" data-r-for hidden></p>
+
+          <div class="rows">
+            <div class="r"><span>{t.labelHook}</span><strong data-r-hook></strong></div>
+            <div class="r"><span>{t.labelFormat}</span><p data-r-format></p></div>
+            <div class="r"><span>{t.labelAngle}</span><p data-r-angle></p></div>
+            <div class="r"><span>{t.labelProof}</span><p data-r-proof></p></div>
+            <div class="r"><span>{t.labelCloser}</span><p data-r-closer></p></div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" data-again type="button">{t.again}</button>
+            <button class="btn btn-ghost" data-restart type="button">{t.restart}</button>
+          </div>
+        </div>
+
+        <p class="disclaimer">{t.disclaimer}</p>
+
+        <div class="ask">
+          <span>{t.cta}</span>
+          <a class="btn btn-ghost" href={contactHref}>{t.ctaBtn}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .lab {
+    --dark: #08090b; /* عتمة القسم قبل الإضاءة */
+    --glow-size: 120vmax; /* اتساع الوهج */
+    --glow-strength: 0.16; /* قوة الوهج */
+    --cord-length: 150px; /* طول الحبل */
+    --heading-size: clamp(28px, 4.2vw, 54px);
+    position: relative;
+    margin-top: var(--section-gap);
+    padding-block: clamp(70px, 11vh, 130px);
+    background: var(--dark);
+    overflow: clip;
+    isolation: isolate;
+  }
+
+  /* ─── الوهج ─── */
+  .glow {
+    position: absolute;
+    top: -10%;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    width: var(--glow-size);
+    height: var(--glow-size);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      circle at 50% 0%,
+      color-mix(in srgb, var(--accent) 42%, transparent),
+      transparent 42%
+    );
+    transition: opacity 1s var(--ease-out);
+  }
+
+  .lab[data-lit] .glow {
+    opacity: var(--glow-strength);
+  }
+
+  /* ─── الحبل واللمبة ─── */
+  .cord-wrap {
+    position: absolute;
+    top: 0;
+    inset-inline-end: clamp(28px, 9vw, 140px);
+    width: 40px;
+    height: calc(var(--cord-length) + 46px);
+    pointer-events: none;
+  }
+
+  .cord {
+    position: absolute;
+    top: 0;
+    inset-inline-start: 0;
+    width: 40px;
+    height: 200px;
+    overflow: visible;
+  }
+
+  .cord path {
+    fill: none;
+    stroke: rgba(242, 243, 238, 0.28);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+
+  .lab[data-lit] .cord path {
+    stroke: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  /* المقبض: كرة صغيرة بآخر الحبل */
+  .handle {
+    position: absolute;
+    top: var(--cord-length);
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    display: grid;
+    place-items: center;
+    gap: 8px;
+    width: 76px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    pointer-events: auto;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .handle:active {
+    cursor: grabbing;
+  }
+
+  .bulb {
+    width: 15px;
+    height: 15px;
+    border-radius: var(--r-pill);
+    background: rgba(242, 243, 238, 0.3);
+    transition:
+      background-color 0.4s var(--ease-out),
+      box-shadow 0.5s var(--ease-out);
+  }
+
+  .lab[data-lit] .bulb {
+    background: var(--accent);
+    box-shadow:
+      0 0 14px color-mix(in srgb, var(--accent) 85%, transparent),
+      0 0 40px color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .pull-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0.7;
+    transition: opacity 0.4s var(--ease-out);
+  }
+
+  .lab[data-lit] .pull-label {
+    opacity: 0;
+  }
+
+  /* ─── المحتوى ─── */
+  .content {
+    max-width: 62ch;
+    opacity: 0.12;
+    filter: blur(1.5px);
+    transition:
+      opacity 0.9s var(--ease-out),
+      filter 0.9s var(--ease-out);
+  }
+
+  .lab[data-lit] .content {
+    opacity: 1;
+    filter: none;
+  }
+
+  .kicker {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  h2 {
+    font-size: var(--heading-size);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    max-width: 18ch;
+  }
+
+  html[lang='ar'] h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .sub {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 18px);
+    line-height: 1.75;
+    margin-bottom: clamp(30px, 4.5vh, 48px);
+  }
+
+  /* ─── الأسئلة ─── */
+  .form[hidden] {
+    display: none;
+  }
+
+  .field {
+    margin-bottom: 26px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .opts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .opt {
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: var(--r-pill);
+    transition:
+      color 0.3s var(--ease-out),
+      border-color 0.3s var(--ease-out),
+      background-color 0.3s var(--ease-out);
+  }
+
+  .opt:hover {
+    color: var(--text);
+    border-color: rgba(242, 243, 238, 0.32);
+  }
+
+  .opt.is-on {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  input[type='text'] {
+    width: 100%;
+    max-width: 340px;
+    padding: 13px 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    background: rgba(242, 243, 238, 0.04);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 15px;
+    transition: border-color 0.3s var(--ease-out);
+  }
+
+  input[type='text']::placeholder {
+    color: rgba(160, 164, 155, 0.75);
+  }
+
+  input[type='text']:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .go {
+    margin-top: 8px;
+  }
+
+  /* ─── النتيجة ─── */
+  .result[hidden] {
+    display: none;
+  }
+
+  .card {
+    padding: clamp(24px, 3vw, 38px);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: linear-gradient(160deg, var(--surface-2), var(--surface));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 26px 64px rgba(0, 0, 0, 0.45);
+  }
+
+  /* سطر «فكرة لـ [اسم المشروع]» */
+  .for-biz {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .for-biz[hidden] {
+    display: none;
+  }
+
+  .rows {
+    display: grid;
+    gap: 18px;
+  }
+
+  .r {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 16px;
+    align-items: baseline;
+  }
+
+  .r span {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+  }
+
+  .r strong {
+    font-size: clamp(18px, 2.1vw, 24px);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .r p {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.7;
+  }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+
+  .disclaimer {
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--muted);
+    opacity: 0.85;
+    padding-inline-start: 14px;
+    border-inline-start: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  .ask {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 26px;
+  }
+
+  .ask span {
+    color: var(--text);
+    font-size: 15.5px;
+    font-weight: 600;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 700px) {
+    .lab {
+      --cord-length: 96px;
+    }
+
+    .cord-wrap {
+      inset-inline-end: 20px;
+    }
+
+    .content {
+      padding-top: 40px;
+    }
+
+    .r {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .actions .btn,
+    .ask .btn {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+
+  /* ─── تقليل الحركة: القسم مضوي من البداية ─── */
+  @media (prefers-reduced-motion: reduce) {
+    .content {
+      opacity: 1;
+      filter: none;
+    }
+  }
+</style>
+
+<script>
+  import { generateIdea } from '../scripts/idea-engine.js';
+
+  function initLab() {
+    const lab = document.querySelector('[data-lab]') as HTMLElement | null;
+    if (!lab || lab.hasAttribute('data-lab-ready')) return;
+    lab.setAttribute('data-lab-ready', '');
+
+    const handle = lab.querySelector('[data-cord]') as HTMLElement;
+    const cordPath = lab.querySelector('[data-cord-path]') as SVGPathElement;
+    const form = lab.querySelector('[data-lab-form]') as HTMLElement;
+    const result = lab.querySelector('[data-lab-result]') as HTMLElement;
+    const bizInput = lab.querySelector('[data-biz]') as HTMLInputElement;
+
+    const isAr = document.documentElement.lang === 'ar';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const FOR_LABEL = isAr ? 'فكرة لـ' : 'An idea for';
+
+    const answers = {
+      industry: (lab.querySelector('[data-industry]') as HTMLElement)?.dataset.industry || '',
+      goal: (lab.querySelector('[data-goal]') as HTMLElement)?.dataset.goal || '',
+      biz: '',
+    };
+
+    // ─────────────────────────────────────────────
+    //  فيزياء الحبل: نابض بسيط
+    //  y = المسافة المسحوبة، v = السرعة
+    // ─────────────────────────────────────────────
+    const REST = 150; // طول الحبل بالراحة
+    const STIFF = 0.16; // صلابة النابض
+    const DAMP = 0.82; // التخميد (كل ما قل، اهتز أكثر)
+    const PULL_THRESHOLD = 46; // كم لازم تسحب عشان تضوي
+
+    let y = 0;
+    let v = 0;
+    let dragging = false;
+    let startY = 0;
+    let raf = 0;
+
+    const draw = () => {
+      const end = REST + y;
+      // منحنى خفيف بالحبل وقت الاهتزاز
+      const bend = Math.max(-6, Math.min(6, v * 0.5));
+      cordPath.setAttribute('d', `M20 0 Q${20 + bend} ${end / 2} 20 ${end}`);
+      handle.style.top = `${end}px`;
+    };
+
+    const tick = () => {
+      if (!dragging) {
+        v += -y * STIFF;
+        v *= DAMP;
+        y += v;
+        if (Math.abs(y) < 0.3 && Math.abs(v) < 0.3) {
+          y = 0;
+          v = 0;
+          draw();
+          raf = 0;
+          return;
+        }
+      }
+      draw();
+      raf = requestAnimationFrame(tick);
+    };
+
+    const start = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+
+    const toggleLight = () => {
+      const lit = lab.hasAttribute('data-lit');
+      if (lit) lab.removeAttribute('data-lit');
+      else lab.setAttribute('data-lit', '');
+    };
+
+    // ─── السحب بالماوس واللمس ───
+    const onDown = (e: PointerEvent) => {
+      dragging = true;
+      startY = e.clientY - y;
+      handle.setPointerCapture(e.pointerId);
+      start();
+    };
+
+    const onMove = (e: PointerEvent) => {
+      if (!dragging) return;
+      // بيسحب لتحت بس، وبمقاومة كل ما زاد
+      const raw = e.clientY - startY;
+      y = raw < 0 ? raw * 0.25 : Math.min(raw, 120);
+      draw();
+    };
+
+    const onUp = () => {
+      if (!dragging) return;
+      dragging = false;
+      if (y > PULL_THRESHOLD) toggleLight();
+      v = -y * 0.35; // ارتداد
+      start();
+    };
+
+    handle.addEventListener('pointerdown', onDown);
+    handle.addEventListener('pointermove', onMove);
+    handle.addEventListener('pointerup', onUp);
+    handle.addEventListener('pointercancel', onUp);
+
+    // ضغطة عادية (أو كيبورد) بتشتغل كمان
+    handle.addEventListener('click', (e) => {
+      if (Math.abs(y) > 4) return; // كانت سحبة مش ضغطة
+      toggleLight();
+      y = 34;
+      v = 0;
+      start();
+    });
+
+    // ─── اختيار الأجوبة ───
+    lab.querySelectorAll('[data-industry]').forEach((b) => {
+      b.addEventListener('click', () => {
+        lab.querySelectorAll('[data-industry]').forEach((o) => o.classList.remove('is-on'));
+        b.classList.add('is-on');
+        answers.industry = (b as HTMLElement).dataset.industry || '';
+      });
+    });
+
+    lab.querySelectorAll('[data-goal]').forEach((b) => {
+      b.addEventListener('click', () => {
+        lab.querySelectorAll('[data-goal]').forEach((o) => o.classList.remove('is-on'));
+        b.classList.add('is-on');
+        answers.goal = (b as HTMLElement).dataset.goal || '';
+      });
+    });
+
+    // ─── التوليد ───
+    const show = () => {
+      answers.biz = bizInput?.value || '';
+      const idea = generateIdea(answers, isAr ? 'ar' : 'en');
+      const set = (sel: string, val: string) => {
+        const el = lab.querySelector(sel);
+        if (el) el.textContent = val;
+      };
+      // سطر «فكرة لـ...» بيظهر بس إذا كتب اسم مشروعه
+      const forEl = lab.querySelector('[data-r-for]') as HTMLElement | null;
+      if (forEl) {
+        const typed = (bizInput?.value || '').trim();
+        if (typed) {
+          forEl.textContent = `${FOR_LABEL} ${typed}`;
+          forEl.hidden = false;
+        } else {
+          forEl.hidden = true;
+        }
+      }
+
+      set('[data-r-hook]', idea.hook);
+      set('[data-r-format]', idea.format);
+      set('[data-r-angle]', idea.angle);
+      set('[data-r-proof]', idea.proof);
+      set('[data-r-closer]', idea.closer);
+
+      form.hidden = true;
+      result.hidden = false;
+      if (!reduce) result.animate([{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(0.16,1,0.3,1)' });
+    };
+
+    lab.querySelector('[data-generate]')?.addEventListener('click', show);
+    lab.querySelector('[data-again]')?.addEventListener('click', show);
+    lab.querySelector('[data-restart]')?.addEventListener('click', () => {
+      result.hidden = true;
+      form.hidden = false;
+    });
+
+    draw();
+  }
+
+  initLab();
+  document.addEventListener('astro:page-load', initLab);
+</script>
