@@ -159,6 +159,34 @@ const pageUrl = new URL(Astro.url.pathname, site).href;
         } else {
           start();
         }
+
+        // ═══════════════════════════════════════════════════════
+        //  الانتقال بين الصفحات بدون إعادة تحميل
+        //
+        //  ⚠️ عند الانتقال، ClientRouter بيستبدل خصائص وسم <html>
+        //     بخصائص الصفحة الجديدة — وبهيك بيروح كلاس «js».
+        //     وبدون هالكلاس، قاعدة الإخفاء بملف global.css بتوقف،
+        //     يعني كل حركات الظهور بالموقع بتموت بعد أول انتقال.
+        //     (المحتوى بيضل ظاهر — بس بيطلع بدون أي حركة)
+        //
+        //  بنرجّع الكلاس على **الصفحة الجاية قبل ما تنعرض**، مش
+        //  بعدها، عشان ما يبين المحتوى للحظة قبل ما يختفي ويظهر.
+        // ═══════════════════════════════════════════════════════
+        //  حارس: لو انعاد تشغيل هذا السكربت لأي سبب، ما نسجّل
+        //  المستمعين مرتين
+        if (!window.__revealHooked) {
+          window.__revealHooked = true;
+
+          document.addEventListener('astro:before-swap', function (e) {
+            if (e.newDocument) e.newDocument.documentElement.classList.add('js');
+          });
+
+          // وبعد ما تجهز الصفحة الجديدة، منشغّل المراقبة من جديد
+          document.addEventListener('astro:page-load', function () {
+            document.documentElement.classList.add('js');
+            start();
+          });
+        }
       })();
     </script>
   </head>

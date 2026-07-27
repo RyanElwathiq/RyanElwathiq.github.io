@@ -851,6 +851,21 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     grab.addEventListener('pointercancel', onUp);
     grab.addEventListener('lostpointercapture', onUp);
 
+    // ⚠️ شبكة أمان: lenis.stop() بتحط overflow:clip على الصفحة كلها.
+    //    فلو ما وصلنا لـ onUp لأي سبب (مثلاً فشل setPointerCapture
+    //    ورفع الزائر إصبعه برّا الحبل)، بتضل الصفحة **مقفلة**
+    //    وما بيقدر يمرّر أبداً. فمنضمن إنه أي رفع إصبع بأي مكان
+    //    بالصفحة بيرجّع السكرول. منربطها مرة وحدة على النافذة
+    //    (مش مع كل انتقال) عشان ما تتكدّس.
+    const w = window as any;
+    if (!w.__scrollSafety) {
+      w.__scrollSafety = true;
+      const unlock = () => w.__lenis?.start();
+      window.addEventListener('pointerup', unlock);
+      window.addEventListener('pointercancel', unlock);
+      window.addEventListener('blur', unlock);
+    }
+
     // تأمين إضافي للموبايل: بنمنع المتصفح من تحويل السحب لسكرول.
     // touch-action لحاله ما بيكفي مع كل المتصفحات.
     grab.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });

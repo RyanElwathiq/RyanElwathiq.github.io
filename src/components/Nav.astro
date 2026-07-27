@@ -378,27 +378,70 @@ const switchLabel = isAr ? 'EN' : 'عربي';
 </style>
 
 <script>
-  // ═══ فتح وإغلاق قائمة الموبايل ═══
-  const sheet = document.querySelector('[data-menu]');
-  const openBtn = document.querySelector('[data-menu-open]');
-  const closeBtn = document.querySelector('[data-menu-close]');
+  // ═══════════════════════════════════════════════════════════════
+  //  فتح وإغلاق قائمة الموبايل
+  //
+  //  ⚠️⚠️ أهم إشي بهذا السكربت: إعادة الربط عند كل انتقال ⚠️⚠️
+  //
+  //  الموقع بينتقل بين الصفحات بدون إعادة تحميل (ClientRouter).
+  //  يعني هذا السكربت بيشتغل **مرة وحدة بس** بأول فتحة للموقع،
+  //  بينما عناصر الصفحة بتتبدّل كل ما تنتقل لصفحة ثانية.
+  //
+  //  فالنسخة القديمة كانت بتمسك زر الهامبرجر أول مرة وبس. وأول
+  //  ما تروح لأي صفحة (التصاميم، المدونة، الميزانية، تبديل اللغة)
+  //  بيصير في زر جديد **بدون أي ربط** — فالقائمة بتوقف عن الشغل.
+  //  وهاد اللي كان يبيّن كأنها «أحياناً بتشتغل وأحياناً لأ»:
+  //  بتشتغل لو ما انتقلت، وبتموت لو انتقلت.
+  //
+  //  الحل: منعيد الربط عند كل astro:page-load، مع حارس على
+  //  العنصر نفسه عشان ما نربط نفس الزر مرتين.
+  // ═══════════════════════════════════════════════════════════════
+  let escBound = false;
 
-  function setOpen(open: boolean) {
+  function initMenu() {
+    // بأي انتقال منتأكد إنه السكرول راجع طبيعي — لو انتقل الزائر
+    // والقائمة مفتوحة، كان بيضل overflow:hidden والصفحة مقفلة
+    document.documentElement.style.overflow = '';
+
+    const sheet = document.querySelector('[data-menu]') as HTMLElement | null;
     if (!sheet) return;
-    sheet.hidden = !open;
-    openBtn?.setAttribute('aria-expanded', String(open));
-    // منمنع سكرول الصفحة وراء القائمة
-    document.documentElement.style.overflow = open ? 'hidden' : '';
+
+    // حارس: لو ربطنا هالقائمة من قبل، ما نربطها مرتين
+    if (sheet.dataset.menuReady) return;
+    sheet.dataset.menuReady = '1';
+
+    const openBtn = document.querySelector('[data-menu-open]');
+    const closeBtn = document.querySelector('[data-menu-close]');
+
+    const setOpen = (open: boolean) => {
+      sheet.hidden = !open;
+      openBtn?.setAttribute('aria-expanded', String(open));
+      // منمنع سكرول الصفحة وراء القائمة
+      document.documentElement.style.overflow = open ? 'hidden' : '';
+    };
+
+    openBtn?.addEventListener('click', () => setOpen(true));
+    closeBtn?.addEventListener('click', () => setOpen(false));
+
+    // الضغط على أي رابط بيسكّر القائمة
+    sheet.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+
+    // زر Escape بيسكّرها كمان.
+    // ⚠️ هذا بينربط على document اللي ما بيتبدّل مع الانتقال،
+    //    فمنربطه مرة وحدة بس وإلا بيتكدّس مع كل صفحة.
+    if (!escBound) {
+      escBound = true;
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const s = document.querySelector('[data-menu]') as HTMLElement | null;
+        if (!s || s.hidden) return;
+        s.hidden = true;
+        document.querySelector('[data-menu-open]')?.setAttribute('aria-expanded', 'false');
+        document.documentElement.style.overflow = '';
+      });
+    }
   }
 
-  openBtn?.addEventListener('click', () => setOpen(true));
-  closeBtn?.addEventListener('click', () => setOpen(false));
-
-  // الضغط على أي رابط بيسكّر القائمة
-  sheet?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
-
-  // زر Escape بيسكّرها كمان
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && sheet && !sheet.hidden) setOpen(false);
-  });
+  initMenu();
+  document.addEventListener('astro:page-load', initMenu);
 </script>
