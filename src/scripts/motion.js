@@ -109,22 +109,37 @@ function setupSmoothScroll() {
     lenis.resize();
 
     const y0 = target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
-    lenis.scrollTo(y0, { duration: ANCHOR_DURATION });
-    settleTo(url.hash, ANCHOR_RETRIES);
+    const distance = Math.abs(y0 - window.scrollY);
 
-    // شبكة أمان أخيرة: لو ما تحرّكنا لأي سبب، منستخدم سكرول
-    // المتصفح العادي بدل ما نترك الزر ميت
+    // ⚠️ المسافات الطويلة بتنط فوراً بدل ما تنزلق.
+    //    السبب: الانزلاق الطويل بيمرق بثلاث أقسام مثبّتة، وكل
+    //    قسم بيغيّر ارتفاع الصفحة وهو داخل وطالع — فالحركة
+    //    بتتوه بالطريق وما بتوصل. وهاد اللي كان يخلي زر
+    //    «تواصل معي» (16 ألف بكسل) ما يشتغل، بينما «شوف أعمالي»
+    //    (قريب) يشتغل عادي. وكمان انزلاق 16 ألف بكسل تجربة سيئة.
+    const isFarJump = distance > window.innerHeight * 2.5;
+
+    if (isFarJump) {
+      lenis.scrollTo(y0, { immediate: true, force: true });
+    } else {
+      lenis.scrollTo(y0, { duration: ANCHOR_DURATION });
+    }
+
+    settleTo(url.hash, isFarJump ? FAR_RETRIES : ANCHOR_RETRIES);
+
+    // شبكة أمان أخيرة: لو ما وصلنا لأي سبب، منجبر القفزة.
+    // (ما منستخدم سكرول المتصفح العادي لأن Lenis بتتحكم بالسكرول
+    //  وبترجّعه لمكانها — فمنستخدم Lenis نفسها بوضع فوري)
     const fallback = setTimeout(() => {
       const el = document.querySelector(url.hash);
       if (!el) return;
-      const drift = Math.abs(el.getBoundingClientRect().top - NAV_OFFSET);
-      if (drift > 120) {
-        window.scrollTo({
-          top: el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET,
-          behavior: 'smooth',
-        });
-      }
-    }, 1800);
+      if (Math.abs(el.getBoundingClientRect().top - NAV_OFFSET) < 120) return;
+
+      ScrollTrigger.refresh();
+      lenis.resize();
+      const y = el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+      lenis.scrollTo(y, { immediate: true, force: true });
+    }, 2600);
     cleanups.push(() => clearTimeout(fallback));
   };
   document.addEventListener('click', onClick);
@@ -141,6 +156,8 @@ const HASH_RETRIES = [0, 50, 120, 250, 450, 750, 1100, 1600, 2200, 3000];
 // عند الضغط على زر أنكور: منستنى الحركة تخلص وبعدين منصحّح
 const ANCHOR_DURATION = 1;
 const ANCHOR_RETRIES = [1100, 1300, 1550, 1900, 2400, 3000];
+// القفزات البعيدة بتنط فوراً، فالتصحيح بيبدأ من أول لحظة
+const FAR_RETRIES = [60, 160, 320, 600, 1000, 1600, 2400];
 
 // بيصحّح موقع السكرول على دفعات لحد ما القسم يستقر تحت النافبار بالضبط
 function settleTo(hash, schedule) {
