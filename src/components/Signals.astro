@@ -144,20 +144,14 @@ const t = isAr
       )
     }
 
-    <!-- ═══ الفيديو الرمزي: ضجيج بيتحوّل لإشارة (لوب صامت) ═══
-         ⚠️ فيديو عادي بيلف على حاله — مش مربوط بالسكرول عمداً.
-         ✏️ بدك تبدّله؟ حط الملف الجديد مكان:
-            public/previews/signals-loop.mp4 -->
-    <figure class="loop" data-reveal>
-      <video
-        src="/previews/signals-loop.mp4"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="metadata"
-        aria-hidden="true"
-      ></video>
+    <!-- ═══ الإشارة الحيّة ═══
+         خط بيتموّج على طول بدون توقف — مرسوم بالكود مش فيديو.
+         ليش بالكود؟ لأنه بيطلع أنظف، بلون البراند بالضبط، وحجمه
+         صفر بايت (بدل فيديو بمئتين كيلوبايت)، وبيتأقلم مع أي
+         عرض شاشة بدون ما ينضغط أو يتقصّ.
+         ✏️ إعدادات الحركة كلها بأول السكربت تحت (LIVE_LAYERS) -->
+    <figure class="live" data-reveal>
+      <canvas data-live-wave aria-hidden="true"></canvas>
     </figure>
 
     <!-- ═══ الخاتمة ═══ -->
@@ -380,30 +374,26 @@ const t = isAr
     margin-bottom: var(--gap);
   }
 
-  /* ─── الفيديو الرمزي ─── */
-  .loop {
+  /* ─── الإشارة الحيّة ─── */
+  .live {
     margin: 0 0 var(--gap);
+    height: clamp(120px, 18vh, 200px); /* 🎛️ ارتفاع الشريط */
     border-radius: var(--r-card);
     overflow: hidden;
     border: 1px solid var(--line);
-    /* وصل بصري: الفيديو خلفيته فحمية مثل الموقع فبيندمج،
-       والخط الفاصل بيعطيه حضور بطاقة */
-    background: var(--bg);
+    background:
+      radial-gradient(
+        120% 140% at 50% 50%,
+        color-mix(in srgb, var(--accent) 5%, transparent),
+        transparent 62%
+      ),
+      var(--bg);
   }
 
-  .loop video {
+  .live canvas {
     width: 100%;
+    height: 100%;
     display: block;
-    /* الفيديو 16:9 — منقصّه أعرض وأقصر عشان يبين كشريط إشارة
-       مش كفيديو يوتيوب. غيّر الرقم لو بدك أطول/أقصر */
-    aspect-ratio: 21 / 7;
-    object-fit: cover;
-  }
-
-  @media (max-width: 640px) {
-    .loop video {
-      aspect-ratio: 16 / 8;
-    }
   }
 
   /* ─── الخاتمة ─── */
@@ -582,10 +572,16 @@ const t = isAr
         draw(p);
       };
 
-      const tick = () => {
+      const tick = (time) => {
         if (!section.isConnected) return; // القسم انحذف؟ منوقف الحلقة
         requestAnimationFrame(tick);
         render();
+
+        // الإشارة الحيّة: بترسم كل إطار، بس بس لما تكون بالشاشة
+        if (drawLive) {
+          const lr = section.querySelector('.live').getBoundingClientRect();
+          if (lr.bottom > 0 && lr.top < window.innerHeight) drawLive(time || 0);
+        }
       };
 
       render(true);
@@ -602,6 +598,112 @@ const t = isAr
         resize();
         render(true);
       });
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  الإشارة الحيّة — خط بيتموّج بدون توقف
+    //
+    //  ┌──────────── 🎛️ لوحة التحكم ────────────┐
+    //  │ amp   : ارتفاع الموجة (نسبة من الشريط)  │
+    //  │ freq  : كم موجة تظهر بعرض الشريط        │
+    //  │ speed : سرعة الحركة (سالب = بالعكس)     │
+    //  │ width : سماكة الخط                      │
+    //  │ alpha : وضوح الطبقة                     │
+    //  │ glow  : قوة الوهج                       │
+    //  └─────────────────────────────────────────┘
+    //  ثلاث طبقات بسرعات وترددات مختلفة — تداخلها بيعطي إحساس
+    //  إشارة حيّة مش موجة رتيبة مكرّرة.
+    // ═══════════════════════════════════════════════════════════
+    const LIVE_LAYERS = [
+      { amp: 0.3, freq: 1.7, speed: 0.00042, width: 2.4, alpha: 1, glow: 14 },
+      { amp: 0.19, freq: 2.9, speed: -0.00061, width: 1.5, alpha: 0.42, glow: 5 },
+      { amp: 0.12, freq: 4.6, speed: 0.00088, width: 1.1, alpha: 0.22, glow: 0 },
+    ];
+    // نقطة الضوء اللي بتمشي على الخط (زي نبضة إشارة عم تنتقل)
+    const PULSE_SPEED = 0.00013;
+
+    const liveCanvas = section.querySelector('[data-live-wave]');
+    let drawLive = null;
+
+    if (liveCanvas) {
+      const lctx = liveCanvas.getContext('2d');
+      // ⚠️ منقرأ لون البراند من ملف الألوان بدل ما نكتبه هون —
+      //    هيك لو غيّرته من tokens.css بيتغيّر معه لحاله
+      const accent =
+        getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#D9FF3F';
+      let lw = 0;
+      let lh = 0;
+
+      const resizeLive = () => {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const r = liveCanvas.getBoundingClientRect();
+        lw = Math.max(1, Math.round(r.width));
+        lh = Math.max(1, Math.round(r.height));
+        liveCanvas.width = lw * dpr;
+        liveCanvas.height = lh * dpr;
+        lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      };
+
+      drawLive = (time) => {
+        lctx.clearRect(0, 0, lw, lh);
+        const mid = lh / 2;
+
+        LIVE_LAYERS.forEach((L) => {
+          lctx.beginPath();
+          for (let x = 0; x <= lw; x += 2) {
+            const u = x / lw;
+            // الغلاف: بيخلّي الموجة تنحف عند الطرفين بدل ما تنقص فجأة
+            const envelope = Math.sin(u * Math.PI);
+            const y =
+              mid +
+              Math.sin(u * Math.PI * 2 * L.freq + time * L.speed * (isRtl ? -1 : 1)) *
+                L.amp *
+                lh *
+                envelope;
+            if (x === 0) lctx.moveTo(x, y);
+            else lctx.lineTo(x, y);
+          }
+          lctx.strokeStyle = accent;
+          lctx.globalAlpha = L.alpha;
+          lctx.lineWidth = L.width;
+          lctx.lineCap = 'round';
+          lctx.shadowColor = accent;
+          lctx.shadowBlur = L.glow;
+          lctx.stroke();
+        });
+
+        // ─── النبضة الماشية على الخط الرئيسي ───
+        const L0 = LIVE_LAYERS[0];
+        let pu = (time * PULSE_SPEED) % 1;
+        if (isRtl) pu = 1 - pu;
+        const px = pu * lw;
+        const py =
+          mid +
+          Math.sin(pu * Math.PI * 2 * L0.freq + time * L0.speed * (isRtl ? -1 : 1)) *
+            L0.amp *
+            lh *
+            Math.sin(pu * Math.PI);
+
+        lctx.globalAlpha = 1;
+        lctx.shadowBlur = 22;
+        lctx.fillStyle = accent;
+        lctx.beginPath();
+        lctx.arc(px, py, 3.4, 0, Math.PI * 2);
+        lctx.fill();
+
+        lctx.globalAlpha = 1;
+        lctx.shadowBlur = 0;
+      };
+
+      resizeLive();
+      drawLive(0);
+      window.addEventListener('resize', () => {
+        resizeLive();
+        if (drawLive) drawLive(performance.now());
+      });
+
+      // لو الزائر مطفّي الحركة: موجة ثابتة وبس
+      if (reduce) drawLive = null;
     }
 
     // ─────────────────────────────────────────────
