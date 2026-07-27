@@ -1,6 +1,29 @@
 ---
-// صفحة قائمة المقالات (إنجليزي) — الرابط: /blog/
-import BlogIndex from '../../layouts/BlogIndex.astro';
+// ═══════════════════════════════════════════════════════════════
+//  تحويل: /blog/  →  /signals/
+//
+//  لما غيّرنا اسم القسم من «المدونة» لـ«إشارات»، تغيّر الرابط كمان.
+//  هاي الصفحة موجودة عشان أي حدا عنده الرابط القديم (أرسلته لحدا،
+//  أو جوجل مفهرسه) يوصل للمكان الصح بدل ما يشوف صفحة خطأ.
+//
+//  ⚠️ ما تحذف هالملف. ما بيظهر لحدا — بس بينقذ الروابط القديمة.
+// ═══════════════════════════════════════════════════════════════
+const target = '/signals/';
 ---
 
-<BlogIndex lang="en" />
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={`https://ryanalali.me${target}`} />
+    <meta name="robots" content="noindex" />
+    <title>Signals</title>
+    <script is:inline define:vars={{ target }}>
+      location.replace(target);
+    </script>
+  </head>
+  <body>
+    <a href={target}>Signals</a>
+  </body>
+</html>

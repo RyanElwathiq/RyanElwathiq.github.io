@@ -31,6 +31,10 @@ export default defineConfig({
 
     // بيولّد sitemap.xml تلقائياً لجوجل (مهم للـ SEO والإعلانات)
     sitemap({
+      // ⚠️ صفحات /blog/ القديمة صارت مجرد تحويل لـ /signals/.
+      //    منشيلها من الخريطة عشان ما نقول لجوجل «افهرسها» وبنفس
+      //    الوقت نقوله «لا تفهرسها» — تناقض بيضرّ الترتيب.
+      filter: (page) => !/\/blog\//.test(page),
       i18n: {
         defaultLocale: 'en',
         locales: { en: 'en', ar: 'ar' },

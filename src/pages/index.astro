@@ -19,6 +19,7 @@ import Pricing from '../components/Pricing.astro';
 import BudgetSection from '../components/BudgetSection.astro';
 import LampLab from '../components/LampLab.astro';
 import Faq from '../components/Faq.astro';
+import Signals from '../components/Signals.astro';
 import Education from '../components/Education.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
@@ -38,6 +39,7 @@ const marks = [
   { id: 'budget', label: 'Budget' },
   { id: 'lab', label: 'Idea lab' },
   { id: 'faq', label: 'FAQ' },
+  { id: 'signals', label: 'Signals' },
   { id: 'contact', label: 'Contact' },
 ];
 ---
@@ -102,6 +104,7 @@ const marks = [
     <BudgetSection lang="en" id="budget" compact />
     <LampLab lang="en" id="lab" />
     <Faq lang="en" id="faq" />
+    <Signals lang="en" id="signals" />
     <Education lang="en" />
     <Contact lang="en" />
   </main>

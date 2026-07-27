@@ -1,0 +1,599 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  قسم «إشارات» — بيشجّع الزائر يفوت يقرأ
+//
+//  الفكرة: خط بيبدأ ضجيج (تشويش) وبيتحوّل لإشارة نظيفة كل ما
+//  نزلت بالصفحة. وهاي بالضبط الرسالة: المحتوى العام اللي بكل
+//  مكان = ضجيج، واللي بتكتبه إنت = إشارة.
+//  وعناوين المقالات بتتفكّك من حروف عشوائية لعناوين واضحة —
+//  نفس المعنى بس بالكلام.
+//
+//  ✏️ كل النصوص من t تحت مباشرة
+//  ✏️ المقالات بتنسحب لحالها من مجلد src/content/blog
+//     (أحدث ٣ — غيّر LATEST_COUNT تحت)
+// ═══════════════════════════════════════════════════════════════
+import { getCollection } from 'astro:content';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'signals' } = Astro.props;
+const isAr = lang === 'ar';
+
+// 🎛️ كم إشارة تظهر بالصفحة الرئيسية
+const LATEST_COUNT = 3;
+
+const posts = (await getCollection('blog'))
+  .filter((p) => p.data.lang === lang && !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, LATEST_COUNT);
+
+const indexHref = isAr ? '/ar/signals/' : '/signals/';
+const postHref = (slug: string) => (isAr ? `/ar/signals/${slug}/` : `/signals/${slug}/`);
+
+// وقت القراءة التقريبي (٢٠٠ كلمة بالدقيقة)
+const minutes = (body: string | undefined) =>
+  Math.max(1, Math.round((body?.trim().split(/\s+/).length || 0) / 200));
+
+// ─────────────── النصوص (عدّل من هون) ───────────────
+const t = isAr
+  ? {
+      kicker: 'إشارات',
+      heading: 'مش محتوى عشان جوجل. محتوى عشان تفهم.',
+      sub: 'كل إشي هون طلع من شغل حقيقي مع عملاء حقيقيين — أنظمة، أرقام، أخطاء كلّفتني، وحلول اشتغلت فعلاً. مش نصايح عامة منقولة من مقال ثاني.',
+      noise: 'ضجيج',
+      signal: 'إشارة',
+      lineNote:
+        'إذا لقيت نفس الكلام بعشر مواقع، فهو مش إشارة — هو ضجيج. هون بتلاقي اللي جرّبته بإيدي وبس.',
+      whatTitle: 'شو بتلاقي هون',
+      what: [
+        { t: 'تعليمي وتثقيفي', d: 'نفهم ليش الإشي بيشتغل، مش بس كيف تعمله.', soon: false },
+        { t: 'تحديات', d: 'مواقف حقيقية وقفت قدامي، وكيف طلعت منها.', soon: false },
+        { t: 'آخر التطورات', d: 'شو تغيّر بالسوق والأدوات، وشو بيعني إله عليك.', soon: false },
+        { t: 'حلول لمشاكل', d: 'مشكلة محددة، وخطوات تنفّذها اليوم.', soon: false },
+        { t: 'قصص', d: 'قصص من الميدان — بالأرقام وبدون تجميل.', soon: false },
+        { t: 'نقاشات وأدوات تفاعلية', d: 'تجرّبها وأنت بتقرا، مش بس تقراها.', soon: true },
+      ],
+      soonTag: 'قريباً',
+      latestTitle: 'آخر الإشارات',
+      empty: 'أول الإشارات قيد الكتابة.',
+      min: 'دقائق',
+      more: 'بتنضاف إشارات جديدة بشكل دوري.',
+      cta: 'اقرأ الإشارات',
+    }
+  : {
+      kicker: 'Signals',
+      heading: 'Not content written for Google. Content written so you understand.',
+      sub: 'Everything here came out of real work with real clients — systems, numbers, mistakes that cost me, and fixes that actually worked. Not general advice rewritten from someone else.',
+      noise: 'Noise',
+      signal: 'Signal',
+      lineNote:
+        'If you can find the same thing on ten other sites, it is not a signal — it is noise. Here you get only what I have tested myself.',
+      whatTitle: 'What you will find here',
+      what: [
+        { t: 'Teaching', d: 'Why something works, not just how to do it.', soon: false },
+        { t: 'Challenges', d: 'Real situations I ran into, and how I got out.', soon: false },
+        { t: "What's changing", d: 'What shifted in the market and tools, and what it means for you.', soon: false },
+        { t: 'Real fixes', d: 'A specific problem, and steps you can run today.', soon: false },
+        { t: 'Stories', d: 'Stories from the field — with numbers, unpolished.', soon: false },
+        { t: 'Discussions and interactive tools', d: 'Things you try while reading, not just read.', soon: true },
+      ],
+      soonTag: 'soon',
+      latestTitle: 'Latest signals',
+      empty: 'The first signals are being written.',
+      min: 'min',
+      more: 'New signals are added regularly.',
+      cta: 'Read the signals',
+    };
+---
+
+<section class="signals" id={id} data-signals data-dir={isAr ? 'rtl' : 'ltr'}>
+  <div class="container">
+    <!-- ═══ الترويسة ═══ -->
+    <div class="head">
+      <p class="kicker" data-reveal>{t.kicker}</p>
+      <h2 data-reveal>{t.heading}</h2>
+      <p class="sub" data-reveal>{t.sub}</p>
+    </div>
+
+    <!-- ═══ الخط: ضجيج ← إشارة ═══ -->
+    <figure class="wave" data-reveal>
+      <span class="wave-label is-noise">{t.noise}</span>
+      <canvas data-wave aria-hidden="true"></canvas>
+      <span class="wave-label is-signal">{t.signal}</span>
+    </figure>
+    <p class="line-note" data-reveal>{t.lineNote}</p>
+
+    <!-- ═══ شو بتلاقي هون ═══ -->
+    <h3 class="block-title" data-reveal>{t.whatTitle}</h3>
+    <ul class="what" data-stagger>
+      {
+        t.what.map((w) => (
+          <li class={w.soon ? 'is-soon' : ''}>
+            <span class="what-top">
+              <b>{w.t}</b>
+              {w.soon && <span class="soon">{t.soonTag}</span>}
+            </span>
+            <span class="what-d">{w.d}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- ═══ آخر الإشارات ═══ -->
+    <h3 class="block-title" data-reveal>{t.latestTitle}</h3>
+    {
+      posts.length === 0 ? (
+        <p class="empty" data-reveal>{t.empty}</p>
+      ) : (
+        <ol class="latest" data-stagger>
+          {posts.map((p, i) => (
+            <li>
+              <a href={postHref(p.id)}>
+                <span class="num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="t" data-scramble>{p.data.title}</span>
+                <span class="meta">
+                  {minutes(p.body)} {t.min}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      )
+    }
+
+    <!-- ═══ الخاتمة ═══ -->
+    <div class="foot" data-reveal>
+      <a class="btn btn-primary" href={indexHref}>{t.cta}</a>
+      <span class="more">{t.more}</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .signals {
+    --wave-height: clamp(90px, 13vh, 150px); /* ارتفاع خط الإشارة */
+    --gap: clamp(30px, 4.5vh, 52px); /* المسافة بين الكتل */
+    --num-color: var(--accent); /* لون أرقام القائمة */
+    padding-block: var(--section-gap);
+    border-top: 1px solid var(--line);
+  }
+
+  .head {
+    max-width: 62ch;
+    margin-bottom: var(--gap);
+  }
+
+  .kicker {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  h2 {
+    font-size: clamp(27px, 4vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+    margin-bottom: 16px;
+  }
+
+  html[lang='ar'] h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 1.35;
+  }
+
+  .sub {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 18px);
+    line-height: 1.75;
+  }
+
+  /* ─── خط الضجيج ← الإشارة ─── */
+  .wave {
+    position: relative;
+    margin: 0 0 16px;
+    height: var(--wave-height);
+    display: flex;
+    align-items: center;
+  }
+
+  .wave canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .wave-label {
+    position: absolute;
+    top: 0;
+    font-family: var(--font-en);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  html[lang='ar'] .wave-label {
+    font-family: var(--font-ar);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  /* «ضجيج» ببداية القراءة و«إشارة» بنهايتها */
+  .wave-label.is-noise {
+    inset-inline-start: 0;
+    color: var(--muted);
+  }
+
+  .wave-label.is-signal {
+    inset-inline-end: 0;
+    color: var(--accent);
+  }
+
+  .line-note {
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.75;
+    max-width: 60ch;
+    margin-bottom: var(--gap);
+  }
+
+  /* ─── العناوين الفرعية ─── */
+  .block-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 22px;
+  }
+
+  /* ─── شو بتلاقي هون ─── */
+  .what {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--gap);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px; /* الفراغ نفسه بيعمل شبكة خطوط */
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    overflow: hidden;
+  }
+
+  .what li {
+    background: var(--bg);
+    padding: clamp(16px, 1.9vw, 22px);
+    display: grid;
+    gap: 6px;
+    align-content: start;
+    transition: background 0.3s var(--ease-out);
+  }
+
+  .what li:hover {
+    background: var(--surface);
+  }
+
+  .what-top {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+  }
+
+  .what b {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .what-d {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  /* وسم «قريباً» */
+  .soon {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: var(--r-pill);
+    padding: 2px 9px;
+  }
+
+  .what li.is-soon b {
+    color: var(--muted);
+  }
+
+  /* ─── آخر الإشارات ─── */
+  .latest {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--gap);
+    border-top: 1px solid var(--line);
+  }
+
+  .latest a {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: baseline;
+    gap: 16px;
+    padding: clamp(16px, 2vw, 22px) 4px;
+    border-bottom: 1px solid var(--line);
+    transition: padding-inline 0.35s var(--ease-out);
+  }
+
+  .latest a:hover {
+    padding-inline-start: 16px;
+  }
+
+  .num {
+    font-family: var(--font-en);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--num-color);
+  }
+
+  .latest .t {
+    font-size: clamp(16px, 1.9vw, 21px);
+    font-weight: 700;
+    line-height: 1.4;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .latest a:hover .t {
+    color: var(--accent);
+  }
+
+  .meta {
+    font-family: var(--font-en);
+    font-size: 12.5px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .empty {
+    color: var(--muted);
+    margin-bottom: var(--gap);
+  }
+
+  /* ─── الخاتمة ─── */
+  .foot {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+
+  .more {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 640px) {
+    .latest a {
+      grid-template-columns: auto 1fr;
+      row-gap: 4px;
+    }
+
+    .meta {
+      grid-column: 2;
+    }
+  }
+</style>
+
+<script>
+  // ═══════════════════════════════════════════════════════════════
+  //  ١) الخط: ضجيج بيتحوّل لإشارة مع نزولك بالصفحة
+  //  ٢) عناوين المقالات بتتفكّك من حروف عشوائية للعنوان الحقيقي
+  //
+  //  ⚠️ منعيد التشغيل عند كل انتقال بين الصفحات (astro:page-load)
+  //     لأن الموقع ما بيعيد تحميل نفسه، فبدون هيك بيوقف بعد أول
+  //     انتقال — نفس الخطأ اللي صار معنا بقائمة الموبايل.
+  // ═══════════════════════════════════════════════════════════════
+  function initSignals() {
+    const section = document.querySelector('[data-signals]') as HTMLElement | null;
+    if (!section || section.dataset.signalsReady) return;
+    section.dataset.signalsReady = '1';
+
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isRtl = section.dataset.dir === 'rtl';
+
+    // ─────────────────────────────────────────────
+    //  الخط
+    // ─────────────────────────────────────────────
+    const canvas = section.querySelector('[data-wave]') as HTMLCanvasElement | null;
+    if (canvas) {
+      const ctx = canvas.getContext('2d')!;
+      let w = 0;
+      let h = 0;
+
+      // ضجيج ثابت لكل نقطة (مش عشوائي كل إطار) عشان الخط
+      // ما يرجف — بس بيتكشف تدريجياً
+      const hash = (x: number) => {
+        const s = Math.sin(x * 12.9898) * 43758.5453;
+        return s - Math.floor(s) - 0.5; // من -0.5 لـ 0.5
+      };
+
+      const resize = () => {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        const r = canvas.getBoundingClientRect();
+        w = Math.max(1, Math.round(r.width));
+        h = Math.max(1, Math.round(r.height));
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      };
+
+      const draw = (p: number) => {
+        ctx.clearRect(0, 0, w, h);
+        const mid = h / 2;
+        const noiseAmp = h * 0.34;
+        const cleanAmp = h * 0.2;
+
+        // «جبهة الوضوح» بتمشي باتجاه القراءة
+        const front = p * (w + 240) - 120;
+
+        ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        // بنرسم مقطعين: الضجيج (رمادي) والإشارة (ليموني)
+        for (const pass of [0, 1]) {
+          ctx.beginPath();
+          let started = false;
+
+          for (let x = 0; x <= w; x += 2) {
+            // بالعربي الحركة من اليمين لليسار
+            const rx = isRtl ? w - x : x;
+            let clarity = (front - rx) / 150;
+            clarity = Math.min(1, Math.max(0, clarity));
+
+            // pass 0 = الجزء اللي لسا ضجيج، pass 1 = اللي صار إشارة
+            const inThisPass = pass === 0 ? clarity < 0.5 : clarity >= 0.5;
+            if (!inThisPass) {
+              started = false;
+              continue;
+            }
+
+            const noise =
+              (hash(x * 0.7) + hash(x * 3.1) * 0.5 + hash(x * 7.7) * 0.25) * noiseAmp * (1 - clarity);
+            const clean = Math.sin((x / w) * Math.PI * 8) * cleanAmp * clarity;
+            const y = mid + noise + clean;
+
+            if (!started) {
+              ctx.moveTo(x, y);
+              started = true;
+            } else {
+              ctx.lineTo(x, y);
+            }
+          }
+
+          if (pass === 0) {
+            ctx.strokeStyle = 'rgba(160, 164, 155, 0.45)';
+            ctx.shadowBlur = 0;
+          } else {
+            ctx.strokeStyle = '#D9FF3F';
+            ctx.shadowColor = 'rgba(217, 255, 63, 0.5)';
+            ctx.shadowBlur = 8;
+          }
+          ctx.stroke();
+        }
+        ctx.shadowBlur = 0;
+      };
+
+      // التقدّم = قديش القسم مرق بالشاشة
+      const progress = () => {
+        const r = section.getBoundingClientRect();
+        const total = r.height + window.innerHeight;
+        const passed = window.innerHeight - r.top;
+        return Math.min(1, Math.max(0, passed / total));
+      };
+
+      resize();
+
+      // ═══════════════════════════════════════════════════════════
+      //  ⚠️ ليش حلقة rAF مش حدث سكرول؟
+      //
+      //  جرّبنا نربطها بحدث السكرول وبحدث Lenis، وطلعت مشكلة:
+      //  هذا السكربت وسكربت الحركة (motion.js) الاثنين بيشتغلوا
+      //  عند astro:page-load — ومحدا بيضمن مين قبل مين. فلو اشتغل
+      //  هذا أول، بيكون Lenis لسا ما انولد، فالربط بيضيع بصمت
+      //  والخط بيضل ضجيج ما بيتحوّل أبداً.
+      //
+      //  الحلقة تحت ما بتعتمد على حدا: بتقرأ مكان القسم كل إطار.
+      //  وهي رخيصة لأنها:
+      //   • بتوقف نهائياً لما ينحذف القسم (انتقال لصفحة ثانية)
+      //   • ما بترسم إلا لما القسم قريب من الشاشة فعلاً
+      //   • ما بترسم إلا لما تتغيّر النسبة (مش كل إطار)
+      // ═══════════════════════════════════════════════════════════
+      let last = -1;
+
+      // بترسم بس إذا تغيّرت النسبة فعلاً (أو أجبرناها بـ force)
+      const render = (force = false) => {
+        const r = section.getBoundingClientRect();
+        // برّا الشاشة بمسافة كبيرة؟ ما في داعي نرسم
+        if (!force && (r.bottom < -200 || r.top > window.innerHeight + 200)) return;
+
+        const p = reduce ? 1 : progress();
+        if (!force && Math.abs(p - last) < 0.002) return;
+        last = p;
+        draw(p);
+      };
+
+      const tick = () => {
+        if (!section.isConnected) return; // القسم انحذف؟ منوقف الحلقة
+        requestAnimationFrame(tick);
+        render();
+      };
+
+      render(true);
+      requestAnimationFrame(tick);
+
+      // ⚠️ ثلاث مصادر مستقلة للرسم عمداً:
+      //  ١) حلقة rAF فوق — الأنعم، وهي الأساس
+      //  ٢) حدث السكرول — احتياط لو الحلقة توقفت (تبويب بالخلفية)
+      //  ٣) تغيير المقاس — ⚠️ ضروري يرسم **فوراً** مش بس يعلّم،
+      //     لأن تغيير مقاس الكانفس بيمسح اللي مرسوم عليه. بدون
+      //     رسم فوري بيضل المربع فاضي لحد ما يشتغل إطار جديد.
+      window.addEventListener('scroll', () => render(), { passive: true });
+      window.addEventListener('resize', () => {
+        resize();
+        render(true);
+      });
+    }
+
+    // ─────────────────────────────────────────────
+    //  تفكيك العناوين
+    // ─────────────────────────────────────────────
+    const CHARS = isRtl ? 'ابتثجحخدذرزسشصضطظعغفقكلمنهوي٠١٢٣٤٥٦٧٨٩' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&/';
+    const targets = [...section.querySelectorAll('[data-scramble]')] as HTMLElement[];
+
+    const scramble = (el: HTMLElement) => {
+      const real = el.textContent || '';
+      if (reduce || !real) return;
+      const chars = [...real];
+      let frame = 0;
+
+      const step = () => {
+        // كل حرف بيثبت بدوره، من البداية للنهاية
+        const settled = Math.floor(frame / 2);
+        el.textContent = chars
+          .map((c, i) => {
+            if (i < settled || c === ' ') return c;
+            return CHARS[Math.floor(Math.random() * CHARS.length)];
+          })
+          .join('');
+        frame++;
+        if (settled <= chars.length) requestAnimationFrame(step);
+        else el.textContent = real;
+      };
+      step();
+    };
+
+    if (targets.length && !reduce && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            io.unobserve(e.target);
+            scramble(e.target as HTMLElement);
+          });
+        },
+        { threshold: 0.6 }
+      );
+      targets.forEach((el) => io.observe(el));
+    }
+  }
+
+  initSignals();
+  document.addEventListener('astro:page-load', initSignals);
+</script>

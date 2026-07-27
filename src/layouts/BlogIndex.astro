@@ -24,20 +24,20 @@ const posts = (await getCollection('blog'))
 
 const t = isAr
   ? {
-      title: 'المدونة',
-      desc: 'مقالات عن التسويق الرقمي والنمو العضوي وأنظمة المحتوى والإعلانات المدفوعة.',
-      intro: 'شو تعلمته من الشغل الحقيقي: أنظمة، أرقام، وأخطاء تستاهل ما تعيدها.',
-      empty: 'أول المقالات قيد الكتابة.',
+      title: 'إشارات',
+      desc: 'إشارات من السوق: التسويق الرقمي، النمو العضوي، أنظمة المحتوى، والإعلانات المدفوعة — من شغل حقيقي مش من مقالات منقولة.',
+      intro: 'إشارات من السوق. الباقي ضجيج.',
+      empty: 'أول الإشارات قيد الكتابة.',
       back: '→ الرئيسية',
-      read: 'اقرأ المقال ←',
+      read: 'اقرأ الإشارة ←',
     }
   : {
-      title: 'Blog',
-      desc: 'Articles on digital marketing, organic growth, content systems, and paid media.',
-      intro: 'What I learned from real work: systems, numbers, and mistakes worth not repeating.',
-      empty: 'The first articles are being written.',
+      title: 'Signals',
+      desc: 'Signals from the market: digital marketing, organic growth, content systems, and paid media — from real work, not rewritten articles.',
+      intro: 'Signals from the market. Everything else is noise.',
+      empty: 'The first signals are being written.',
       back: '← Home',
-      read: 'Read article →',
+      read: 'Read the signal →',
     };
 
 const fmt = (d: Date) =>
@@ -68,7 +68,7 @@ const fmt = (d: Date) =>
           <ul class="list" data-stagger>
             {posts.map((post) => (
               <li>
-                <a href={`${isAr ? '/ar' : ''}/blog/${post.id}/`}>
+                <a href={`${isAr ? '/ar' : ''}/signals/${post.id}/`}>
                   <time datetime={post.data.date.toISOString()}>{fmt(post.data.date)}</time>
                   <h2>{post.data.title}</h2>
                   <p>{post.data.description}</p>

@@ -25,11 +25,11 @@ const isAr = lang === 'ar';
 //    إذا ما كان موجود، بيرجّعك لقائمة المقالات باللغة الثانية.
 const switchTo = alt
   ? isAr
-    ? `/blog/${alt}/`
-    : `/ar/blog/${alt}/`
+    ? `/signals/${alt}/`
+    : `/ar/signals/${alt}/`
   : isAr
-    ? '/blog/'
-    : '/ar/blog/';
+    ? '/signals/'
+    : '/ar/signals/';
 
 const fmt = date.toLocaleDateString(isAr ? 'ar-EG' : 'en-US', {
   year: 'numeric',
@@ -43,23 +43,23 @@ const minutes = Math.max(1, Math.round(words / 200));
 
 const t = isAr
   ? {
-      back: '→ كل المقالات',
+      back: '→ كل الإشارات',
       read: `${minutes} دقائق قراءة`,
       ctaTitle: 'عندك مشروع وبدك تبدأ صح؟',
       ctaBody: 'احكيلي عن وضعك وبساعدك تحدد أول خطوة تستاهل وقتك ومصاريفك.',
       ctaBtn: 'احكيلي',
-      more: 'كل المقالات',
+      more: 'كل الإشارات',
     }
   : {
-      back: '← All articles',
+      back: '← All signals',
       read: `${minutes} min read`,
       ctaTitle: 'Have a project and want to start right?',
       ctaBody: 'Tell me about your situation and I will help you work out the first step worth your time and budget.',
       ctaBtn: 'Get in touch',
-      more: 'All articles',
+      more: 'All signals',
     };
 
-const blogHref = isAr ? '/ar/blog/' : '/blog/';
+const blogHref = isAr ? '/ar/signals/' : '/signals/';
 const contactHref = isAr ? '/ar/#contact' : '/#contact';
 ---
 
