@@ -57,16 +57,20 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
 <div class="signal" data-signal>
   <!-- ═══ المسار: الجديلة ═══ -->
   <div class="track" data-signal-track>
-    <svg class="braid" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
-      <!-- الجديلة الباهتة: المسافة اللي لسا ما قطعتها -->
-      <path class="ghost" d={strandA} />
-      <path class="ghost" d={strandB} />
-      <!-- الجديلة الليمونية: بتنرسم مع نزولك
-           (طول المسار بينقاس بالجافاسكربت — pathLength بالـ SVG
-            بيتحسب بشكل مختلف بين المتصفحات وكان بيخلي اللون
-            يظهر بالبداية والنهاية مع بعض) -->
-      <path class="live" d={strandA} data-strand />
-      <path class="live" d={strandB} data-strand />
+    <!-- الجديلة الباهتة: المسافة اللي لسا ما قطعتها -->
+    <svg class="braid ghost-layer" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+      <path d={strandA} />
+      <path d={strandB} />
+    </svg>
+
+    <!-- الجديلة الليمونية: نفس الشكل بالضبط، بس **مقصوصة**
+         بمقدار ما نزلت بالصفحة.
+         ⚠️ منستخدم القص (clip-path) مش الخط المتقطّع
+            (stroke-dasharray) — لأن حساب طول المسار بيختلف
+            بين المتصفحات وكان بيخلي اللون يظهر بالطرفين مع بعض. -->
+    <svg class="braid live-layer" data-live viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+      <path d={strandA} />
+      <path d={strandB} />
     </svg>
 
     <!-- علامات الأقسام (بتشتغل كروابط تنقّل) -->
@@ -156,20 +160,26 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
     stroke-linecap: round;
   }
 
-  .ghost {
+  .ghost-layer path {
     stroke: var(--text);
     opacity: var(--ghost-opacity);
   }
 
-  .live {
+  .live-layer path {
     stroke: var(--accent);
-    /* بتبدأ مخفية بالكامل، والجافاسكربت بيكشفها مع السكرول */
-    visibility: hidden;
     filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent) 55%, transparent));
   }
 
-  .live[data-ready] {
-    visibility: visible;
+  /* --p = نسبة التقدّم (من 0 لـ 1)، بينحطها الجافاسكربت.
+     الإنجليزي: بنكشف من اليسار → القص بيجي من اليمين */
+  .live-layer {
+    --p: 0;
+    clip-path: inset(0 calc((1 - var(--p)) * 100%) 0 0);
+  }
+
+  /* العربي: بنكشف من اليمين → القص بيجي من اليسار */
+  html[dir='rtl'] .live-layer {
+    clip-path: inset(0 0 0 calc((1 - var(--p)) * 100%));
   }
 
   /* ─── علامات الأقسام ─── */

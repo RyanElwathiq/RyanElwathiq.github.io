@@ -18,7 +18,7 @@ export function initSignalBar() {
   const bar = document.querySelector('[data-signal]');
   if (!bar) return () => {};
 
-  const strands = bar.querySelectorAll('[data-strand]');
+  const live = bar.querySelector('[data-live]');
   const pct = bar.querySelector('[data-signal-pct]');
   const knot = bar.querySelector('[data-signal-knot]');
   const marks = [...bar.querySelectorAll('[data-mark]')];
@@ -27,20 +27,8 @@ export function initSignalBar() {
   const isAr = document.documentElement.lang === 'ar';
   const cleanups = [];
 
-  // ─────────────────────────────────────────────
-  //  قياس طول كل خيط بالجافاسكربت
-  //  ⚠️ ما بنعتمد على pathLength بالـ SVG لأن المتصفحات بتحسبه
-  //     بشكل مختلف، وكانت النتيجة إن اللون يظهر بأول الشريط
-  //     وبآخره مع بعض بدل ما ينرسم بالتدريج.
-  // ─────────────────────────────────────────────
-  const lengths = new Map();
-  strands.forEach((s) => {
-    const len = s.getTotalLength();
-    lengths.set(s, len);
-    s.style.strokeDasharray = String(len);
-    s.style.strokeDashoffset = String(len);
-    s.setAttribute('data-ready', '');
-  });
+  // ملاحظة: الكشف التدريجي للجديلة صار بالقص (clip-path)
+  // مش بالخط المتقطّع — بنحط النسبة بمتغيّر --p وCSS بيقص الباقي.
 
   // ─────────────────────────────────────────────
   //  ١) الساعة — توقيت عمّان مهما كان جهاز الزائر وين
@@ -109,11 +97,8 @@ export function initSignalBar() {
     const max = document.documentElement.scrollHeight - window.innerHeight;
     const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
 
-    // الجديلة: بنكشف منها بمقدار التقدّم
-    strands.forEach((s) => {
-      const len = lengths.get(s) || 0;
-      s.style.strokeDashoffset = String(len * (1 - p));
-    });
+    // الجديلة: بنكشف منها بمقدار التقدّم (القص بـ CSS)
+    if (live) live.style.setProperty('--p', p.toFixed(4));
 
     // شارة النسبة
     if (pct) {
