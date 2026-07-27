@@ -63,6 +63,7 @@ export function initSignalBar() {
   //     بتنحسب كنسبة من طول الصفحة القابل للسكرول
   // ─────────────────────────────────────────────
   const MARK_GAP = 10; // أقل مسافة مسموحة بين اسمين (بكسل)
+  const BADGE_GAP = 6; // هامش حول شارة النسبة قبل ما تخفي الاسم
 
   const placeMarks = () => {
     const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -131,6 +132,23 @@ export function initSignalBar() {
       if (parseFloat(m.dataset.at || '1') <= p) m.setAttribute('data-passed', '');
       else m.removeAttribute('data-passed');
     });
+
+    // ⚠️ شارة النسبة بتمرق فوق أسماء الأقسام وهي ماشية.
+    //    فبنخفي الاسم اللي هي واقفة فوقه، وبنرجّعه أول ما تبتعد.
+    if (pct) {
+      const b = pct.getBoundingClientRect();
+      marks.forEach((m) => {
+        const name = m.querySelector('.name');
+        if (!name || m.hasAttribute('data-crowded')) {
+          m.removeAttribute('data-under-badge');
+          return;
+        }
+        const r = name.getBoundingClientRect();
+        const hit = b.left < r.right + BADGE_GAP && b.right > r.left - BADGE_GAP;
+        if (hit) m.setAttribute('data-under-badge', '');
+        else m.removeAttribute('data-under-badge');
+      });
+    }
   };
 
   // ⚠️ منربط التحديث بمصدرين:
