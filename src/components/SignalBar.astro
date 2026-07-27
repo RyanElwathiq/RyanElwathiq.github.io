@@ -29,9 +29,11 @@ const t = isAr
 const W = 1000;
 const H = 24;
 const MID = H / 2;
-const AMP = 6.5; // ارتفاع الموجة
-const WAVES = 26; // كم مرة يتقاطع الخيطان
-const STEPS = 400;
+// ⚠️ الارتفاع لازم يضل صغير: الجديلة خيط رفيع مش زجزاج.
+//    كانت 6.5 وطلعت تملا الشريط كله وشكلها فوضوي.
+const AMP = 2.6; // ارتفاع الموجة
+const WAVES = 16; // كم مرة يتقاطع الخيطان
+const STEPS = 460;
 
 function strand(phase: number) {
   let d = '';
@@ -54,9 +56,12 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
       <!-- الجديلة الباهتة: المسافة اللي لسا ما قطعتها -->
       <path class="ghost" d={strandA} />
       <path class="ghost" d={strandB} />
-      <!-- الجديلة الليمونية: بتنرسم مع نزولك -->
-      <path class="live" d={strandA} data-strand pathLength="1" />
-      <path class="live" d={strandB} data-strand pathLength="1" />
+      <!-- الجديلة الليمونية: بتنرسم مع نزولك
+           (طول المسار بينقاس بالجافاسكربت — pathLength بالـ SVG
+            بيتحسب بشكل مختلف بين المتصفحات وكان بيخلي اللون
+            يظهر بالبداية والنهاية مع بعض) -->
+      <path class="live" d={strandA} data-strand />
+      <path class="live" d={strandB} data-strand />
     </svg>
 
     <!-- علامات الأقسام (بتشتغل كروابط تنقّل) -->
@@ -97,6 +102,9 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
     --ghost-opacity: 0.16; /* وضوح الجديلة غير المقطوعة */
     --mark-size: 10.5px; /* حجم أسماء الأقسام */
     --status-size: 11.5px; /* حجم نص الحالة والساعة */
+    /* مسافة أمان بطرفَي المسار عشان أسماء الأقسام ما تلزق
+       باللوجو ولا بحافة الشاشة */
+    --track-edge: 18px;
   }
 
   .signal {
@@ -151,15 +159,19 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
   .live {
     stroke: var(--accent);
     /* بتبدأ مخفية بالكامل، والجافاسكربت بيكشفها مع السكرول */
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
+    visibility: hidden;
     filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent) 55%, transparent));
   }
 
+  .live[data-ready] {
+    visibility: visible;
+  }
+
   /* ─── علامات الأقسام ─── */
+  /* بتنحصر داخل هامش الأمان عشان آخر اسم ما يلزق باللوجو */
   .marks {
     position: absolute;
-    inset: 0;
+    inset: 0 var(--track-edge);
     pointer-events: none;
   }
 
@@ -169,8 +181,8 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
     height: 100%;
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 0 6px;
+    gap: 7px;
+    padding: 0;
     border: 0;
     background: transparent;
     color: var(--muted);
@@ -181,6 +193,18 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
     pointer-events: auto;
     transform: translateX(-50%);
     transition: color 0.3s var(--ease-out);
+  }
+
+  /* الاسم بخلفية الشريط نفسها — بيقصّ الخيط بدل ما يتراكب معه */
+  .name {
+    padding: 0 7px;
+    background: var(--bg);
+    border-radius: 4px;
+  }
+
+  /* الأسماء المتزاحمة بتنخفي ويضل شرطتها (بيتحدد بالجافاسكربت) */
+  .mark[data-crowded] .name {
+    display: none;
   }
 
   html[lang='ar'] .mark {
@@ -198,9 +222,11 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
 
   .tick {
     width: 1px;
-    height: 9px;
+    height: 11px;
     background: currentColor;
-    opacity: 0.55;
+    opacity: 0.5;
+    /* حلقة صغيرة بلون الخلفية حوالين الشرطة عشان تنفصل عن الخيط */
+    box-shadow: 0 0 0 2.5px var(--bg);
   }
 
   /* ─── شارة النسبة ─── */
@@ -208,6 +234,7 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
     position: absolute;
     top: 50%;
     inset-inline-start: 0;
+    z-index: 2; /* فوق الأسماء والخيط */
     translate: -50% -50%;
     background: var(--accent);
     color: var(--accent-ink);
@@ -232,6 +259,8 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
     place-items: center;
     width: 22px;
     height: 22px;
+    /* مسافة تفصلها عن آخر اسم قسم بالشريط */
+    margin-inline-start: 12px;
     opacity: 0.22;
     transition:
       opacity 0.5s var(--ease-out),

@@ -28,6 +28,21 @@ export function initSignalBar() {
   const cleanups = [];
 
   // ─────────────────────────────────────────────
+  //  قياس طول كل خيط بالجافاسكربت
+  //  ⚠️ ما بنعتمد على pathLength بالـ SVG لأن المتصفحات بتحسبه
+  //     بشكل مختلف، وكانت النتيجة إن اللون يظهر بأول الشريط
+  //     وبآخره مع بعض بدل ما ينرسم بالتدريج.
+  // ─────────────────────────────────────────────
+  const lengths = new Map();
+  strands.forEach((s) => {
+    const len = s.getTotalLength();
+    lengths.set(s, len);
+    s.style.strokeDasharray = String(len);
+    s.style.strokeDashoffset = String(len);
+    s.setAttribute('data-ready', '');
+  });
+
+  // ─────────────────────────────────────────────
   //  ١) الساعة — توقيت عمّان مهما كان جهاز الزائر وين
   // ─────────────────────────────────────────────
   if (clock) {
@@ -47,10 +62,13 @@ export function initSignalBar() {
   //  ٢) أماكن علامات الأقسام
   //     بتنحسب كنسبة من طول الصفحة القابل للسكرول
   // ─────────────────────────────────────────────
+  const MARK_GAP = 10; // أقل مسافة مسموحة بين اسمين (بكسل)
+
   const placeMarks = () => {
     const max = document.documentElement.scrollHeight - window.innerHeight;
     if (max <= 0) return;
 
+    // ١) نحط كل علامة بمكانها حسب موقع قسمها الفعلي
     marks.forEach((m) => {
       const el = document.getElementById(m.dataset.mark);
       if (!el) {
@@ -61,6 +79,25 @@ export function initSignalBar() {
       const p = Math.min(1, Math.max(0, y / max));
       m.style.insetInlineStart = (p * 100).toFixed(2) + '%';
       m.dataset.at = p;
+      m.removeAttribute('data-crowded');
+    });
+
+    // ٢) كشف التزاحم: لو اسمين متلاصقين، منخفي الثاني ومنخلي شرطته
+    //    (بدون هالخطوة كانت الأسماء تتراكب فوق بعض بالأقسام القريبة)
+    const boxes = marks
+      .filter((m) => m.style.display !== 'none')
+      .map((m) => ({ el: m, r: m.getBoundingClientRect() }))
+      .sort((a, b) => a.r.left - b.r.left);
+
+    let lastRight = -Infinity;
+    boxes.forEach(({ el, r }) => {
+      if (r.left < lastRight + MARK_GAP) {
+        el.setAttribute('data-crowded', '');
+        // بعد إخفاء الاسم منعيد قياس الشرطة لوحدها
+        lastRight = el.getBoundingClientRect().right;
+      } else {
+        lastRight = r.right;
+      }
     });
   };
 
@@ -73,7 +110,8 @@ export function initSignalBar() {
 
     // الجديلة: بنكشف منها بمقدار التقدّم
     strands.forEach((s) => {
-      s.style.strokeDashoffset = String(1 - p);
+      const len = lengths.get(s) || 0;
+      s.style.strokeDashoffset = String(len * (1 - p));
     });
 
     // شارة النسبة
