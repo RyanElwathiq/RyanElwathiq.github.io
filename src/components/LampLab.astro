@@ -273,12 +273,19 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     place-items: center;
     gap: 8px;
     width: 76px;
-    padding: 0;
+    /* مساحة لمس مريحة للإصبع — بدونها كانت الإصبع تزحلق
+       على الخلفية وتعمل سكرول بدل ما تمسك الحبل */
+    min-height: 56px;
+    padding: 10px 0;
     border: 0;
     background: transparent;
     pointer-events: auto;
     cursor: grab;
+    /* بيمنع المتصفح من اعتبار السحب سكرول */
     touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .handle:active {
@@ -658,25 +665,54 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     };
 
     // ─── السحب بالماوس واللمس ───
+    // ⚠️ عالموبايل، مكتبة السكرول الناعم (Lenis) بتلتقط حركة
+    //    الإصبع وبتعمل سكرول للصفحة بدل ما نسحب الحبل. فمنوقفها
+    //    مؤقتاً طول مدة السحب ومنرجّعها بعدها.
+    const lenis = () => (window as any).__lenis;
+
+    // TAP_SLOP = أقصى حركة تعتبرها لمسة مش سحبة (بالبكسل)
+    const TAP_SLOP = 8;
+    let originY = 0; // مكان بداية الإصبع
+    let travelled = 0; // أقصى مسافة تحركتها
+
     const onDown = (e: PointerEvent) => {
+      e.preventDefault();
       dragging = true;
+      originY = e.clientY;
+      travelled = 0;
       startY = e.clientY - y;
       handle.setPointerCapture(e.pointerId);
+      lenis()?.stop();
       start();
     };
 
     const onMove = (e: PointerEvent) => {
       if (!dragging) return;
+      e.preventDefault();
+      travelled = Math.max(travelled, Math.abs(e.clientY - originY));
       // بيسحب لتحت بس، وبمقاومة كل ما زاد
       const raw = e.clientY - startY;
       y = raw < 0 ? raw * 0.25 : Math.min(raw, 120);
       draw();
     };
 
+    // ⚠️ مسار واحد بس للتشغيل: من رفع الإصبع.
+    //    قبل هيك كان في مسارين (السحب + حدث الضغط) وكانوا
+    //    يلغوا بعض أحياناً فما تشتغل اللمسة السريعة.
     const onUp = () => {
+      lenis()?.start();
       if (!dragging) return;
       dragging = false;
-      if (y > PULL_THRESHOLD) toggleLight();
+
+      if (travelled < TAP_SLOP) {
+        // لمسة سريعة: نشغّل ونعطي اهتزازة خفيفة
+        toggleLight();
+        y = 30;
+      } else if (y > PULL_THRESHOLD) {
+        // سحبة كافية
+        toggleLight();
+      }
+
       v = -y * 0.35; // ارتداد
       start();
     };
@@ -686,9 +722,10 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     handle.addEventListener('pointerup', onUp);
     handle.addEventListener('pointercancel', onUp);
 
-    // ضغطة عادية (أو كيبورد) بتشتغل كمان
-    handle.addEventListener('click', (e) => {
-      if (Math.abs(y) > 4) return; // كانت سحبة مش ضغطة
+    // دعم الكيبورد (Enter و Space)
+    handle.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
       toggleLight();
       y = 34;
       v = 0;
