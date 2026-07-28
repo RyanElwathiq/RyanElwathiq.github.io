@@ -951,10 +951,15 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
       y = raw < 0 ? raw * 0.25 : Math.min(raw, 120);
 
       // ─── أفقي: بتميل مع إيدك ───
+      // ⚠️⚠️ الإشارة سالبة عن قصد ⚠️⚠️
+      //  الذراع معلّقة من فوق، ودورانها بالـ CSS بيكون باتجاه عقارب
+      //  الساعة للأرقام الموجبة. يعني زاوية موجبة بتودّي **طرفها
+      //  السفلي لليسار** — عكس إيدك بالضبط. بدون السالب كنت تسحب
+      //  يمين واللمبة تروح شمال.
       const dx = e.clientX - startX;
-      a = Math.max(-SWING_MAX, Math.min(SWING_MAX, dx * SWING_PER_PX));
-      // سرعة الأرجحة وقت الإفلات = آخر حركة عملها
-      av = (e.clientX - lastX) * SWING_PER_PX * 0.6;
+      a = Math.max(-SWING_MAX, Math.min(SWING_MAX, -dx * SWING_PER_PX));
+      // سرعة الأرجحة وقت الإفلات = آخر حركة عملها (بنفس الاتجاه)
+      av = -(e.clientX - lastX) * SWING_PER_PX * 0.6;
       lastX = e.clientX;
 
       // ⚠️ ما منرسم هون عن قصد — الرسم بصير بالإطار (tick).
