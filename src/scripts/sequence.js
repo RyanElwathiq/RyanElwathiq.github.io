@@ -32,7 +32,9 @@ const OUTRO_START = 0.66;
 const INTRO_LIFT_RATIO = 0.22;
 const OUTRO_RISE_RATIO = 0.09;
 const MOBILE_BREAKPOINT = 768;
-const PRELOAD_CONCURRENCY = 6; // كم فريم بينزل بنفس الوقت
+// ⚠️ ٦ تنزيلات متوازية كانت تزاحم السكرول وتعمل تقطيع خفيف على
+//    الأجهزة المتوسطة. ٣ بتخلّي التحميل أهدأ والحركة أنعم.
+const PRELOAD_CONCURRENCY = 3;
 
 // شغّل كل السيكوينسات الموجودة بالصفحة
 // (بترجع Promise عشان نعمل ترتيب وتحديث لكل نقاط التثبيت بعدها)
@@ -237,7 +239,17 @@ async function setupOne(section, priority) {
     invalidateOnRefresh: true,
     refreshPriority: priority,
     onUpdate(self) {
-      const target = Math.round(self.progress * (count - 1));
+      // ⚠️⚠️ ليش منجبر التقدّم صفر لما نكون بأعلى الصفحة؟ ⚠️⚠️
+      //  شفافية نص الهيرو مربوطة بتقدّم السكرول. ووقت التحميل
+      //  ScrollTrigger بيعيد الحساب أربع مرات (١٢٠ · ٤٠٠ · ٩٠٠ · ١٨٠٠
+      //  مللي) لأن ارتفاعات الأقسام بتتغيّر وهي عم تتشكّل. وبكل مرة
+      //  كان التقدّم ينط لرقم غلط للحظة — فالنص يذوب ويرجع، يذوب
+      //  ويرجع. هاد اللي كان بيبيّن كأن الهيرو بيتحمّل ٣ مرات.
+      //  الحقيقة البسيطة: إذا الزائر بأعلى الصفحة، التقدّم صفر. نقطة.
+      const atTop = window.scrollY <= 1;
+      const prog = atTop ? 0 : self.progress;
+
+      const target = Math.round(prog * (count - 1));
       if (target !== frame) {
         frame = target;
         current = target;
@@ -246,7 +258,7 @@ async function setupOne(section, priority) {
 
       // النص الافتتاحي: بيرتفع ويصغر ويذوب مع سكرولك
       if (intro) {
-        const p = Math.min(self.progress / INTRO_FADE_END, 1);
+        const p = Math.min(prog / INTRO_FADE_END, 1);
         const lift = window.innerHeight * INTRO_LIFT_RATIO;
         intro.style.opacity = String(1 - p);
         intro.style.transform = `translate3d(0, ${-p * lift}px, 0) scale(${1 - p * 0.06})`;
@@ -258,7 +270,7 @@ async function setupOne(section, priority) {
         const p = gsap.utils.clamp(
           0,
           1,
-          (self.progress - OUTRO_START) / (1 - OUTRO_START - 0.05)
+          (prog - OUTRO_START) / (1 - OUTRO_START - 0.05)
         );
         outro.style.opacity = String(p);
         outro.style.transform = `translate3d(0, ${(1 - p) * OUTRO_RISE_RATIO * window.innerHeight}px, 0)`;
