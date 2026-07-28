@@ -146,9 +146,12 @@ html[lang='ar'] .knot3d h2 {
   border-radius: var(--stage-radius);
   overflow: hidden;
   cursor: grab;
-  /* ⚠️ عالموبايل: السحب العمودي بيضل يمرّر الصفحة، والأفقي بيلفّ
-     العقدة. بدون هالسطر كان الزائر بيعلق ما بيقدر يمرّر. */
-  touch-action: pan-y;
+  /* ⚠️ جوّا مربّع اللعب، السحب للّعبة بس — لا فوق ولا تحت.
+     قبل هيك كان السحب العمودي يمرّر الصفحة، فكنت تحاول تلفّ العقدة
+     والصفحة تهرب منك ومستحيل تلعب.
+     الزائر بيقدر يمرّر عادي من أي مكان برّا المربّع. */
+  touch-action: none;
+  overscroll-behavior: contain;
   background:
     radial-gradient(
       100% 100% at 50% 45%,

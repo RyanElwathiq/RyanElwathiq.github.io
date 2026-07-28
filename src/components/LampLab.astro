@@ -97,15 +97,42 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
       <span class="switch-label" data-switch-label>{t.tapOn}</span>
     </button>
 
-    <!-- ═══ الحبل واللمبة (ديسكتوب فقط) ═══ -->
+    <!-- ═══════════════════════════════════════════════════════════
+         اللمبة المعلّقة (ديسكتوب فقط)
+         ⚠️ الذراع كلها بتلف من نقطة التعليق فوق (transform-origin)،
+            فبتتأرجح يمين وشمال زي البندول. والسلك بيطول وبيقصر
+            بتغيير ارتفاعه. كل الحركة بخاصيتين بس (transform + height)
+            عشان تضل ناعمة ٦٠ إطار بالثانية.
+         ═══════════════════════════════════════════════════════════ -->
     <div class="cord-wrap" data-cord-wrap>
-      <svg class="cord" viewBox="0 0 40 200" aria-hidden="true">
-        <path data-cord-path d="M20 0 L20 150" />
-      </svg>
-      <button class="handle" data-cord type="button" aria-label={t.pull}>
-        <span class="bulb" aria-hidden="true"></span>
-        <span class="pull-label">{t.pull}</span>
-      </button>
+      <div class="lamp-arm" data-arm>
+        <span class="wire" data-wire aria-hidden="true"></span>
+
+        <button class="handle" data-cord type="button" aria-label={t.pull}>
+          <svg class="bulb" viewBox="0 0 44 70" aria-hidden="true">
+            <!-- هالة الضوء (بتظهر لما تضوي) -->
+            <ellipse class="halo" cx="22" cy="26" rx="21" ry="23" />
+
+            <!-- زجاج اللمبة -->
+            <path
+              class="glass"
+              d="M22 3c9.4 0 17 7.4 17 16.6 0 6.3-3.3 9.9-5.6 14.1-1.7 3.1-2.4 5.6-2.6 8.3H13.2c-.2-2.7-.9-5.2-2.6-8.3C8.3 29.5 5 25.9 5 19.6 5 10.4 12.6 3 22 3Z"
+            />
+
+            <!-- الفتيل جوّا الزجاج -->
+            <path class="filament" d="M16 34v-8c0-3.3 2.7-6 6-6s6 2.7 6 6v8" />
+            <path class="filament-wires" d="M16 34v6M28 34v6" />
+
+            <!-- القاعدة المعدنية -->
+            <path class="cap" d="M13.2 42h17.6v5.5H13.2z" />
+            <path class="cap" d="M14.4 49h15.2v4.5H14.4z" />
+            <path class="cap" d="M16 55h12v3.5H16z" />
+            <path class="cap-tip" d="M19 60h6v3.5h-6z" />
+          </svg>
+
+          <span class="pull-label">{t.pull}</span>
+        </button>
+      </div>
     </div>
 
     <!-- ═══ المحتوى (بيظهر بعد الإضاءة) ═══ -->
@@ -263,44 +290,50 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     cursor: grabbing;
   }
 
-  /* ⚠️ منستخدم left/transform الفيزيائيين مش inset-inline-start.
-     الخصائص المنطقية بتنقلب بالعربي، وكان الزر يطلع مزاح عن
-     الحبل بدل ما يكون بطرفه. الحبل عمودي فما بيهمه الاتجاه. */
-  .cord {
+  /* ═══════════════════════════════════════════════════════════════
+     الذراع: السلك + اللمبة. بتلف من نقطة التعليق فوق.
+     ═══════════════════════════════════════════════════════════════ */
+  .lamp-arm {
     position: absolute;
     top: 0;
-    left: 8px; /* نص الـ 56px ناقص نص عرض الـ svg */
-    width: 40px;
-    height: 200px;
-    overflow: visible;
-    pointer-events: none;
-  }
-
-  .cord path {
-    fill: none;
-    stroke: rgba(242, 243, 238, 0.28);
-    stroke-width: 1.5;
-    stroke-linecap: round;
-  }
-
-  .lab[data-lit] .cord path {
-    stroke: color-mix(in srgb, var(--accent) 45%, transparent);
-  }
-
-  /* المقبض: كرة صغيرة بآخر الحبل */
-  .handle {
-    position: absolute;
-    top: var(--cord-length);
-    left: 28px; /* مركز عمود السحب (نص عرض 56px) */
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* ⚠️ نقطة الدوران فوق بالضبط — من هون بتتعلّق اللمبة */
+    transform-origin: 50% 0;
     transform: translateX(-50%);
+    will-change: transform;
+    pointer-events: none; /* السحب بيمسكه الغلاف والزر */
+  }
+
+  /* السلك */
+  .wire {
+    width: 2px;
+    height: var(--cord-length);
+    border-radius: 2px;
+    background: linear-gradient(
+      180deg,
+      rgba(242, 243, 238, 0.1),
+      rgba(242, 243, 238, 0.32)
+    );
+    transition: background 0.5s var(--ease-out);
+  }
+
+  .lab[data-lit] .wire {
+    background: linear-gradient(
+      180deg,
+      rgba(242, 243, 238, 0.12),
+      color-mix(in srgb, var(--accent) 55%, transparent)
+    );
+  }
+
+  /* المقبض = اللمبة نفسها */
+  .handle {
     display: grid;
     place-items: center;
-    gap: 8px;
-    width: 76px;
-    /* مساحة لمس مريحة للإصبع — بدونها كانت الإصبع تزحلق
-       على الخلفية وتعمل سكرول بدل ما تمسك الحبل */
-    min-height: 56px;
-    padding: 10px 0;
+    gap: 6px;
+    padding: 0 14px 10px;
     border: 0;
     background: transparent;
     pointer-events: auto;
@@ -317,20 +350,79 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
   }
 
   .bulb {
-    width: 15px;
-    height: 15px;
-    border-radius: var(--r-pill);
-    background: rgba(242, 243, 238, 0.3);
-    transition:
-      background-color 0.4s var(--ease-out),
-      box-shadow 0.5s var(--ease-out);
+    width: 44px;
+    height: 70px;
+    overflow: visible;
+    /* بتكبر شوي وقت الإضاءة — إحساس إنها «صحيت» */
+    transition: scale 0.45s var(--ease-out);
   }
 
   .lab[data-lit] .bulb {
-    background: var(--accent);
-    box-shadow:
-      0 0 14px color-mix(in srgb, var(--accent) 85%, transparent),
-      0 0 40px color-mix(in srgb, var(--accent) 45%, transparent);
+    scale: 1.06;
+  }
+
+  /* ─── الزجاج ─── */
+  .glass {
+    fill: rgba(242, 243, 238, 0.05);
+    stroke: rgba(242, 243, 238, 0.34);
+    stroke-width: 1.4;
+    transition:
+      fill 0.5s var(--ease-out),
+      stroke 0.5s var(--ease-out);
+  }
+
+  .lab[data-lit] .glass {
+    fill: color-mix(in srgb, var(--accent) 26%, transparent);
+    stroke: color-mix(in srgb, var(--accent) 85%, transparent);
+  }
+
+  /* ─── الفتيل ─── */
+  .filament,
+  .filament-wires {
+    fill: none;
+    stroke: rgba(242, 243, 238, 0.3);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    transition:
+      stroke 0.4s var(--ease-out),
+      filter 0.5s var(--ease-out);
+  }
+
+  .filament-wires {
+    stroke-width: 1.2;
+  }
+
+  .lab[data-lit] .filament,
+  .lab[data-lit] .filament-wires {
+    stroke: #fffde3;
+    filter: drop-shadow(0 0 4px var(--accent)) drop-shadow(0 0 10px var(--accent));
+  }
+
+  /* ─── القاعدة المعدنية ─── */
+  .cap {
+    fill: #6f7468;
+    stroke: rgba(0, 0, 0, 0.35);
+    stroke-width: 0.6;
+  }
+
+  .cap-tip {
+    fill: #4a4e45;
+  }
+
+  .lab[data-lit] .cap {
+    fill: #8b9180;
+  }
+
+  /* ─── هالة الضوء حوالين الزجاج ─── */
+  .halo {
+    fill: var(--accent);
+    opacity: 0;
+    filter: blur(14px);
+    transition: opacity 0.6s var(--ease-out);
+  }
+
+  .lab[data-lit] .halo {
+    opacity: 0.5;
   }
 
   .pull-label {
@@ -694,7 +786,8 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     const handle = lab.querySelector('[data-cord]') as HTMLElement;
     // عمود السحب: كل المساحة اللي فيها الحبل والكرة
     const grab = lab.querySelector('[data-cord-wrap]') as HTMLElement;
-    const cordPath = lab.querySelector('[data-cord-path]') as SVGPathElement;
+    const arm = lab.querySelector('[data-arm]') as HTMLElement;
+    const wire = lab.querySelector('[data-wire]') as HTMLElement;
     const form = lab.querySelector('[data-lab-form]') as HTMLElement;
     const result = lab.querySelector('[data-lab-result]') as HTMLElement;
     const bizInput = lab.querySelector('[data-biz]') as HTMLInputElement;
@@ -715,33 +808,55 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     //  فيزياء الحبل: نابض بسيط
     //  y = المسافة المسحوبة، v = السرعة
     // ─────────────────────────────────────────────
-    const REST = 150; // طول الحبل بالراحة
-    const STIFF = 0.16; // صلابة النابض
-    const DAMP = 0.82; // التخميد (كل ما قل، اهتز أكثر)
-    const PULL_THRESHOLD = 46; // كم لازم تسحب عشان تضوي
+    // ┌──────────── 🎛️ إحساس اللمبة ────────────┐
+    const REST = 150; // طول السلك بالراحة
+    const STIFF = 0.16; // صلابة النابض (السحب لتحت)
+    const DAMP = 0.82; // التخميد العمودي (كل ما قل، اهتز أكثر)
+    const PULL_THRESHOLD = 46; // كم لازم تسحب لتحت عشان تضوي
 
-    let y = 0;
-    let v = 0;
+    // الأرجحة يمين وشمال (بندول)
+    const SWING_STIFF = 0.055; // كل ما زاد، رجعت أسرع للنص
+    const SWING_DAMP = 0.955; // كل ما قرب من ١، ضلّت تتأرجح أطول
+    const SWING_MAX = 26; // أقصى ميلان بالدرجات
+    const SWING_PER_PX = 0.16; // كل بكسل سحب أفقي = كم درجة
+    // └──────────────────────────────────────────┘
+
+    let y = 0; // الاستطالة العمودية
+    let v = 0; // سرعتها
+    let a = 0; // زاوية الميلان بالدرجات
+    let av = 0; // سرعة الميلان
     let dragging = false;
     let startY = 0;
+    let startX = 0;
     let raf = 0;
 
+    // ⚠️ الكتابة على الصفحة بتصير **بالإطار بس**، مش مع كل حركة إصبع.
+    //    قبل هيك كنا منرسم مع كل pointermove — وهاي بتوصل ١٢٠ مرة
+    //    بالثانية على الماوس باد، فكانت اللمبة تتقطّع وقت السحب.
     const draw = () => {
-      const end = REST + y;
-      // منحنى خفيف بالحبل وقت الاهتزاز
-      const bend = Math.max(-6, Math.min(6, v * 0.5));
-      cordPath.setAttribute('d', `M20 0 Q${20 + bend} ${end / 2} 20 ${end}`);
-      handle.style.top = `${end}px`;
+      wire.style.height = `${REST + y}px`;
+      arm.style.transform = `translateX(-50%) rotate(${a.toFixed(2)}deg)`;
     };
 
     const tick = () => {
       if (!dragging) {
+        // نابض عمودي
         v += -y * STIFF;
         v *= DAMP;
         y += v;
-        if (Math.abs(y) < 0.3 && Math.abs(v) < 0.3) {
+
+        // بندول أفقي
+        av += -a * SWING_STIFF;
+        av *= SWING_DAMP;
+        a += av;
+
+        const still =
+          Math.abs(y) < 0.3 && Math.abs(v) < 0.3 && Math.abs(a) < 0.05 && Math.abs(av) < 0.05;
+        if (still) {
           y = 0;
           v = 0;
+          a = 0;
+          av = 0;
           draw();
           raf = 0;
           return;
@@ -797,20 +912,31 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 
     // TAP_SLOP = أقصى حركة تعتبرها لمسة مش سحبة (بالبكسل)
     const TAP_SLOP = 8;
-    let originY = 0; // مكان بداية الإصبع
+    let originY = 0; // مكان بداية الإصبع (عمودي)
+    let originX = 0; // مكان بداية الإصبع (أفقي)
     let travelled = 0; // أقصى مسافة تحركتها
+
+    let lastX = 0; // آخر موقع أفقي — منحسب منه سرعة الأرجحة
 
     const onDown = (e: PointerEvent) => {
       e.preventDefault();
       dragging = true;
       originY = e.clientY;
+      originX = e.clientX;
+      lastX = e.clientX;
       travelled = 0;
       startY = e.clientY - y;
+      startX = e.clientX;
       // لو فشل الالتقاط لأي سبب، منكمل عادي بدل ما ينكسر السحب
       try {
         grab.setPointerCapture(e.pointerId);
       } catch {}
-      lenis()?.stop();
+      // ⚠️ منوقف السكرول الناعم **بس على اللمس**. على الماوس ما إله
+      //    داعي (السحب بالماوس ما بيعمل سكرول أصلاً)، ووقفه بيحط
+      //    overflow: clip على الصفحة كلها — وهاي بتجبر المتصفح يعيد
+      //    حساب تخطيط صفحة طولها ٢٤ ألف بكسل بلحظة بداية السحب.
+      //    هاي كانت سبب «التعليق» اللي بيحس فيه الزائر أول ما يمسك.
+      if (e.pointerType !== 'mouse') lenis()?.stop();
       start();
     };
 
@@ -818,10 +944,22 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
       if (!dragging) return;
       e.preventDefault();
       travelled = Math.max(travelled, Math.abs(e.clientY - originY));
-      // بيسحب لتحت بس، وبمقاومة كل ما زاد
+
+      // ─── عمودي: بتنزل، وبمقاومة لو حاول يطلّعها ───
       const raw = e.clientY - startY;
       y = raw < 0 ? raw * 0.25 : Math.min(raw, 120);
-      draw();
+
+      // ─── أفقي: بتميل مع إيدك ───
+      const dx = e.clientX - startX;
+      a = Math.max(-SWING_MAX, Math.min(SWING_MAX, dx * SWING_PER_PX));
+      // سرعة الأرجحة وقت الإفلات = آخر حركة عملها
+      av = (e.clientX - lastX) * SWING_PER_PX * 0.6;
+      lastX = e.clientX;
+
+      // ⚠️ ما منرسم هون عن قصد — الرسم بصير بالإطار (tick).
+      //    الماوس باد بيبعت لحد ١٢٠ حركة بالثانية، ولو رسمنا مع كل
+      //    وحدة بنجبر المتصفح يعيد الحساب أكثر من مرة بالإطار الواحد
+      //    وبتصير الحركة متقطّعة بدل ما تكون أنعم.
     };
 
     // ⚠️ مسار واحد بس للتشغيل: من رفع الإصبع.
@@ -837,11 +975,12 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
         toggleLight();
         y = 30;
       } else if (y > PULL_THRESHOLD) {
-        // سحبة كافية
+        // سحبة كافية لتحت = تشغيل/إطفاء
+        // (الأرجحة يمين وشمال للّعب بس، ما بتشغّل — زي اللمبة الحقيقية)
         toggleLight();
       }
 
-      v = -y * 0.35; // ارتداد
+      v = -y * 0.35; // ارتداد عمودي
       start();
     };
 

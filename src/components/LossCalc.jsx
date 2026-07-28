@@ -70,26 +70,68 @@ const COPY = {
 };
 
 // ─── عدّاد بيعدّ للرقم الجديد بدل ما ينط عليه ───
+//
+//  ⚠️⚠️ ليش الكود هيك ومش أبسط؟ ⚠️⚠️
+//  الرقم منكتبه مباشرة على الصفحة (textContent) مش عبر React، لأنه
+//  بيتغيّر ٦٠ مرة بالثانية ولو مرّرناه عبر React بيعيد رسم المكوّن
+//  كل إطار. بس المشكلة: React بيعتبر النص اللي جوّا <span>0</span>
+//  ملكه، فأي إعادة رسم بترجّعه صفر — وبما إن الأنيميشن ما بيعيد
+//  الاشتغال إلا لما تتغيّر القيمة، الرقم بيضل **عالق على صفر للأبد**.
+//  وهاد بالضبط اللي صار عالموبايل: الأرقام الكبيرة صفر بينما أرقام
+//  «من وين بتيجي الخسارة» (اللي بيرسمها React) صحيحة.
+//
+//  الحل تلات طبقات:
+//   ١) بعد كل إعادة رسم منرجّع الرقم اللي إحنا كاتبينه.
+//   ٢) دالة التنسيق بمرجع ثابت، عشان الأنيميشن ما يعيد الاشتغال
+//      مع كل رسمة بلا داعي.
+//   ٣) لو الأنيميشن ما اشتغل لأي سبب، الرقم النهائي بينكتب فوراً.
 function useCounter(value, ref, format) {
   const from = useRef(0);
+  const shown = useRef(0);
+  const fmt = useRef(format);
+  fmt.current = format;
+
+  // (١) بعد كل رسمة: نرجّع الرقم لمكانه
+  useEffect(() => {
+    if (ref.current) ref.current.textContent = fmt.current(shown.current);
+  });
+
   useEffect(() => {
     const start = performance.now();
     const a = from.current;
     const b = value;
     const dur = 650;
     let raf = 0;
+
+    const write = (v) => {
+      shown.current = v;
+      if (ref.current) ref.current.textContent = fmt.current(v);
+    };
+
     const tick = (now) => {
       const t = Math.min(1, (now - start) / dur);
       // تباطؤ بالنهاية عشان الحركة تحس طبيعية
       const eased = 1 - Math.pow(1 - t, 3);
-      const v = a + (b - a) * eased;
-      if (ref.current) ref.current.textContent = format(v);
+      write(a + (b - a) * eased);
       if (t < 1) raf = requestAnimationFrame(tick);
       else from.current = b;
     };
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [value, ref, format]);
+
+    // (٣) شبكة أمان: لو ما وصل للنهاية خلال ثانية ونص، نحطّه فوراً
+    const safety = setTimeout(() => {
+      if (from.current !== b) {
+        cancelAnimationFrame(raf);
+        from.current = b;
+        write(b);
+      }
+    }, 1500);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(safety);
+    };
+  }, [value, ref]);
 }
 
 const money = (n) => Math.round(n).toLocaleString('en-US');

@@ -122,8 +122,19 @@ export default function Select({ id, value, onChange, options, ariaLabel }) {
         </span>
       </button>
 
+      {/* ⚠️ data-lenis-prevent ضروري: السكرول الناعم (Lenis) بيمسك حركة
+          الماوس باد قبل ما توصل للقائمة، فكان السحب بإصبعين جوّا القائمة
+          ما بينزّلها — ولازم تسحب شريط التمرير بإيدك.
+          هاي الخاصية بتقول لـ Lenis: هذا العنصر بيمرّر حاله، إتركه. */}
       {open && (
-        <ul className="sel-list" id={listId} role="listbox" ref={listRef} tabIndex={-1}>
+        <ul
+          className="sel-list"
+          id={listId}
+          role="listbox"
+          ref={listRef}
+          tabIndex={-1}
+          data-lenis-prevent
+        >
           {options.map((o, i) => (
             <li
               key={o.value}

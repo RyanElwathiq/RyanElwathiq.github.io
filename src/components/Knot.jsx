@@ -260,6 +260,10 @@ export default function Knot({ lang = 'ar' }) {
     drag.current.y = e.clientY;
     setGrabbing(true);
     e.currentTarget.setPointerCapture?.(e.pointerId);
+    // ⚠️ عالّلمس منوقف السكرول الناعم طول اللعب، وإلا بيسرق الحركة
+    //    من اللعبة وبتصير الصفحة تهرب منك وإنت بتحاول تلفّ العقدة.
+    //    (على الماوس ما إله داعي — السحب بالماوس ما بيعمل سكرول)
+    if (e.pointerType !== 'mouse') window.__lenis?.stop();
   };
 
   // ✏️ قد إيش لازم يسحب عشان تنحسب «لعبة» (بالبكسل)
@@ -282,6 +286,7 @@ export default function Knot({ lang = 'ar' }) {
   const onUp = () => {
     drag.current.on = false;
     setGrabbing(false);
+    window.__lenis?.start();
   };
 
   if (!ok) {

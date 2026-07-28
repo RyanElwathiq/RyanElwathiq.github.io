@@ -24,14 +24,28 @@ const props = { lang, briefHref, asH1: h1 };
 ---
 
 {
+  /* ⚠️⚠️ rootMargin مهم جداً ⚠️⚠️
+     بدونه الحاسبة ما بتبلّش تحمّل نفسها إلا لما توصل الشاشة بالضبط —
+     وبهاي اللحظة الزائر بيكون واصل، والملفات لسا عم تنزل على نت
+     الموبايل. النتيجة: بيشوف الأرقام الثابتة (صفر) والقوائم ما
+     بتنفتح، وبيحس إنه الحاسبة خربانة.
+     ٩٠٠ بكسل = بتبلّش تجهّز حالها قبل ما يوصل بشاشة كاملة تقريباً. */
   bare ? (
     <div class="loss-bare">
-      {eager ? <LossCalc client:load {...props} /> : <LossCalc client:visible {...props} />}
+      {eager ? (
+        <LossCalc client:load {...props} />
+      ) : (
+        <LossCalc client:visible={{ rootMargin: '900px' }} {...props} />
+      )}
     </div>
   ) : (
     <section class="loss-section" id={id}>
       <div class="container">
-        {eager ? <LossCalc client:load {...props} /> : <LossCalc client:visible {...props} />}
+        {eager ? (
+          <LossCalc client:load {...props} />
+        ) : (
+          <LossCalc client:visible={{ rootMargin: '900px' }} {...props} />
+        )}
       </div>
     </section>
   )
