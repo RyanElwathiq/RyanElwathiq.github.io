@@ -82,22 +82,6 @@
       "stats": []
     },
     {
-      "id": "modular",
-      "title": "Modular CC — Drone Montage",
-      "titleAr": "موديولار — مونتاج درون",
-      "role": "Video Editing",
-      "roleAr": "مونتاج فيديو",
-      "category": "video",
-      "featured": true,
-      "order": 4,
-      "youtube": "",
-      "preview": "",
-      "cover": "/assets/project-modular.png",
-      "desc": "Edited a full drone-based video: selected the strongest shots, organized the sequence, improved pacing, and delivered the final visual presentation.",
-      "descAr": "مونتاج فيديو درون كامل: اختيار أقوى اللقطات، ترتيب التسلسل، ضبط الإيقاع، وتسليم العرض البصري النهائي.",
-      "stats": []
-    },
-    {
       "id": "tango",
       "title": "Tango Production",
       "titleAr": "تانغو برودكشن",
