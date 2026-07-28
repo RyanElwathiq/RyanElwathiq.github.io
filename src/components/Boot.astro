@@ -294,11 +294,14 @@ const KNOT =
 
     // ⚠️ الانتقال بين الصفحات ما بيعيد تحميل الموقع، فما في داعي
     //    تطلع شاشة التحميل كل مرة. منشيلها من الصفحة الجاية.
+    // ⚠️ try/catch: أي خطأ هون بيلغي الانتقال كله وبتتداخل الأقسام
     document.addEventListener('astro:before-swap', function (e) {
-      if (!e.newDocument) return;
-      var el = e.newDocument.getElementById('boot');
-      if (el && el.parentNode) el.parentNode.removeChild(el);
-      e.newDocument.documentElement.classList.remove('boot-on');
+      try {
+        if (!e.newDocument) return;
+        var el = e.newDocument.getElementById('boot');
+        if (el && el.parentNode) el.parentNode.removeChild(el);
+        e.newDocument.documentElement.classList.remove('boot-on');
+      } catch (err) {}
     });
   })();
 </script>

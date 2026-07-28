@@ -223,7 +223,11 @@
   if (!(window as any).__cursorSwapHooked) {
     (window as any).__cursorSwapHooked = true;
     document.addEventListener('astro:before-swap', (e: any) => {
-      if (e.newDocument) markCursorOn(e.newDocument);
+      // ⚠️ try/catch: أي خطأ بهذا الحدث بيلغي الانتقال كله
+      //    («Transition was aborted») وبتطلع الأقسام فوق بعض
+      try {
+        if (e.newDocument) markCursorOn(e.newDocument);
+      } catch {}
     });
   }
 </script>

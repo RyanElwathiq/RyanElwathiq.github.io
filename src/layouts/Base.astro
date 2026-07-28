@@ -180,7 +180,11 @@ const pageUrl = new URL(Astro.url.pathname, site).href;
           window.__revealHooked = true;
 
           document.addEventListener('astro:before-swap', function (e) {
-            if (e.newDocument) e.newDocument.documentElement.classList.add('js');
+            // ⚠️ try/catch: أي خطأ بهذا الحدث بيلغي الانتقال كله
+            //    («Transition was aborted») وبتطلع الأقسام فوق بعض
+            try {
+              if (e.newDocument) e.newDocument.documentElement.classList.add('js');
+            } catch (err) {}
           });
 
           // وبعد ما تجهز الصفحة الجديدة، منشغّل المراقبة من جديد

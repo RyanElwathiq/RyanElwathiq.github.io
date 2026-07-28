@@ -397,7 +397,29 @@ function init() {
 document.addEventListener('astro:page-load', init);
 
 // قبل مغادرة الصفحة: ننظّف كل شي عشان ما يتراكم ويتداخل
-document.addEventListener('astro:before-swap', destroy);
+// ⚠️ try/catch مقصود: لو رمى أي خطأ جوّا هذا الحدث، المتصفح بيلغي
+//    الانتقال كله («Transition was aborted») — وبتطلع الصفحة الجديدة
+//    ومعها بقايا تثبيت الصفحة القديمة، فبتشوف أقسام فوق بعض وما
+//    بتزبط إلا بريفرش. أي فشل بالتنظيف أهون من انتقال ملغي.
+document.addEventListener('astro:before-swap', () => {
+  try {
+    destroy();
+  } catch (err) {
+    console.warn('[motion] فشل التنظيف قبل الانتقال:', err);
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+//  شبكة أمان بعد كل انتقال: بقايا مساحات التثبيت
+//  لو ضلّت مساحة تثبيت (pin-spacer) من الصفحة القديمة وما إلها
+//  تريجر حيّ، بتزيح كل اللي تحتها وبتتداخل الأقسام. منشيلها.
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('astro:after-swap', () => {
+  document.querySelectorAll('.pin-spacer').forEach((sp) => {
+    // مساحة تثبيت بدون محتوى = بقايا. منفكّها ومنرجّع اللي جوّاها.
+    if (!sp.firstElementChild) sp.remove();
+  });
+});
 
 // بعد ما تخلص الصور والخطوط تحميل (بتغيّر ارتفاع الصفحة)
 window.addEventListener('load', () => {
