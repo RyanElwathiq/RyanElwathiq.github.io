@@ -302,6 +302,9 @@ function setupWordGlow() {
 //  6) السحب الأفقي (قسم الفيديوهات عالديسكتوب)
 //     السكرول العمودي بيتحول لحركة أفقية للبطاقات
 // ─────────────────────────────────────────────
+// أقل مسافة سحب تستاهل نثبّت القسم عشانها (بالبكسل)
+const MIN_PAN = 120;
+
 function setupHorizontalPan() {
   if (reduceMotion) return;
 
@@ -335,6 +338,12 @@ function setupHorizontalPan() {
         const track = wrap.querySelector('[data-hpan-track]');
         if (!track) return;
         const isRtl = document.documentElement.dir === 'rtl';
+
+        // ⚠️ لو البطاقات بتزبط بالشاشة، ما في إشي ينسحب. وبدون هالفحص
+        //    كنا منثبّت القسم ومنوقف الصفحة عنده وهو ما بيتحرك ولا بكسل —
+        //    فبيحس الزائر إنه الكاروسيل «راح». بهاي الحالة منخليه قسم
+        //    عادي بينزل مع السكرول، أحسن من قسم مثبّت واقف.
+        if (measurePan(wrap, track) < MIN_PAN) return;
 
         gsap.to(track, {
           x: () => (isRtl ? measurePan(wrap, track) : -measurePan(wrap, track)),

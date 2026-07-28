@@ -28,6 +28,13 @@ const {
   pan = false,
   showAll = true,
 } = Astro.props;
+
+// ⚠️ بالشريط المسحوب أفقياً (pan) بطاقة «شوف الكل» بتضل ظاهرة دايماً.
+//    ليش؟ لأن الكاروسيل ما بينسحب إلا إذا كان عرض البطاقات أكبر من
+//    الشاشة. ومع ٣ فيديوهات بس كانت البطاقات بتزبط بالشاشة كلها،
+//    فالقسم كان بينثبّت بدون ما ينسحب ولا ٣٥ بكسل — يعني كاروسيل واقف.
+//    البطاقة الرابعة بتعطيه مسافة حقيقية، وكمان هي زر مفيد لصفحة القسم.
+const showMoreCard = showAll || pan;
 ---
 
 <section class="strip" id={id} data-hpan={pan ? '' : undefined}>
@@ -39,9 +46,9 @@ const {
   <div class="track container" data-hpan-track={pan ? '' : undefined} data-stagger>
     {projects.map((p) => <WorkCard project={p} lang={lang} />)}
 
-    <!-- بطاقة «شوف الكل» — بتظهر بس إذا في أعمال زيادة -->
+    <!-- بطاقة «شوف الكل» — دايماً ظاهرة بالشريط المسحوب (شوف الشرح فوق) -->
     {
-      showAll && (
+      showMoreCard && (
         <a class="more" href={allHref}>
           <span>{allLabel}</span>
           <svg
