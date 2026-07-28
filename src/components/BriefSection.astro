@@ -18,12 +18,13 @@ interface Props {
   id?: string;
   eager?: boolean;
   bare?: boolean;
+  h1?: boolean; // بالصفحة المخصّصة بس — العنوان بيصير h1
 }
 
-const { lang, id = 'brief', eager = false, bare = false } = Astro.props;
+const { lang, id = 'brief', eager = false, bare = false, h1 = false } = Astro.props;
 const { email, phone } = work.links;
 const whatsapp = `https://wa.me/${phone.replace(/[^0-9]/g, '')}`;
-const props = { lang, email, whatsapp };
+const props = { lang, email, whatsapp, asH1: h1 };
 ---
 
 {

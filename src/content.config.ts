@@ -11,7 +11,11 @@ const blog = defineCollection({
   //         تفاعلية جوّا المقال (مثل لعبة الميزانية).
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
   schema: z.object({
-    title: z.string(),         // عنوان المقال
+    title: z.string(),         // عنوان المقال (اللي بيظهر بالصفحة)
+    // عنوان مختصر لتبويب المتصفح ونتائج جوجل بس (اختياري).
+    // ليش؟ جوجل بيقصّ أي عنوان أطول من ~٦٠ حرف. فبتخلي العنوان
+    // الظاهر بالمقال طويل وجذّاب، وهاد الحقل بيعطي جوجل نسخة قصيرة.
+    seoTitle: z.string().optional(),
     description: z.string(),   // وصف قصير (مهم لجوجل)
     date: z.coerce.date(),     // تاريخ النشر: YYYY-MM-DD
     lang: z.enum(['en', 'ar']), // لغة المقال

@@ -94,7 +94,9 @@ function useCounter(value, ref, format) {
 
 const money = (n) => Math.round(n).toLocaleString('en-US');
 
-export default function LossCalc({ lang = 'ar', briefHref = '/brief/' }) {
+// asH1: بالصفحة المخصّصة العنوان لازم يكون h1 (كل صفحة إلها عنوان رئيسي
+// واحد — جوجل بيعتمد عليه، وقارئ الشاشة بيبني عليه خريطة الصفحة)
+export default function LossCalc({ lang = 'ar', briefHref = '/brief/', asH1 = false }) {
   const isAr = lang === 'ar';
   const t = COPY[isAr ? 'ar' : 'en'];
 
@@ -127,7 +129,7 @@ export default function LossCalc({ lang = 'ar', briefHref = '/brief/' }) {
     <div className="loss">
       <div className="loss-head">
         <p className="loss-kicker">{t.kicker}</p>
-        <h2>{t.title}</h2>
+        {asH1 ? <h1>{t.title}</h1> : <h2>{t.title}</h2>}
         <p className="loss-sub">{t.sub}</p>
       </div>
 

@@ -6,6 +6,7 @@
 import { ClientRouter } from 'astro:transitions';
 import SignalBar from '../components/SignalBar.astro';
 import Cursor from '../components/Cursor.astro';
+import Boot from '../components/Boot.astro';
 import '@fontsource-variable/space-grotesk';
 import '@fontsource-variable/alexandria';
 import '../styles/tokens.css';
@@ -192,6 +193,9 @@ const pageUrl = new URL(Astro.url.pathname, site).href;
     </script>
   </head>
   <body>
+    <!-- شاشة التحميل — أول عنصر بالصفحة عشان ترسم فوراً -->
+    <Boot lang={lang} />
+
     <!-- المؤشّر المخصّص (أجهزة الماوس بس) -->
     <Cursor />
 

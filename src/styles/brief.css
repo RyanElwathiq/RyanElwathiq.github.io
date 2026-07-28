@@ -24,6 +24,7 @@
   margin-bottom: 12px;
 }
 
+.brief h1,
 .brief h2 {
   font-size: clamp(28px, 4.2vw, 54px);
   font-weight: 700;
@@ -32,6 +33,7 @@
   margin-bottom: 14px;
 }
 
+html[lang='ar'] .brief h1,
 html[lang='ar'] .brief h2 {
   font-weight: 800;
   letter-spacing: 0;

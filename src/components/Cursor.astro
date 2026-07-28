@@ -122,9 +122,22 @@
   //  ⚠️ بيتفعّل مرة وحدة بس (على window مش على العنصر) لأن العنصر
   //     بيتبدّل مع كل انتقال صفحة، بينما الماوس والحركة مستمرين.
   // ═══════════════════════════════════════════════════════════════
+  // ⚠️⚠️ أهم إشي بالملف ⚠️⚠️
+  //  Astro بيبدّل خصائص <html> كلها عند الانتقال بين الصفحات، فعلامة
+  //  data-cursor-on كانت بتنشال ومعها بتختفي الدائرة — وما بترجع إلا
+  //  بريفرش (أو لو طلع الماوس برّا النافذة ورجع، وهاد سبب «أحياناً»).
+  //  فمنعيد حطّها بعد كل انتقال.
+  function markCursorOn(doc?: Document) {
+    if (!(window as any).__cursorReady) return;
+    (doc || document).documentElement.setAttribute('data-cursor-on', '');
+  }
+
   function initCursor() {
     const w = window as any;
-    if (w.__cursorReady) return;
+    if (w.__cursorReady) {
+      markCursorOn(); // انتقال بين الصفحات: بس رجّع العلامة
+      return;
+    }
 
     // أجهزة اللمس ما إلها مؤشّر — ولا الأجهزة اللي مطفّية الحركة
     const hasMouse = matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -133,7 +146,7 @@
 
     w.__cursorReady = true;
     const root = document.documentElement;
-    root.setAttribute('data-cursor-on', '');
+    markCursorOn();
 
     // آخر مكان للماوس، ومكان الحلقة (بتلحق بتأخير)
     let mx = innerWidth / 2;
@@ -163,7 +176,14 @@
     const HOT =
       'a, button, input, select, textarea, summary, label, [role="button"], [role="option"], .mode, .bud-range, [data-mark]';
 
-    const onMove = (e: MouseEvent) => {
+    // ⚠️⚠️ pointermove مش mousemove ⚠️⚠️
+    //  العناصر اللي بتنسحب (حبل اللمبة، العقدة، السلايدرات) بتستعمل
+    //  preventDefault وقت السحب عشان المتصفح ما يحوّل السحب لتحديد نص
+    //  أو سكرول. وهاد بيوقف أحداث الماوس التقليدية (mousemove) —
+    //  فكانت الدائرة تتجمّد بمكان بداية السحبة وما تلحق الإصبع.
+    //  أحداث pointer ما بتتأثر بهاد، فمنعتمد عليها.
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
       mx = e.clientX;
       my = e.clientY;
       const el = e.target as HTMLElement | null;
@@ -171,9 +191,12 @@
       root.toggleAttribute('data-cursor-hot', hot);
     };
 
-    addEventListener('mousemove', onMove, { passive: true });
-    addEventListener('mousedown', () => root.setAttribute('data-cursor-down', ''));
-    addEventListener('mouseup', () => root.removeAttribute('data-cursor-down'));
+    addEventListener('pointermove', onMove, { passive: true });
+    addEventListener('pointerdown', () => root.setAttribute('data-cursor-down', ''));
+    addEventListener('pointerup', () => root.removeAttribute('data-cursor-down'));
+    // لو أفلت الزر برّا النافذة، ما منضل منكمشين
+    addEventListener('pointercancel', () => root.removeAttribute('data-cursor-down'));
+    addEventListener('blur', () => root.removeAttribute('data-cursor-down'));
 
     // لما يطلع الماوس برّا نافذة المتصفح منخفي المؤشّر
     addEventListener('mouseleave', () => root.removeAttribute('data-cursor-on'));
@@ -194,4 +217,13 @@
 
   initCursor();
   document.addEventListener('astro:page-load', initCursor);
+
+  // منحطّ العلامة عالصفحة الجديدة **قبل** ما تنعرض، عشان الدائرة
+  // ما تومض وتختفي لجزء من الثانية وقت الانتقال
+  if (!(window as any).__cursorSwapHooked) {
+    (window as any).__cursorSwapHooked = true;
+    document.addEventListener('astro:before-swap', (e: any) => {
+      if (e.newDocument) markCursorOn(e.newDocument);
+    });
+  }
 </script>

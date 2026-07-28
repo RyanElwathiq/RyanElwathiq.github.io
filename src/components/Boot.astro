@@ -1,0 +1,237 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  شاشة التحميل — أول إشي بيشوفه الزائر
+//
+//  الفكرة: العقدة (الشعار) بترسم حالها بخط ليموني، ومعها سطر
+//  إشارة رفيع. رسالة الموقع من أول ثانية: «نظام بينبني».
+//
+//  ⚠️ ليش الستايل مكتوب inline جوّا الصفحة مش بملف CSS؟
+//     لأن ملف CSS لازم ينزّل أول — وهاي بالضبط اللحظة اللي بدنا
+//     نغطّيها. الستايل inline بيرسم فوراً مع أول بايت بيوصل.
+//
+//  ⚠️ ما بتظهر أبداً للي عنده نت سريع: إذا الصفحة جهزت خلال
+//     ٣٥٠ جزء من الثانية بتروح بدون ما يلاحظها حدا.
+//
+//  ┌──────────── 🎛️ لوحة التحكم ────────────┐
+//  │ MIN_MS  أقل مدة بتضل ظاهرة (ضد الوميض) │
+//  │ MAX_MS  أقصى مدة — بعدها بتروح غصباً    │
+//  └─────────────────────────────────────────┘
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+}
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+// مسار العقدة الثلاثية — نفس شكل الشعار، مولّد بمعادلة رياضية
+const KNOT =
+  'M50.0 43.4L52.9 43.5L55.8 43.8L58.7 44.2L61.5 44.8L64.2 45.6L66.8 46.6L69.3 47.7L71.7 49.0L73.9 50.4L76.0 51.9L77.9 53.5L79.6 55.2L81.1 57.0L82.4 58.9L83.5 60.8L84.3 62.7L85.0 64.6L85.4 66.6L85.6 68.4L85.5 70.3L85.2 72.1L84.8 73.8L84.1 75.4L83.1 76.9L82.0 78.3L80.7 79.5L79.3 80.5L77.6 81.5L75.9 82.2L74.0 82.7L71.9 83.1L69.8 83.2L67.6 83.1L65.3 82.9L63.0 82.4L60.7 81.7L58.3 80.8L56.0 79.7L53.7 78.4L51.4 76.9L49.2 75.3L47.1 73.4L45.1 71.4L43.2 69.3L41.4 67.0L39.7 64.6L38.3 62.1L36.9 59.5L35.8 56.8L34.8 54.1L34.0 51.3L33.4 48.6L33.0 45.8L32.8 43.1L32.8 40.5L32.9 37.8L33.3 35.3L33.8 32.9L34.5 30.6L35.3 28.5L36.3 26.5L37.5 24.6L38.7 23.0L40.1 21.5L41.6 20.3L43.2 19.3L44.8 18.5L46.5 17.9L48.3 17.5L50.0 17.4L51.7 17.5L53.5 17.9L55.2 18.5L56.8 19.3L58.4 20.3L59.9 21.5L61.3 23.0L62.5 24.6L63.7 26.5L64.7 28.5L65.5 30.6L66.2 32.9L66.7 35.3L67.1 37.8L67.2 40.5L67.2 43.1L67.0 45.8L66.6 48.6L66.0 51.3L65.2 54.1L64.2 56.8L63.1 59.5L61.7 62.1L60.3 64.6L58.6 67.0L56.8 69.3L54.9 71.4L52.9 73.4L50.8 75.3L48.6 76.9L46.3 78.4L44.0 79.7L41.7 80.8L39.3 81.7L37.0 82.4L34.7 82.9L32.4 83.1L30.2 83.2L28.1 83.1L26.0 82.7L24.1 82.2L22.4 81.5L20.7 80.5L19.3 79.5L18.0 78.3L16.9 76.9L15.9 75.4L15.2 73.8L14.8 72.1L14.5 70.3L14.4 68.4L14.6 66.6L15.0 64.6L15.7 62.7L16.5 60.8L17.6 58.9L18.9 57.0L20.4 55.2L22.1 53.5L24.0 51.9L26.1 50.4L28.3 49.0L30.7 47.7L33.2 46.6L35.8 45.6L38.5 44.8L41.3 44.2L44.2 43.8L47.1 43.5L50.0 43.4Z';
+---
+
+{/* ⚠️ لو الجافاسكربت مقفول (شبكات شركات، إضافات خصوصية) ما في إشي
+    بيشيل الشاشة — فبنخفيها من الأساس. المحتوى كله ثابت ومكتوب
+    بالصفحة، فبيشتغل عادي بدونها. */}
+{/* ⚠️ is:inline ضروري: بدونها Astro بياخد الستايل ويحطّه بملف
+    الموقع العام — يعني بتنخفي الشاشة عند الكل مش بس عند اللي
+    مقفّل الجافاسكربت. */}
+<noscript><style is:inline>#boot { display: none !important; }</style></noscript>
+
+<div id="boot" data-boot aria-hidden="true">
+  <div class="boot-in">
+    <svg class="boot-knot" viewBox="0 0 100 100" fill="none">
+      <path class="boot-ghost" d={KNOT} />
+      <path class="boot-draw" d={KNOT} />
+    </svg>
+    <div class="boot-line"><span></span></div>
+    <p class="boot-word">{isAr ? 'جاري التقاط الإشارة' : 'Acquiring signal'}</p>
+  </div>
+</div>
+
+<style is:inline>
+  #boot {
+    /* 🎛️ */
+    --boot-bg: #0e0f12;
+    --boot-accent: #d9ff3f;
+
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: grid;
+    place-items: center;
+    background: var(--boot-bg);
+    /* ضوء خفيف بالنص — نفس جو الموقع */
+    background-image: radial-gradient(
+      60% 50% at 50% 45%,
+      rgba(217, 255, 63, 0.07),
+      transparent 70%
+    );
+    transition:
+      opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0.55s;
+  }
+
+  /* خلصت: بتذوب وبتروح */
+  html.boot-done #boot {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* ما منسمح بالسكرول والشاشة مغطّاة */
+  html.boot-on,
+  html.boot-on body {
+    overflow: hidden;
+  }
+
+  .boot-in {
+    display: grid;
+    justify-items: center;
+    gap: 22px;
+    /* بتطلع شوي وهي رايحة */
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  html.boot-done .boot-in {
+    transform: translateY(-8px);
+  }
+
+  .boot-knot {
+    width: clamp(76px, 12vw, 108px);
+    height: clamp(76px, 12vw, 108px);
+    overflow: visible;
+  }
+
+  .boot-ghost {
+    stroke: rgba(217, 255, 63, 0.13);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+  }
+
+  .boot-draw {
+    stroke: var(--boot-accent);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 7px rgba(217, 255, 63, 0.5));
+    /* الطول الحقيقي للمسار ~٤٤٠ — منحطّه أكبر شوي عشان الأمان */
+    stroke-dasharray: 150 450;
+    animation: boot-trace 2.1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  /* الخط بيلف حوالين العقدة بلا توقف */
+  @keyframes boot-trace {
+    from {
+      stroke-dashoffset: 600;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* سطر الإشارة تحت — نفس فكرة الشريط اللي فوق بالموقع */
+  .boot-line {
+    position: relative;
+    width: clamp(120px, 20vw, 168px);
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(242, 243, 238, 0.1);
+    overflow: hidden;
+  }
+
+  .boot-line span {
+    position: absolute;
+    inset-block: 0;
+    width: 42%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, var(--boot-accent), transparent);
+    animation: boot-sweep 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+
+  @keyframes boot-sweep {
+    from {
+      transform: translateX(-120%);
+    }
+    to {
+      transform: translateX(340%);
+    }
+  }
+
+  .boot-word {
+    margin: 0;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: rgba(242, 243, 238, 0.42);
+    animation: boot-breathe 2.4s ease-in-out infinite;
+  }
+
+  @keyframes boot-breathe {
+    0%,
+    100% {
+      opacity: 0.42;
+    }
+    50% {
+      opacity: 0.85;
+    }
+  }
+
+  /* ⚠️ لو الزائر مطفّي الحركة: بدون أي أنيميشن، بس شعار ثابت */
+  @media (prefers-reduced-motion: reduce) {
+    .boot-draw,
+    .boot-line span,
+    .boot-word {
+      animation: none;
+    }
+    .boot-draw {
+      stroke-dasharray: none;
+    }
+    .boot-in {
+      transition: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    // 🎛️ أقل/أقصى مدة بالملي ثانية
+    var MIN_MS = 350; // أقل من هيك = وميض مزعج
+    var MAX_MS = 7000; // شبكة أمان: ما منحبس الزائر أبداً
+
+    var root = document.documentElement;
+    var t0 = Date.now();
+    var gone = false;
+
+    root.classList.add('boot-on');
+
+    function finish() {
+      if (gone) return;
+      gone = true;
+      root.classList.remove('boot-on');
+      root.classList.add('boot-done');
+      // منشيلها من الصفحة بعد ما تخلص الحركة
+      setTimeout(function () {
+        var el = document.getElementById('boot');
+        if (el && el.parentNode) el.parentNode.removeChild(el);
+      }, 700);
+    }
+
+    function done() {
+      var left = MIN_MS - (Date.now() - t0);
+      setTimeout(finish, left > 0 ? left : 0);
+    }
+
+    if (document.readyState === 'complete') done();
+    else addEventListener('load', done);
+
+    // لو إشي علق بالتحميل، ما منخلّي الزائر مستني
+    setTimeout(finish, MAX_MS);
+
+    // ⚠️ الانتقال بين الصفحات ما بيعيد تحميل الموقع، فما في داعي
+    //    تطلع شاشة التحميل كل مرة. منشيلها من الصفحة الجاية.
+    document.addEventListener('astro:before-swap', function (e) {
+      if (!e.newDocument) return;
+      var el = e.newDocument.getElementById('boot');
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+      e.newDocument.documentElement.classList.remove('boot-on');
+    });
+  })();
+</script>

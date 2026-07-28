@@ -64,6 +64,14 @@ function Scene({ drag, onProgress, onLock, locked, resetKey }) {
     const g = group.current;
     if (!g) return;
 
+    // ⚠️⚠️ «بدأ اللعب» بتتقرّر من سحبة حقيقية بس ⚠️⚠️
+    //  قبل هيك كنا منعتبرها بدأت لو كان في **أي سرعة** بالعقدة.
+    //  والمشكلة إنه العقدة بتلف لحالها قبل اللعب (idleSpin)، وأي
+    //  رجّة بسيطة بالماوس كانت بتخلّي السرعة > صفر — فبتنحسب «لعب»،
+    //  وبتقفل الإشارة لحالها وبيطلع «جرّب مرة ثانية» فجأة بدون ما
+    //  يعمل الزائر إشي. هلق بتتفعّل من onMove بعد مسافة سحب واضحة.
+    started.current = drag.current.touched === true;
+
     if (locked) {
       // بعد القفل: بتلف بهدوء كمكافأة
       g.rotation.y += 0.25 * delta;
@@ -71,10 +79,6 @@ function Scene({ drag, onProgress, onLock, locked, resetKey }) {
       // العطالة
       drag.current.vx *= KNOT.friction;
       drag.current.vy *= KNOT.friction;
-
-      if (Math.abs(drag.current.vx) > 0.0001 || Math.abs(drag.current.vy) > 0.0001) {
-        started.current = true;
-      }
 
       g.rotation.x += drag.current.vy;
       g.rotation.y += drag.current.vx;
@@ -85,13 +89,18 @@ function Scene({ drag, onProgress, onLock, locked, resetKey }) {
 
     // قوّة الإشارة = قد إيش نقطة الضوء قريبة من الحلقة
     if (node.current) {
+      // ⚠️ قبل ما يبلّش الزائر، المقياس بيضل صفر. اللفّة التلقائية
+      //    كانت بتحرّك النسبة لحالها فبيحس الزائر إنه الرقم عم يلعب
+      //    بلا سبب — والمقياس المفروض يعكس شغله هو مش شغل الأنيميشن.
+      if (!started.current && !locked) {
+        onProgress(0);
+        return;
+      }
       node.current.getWorldPosition(tmp.current);
       const dist = tmp.current.distanceTo(TARGET);
       const strength = Math.max(0, Math.min(1, 1 - dist / KNOT.reach));
       onProgress(strength, dist);
-      // ⚠️ ما بنسمح بالقفل إلا بعد ما الزائر يلمس فعلاً — حماية
-      //    ثانية ضد الفوز بدون لعب
-      if (!locked && started.current && dist < KNOT.lockDist) onLock();
+      if (!locked && dist < KNOT.lockDist) onLock();
     }
   });
 
@@ -141,7 +150,9 @@ function Scene({ drag, onProgress, onLock, locked, resetKey }) {
 
 export default function Knot({ lang = 'ar' }) {
   const isAr = lang === 'ar';
-  const drag = useRef({ vx: 0, vy: 0, on: false, x: 0, y: 0 });
+  // touched = سحب الزائر فعلاً (مش مجرد ضغطة أو رجّة ماوس)
+  // moved   = مجموع مسافة السحب، عشان نميّز السحبة عن الرجّة
+  const drag = useRef({ vx: 0, vy: 0, on: false, x: 0, y: 0, touched: false, moved: 0 });
   const barRef = useRef(null);
   const pctRef = useRef(null);
   const best = useRef(null);
@@ -152,6 +163,8 @@ export default function Knot({ lang = 'ar' }) {
   const [locked, setLocked] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [resetKey, setResetKey] = useState(0);
+  const [visible, setVisible] = useState(false); // القسم على الشاشة؟
+  const stage = useRef(null);
   const startAt = useRef(Date.now());
 
   // ⚠️ كل فحص للمتصفح لازم يصير هون — الصفحات بتتبنى على السيرفر
@@ -164,6 +177,21 @@ export default function Knot({ lang = 'ar' }) {
     } catch {
       setOk(false);
     }
+  }, []);
+
+  // ⚠️ الرسم ثلاثي الأبعاد كان بيضل شغّال ٦٠ إطار بالثانية حتى وإنت
+  //    بآخر الصفحة وما إلك علاقة فيه — يعني كرت الشاشة عم يشتغل عالفاضي
+  //    طول الزيارة (بطارية اللابتوب بتنزل والمروحة بتصفّر). منوقفه لما
+  //    يطلع برّا الشاشة ومنرجّعه لما يرجع.
+  useEffect(() => {
+    const el = stage.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(
+      ([e]) => setVisible(e.isIntersecting),
+      { rootMargin: '200px' } // منشغّله شوي قبل ما يوصل عشان يكون جاهز
+    );
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
 
   // ⚠️ منحدّث الشريط مباشرة بالـ DOM مش بحالة React — لأن التحديث
@@ -184,8 +212,13 @@ export default function Knot({ lang = 'ar' }) {
   const again = () => {
     setLocked(false);
     setResetKey((k) => k + 1);
+    // ⚠️ لازم نصفّر كل إشي — لو ضلّت سرعة أو علامة «لعب» من الجولة
+    //    اللي قبل، الجولة الجديدة بتقفل لحالها بدون ما يلمس الزائر
     drag.current.vx = 0;
     drag.current.vy = 0;
+    drag.current.on = false;
+    drag.current.touched = false;
+    drag.current.moved = 0;
     startAt.current = Date.now();
   };
 
@@ -229,12 +262,21 @@ export default function Knot({ lang = 'ar' }) {
     e.currentTarget.setPointerCapture?.(e.pointerId);
   };
 
+  // ✏️ قد إيش لازم يسحب عشان تنحسب «لعبة» (بالبكسل)
+  const DRAG_THRESHOLD = 12;
+
   const onMove = (e) => {
     if (!drag.current.on || locked) return;
-    drag.current.vx = (e.clientX - drag.current.x) * KNOT.dragPower;
-    drag.current.vy = (e.clientY - drag.current.y) * KNOT.dragPower;
+    const dx = e.clientX - drag.current.x;
+    const dy = e.clientY - drag.current.y;
+    drag.current.vx = dx * KNOT.dragPower;
+    drag.current.vy = dy * KNOT.dragPower;
     drag.current.x = e.clientX;
     drag.current.y = e.clientY;
+
+    // سحبة حقيقية = مسافة واضحة، مش رجّة ماوس بمقدار بكسل
+    drag.current.moved += Math.hypot(dx, dy);
+    if (drag.current.moved > DRAG_THRESHOLD) drag.current.touched = true;
   };
 
   const onUp = () => {
@@ -286,6 +328,7 @@ export default function Knot({ lang = 'ar' }) {
       </div>
 
       <div
+        ref={stage}
         className={`knot3d-stage ${grabbing ? 'is-grabbing' : ''} ${locked ? 'is-locked' : ''}`}
         onPointerDown={onDown}
         onPointerMove={onMove}
@@ -296,7 +339,8 @@ export default function Knot({ lang = 'ar' }) {
         <Canvas
           camera={{ position: [0, 0, 4.4], fov: 45 }}
           dpr={[1, 1.6]} /* حدّ الدقة عشان ما يثقل على الأجهزة الضعيفة */
-          gl={{ antialias: true, alpha: true }}
+          gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+          frameloop={visible ? 'always' : 'never'}
         >
           <ambientLight intensity={0.7} />
           <pointLight position={[4, 4, 5]} intensity={38} color="#ffffff" />

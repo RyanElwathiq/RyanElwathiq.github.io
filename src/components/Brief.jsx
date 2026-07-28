@@ -127,7 +127,7 @@ const COPY = {
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
 
-export default function Brief({ lang = 'ar', email = '', whatsapp = '' }) {
+export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = false }) {
   const isAr = lang === 'ar';
   const t = COPY[isAr ? 'ar' : 'en'];
 
@@ -253,7 +253,9 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '' }) {
     <div className="brief">
       <div className="brief-head">
         <p className="brief-kicker">{t.kicker}</p>
-        <h2>{t.title}</h2>
+        {/* بالصفحة المخصّصة بيصير h1 — كل صفحة لازم يكون فيها عنوان
+            رئيسي واحد بالضبط (جوجل وقارئ الشاشة بيعتمدوا عليه) */}
+        {asH1 ? <h1>{t.title}</h1> : <h2>{t.title}</h2>}
         <p className="brief-sub">{t.sub}</p>
       </div>
 

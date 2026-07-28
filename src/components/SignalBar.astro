@@ -73,11 +73,13 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
       <path d={strandB} />
     </svg>
 
-    <!-- علامات الأقسام (بتشتغل كروابط تنقّل) -->
+    <!-- علامات الأقسام (بتشتغل كروابط تنقّل)
+         ⚠️ aria-label ضروري: اسم القسم مخفي بالتصميم لحد ما تمرّ عليه،
+            وبدونه قارئ الشاشة بيسمع «زر» بدون ما يعرف لوين بتوديه -->
     <div class="marks" data-signal-marks>
       {
         sections.map((s) => (
-          <button class="mark" data-mark={s.id} type="button">
+          <button class="mark" data-mark={s.id} type="button" aria-label={s.label}>
             <span class="tick" aria-hidden="true" />
             <span class="name">{s.label}</span>
           </button>

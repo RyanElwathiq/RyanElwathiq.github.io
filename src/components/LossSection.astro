@@ -14,12 +14,13 @@ interface Props {
   id?: string;
   eager?: boolean;
   bare?: boolean;
+  h1?: boolean; // بالصفحة المخصّصة بس — العنوان بيصير h1
 }
 
-const { lang, id = 'loss', eager = false, bare = false } = Astro.props;
+const { lang, id = 'loss', eager = false, bare = false, h1 = false } = Astro.props;
 const isAr = lang === 'ar';
 const briefHref = isAr ? '/ar/brief/' : '/brief/';
-const props = { lang, briefHref };
+const props = { lang, briefHref, asH1: h1 };
 ---
 
 {
