@@ -161,6 +161,10 @@ html[lang='ar'] .knot3d h2 {
     var(--surface);
 }
 
+.knot3d-stage.is-live {
+  cursor: grab;
+}
+
 .knot3d-stage.is-grabbing {
   cursor: grabbing;
 }
@@ -245,4 +249,81 @@ html[lang='ar'] .knot3d h2 {
   .knot3d {
     --stage-h: clamp(280px, 44vh, 400px);
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   شاشة «شغّل التجربة»
+   ⚠️ الرسم ثلاثي الأبعاد بحاجة ٨٨٠ كيلوبايت. بدل ما ننزّلها على كل
+   زائر ونجمّد صفحته، منعرض الشعار مع زر — واللي بده يلعب بيضغط.
+   ═══════════════════════════════════════════════════════════════ */
+.knot3d-play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 20px;
+  text-align: center;
+}
+
+.knot3d-play img {
+  width: clamp(120px, 22vw, 190px);
+  height: auto;
+  opacity: 0.5;
+  transition: opacity 0.4s var(--ease-out), transform 0.5s var(--ease-out);
+}
+
+.knot3d-play:hover img {
+  opacity: 0.9;
+  transform: scale(1.04) rotate(-3deg);
+}
+
+.knot3d-play-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 26px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 15px;
+  font-weight: 700;
+  transition: transform 0.35s var(--ease-out);
+}
+
+.knot3d-play-btn::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-inline-start: 9px solid currentColor;
+  border-block: 6px solid transparent;
+}
+
+html[dir='rtl'] .knot3d-play-btn::before {
+  transform: scaleX(-1);
+}
+
+.knot3d-play:hover .knot3d-play-btn {
+  transform: translateY(-2px);
+}
+
+.knot3d-play-note {
+  font-size: 12.5px;
+  color: var(--muted);
+  max-width: 30ch;
+  line-height: 1.6;
+}
+
+.knot3d-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 13.5px;
+  color: var(--muted);
 }

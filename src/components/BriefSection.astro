@@ -42,6 +42,8 @@ const props = { lang, email, whatsapp, asH1: h1 };
 <style>
   .brief-section {
     padding-block: clamp(64px, 10vh, 120px);
-    border-top: 1px solid var(--line);
+    /* ⚠️ ما في خط فاصل فوق عن قصد. كان موجود، بس بما إنه بعده
+       ١٢٠ بكسل فراغ قبل المحتوى، كان الخط يبين معلّق لحاله تحت
+       الأسئلة الشائعة وكأنه غلطة. الفراغ لحاله بيفصل الأقسام. */
   }
 </style>

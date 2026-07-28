@@ -1,152 +1,26 @@
 // ═══════════════════════════════════════════════════════════════
-//  العقدة ثلاثية الأبعاد — تحدّي «اقفل الإشارة»
+//  العقدة ثلاثية الأبعاد — تحدّي «اقفل الإشارة» (الغلاف الخفيف)
 //
-//  الفكرة (وليش صار فيها إنجاز):
-//  على العقدة نقطة ضوء ليمونية. وقدّامها حلقة هدف ثابتة بالفراغ.
-//  مهمتك: تلفّ العقدة لحد ما النقطة تدخل جوّا الحلقة.
-//  كل ما قرّبت، «قوّة الإشارة» بترتفع والعقدة بتضوي أكثر —
-//  ولما تقفلها بتنفجر بوميض وبيطلعلك الوقت اللي أخذته.
+//  على العقدة نقطة ضوء ليمونية، وقدّامها حلقة هدف. مهمتك تلفّ
+//  العقدة لحد ما النقطة تدخل الحلقة. كل ما قرّبت، قوّة الإشارة
+//  بترتفع — ولما تقفلها بيطلعلك وقتك.
 //
-//  ليش هالتحدّي بالذات؟ لأنه بيحكي نفس لغة الموقع: إشارة بتضبّطها
-//  لحد ما تقفل. مش مجرد مجسّم بيلف بلا هدف.
-//
-//  🧠 تقنياً: React Three Fiber (غلاف React حوالين three.js).
+//  ⚠️⚠️ ليش الملف مقسوم؟ ⚠️⚠️
+//  الرسم ثلاثي الأبعاد بحاجة three.js = ٨٨٠ كيلوبايت. لو نزّلناها
+//  مع الصفحة، المتصفح بيتجمّد ٤١٧ جزء من الثانية بنص السكرول لكل
+//  زائر — حتى اللي ما بده يلعب. فالمسرح بملف منفصل (KnotStage.jsx)
+//  وما بينزل إلا لما يضغط الزائر «شغّل التجربة».
 //
 //  ┌──────────── 🎛️ لوحة التحكم ────────────┐
-//  │ كل الإعدادات بمتغيّر KNOT تحت مباشرة    │
+//  │ الإعدادات كلها: src/data/knot-config.js │
 //  └─────────────────────────────────────────┘
 // ═══════════════════════════════════════════════════════════════
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Suspense, useRef, useState, useEffect, useCallback } from 'react';
-import * as THREE from 'three';
+import { lazy, Suspense, useRef, useState, useEffect, useCallback } from 'react';
+import { KNOT } from '../data/knot-config.js';
 import '../styles/knot.css';
 
-const KNOT = {
-  color: '#D9FF3F',
-  radius: 1,
-  tube: 0.23,
-  p: 2,
-  q: 3,
-  idleSpin: 0.14, // دوران خفيف قبل ما يبدأ اللعب
-  dragPower: 0.006, // قوة استجابة السحب
-  friction: 0.93, // العطالة بعد ما تفلّها
-  nodeAt: 1.45, // بعد نقطة الضوء عن المركز
-  lockDist: 0.42, // قد إيش لازم تقرب عشان تقفل
-  reach: 2.6, // المسافة اللي بيبدأ عندها العدّاد يحسب
-};
-
-// موقع حلقة الهدف: قدّام العقدة مباشرة باتجاه الكاميرا
-const TARGET = new THREE.Vector3(0, 0, KNOT.nodeAt);
-
-function Scene({ drag, onProgress, onLock, locked, resetKey }) {
-  const group = useRef();
-  const node = useRef();
-  const started = useRef(false);
-  const tmp = useRef(new THREE.Vector3());
-
-  // كل جولة جديدة: منرجّع العقدة لزاوية عشوائية
-  // ⚠️ مش عشوائية بالكامل: لازم نقطة الضوء تبدأ **بالجهة المقابلة**
-  //    للحلقة. أول نسخة كانت عشوائية تماماً، فصار إنه أحياناً
-  //    تبدأ اللعبة والنقطة أصلاً جوّا الحلقة — يعني بتفوز بصفر
-  //    حركة ومن غير ما تلمس إشي. وهاد بيلغي اللعبة أصلاً.
-  useEffect(() => {
-    if (!group.current) return;
-    const spread = 0.9; // شوي عشوائية حوالين الجهة المقابلة
-    group.current.rotation.set(
-      (Math.random() - 0.5) * spread,
-      Math.PI + (Math.random() - 0.5) * spread,
-      (Math.random() - 0.5) * 0.6
-    );
-    started.current = false;
-  }, [resetKey]);
-
-  useFrame((_, delta) => {
-    const g = group.current;
-    if (!g) return;
-
-    // ⚠️⚠️ «بدأ اللعب» بتتقرّر من سحبة حقيقية بس ⚠️⚠️
-    //  قبل هيك كنا منعتبرها بدأت لو كان في **أي سرعة** بالعقدة.
-    //  والمشكلة إنه العقدة بتلف لحالها قبل اللعب (idleSpin)، وأي
-    //  رجّة بسيطة بالماوس كانت بتخلّي السرعة > صفر — فبتنحسب «لعب»،
-    //  وبتقفل الإشارة لحالها وبيطلع «جرّب مرة ثانية» فجأة بدون ما
-    //  يعمل الزائر إشي. هلق بتتفعّل من onMove بعد مسافة سحب واضحة.
-    started.current = drag.current.touched === true;
-
-    if (locked) {
-      // بعد القفل: بتلف بهدوء كمكافأة
-      g.rotation.y += 0.25 * delta;
-    } else {
-      // العطالة
-      drag.current.vx *= KNOT.friction;
-      drag.current.vy *= KNOT.friction;
-
-      g.rotation.x += drag.current.vy;
-      g.rotation.y += drag.current.vx;
-
-      // قبل أول لمسة بتلف لحالها عشان تبيّن إنها حيّة
-      if (!started.current) g.rotation.y += KNOT.idleSpin * delta;
-    }
-
-    // قوّة الإشارة = قد إيش نقطة الضوء قريبة من الحلقة
-    if (node.current) {
-      // ⚠️ قبل ما يبلّش الزائر، المقياس بيضل صفر. اللفّة التلقائية
-      //    كانت بتحرّك النسبة لحالها فبيحس الزائر إنه الرقم عم يلعب
-      //    بلا سبب — والمقياس المفروض يعكس شغله هو مش شغل الأنيميشن.
-      if (!started.current && !locked) {
-        onProgress(0);
-        return;
-      }
-      node.current.getWorldPosition(tmp.current);
-      const dist = tmp.current.distanceTo(TARGET);
-      const strength = Math.max(0, Math.min(1, 1 - dist / KNOT.reach));
-      onProgress(strength, dist);
-      if (!locked && dist < KNOT.lockDist) onLock();
-    }
-  });
-
-  const args = [KNOT.radius, KNOT.tube, 240, 32, KNOT.p, KNOT.q];
-
-  return (
-    <>
-      {/* ═══ حلقة الهدف — ثابتة بالفراغ ═══ */}
-      <mesh position={TARGET} rotation={[0, 0, 0]}>
-        <torusGeometry args={[0.34, 0.032, 16, 48]} />
-        <meshBasicMaterial
-          color={KNOT.color}
-          transparent
-          opacity={locked ? 0 : 0.75}
-        />
-      </mesh>
-
-      {/* ═══ العقدة + نقطة الضوء ═══ */}
-      <group ref={group}>
-        <mesh>
-          <torusKnotGeometry args={args} />
-          <meshStandardMaterial
-            color={KNOT.color}
-            emissive={KNOT.color}
-            emissiveIntensity={locked ? 0.95 : 0.5}
-            roughness={0.42}
-            metalness={0.3}
-          />
-        </mesh>
-
-        {/* شبكة خطوط خفيفة فوقه */}
-        <mesh scale={1.012}>
-          <torusKnotGeometry args={[KNOT.radius, KNOT.tube, 120, 12, KNOT.p, KNOT.q]} />
-          <meshBasicMaterial color={KNOT.color} wireframe transparent opacity={0.16} />
-        </mesh>
-
-        {/* نقطة الضوء اللي لازم تدخلها بالحلقة */}
-        <mesh ref={node} position={[0, 0, KNOT.nodeAt]}>
-          <sphereGeometry args={[0.13, 24, 24]} />
-          <meshBasicMaterial color="#ffffff" />
-        </mesh>
-        <pointLight position={[0, 0, KNOT.nodeAt]} intensity={12} distance={2.2} color="#ffffff" />
-      </group>
-    </>
-  );
-}
+// ⚠️ import() جوّا lazy = المتصفح ما بينزّل الملف إلا لحظة أول عرض
+const KnotStage = lazy(() => import('./KnotStage.jsx'));
 
 export default function Knot({ lang = 'ar' }) {
   const isAr = lang === 'ar';
@@ -164,6 +38,7 @@ export default function Knot({ lang = 'ar' }) {
   const [seconds, setSeconds] = useState(0);
   const [resetKey, setResetKey] = useState(0);
   const [visible, setVisible] = useState(false); // القسم على الشاشة؟
+  const [started, setStarted] = useState(false); // ضغط الزائر «شغّل»؟
   const stage = useRef(null);
   const startAt = useRef(Date.now());
 
@@ -235,6 +110,9 @@ export default function Knot({ lang = 'ar' }) {
         took: (s) => `بـ ${s.toFixed(1)} ثانية`,
         bestLabel: (s) => `أحسن وقت إلك: ${s.toFixed(1)} ثانية`,
         again: 'جرّب مرة ثانية',
+        play: 'شغّل التجربة',
+        playNote: 'مجسّم حقيقي ثلاثي الأبعاد — بينزّل لما تضغط بس',
+        loading: 'جاري التحميل…',
         fallback: 'جهازك ما بيدعم الرسم ثلاثي الأبعاد، فهذا الشعار بصورة عادية.',
       }
     : {
@@ -249,6 +127,9 @@ export default function Knot({ lang = 'ar' }) {
         took: (s) => `in ${s.toFixed(1)}s`,
         bestLabel: (s) => `Your best: ${s.toFixed(1)}s`,
         again: 'Try again',
+        play: 'Start the experience',
+        playNote: 'A real 3D object — only loads when you ask for it',
+        loading: 'Loading…',
         fallback: 'Your device does not support 3D rendering, so here is the logo as an image.',
       };
 
@@ -334,35 +215,39 @@ export default function Knot({ lang = 'ar' }) {
 
       <div
         ref={stage}
-        className={`knot3d-stage ${grabbing ? 'is-grabbing' : ''} ${locked ? 'is-locked' : ''}`}
-        onPointerDown={onDown}
-        onPointerMove={onMove}
-        onPointerUp={onUp}
-        onPointerCancel={onUp}
-        onPointerLeave={onUp}
+        className={`knot3d-stage ${started ? 'is-live' : ''} ${grabbing ? 'is-grabbing' : ''} ${
+          locked ? 'is-locked' : ''
+        }`}
+        /* ⚠️ مشابك السحب ما بتشتغل إلا بعد ما تبلّش اللعبة. قبلها كانت
+           تمسك الضغطة (setPointerCapture) وتخطفها من زر «شغّل التجربة»،
+           فالزر ما كان ينضغط أبداً. */
+        onPointerDown={started ? onDown : undefined}
+        onPointerMove={started ? onMove : undefined}
+        onPointerUp={started ? onUp : undefined}
+        onPointerCancel={started ? onUp : undefined}
+        onPointerLeave={started ? onUp : undefined}
       >
-        <Canvas
-          camera={{ position: [0, 0, 4.4], fov: 45 }}
-          dpr={[1, 1.6]} /* حدّ الدقة عشان ما يثقل على الأجهزة الضعيفة */
-          gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-          frameloop={visible ? 'always' : 'never'}
-        >
-          <ambientLight intensity={0.7} />
-          <pointLight position={[4, 4, 5]} intensity={38} color="#ffffff" />
-          <pointLight position={[-5, -3, -2]} intensity={70} color={KNOT.color} />
-          <pointLight position={[0, 3, -5]} intensity={45} color={KNOT.color} />
-          <Suspense fallback={null}>
-            <Scene
+        {/* ⚠️ المسرح ما بينزّل إلا لما يضغط الزائر — شوف الشرح فوق */}
+        {started ? (
+          <Suspense fallback={<div className="knot3d-loading">{t.loading}</div>}>
+            <KnotStage
               drag={drag}
               onProgress={onProgress}
               onLock={onLock}
               locked={locked}
               resetKey={resetKey}
+              visible={visible}
             />
           </Suspense>
-        </Canvas>
+        ) : (
+          <button type="button" className="knot3d-play" onClick={() => setStarted(true)}>
+            <img src="/assets/logo-white.png" alt="" width="200" height="200" />
+            <span className="knot3d-play-btn">{t.play}</span>
+            <span className="knot3d-play-note">{t.playNote}</span>
+          </button>
+        )}
 
-        {!locked && (
+        {started && !locked && (
           <span className="knot3d-hint" aria-hidden="true">
             {touch ? t.hintTouch : t.hint}
           </span>
@@ -371,3 +256,4 @@ export default function Knot({ lang = 'ar' }) {
     </div>
   );
 }
+
