@@ -114,6 +114,55 @@ const emptyNote = isAr
         )
       }
 
+      <!-- ═══════════════════════════════════════════════════════
+           فيديوهات المشروع
+           ✏️ من work.json ← "videos": ["معرّف-يوتيوب", ...]
+           بتنعرض بإطار يوتيوب مباشرة، فما بتثقّل الموقع
+           ═══════════════════════════════════════════════════════ -->
+      {
+        p.videos?.length > 0 && (
+          <section class="films" data-reveal>
+            <h2>{isAr ? 'الفيديوهات' : 'The films'}</h2>
+            <div class="films-grid">
+              {p.videos.map((v: string) => (
+                <div class="film">
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${v}`}
+                    title={title}
+                    loading="lazy"
+                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      <!-- ═══════════════════════════════════════════════════════
+           معرض التصاميم
+           ✏️ من work.json ← "gallery": ["/assets/work/.../x.webp", ...]
+           ⚠️ الصور بتنزل بس لما توصلها بالسكرول (loading="lazy")
+           ═══════════════════════════════════════════════════════ -->
+      {
+        p.gallery?.length > 0 && (
+          <section class="shots" data-reveal>
+            <h2>
+              {isAr ? 'التصاميم' : 'The designs'}
+              <span class="count">{p.gallery.length}</span>
+            </h2>
+            <div class="shots-grid">
+              {p.gallery.map((g: string, i: number) => (
+                <figure class="shot">
+                  <img src={g} alt={`${title} — ${i + 1}`} loading="lazy" decoding="async" />
+                </figure>
+              ))}
+            </div>
+          </section>
+        )
+      }
+
       <!-- ═══ قصة المشروع ═══ -->
       {
         blocks.length > 0 ? (
@@ -286,6 +335,89 @@ const emptyNote = isAr
   @media (max-width: 767px) {
     .block {
       grid-template-columns: 1fr;
+      gap: 10px;
+    }
+  }
+</style>
+
+<style>
+  /* ═══════════════ الفيديوهات ═══════════════ */
+  .films,
+  .shots {
+    margin-top: clamp(48px, 7vh, 88px);
+  }
+
+  .films h2,
+  .shots h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 700;
+    margin-bottom: clamp(20px, 3vh, 30px);
+  }
+
+  .shots .count {
+    font-family: var(--font-en);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .films-grid {
+    display: grid;
+    /* الفيديوهات الطولية (ريلز) بتاخد عمود أضيق تلقائياً */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: clamp(16px, 2vw, 26px);
+  }
+
+  .film {
+    aspect-ratio: 16 / 9;
+    border-radius: var(--r-card);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: #000;
+  }
+
+  .film iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  /* ═══════════════ معرض التصاميم ═══════════════ */
+  .shots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: clamp(14px, 1.6vw, 22px);
+  }
+
+  .shot {
+    margin: 0;
+    border-radius: var(--r-card);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    transition:
+      transform 0.4s var(--ease-out),
+      border-color 0.4s var(--ease-out);
+  }
+
+  .shot:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+  }
+
+  .shot img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  @media (max-width: 700px) {
+    .shots-grid {
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
   }

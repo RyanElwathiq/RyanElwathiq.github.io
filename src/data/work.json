@@ -36,15 +36,64 @@
       "category": "marketing",
       "featured": true,
       "order": 1,
-      "youtube": "",
+      "youtube": "UZiQXVxdAeU",
       "preview": "",
       "cover": "/assets/project-dr-samir.png",
       "desc": "Built a brand-new Instagram presence from 0 to 2,395 followers organically in 30 days: brand guidelines, visual identity, video QA, hook writing, and a full editing workflow.",
       "descAr": "بناء حضور جديد كلياً على إنستغرام من صفر إلى 2,395 متابع بشكل عضوي خلال 30 يوم: دليل هوية، إشراف على الفيديو، كتابة الخطافات، ونظام مونتاج متكامل.",
       "stats": [
-        { "value": "2,395", "label": "Organic followers in 30 days", "labelAr": "متابع عضوي خلال 30 يوم" },
-        { "value": "290K", "label": "Views on a single post", "labelAr": "مشاهدة على بوست واحد" },
-        { "value": "$0", "label": "Ad spend", "labelAr": "إنفاق إعلاني" }
+        {
+          "value": "2,395",
+          "label": "Organic followers in 30 days",
+          "labelAr": "متابع عضوي خلال 30 يوم"
+        },
+        {
+          "value": "290K",
+          "label": "Views on a single post",
+          "labelAr": "مشاهدة على بوست واحد"
+        },
+        {
+          "value": "$0",
+          "label": "Ad spend",
+          "labelAr": "إنفاق إعلاني"
+        }
+      ],
+      "gallery": [
+        "/assets/work/dr-samir/dr-samir-01.webp",
+        "/assets/work/dr-samir/dr-samir-02.webp",
+        "/assets/work/dr-samir/dr-samir-03.webp",
+        "/assets/work/dr-samir/dr-samir-04.webp",
+        "/assets/work/dr-samir/dr-samir-05.webp",
+        "/assets/work/dr-samir/dr-samir-06.webp",
+        "/assets/work/dr-samir/dr-samir-07.webp",
+        "/assets/work/dr-samir/dr-samir-08.webp",
+        "/assets/work/dr-samir/dr-samir-09.webp",
+        "/assets/work/dr-samir/dr-samir-10.webp",
+        "/assets/work/dr-samir/dr-samir-11.webp",
+        "/assets/work/dr-samir/dr-samir-12.webp",
+        "/assets/work/dr-samir/dr-samir-13.webp",
+        "/assets/work/dr-samir/dr-samir-14.webp",
+        "/assets/work/dr-samir/dr-samir-15.webp",
+        "/assets/work/dr-samir/dr-samir-16.webp",
+        "/assets/work/dr-samir/dr-samir-17.webp",
+        "/assets/work/dr-samir/dr-samir-18.webp",
+        "/assets/work/dr-samir/dr-samir-19.webp",
+        "/assets/work/dr-samir/dr-samir-20.webp",
+        "/assets/work/dr-samir/dr-samir-21.webp",
+        "/assets/work/dr-samir/dr-samir-22.webp",
+        "/assets/work/dr-samir/dr-samir-23.webp",
+        "/assets/work/dr-samir/dr-samir-24.webp",
+        "/assets/work/dr-samir/dr-samir-25.webp",
+        "/assets/work/dr-samir/dr-samir-26.webp",
+        "/assets/work/dr-samir/dr-samir-27.webp",
+        "/assets/work/dr-samir/dr-samir-28.webp",
+        "/assets/work/dr-samir/dr-samir-29.webp"
+      ],
+      "videos": [
+        "UZiQXVxdAeU",
+        "gXRKerCFP2Y",
+        "METlVFy_yTg",
+        "_SgZhLCRjzs"
       ]
     },
     {
@@ -62,7 +111,11 @@
       "desc": "Led digital brand development for a Turkish skincare label entering the Jordanian market: visual identity, content strategy, and phased organic growth planning with an AI-assisted design workflow.",
       "descAr": "قيادة التطوير الرقمي لعلامة عناية بالبشرة تركية تدخل السوق الأردني: هوية بصرية، استراتيجية محتوى، وخطة نمو عضوي مرحلية مع نظام تصميم مدعوم بالذكاء الاصطناعي.",
       "stats": [
-        { "value": "40%", "label": "Faster design turnaround", "labelAr": "أسرع في إنتاج التصاميم" }
+        {
+          "value": "40%",
+          "label": "Faster design turnaround",
+          "labelAr": "أسرع في إنتاج التصاميم"
+        }
       ]
     },
     {
@@ -74,12 +127,22 @@
       "category": "video",
       "featured": true,
       "order": 3,
-      "youtube": "",
+      "youtube": "65eGhthqMEY",
       "preview": "",
       "cover": "/assets/project-arkan.png",
       "desc": "Developed the storytelling concept, supervised the creative direction, and edited key parts of the final real-estate marketing video.",
       "descAr": "تطوير الفكرة القصصية، الإشراف على الإخراج الإبداعي، ومونتاج أجزاء أساسية من الفيديو التسويقي العقاري.",
-      "stats": []
+      "stats": [],
+      "gallery": [
+        "/assets/work/arkan-al-anan/arkan-al-anan-01.webp",
+        "/assets/work/arkan-al-anan/arkan-al-anan-02.webp",
+        "/assets/work/arkan-al-anan/arkan-al-anan-03.webp"
+      ],
+      "videos": [
+        "65eGhthqMEY",
+        "eNZt72crddc",
+        "2TLCAcTy55E"
+      ]
     },
     {
       "id": "tango",
@@ -115,19 +178,56 @@
     },
     {
       "id": "orient",
-      "title": "Orient Anaam Solar Energy",
-      "titleAr": "أورينت أنعام للطاقة الشمسية",
-      "role": "Branding & Marketing Direction",
-      "roleAr": "هوية وتوجيه تسويقي",
+      "title": "Orient Enam Solar",
+      "titleAr": "أورينت إنعام للطاقة الشمسية",
+      "role": "Brand Rebuild & Content Campaign",
+      "roleAr": "إعادة بناء هوية وحملة محتوى",
       "category": "design",
-      "featured": false,
-      "order": 7,
-      "youtube": "",
+      "featured": true,
+      "order": 1,
+      "youtube": "1OMyXBxrTQA",
       "preview": "",
-      "cover": "/assets/project-orient.png",
+      "cover": "/assets/clients/orient-h-white.png",
       "desc": "Developed brand guidelines, logo direction, a marketing plan, and communication improvements for the company's identity and positioning.",
       "descAr": "تطوير دليل الهوية، توجيه الشعار، خطة تسويقية، وتحسينات على أسلوب التواصل لهوية الشركة وموقعها بالسوق.",
-      "stats": []
+      "stats": [],
+      "gallery": [
+        "/assets/work/orient-enam/orient-enam-01.webp",
+        "/assets/work/orient-enam/orient-enam-02.webp",
+        "/assets/work/orient-enam/orient-enam-03.webp",
+        "/assets/work/orient-enam/orient-enam-04.webp",
+        "/assets/work/orient-enam/orient-enam-05.webp",
+        "/assets/work/orient-enam/orient-enam-06.webp",
+        "/assets/work/orient-enam/orient-enam-07.webp",
+        "/assets/work/orient-enam/orient-enam-08.webp",
+        "/assets/work/orient-enam/orient-enam-09.webp",
+        "/assets/work/orient-enam/orient-enam-10.webp",
+        "/assets/work/orient-enam/orient-enam-11.webp",
+        "/assets/work/orient-enam/orient-enam-12.webp",
+        "/assets/work/orient-enam/orient-enam-13.webp",
+        "/assets/work/orient-enam/orient-enam-14.webp",
+        "/assets/work/orient-enam/orient-enam-15.webp",
+        "/assets/work/orient-enam/orient-enam-16.webp",
+        "/assets/work/orient-enam/orient-enam-17.webp",
+        "/assets/work/orient-enam/orient-enam-18.webp",
+        "/assets/work/orient-enam/orient-enam-19.webp",
+        "/assets/work/orient-enam/orient-enam-20.webp",
+        "/assets/work/orient-enam/orient-enam-21.webp",
+        "/assets/work/orient-enam/orient-enam-22.webp",
+        "/assets/work/orient-enam/orient-enam-23.webp",
+        "/assets/work/orient-enam/orient-enam-24.webp",
+        "/assets/work/orient-enam/orient-enam-25.webp",
+        "/assets/work/orient-enam/orient-enam-26.webp",
+        "/assets/work/orient-enam/orient-enam-27.webp",
+        "/assets/work/orient-enam/orient-enam-28.webp",
+        "/assets/work/orient-enam/orient-enam-29.webp",
+        "/assets/work/orient-enam/orient-enam-30.webp",
+        "/assets/work/orient-enam/orient-enam-31.webp",
+        "/assets/work/orient-enam/orient-enam-32.webp"
+      ],
+      "videos": [
+        "1OMyXBxrTQA"
+      ]
     },
     {
       "id": "asimah",
@@ -162,7 +262,6 @@
       "desc": "Designed and built the LUVIT e-commerce experience on WordPress: a custom design system, a GSAP motion language, and an Apple-style scroll-sequence hero.",
       "descAr": "تصميم وبناء تجربة متجر لوفيت على ووردبريس: نظام تصميم مخصص، لغة حركة GSAP، وهيرو سكرول-سيكوينس بأسلوب أبل.",
       "stats": [],
-
       "_مثال": "👇 هيك بتنكتب قصة المشروع. انسخ الشكل هذا لأي مشروع ثاني.",
       "story": {
         "vision": "A skincare brand entering a crowded market needed a store that felt like the product: clean, calm, and unmistakably its own. The reference was an underwater world, so water became the design language for everything.",
@@ -179,7 +278,6 @@
         "result": "متجر بيقرأ كعلامة تجارية مش كقالب، بهيرو بيمسك انتباه الزائر، ومكتبة مكوّنات بتخلي كل قسم جديد متناسق مع اللي قبله."
       }
     },
-
     {
       "id": "portfolio",
       "title": "This Portfolio",
@@ -196,7 +294,6 @@
       "desc": "A bilingual portfolio built from scratch: a scroll-driven film engine, a custom design system, and Arabic-first RTL throughout.",
       "descAr": "بورتفوليو ثنائي اللغة مبني من الصفر: محرّك أفلام يتحرك مع السكرول، نظام تصميم مخصص، ودعم عربي RTL كامل."
     },
-
     {
       "id": "coming-soon-1",
       "title": "Next Client Project",
@@ -212,6 +309,230 @@
       "status": "wip",
       "desc": "Currently in production. Details will be published once the project goes live.",
       "descAr": "قيد التنفيذ حالياً. التفاصيل رح تنشر بعد ما يطلع المشروع للنور."
+    },
+    {
+      "id": "fikra-nuqta",
+      "title": "Fikra & Nuqta",
+      "titleAr": "فكرة ونقطة",
+      "role": "Creative Direction & Content Strategy",
+      "roleAr": "إخراج إبداعي واستراتيجية محتوى",
+      "category": "design",
+      "featured": true,
+      "order": 12,
+      "desc": "Built a content-led direction for a marketing agency: composite imagery that stops the scroll, carrying ideas about how marketing actually works.",
+      "descAr": "بنيت توجّهاً قائماً على المحتوى لوكالة تسويق: صور مركّبة توقف الزائر، وتحمل أفكاراً عن كيف يشتغل التسويق فعلاً.",
+      "youtube": "",
+      "preview": "",
+      "cover": "/assets/work/fikra-nuqta/fikra-nuqta-01.webp",
+      "stats": [],
+      "gallery": [
+        "/assets/work/fikra-nuqta/fikra-nuqta-01.webp",
+        "/assets/work/fikra-nuqta/fikra-nuqta-02.webp",
+        "/assets/work/fikra-nuqta/fikra-nuqta-03.webp",
+        "/assets/work/fikra-nuqta/fikra-nuqta-04.webp",
+        "/assets/work/fikra-nuqta/fikra-nuqta-05.webp",
+        "/assets/work/fikra-nuqta/fikra-nuqta-06.webp",
+        "/assets/work/fikra-nuqta/fikra-nuqta-07.webp",
+        "/assets/work/fikra-nuqta/fikra-nuqta-08.webp"
+      ]
+    },
+    {
+      "id": "the-corner",
+      "title": "The Corner Salon",
+      "titleAr": "صالون ذا كورنر",
+      "role": "Visual Identity & Social Direction",
+      "roleAr": "هوية بصرية وتوجّه سوشال",
+      "category": "design",
+      "featured": false,
+      "order": 20,
+      "desc": "Defined the visual language for a new salon: palette, art direction, and how services are presented across social.",
+      "descAr": "حدّدت اللغة البصرية لصالون جديد: الألوان، التوجّه الفني، وطريقة عرض الخدمات على السوشال.",
+      "youtube": "",
+      "preview": "",
+      "cover": "/assets/work/the-corner/the-corner-01.webp",
+      "stats": [],
+      "gallery": [
+        "/assets/work/the-corner/the-corner-01.webp",
+        "/assets/work/the-corner/the-corner-02.webp",
+        "/assets/work/the-corner/the-corner-03.webp",
+        "/assets/work/the-corner/the-corner-04.webp",
+        "/assets/work/the-corner/the-corner-05.webp",
+        "/assets/work/the-corner/the-corner-06.webp",
+        "/assets/work/the-corner/the-corner-07.webp",
+        "/assets/work/the-corner/the-corner-08.webp",
+        "/assets/work/the-corner/the-corner-09.webp",
+        "/assets/work/the-corner/the-corner-10.webp"
+      ]
+    },
+    {
+      "id": "anfasak-oud",
+      "title": "Anfasak Oud",
+      "titleAr": "أنفاسك عود",
+      "role": "Product Design",
+      "roleAr": "تصميم منتج",
+      "category": "design",
+      "featured": false,
+      "order": 21,
+      "desc": "Product visuals for a Kuwaiti perfume house — placing each bottle in a world that matches its scent.",
+      "descAr": "تصاميم منتج لدار عطور كويتية — كل عبوة داخل عالم يوازي رائحتها.",
+      "youtube": "",
+      "preview": "",
+      "cover": "/assets/work/anfasak-oud/anfasak-oud-01.webp",
+      "stats": [],
+      "gallery": [
+        "/assets/work/anfasak-oud/anfasak-oud-01.webp",
+        "/assets/work/anfasak-oud/anfasak-oud-02.webp",
+        "/assets/work/anfasak-oud/anfasak-oud-03.webp",
+        "/assets/work/anfasak-oud/anfasak-oud-04.webp",
+        "/assets/work/anfasak-oud/anfasak-oud-05.webp",
+        "/assets/work/anfasak-oud/anfasak-oud-06.webp"
+      ]
+    },
+    {
+      "id": "stylomation",
+      "title": "Stylomation",
+      "titleAr": "ستايلوميشن",
+      "role": "Logo & Brand System",
+      "roleAr": "لوجو ونظام هوية",
+      "category": "design",
+      "featured": false,
+      "order": 22,
+      "desc": "Logo, identity, and a social system built to stay consistent as the brand grows.",
+      "descAr": "لوجو وهوية ونظام سوشال مبني ليضل متناسقاً مع نمو العلامة.",
+      "youtube": "",
+      "preview": "",
+      "cover": "/assets/work/stylomation/stylomation-01.webp",
+      "stats": [],
+      "gallery": [
+        "/assets/work/stylomation/stylomation-01.webp",
+        "/assets/work/stylomation/stylomation-02.webp",
+        "/assets/work/stylomation/stylomation-03.webp",
+        "/assets/work/stylomation/stylomation-04.webp",
+        "/assets/work/stylomation/stylomation-05.webp",
+        "/assets/work/stylomation/stylomation-06.webp",
+        "/assets/work/stylomation/stylomation-07.webp"
+      ]
+    },
+    {
+      "id": "the-place",
+      "title": "The Place",
+      "titleAr": "ذا بليس — المكان",
+      "role": "Identity & Motion",
+      "roleAr": "هوية وموشن",
+      "category": "design",
+      "featured": false,
+      "order": 23,
+      "desc": "Identity and a logo intro for an architect and interior designer starting out.",
+      "descAr": "هوية ومقدّمة لوجو لمهندس معماري ومصمم ديكور ببداياته.",
+      "youtube": "nuJWgPMmqG0",
+      "preview": "",
+      "cover": "/assets/work/the-place/the-place-01.webp",
+      "stats": [],
+      "gallery": [
+        "/assets/work/the-place/the-place-01.webp",
+        "/assets/work/the-place/the-place-02.webp",
+        "/assets/work/the-place/the-place-03.webp",
+        "/assets/work/the-place/the-place-04.webp",
+        "/assets/work/the-place/the-place-05.webp",
+        "/assets/work/the-place/the-place-06.webp",
+        "/assets/work/the-place/the-place-07.webp"
+      ],
+      "videos": [
+        "nuJWgPMmqG0"
+      ]
+    },
+    {
+      "id": "dream-crests",
+      "title": "Dream Crests",
+      "titleAr": "دريم كرستس",
+      "role": "Brand Identity & Content Plan",
+      "roleAr": "هوية بصرية وخطة محتوى",
+      "category": "design",
+      "featured": false,
+      "order": 24,
+      "desc": "Supervised the full visual identity for a real-estate developer: logo, social presence, ads, and a content plan for available units.",
+      "descAr": "أشرفت على الهوية البصرية كاملة لمطوّر عقاري: اللوجو، الحضور الرقمي، الإعلانات، وخطة محتوى للشقق المتوفرة.",
+      "youtube": "",
+      "preview": "",
+      "cover": "/assets/work/dream-crests/dream-crests-01.webp",
+      "stats": [],
+      "gallery": [
+        "/assets/work/dream-crests/dream-crests-01.webp",
+        "/assets/work/dream-crests/dream-crests-02.webp",
+        "/assets/work/dream-crests/dream-crests-03.webp",
+        "/assets/work/dream-crests/dream-crests-04.webp",
+        "/assets/work/dream-crests/dream-crests-05.webp"
+      ]
+    },
+    {
+      "id": "al-mofakron",
+      "title": "Al-Mofakron Aluminium",
+      "titleAr": "المفكرون للألمنيوم",
+      "role": "Motion Graphics",
+      "roleAr": "موشن جرافيك",
+      "category": "video",
+      "featured": false,
+      "order": 25,
+      "desc": "A short motion piece introducing the brand.",
+      "descAr": "مقطع موشن قصير يعرّف بالعلامة.",
+      "youtube": "b9vHzrtzllQ",
+      "preview": "",
+      "cover": "/assets/logo-white.png",
+      "stats": [],
+      "videos": [
+        "b9vHzrtzllQ"
+      ]
+    },
+    {
+      "id": "al-razi",
+      "title": "Al-Razi Library",
+      "titleAr": "مكتبة الرازي",
+      "role": "Motion Graphics",
+      "roleAr": "موشن جرافيك",
+      "category": "video",
+      "featured": false,
+      "order": 26,
+      "desc": "Product cards that flip through the catalogue, built for Instagram.",
+      "descAr": "كروت منتجات تتقلّب لتعرض الكتالوج، مبنية لإنستغرام.",
+      "youtube": "X_W7HjNdxjw",
+      "preview": "",
+      "cover": "/assets/logo-white.png",
+      "stats": [],
+      "videos": [
+        "X_W7HjNdxjw"
+      ]
+    },
+    {
+      "id": "knockout",
+      "title": "Knockout Media",
+      "titleAr": "نوك أوت ميديا",
+      "role": "Motion & Design",
+      "roleAr": "موشن وتصميم",
+      "category": "video",
+      "featured": false,
+      "order": 27,
+      "desc": "Motion graphics and content for an early-stage media startup.",
+      "descAr": "موشن جرافيك ومحتوى لشركة ميديا ناشئة.",
+      "youtube": "XcHGVmU2s0Q",
+      "preview": "",
+      "cover": "/assets/work/knockout/knockout-01.webp",
+      "stats": [],
+      "gallery": [
+        "/assets/work/knockout/knockout-01.webp",
+        "/assets/work/knockout/knockout-02.webp",
+        "/assets/work/knockout/knockout-03.webp",
+        "/assets/work/knockout/knockout-04.webp",
+        "/assets/work/knockout/knockout-05.webp",
+        "/assets/work/knockout/knockout-06.webp",
+        "/assets/work/knockout/knockout-07.webp",
+        "/assets/work/knockout/knockout-08.webp"
+      ],
+      "videos": [
+        "XcHGVmU2s0Q",
+        "TsuV4VEjuVk",
+        "1VOBWvisPgk",
+        "KoC5jMF3XII"
+      ]
     }
   ],
   "links": {
