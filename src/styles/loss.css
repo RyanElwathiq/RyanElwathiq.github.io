@@ -78,23 +78,8 @@ html[lang='ar'] .loss-field label b {
   font-family: var(--font-ar);
 }
 
-.loss-field select {
-  font: inherit;
-  font-size: 15.5px;
-  width: 100%;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 15px 18px;
-  transition: border-color 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
-}
-
-.loss-field select:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
-}
+/* ⚠️ قوائم الاختيار مش <select> عادي — منرسمها احنا عشان تطلع بنفس
+   ألوان البراند على كل جهاز. الشكل كله بملف: src/styles/select.css */
 
 /* السلايدرات */
 .loss-field input[type='range'] {

@@ -11,3 +11,6 @@ Thumbs.db
 
 # logs
 npm-debug.log*
+
+# لقطات الفحص — محلية فقط
+_check/out/

@@ -1,0 +1,169 @@
+/* ═══════════════════════════════════════════════════════════════
+   قائمة الاختيار — التصميم
+   ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗
+   ║ --sel-pad     مساحة داخل الزر                ║
+   ║ --sel-max     أقصى ارتفاع للقائمة قبل السكرول ║
+   ╚═══════════════════════════════════════════════╝
+   ═══════════════════════════════════════════════════════════════ */
+
+.sel {
+  --sel-pad: 15px 18px;
+  --sel-max: 264px;
+
+  position: relative;
+}
+
+/* ─── الزر اللي بيبيّن الاختيار الحالي ─── */
+.sel-btn {
+  font: inherit;
+  font-size: 15.5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  text-align: start;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: var(--sel-pad);
+  cursor: pointer;
+  transition: border-color 0.25s var(--ease-out), background 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out);
+}
+
+.sel-btn:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  background: var(--surface-2);
+}
+
+.sel-btn:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.sel[data-open] .sel-btn {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+.sel-val {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* السهم بيلف لما تفتح القائمة */
+.sel-arrow {
+  display: flex;
+  flex: none;
+  color: var(--muted);
+  transition: transform 0.3s var(--ease-out), color 0.25s var(--ease-out);
+}
+
+.sel-btn:hover .sel-arrow,
+.sel[data-open] .sel-arrow {
+  color: var(--accent);
+}
+
+.sel[data-open] .sel-arrow {
+  transform: rotate(180deg);
+}
+
+/* ─── القائمة ─── */
+.sel-list {
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + 8px);
+  z-index: 60;
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  max-height: var(--sel-max);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+  border-radius: 14px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+  transform-origin: top center;
+  animation: sel-in 0.22s var(--ease-out) both;
+}
+
+/* ما في مجال تحت؟ بتفتح لفوق */
+.sel[data-up] .sel-list {
+  top: auto;
+  bottom: calc(100% + 8px);
+  transform-origin: bottom center;
+}
+
+@keyframes sel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+}
+
+.sel[data-up] .sel-list {
+  animation-name: sel-in-up;
+}
+
+@keyframes sel-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.97);
+  }
+}
+
+/* ─── الخيارات ─── */
+.sel-opt {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--muted);
+  border-radius: 9px;
+  padding: 11px 14px;
+  cursor: pointer;
+  transition: color 0.18s var(--ease-out), background 0.18s var(--ease-out);
+  /* كل خيار بيدخل بعد اللي قبله بشوي */
+  animation: sel-opt-in 0.26s var(--ease-out) both;
+  animation-delay: calc(var(--i) * 22ms);
+}
+
+@keyframes sel-opt-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+.sel-opt.is-active {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+/* المختار حالياً: نقطة ليمونية على الحافة */
+.sel-opt.is-picked {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.sel-opt.is-picked::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-inline-end: 9px;
+  vertical-align: middle;
+}
+
+/* لو الزائر مطفّي الحركة من جهازه: بدون أنميشن */
+@media (prefers-reduced-motion: reduce) {
+  .sel-list,
+  .sel-opt {
+    animation: none;
+  }
+}

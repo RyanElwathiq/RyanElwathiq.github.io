@@ -16,6 +16,7 @@ import DesignsGrid from '../../components/DesignsGrid.astro';
 import Websites from '../../components/Websites.astro';
 import Skills from '../../components/Skills.astro';
 import KnotSection from '../../components/KnotSection.astro';
+import LossSection from '../../components/LossSection.astro';
 import Pricing from '../../components/Pricing.astro';
 import BudgetSection from '../../components/BudgetSection.astro';
 import LampLab from '../../components/LampLab.astro';
@@ -38,6 +39,7 @@ const marks = [
   { id: 'designs', label: 'تصميم' },
   { id: 'websites', label: 'مواقع' },
   { id: 'knot', label: 'ثلاثي الأبعاد' },
+  { id: 'loss', label: 'الخسارة' },
   { id: 'pricing', label: 'كيف بشتغل' },
   { id: 'budget', label: 'الميزانية' },
   { id: 'lab', label: 'مختبر الأفكار' },
@@ -105,6 +107,9 @@ const marks = [
     <Skills lang="ar" />
     <!-- العقدة ثلاثية الأبعاد: إثبات عملي بعد قائمة المهارات -->
     <KnotSection lang="ar" id="knot" />
+    <!-- «قديش عم تخسر بدون موقع؟» — قبل الأسعار عن قصد: الزائر بيشوف
+         حجم المشكلة الأول، وبعدها بيشوف قديش بتكلّف. الكاملة على /ar/loss/ -->
+    <LossSection lang="ar" id="loss" />
     <Pricing lang="ar" />
     <!-- لعبة الميزانية: نسخة مختصرة هون، والكاملة على /ar/budget/ -->
     <BudgetSection lang="ar" id="budget" compact />

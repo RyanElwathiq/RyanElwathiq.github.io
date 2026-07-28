@@ -193,7 +193,7 @@ html[dir='rtl'] .brief-panel[data-dir='-1'] {
 }
 
 .brief-field input,
-.brief-field select,
+.brief-field .sel-btn,
 .brief-field textarea {
   font: inherit;
   font-size: 16px;
@@ -220,11 +220,17 @@ html[dir='rtl'] .brief-panel[data-dir='-1'] {
 }
 
 .brief-field input:focus,
-.brief-field select:focus,
-.brief-field textarea:focus {
+.brief-field textarea:focus,
+.brief-field .sel-btn:focus-visible {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+/* قائمة الاختيار جوّا النموذج بتاخد نفس شكل باقي الخانات
+   (الشكل الأساسي بملف src/styles/select.css) */
+.brief-field .sel-list {
+  background: var(--field-bg);
 }
 
 /* ─── التنقّل ─── */

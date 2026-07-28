@@ -13,6 +13,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { industries, siteStates, reasons, DEFAULTS, LIMITS } from '../data/loss.js';
 import { calcLoss } from '../scripts/loss-engine.js';
+import Select from './Select.jsx';
 import '../styles/loss.css';
 
 const COPY = {
@@ -118,6 +119,10 @@ export default function LossCalc({ lang = 'ar', briefHref = '/brief/' }) {
 
   const maxShare = Math.max(...r.breakdown.map((b) => b.money), 1);
 
+  // الخيارات بلغة الزائر — منجهّزها هون عشان القائمة تاخدها جاهزة
+  const indOpts = industries.map((i) => ({ value: i.key, label: isAr ? i.ar : i.en }));
+  const siteOpts = siteStates.map((s) => ({ value: s.key, label: isAr ? s.ar : s.en }));
+
   return (
     <div className="loss">
       <div className="loss-head">
@@ -131,24 +136,12 @@ export default function LossCalc({ lang = 'ar', briefHref = '/brief/' }) {
         <div className="loss-inputs">
           <div className="loss-field">
             <label htmlFor="l-ind">{t.qIndustry}</label>
-            <select id="l-ind" value={industry} onChange={(e) => setIndustry(e.target.value)}>
-              {industries.map((i) => (
-                <option key={i.key} value={i.key}>
-                  {isAr ? i.ar : i.en}
-                </option>
-              ))}
-            </select>
+            <Select id="l-ind" value={industry} onChange={setIndustry} options={indOpts} ariaLabel={t.qIndustry} />
           </div>
 
           <div className="loss-field">
             <label htmlFor="l-site">{t.qSite}</label>
-            <select id="l-site" value={site} onChange={(e) => setSite(e.target.value)}>
-              {siteStates.map((s) => (
-                <option key={s.key} value={s.key}>
-                  {isAr ? s.ar : s.en}
-                </option>
-              ))}
-            </select>
+            <Select id="l-site" value={site} onChange={setSite} options={siteOpts} ariaLabel={t.qSite} />
           </div>
 
           <div className="loss-field">

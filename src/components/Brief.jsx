@@ -17,6 +17,7 @@
 //  ✏️ كل النصوص والخيارات بمتغيّر COPY تحت
 // ═══════════════════════════════════════════════════════════════
 import { useMemo, useState } from 'react';
+import Select from './Select.jsx';
 import '../styles/brief.css';
 
 const COPY = {
@@ -300,19 +301,23 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '' }) {
             </div>
             <div className="brief-field">
               <label htmlFor="b-budget">{t.q2budget}</label>
-              <select id="b-budget" value={budget} onChange={(e) => setBudget(e.target.value)}>
-                {t.budgets.map((b) => (
-                  <option key={b}>{b}</option>
-                ))}
-              </select>
+              <Select
+                id="b-budget"
+                value={budget}
+                onChange={setBudget}
+                options={t.budgets.map((b) => ({ value: b, label: b }))}
+                ariaLabel={t.q2budget}
+              />
             </div>
             <div className="brief-field">
               <label htmlFor="b-when">{t.q2when}</label>
-              <select id="b-when" value={when} onChange={(e) => setWhen(e.target.value)}>
-                {t.whens.map((w) => (
-                  <option key={w}>{w}</option>
-                ))}
-              </select>
+              <Select
+                id="b-when"
+                value={when}
+                onChange={setWhen}
+                options={t.whens.map((w) => ({ value: w, label: w }))}
+                ariaLabel={t.q2when}
+              />
             </div>
             <div className="brief-field is-wide">
               <label htmlFor="b-details">{t.q2details}</label>
