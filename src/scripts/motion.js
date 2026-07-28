@@ -198,17 +198,11 @@ function jumpToHash() {
 // ─────────────────────────────────────────────
 //  3) أنيميشن دخول الهيرو (مرة عند فتح الصفحة)
 // ─────────────────────────────────────────────
-function setupHeroIntro() {
-  if (reduceMotion) return;
-  const heroLines = document.querySelectorAll('[data-hero-line]');
-  const heroFades = document.querySelectorAll('[data-hero-fade]');
-  if (!heroLines.length) return;
-
-  gsap.set(heroFades, { y: 26 });
-  const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
-  intro.from(heroLines, { yPercent: 115, duration: 1.1, stagger: 0.12 });
-  intro.to(heroFades, { opacity: 1, y: 0, duration: 0.9, stagger: 0.1 }, '-=0.55');
-}
+// ⚠️ أنيميشن دخول الهيرو انتقل بالكامل للـ CSS داخل Hero.astro.
+//    ليش؟ لأنه كان هون بـ GSAP، فالنص كان يضل مخفي لحد ما ينزّل
+//    ملف GSAP (١٤٤ كيلوبايت) ويشتغل — وعلى تلفون متوسط بالأردن
+//    هاد ٣ ثواني والزائر قاعد يتفرّج على فراغ.
+//    الأنيميشن بالـ CSS بيبلّش مع أول رسمة وبدون أي جافاسكربت.
 
 // ─────────────────────────────────────────────
 //  4) عدّادات الأرقام
@@ -370,7 +364,7 @@ function setupHorizontalPan() {
 // ═══════════════════════════════════════════════════════════════
 function init() {
   setupSmoothScroll();
-  setupHeroIntro();
+
   setupCounters();
   setupWordGlow();
   setupHorizontalPan();

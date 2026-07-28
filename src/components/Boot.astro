@@ -65,22 +65,39 @@ const KNOT =
       rgba(217, 255, 63, 0.07),
       transparent 70%
     );
+    /* الشاشة مغطّية كل إشي، فما في داعي نقفل السكرول بالجافاسكربت.
+       هدول بيمنعوا الصفحة تحت من إنها تتحرك مع الإصبع. */
+    touch-action: none;
+    overscroll-behavior: contain;
+
     transition:
       opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
       visibility 0.55s;
+
+    /* ⚠️⚠️ أهم سطر بالملف ⚠️⚠️
+       على تلفون متوسط، الخيط الرئيسي بيضل مشغول ~٢ ثانية بقراءة
+       الصفحة — يعني الجافاسكربت **ما بيقدر يشتغل** حتى لو المحتوى
+       جاهز ومنرسم من ٦٠٠ جزء من الثانية. فكانت الشاشة تعلق ٤ ثواني.
+       الحل: الاختفاء بالـ CSS. أنيميشن الشفافية بينفّذه كرت الشاشة
+       مش المعالج، فبيشتغل حتى والمعالج مخنوق.
+       الجافاسكربت لسا بيقدر يخفيها **أبكر** لو كان فاضي (الأجهزة
+       السريعة) — هاي بس شبكة الأمان للأجهزة البطيئة. */
+    animation: boot-out 0.55s cubic-bezier(0.22, 1, 0.36, 1) 1.4s forwards;
   }
 
-  /* خلصت: بتذوب وبتروح */
+  @keyframes boot-out {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  /* خلصت بدري (جهاز سريع): بتذوب فوراً بدل ما تستنى الأنيميشن */
   html.boot-done #boot {
+    animation: none;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-  }
-
-  /* ما منسمح بالسكرول والشاشة مغطّاة */
-  html.boot-on,
-  html.boot-on body {
-    overflow: hidden;
   }
 
   .boot-in {
@@ -200,12 +217,12 @@ const KNOT =
     var t0 = Date.now();
     var gone = false;
 
-    root.classList.add('boot-on');
+    root.classList.add('boot-on'); // للتوافق فقط — القفل صار بالـ CSS
 
     function finish() {
       if (gone) return;
       gone = true;
-      root.classList.remove('boot-on');
+
       root.classList.add('boot-done');
       // منشيلها من الصفحة بعد ما تخلص الحركة
       setTimeout(function () {
@@ -219,8 +236,58 @@ const KNOT =
       setTimeout(finish, left > 0 ? left : 0);
     }
 
-    if (document.readyState === 'complete') done();
-    else addEventListener('load', done);
+    // ⚠️⚠️ ليش مش addEventListener('load') ؟ ⚠️⚠️
+    //  حدث load ما بيشتغل إلا لما **كل** صورة بالصفحة تخلص — وعننا
+    //  الهيرو فيه ١٢١ فريم. يعني عالموبايل كانت شاشة التحميل تضل
+    //  ٩ ثواني، والموقع جاهز وشغّال من ثانية ونص!
+    //  الصح: نخلص لما الصفحة تصير **قابلة للاستعمال**:
+    //  الـ HTML انقرأ + الخطوط جهزت + انرسم أول إطار. والفريمات
+    //  بتكمّل نزول بالخلفية وهو عم يتفرّج.
+    function whenUsable() {
+      // ⚠️⚠️ منستنى **أول شاشة** بس، مش الصفحة كلها ⚠️⚠️
+      //  الصفحة الرئيسية ١٢٩ كيلوبايت HTML و١٣ قسم. قراءتها كاملة
+      //  بتاخد ٣ ثواني على تلفون متوسط — بس الزائر أصلاً ما بيشوف
+      //  إلا أول شاشة! فمنكشف بمجرد ما يوصل أول قسم وينرسم، وباقي
+      //  الصفحة بتكمّل تنقرأ وهو عم يقرأ. الفرق: ٤ ثواني → أقل من ثانية.
+      //  ⚠️ مراقب DOM مش حلقة requestAnimationFrame — جرّبنا الحلقة
+      //     وطلعت أسوأ: بتزاحم المعالج وهو أصلاً مشغول بقراءة الصفحة،
+      //     فصار وقت التجمّد يتضاعف. المراقب بيصحى لما يوصل العنصر بس.
+      var firstScreen = new Promise(function (r) {
+        if (document.querySelector('main')) return r();
+        var mo = new MutationObserver(function () {
+          if (!document.querySelector('main')) return;
+          mo.disconnect();
+          r();
+        });
+        mo.observe(document.documentElement, { childList: true, subtree: true });
+        // احتياط: لو ما في <main> بالصفحة لأي سبب
+        document.addEventListener('DOMContentLoaded', function () {
+          mo.disconnect();
+          r();
+        });
+      });
+
+      // ⚠️ الخطوط: منستناها **بس شوي**. جرّبنا نستنى لحد ما تخلص،
+      //    فصارت الشاشة تضل ٤ ثواني على نت الموبايل — والصفحة جاهزة
+      //    من ثانية! الخط الاحتياطي بيبين فوراً وبعدها بيتبدّل لحاله،
+      //    وهاد أرحم بكثير من إنه الزائر يستنى وهو شايف شاشة سودا.
+      var fonts = document.fonts
+        ? Promise.race([
+            document.fonts.ready,
+            new Promise(function (r) {
+              setTimeout(r, 600);
+            }),
+          ])
+        : Promise.resolve();
+
+      // ⚠️ بدون requestAnimationFrame هون. جرّبناها (إطارين عشان
+      //    نتأكد إنه انرسم) وطلعت بتضيف ٣ ثواني: المعالج مشغول
+      //    بقراءة الصفحة فما بينفّذ الإطار. والصفحة أصلاً منرسمة
+      //    من ٦٠٠ جزء من الثانية، فما في داعي نستنى.
+      Promise.all([firstScreen, fonts]).then(done);
+    }
+
+    whenUsable();
 
     // لو إشي علق بالتحميل، ما منخلّي الزائر مستني
     setTimeout(finish, MAX_MS);

@@ -149,18 +149,61 @@ async function setupOne(section, priority) {
   new ResizeObserver(() => draw(current)).observe(canvas);
   document.addEventListener('visibilitychange', () => draw(current));
 
-  // باقي الفريمات بتنزل بالخلفية
-  (async () => {
-    let next = 1;
+  // ═══════════════════════════════════════════════════════════════
+  //  تنزيل الفريمات — على مراحل، ومتأخّر لو القسم بعيد
+  //
+  //  ⚠️ المشكلة اللي كانت: كل الفريمات (١٢١ للهيرو) كانت تنزل
+  //     بالترتيب ١،٢،٣… ولكل سيكوينسات الصفحة بنفس اللحظة. النتيجة
+  //     عالموبايل: ٤ ميغا تحميل، والزائر مستني.
+  //
+  //  الحل شقّين:
+  //  ١) القسم البعيد ما بيبلّش ينزّل إلا لما يقرب من الشاشة.
+  //  ٢) الترتيب صار «قفزات»: أول جولة كل فريم رابع (٠،٤،٨…) —
+  //     يعني بربع التحميل بيصير السكرول شغّال على طول المدى، وبعدها
+  //     منملّي الفراغات ومنزيد النعومة. (draw بترسم أقرب فريم جاهز،
+  //     فما بيبين أي نقص).
+  // ═══════════════════════════════════════════════════════════════
+  const preload = () => {
+    // ⚠️ عالموبايل منوقف عند القفزة ٢ — يعني نص عدد الفريمات بس.
+    //    ليش؟ الهيرو ١٢٠ فريم = ٣ ميغا، وهاد كثير على نت أردني.
+    //    ٦٠ فريم على مدى ٣ شاشات سكرول لسا ناعمة، والفريم الناقص
+    //    بينرسم مكانه أقرب فريم جاهز فما بيبين فرق تقريباً.
+    //    ✏️ بدك نعومة أعلى عالموبايل؟ شيل الشرط وخليها [4, 2, 1].
+    const strides = isMobile ? [4, 2] : [4, 2, 1];
+
+    const order = [];
+    for (const stride of strides) {
+      for (let i = stride; i < count; i += stride) {
+        if (!order.includes(i)) order.push(i);
+      }
+    }
+
+    let next = 0;
     async function worker() {
-      while (next < count) {
-        const i = next++;
+      while (next < order.length) {
+        const i = order[next++];
+        if (loaded[i]) continue;
         await load(i);
         if (i === current) draw(i);
       }
     }
-    await Promise.all(Array.from({ length: PRELOAD_CONCURRENCY }, worker));
-  })();
+    Promise.all(Array.from({ length: PRELOAD_CONCURRENCY }, worker));
+  };
+
+  // القسم قريب من الشاشة؟ نزّل هلق. بعيد؟ استنّى لما يقرب.
+  if (typeof IntersectionObserver === 'undefined') {
+    preload();
+  } else {
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        preload();
+      },
+      { rootMargin: '150% 0px' } // بيبلّش قبل شاشة ونص من وصوله
+    );
+    io.observe(section);
+  }
 
   // ─── وضع «تقليل الحركة»: صورة ثابتة بدون تثبيت ولا سكرَب ───
   if (reduceMotion) {
