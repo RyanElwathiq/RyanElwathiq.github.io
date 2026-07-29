@@ -223,3 +223,137 @@ a {
     margin-block: -10px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   إطار الهوية (.frame) — الطريقة الموحّدة لعرض أي صورة أو عنصر
+   مهمّ بصفحات المشاريع.
+
+   ليش موجود؟ صفحة LUV IT أول نسخة انبنت بألوان العميل (خلفية
+   فاتحة)، فصارت الصفحة تبيّن كأنها من موقع ثاني. القاعدة الآن:
+   **المحتوى للعميل، والإطار إلنا.** أي صورة بتنحط جوّا هذا
+   الإطار فبتصير جزء من هويتنا مهما كانت ألوانها.
+
+   شو بيعمل؟
+   • خلفية وحدود من نظامنا (surface + line) وزوايا r-card
+   • لما تقرّب الماوس (أو تضغط على الموبايل):
+       - العنصر بيكبر شوي
+       - خط ليموني رفيع بيلفّ حواليه
+       - لمعة خفيفة جداً برّا الحواف
+   • والخط الليموني بيدور حوالين الإطار (--sweep) — نفس فكرة
+     «الحز المتحرك»
+
+   ✏️ الاستخدام: <figure class="frame"> … </figure>
+      وللإطار الظاهر دايماً (زي صورة الغلاف): class="frame frame-on"
+   ⚠️ الكلاس .lit بيتحطّ بالجافاسكربت عند اللمس (شوف motion.js)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* @property بتخلّي المتصفح يقدر يحرّك الزاوية بنعومة.
+   المتصفحات القديمة بتتجاهلها والخط بيضل ثابت — وهاد مقبول. */
+@property --sweep {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.frame {
+  --frame-lift: -4px; /* قديش بيرتفع لما تقرّب عليه */
+  --frame-zoom: 1.012; /* قديش بيكبر */
+  position: relative;
+  margin: 0;
+  border-radius: var(--r-card);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  transition:
+    transform 0.55s var(--ease-out),
+    border-color 0.45s var(--ease-out),
+    box-shadow 0.55s var(--ease-out);
+}
+
+/* الخط الليموني الدوّار — طبقة مستقلة عشان ما تتضارب مع الحدود */
+.frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--sweep),
+    transparent 0 58%,
+    color-mix(in srgb, var(--accent) 85%, transparent) 76%,
+    var(--accent) 82%,
+    transparent 90% 100%
+  );
+  /* ماسك بيخلّي التدرّج يبيّن على الحدود بس مش على الصورة */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s var(--ease-out);
+}
+
+@keyframes frame-sweep {
+  to {
+    --sweep: 360deg;
+  }
+}
+
+/* الحالة النشطة: بالماوس أو باللمس أو بالكيبورد */
+@media (hover: hover) {
+  .frame:hover {
+    transform: translateY(var(--frame-lift)) scale(var(--frame-zoom));
+    border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+    box-shadow: 0 14px 44px -18px color-mix(in srgb, var(--accent) 42%, transparent);
+  }
+
+  .frame:hover::before {
+    opacity: 1;
+    animation: frame-sweep 2.8s linear infinite;
+  }
+}
+
+.frame.lit,
+.frame:focus-within {
+  transform: translateY(var(--frame-lift)) scale(var(--frame-zoom));
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+  box-shadow: 0 14px 44px -18px color-mix(in srgb, var(--accent) 42%, transparent);
+}
+
+.frame.lit::before,
+.frame:focus-within::before {
+  opacity: 1;
+  animation: frame-sweep 2.8s linear infinite;
+}
+
+/* إطار ظاهر دايماً — لصورة الغلاف: خط ليموني هادي ولمعة خفيفة جداً */
+.frame-on {
+  border-color: color-mix(in srgb, var(--accent) 26%, var(--line));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 10%, transparent),
+    0 30px 90px -50px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.frame img,
+.frame video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame,
+  .frame:hover,
+  .frame.lit {
+    transform: none;
+  }
+
+  .frame::before {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,761 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «عين البراند» — لعبة قصيرة بتشرح مبادئ الهوية بالتجربة
+//
+//  الفكرة: بكل جولة بتشوف نفس التصميم بنسختين — وحدة مضبوطة
+//  ووحدة فيها خلل واحد بس. بتختار الأقوى، وبعدها بتقرأ ليش.
+//  المبادئ الستة هي نفسها اللي اشتغلنا فيها بمشاريع زي LUV IT:
+//  التباين · التسلسل · الانضباط اللوني · المساحة · الاتساق · التركيز
+//
+//  ⚠️ مكتوبة بجافاسكربت عادي مش React — عمداً.
+//     صفحات المشاريع ما بتحمّل React أصلاً، وإضافتها لأجل لعبة
+//     صغيرة كانت بتزيد ~٤٠ كيلوبايت على كل زائر من الأردن.
+//
+//  ⚠️ النسختين بينبنوا من **نفس** المكوّن ونفس المتغيّرات —
+//     الفرق الوحيد بينهم هو المبدأ اللي عم نعلّمه. لو بنينا
+//     كل نسخة لحالها كانت اللعبة بتصير «شوف الفرق» بدل ما
+//     تعلّم قاعدة.
+//
+//  ✏️ الاستخدام: <BrandEyeSection lang={lang} />
+//     وللنسخة المختصرة بالصفحة الرئيسية: compact + href
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+  compact?: boolean;
+  href?: string;
+}
+
+const { lang, compact = false, href } = Astro.props;
+const isAr = lang === 'ar';
+
+const t = isAr
+  ? {
+      eyebrow: 'لعبة قصيرة',
+      title: 'عين البراند',
+      lede: 'ستّ جولات. بكل وحدة نفس التصميم بنسختين، والفرق بينهم مبدأ واحد. اختار الأقوى وشوف ليش.',
+      compactLede: 'ستّ جولات بتشرح ليش تصميم بيشتغل وتصميم لأ. جرّبها.',
+      play: 'ابدأ اللعب',
+      start: 'يلا نبلّش',
+      next: 'الجولة الجاية',
+      again: 'العب من جديد',
+      round: 'جولة',
+      of: 'من',
+      right: 'صح',
+      wrong: 'مش هاي',
+      brief: 'خلّينا نشتغل على علامتك',
+      scores: [
+        'عينك لسا عم تتدرّب — وهاد طبيعي، هاي القواعد بتتعلّم مش بتنولد.',
+        'عينك بتشوف نص القصة. المبادئ اللي فاتتك هي غالباً اللي بتفرّق بالنتيجة.',
+        'عينك مضبوطة. بتعرف تميّز الشغل المبني عن الشغل الحلو بس.',
+        'عين محترف. هاي بالضبط الأسئلة اللي ببدأ فيها أي هوية.',
+      ],
+      scoreLine: 'جاوبت صح على',
+    }
+  : {
+      eyebrow: 'Short game',
+      title: 'The Brand Eye',
+      lede: 'Six rounds. Each shows the same design twice, and one principle is all that separates them. Pick the stronger one and see why.',
+      compactLede: 'Six rounds on why one design works and another does not. Try it.',
+      play: 'Play',
+      start: 'Start',
+      next: 'Next round',
+      again: 'Play again',
+      round: 'Round',
+      of: 'of',
+      right: 'Right',
+      wrong: 'Not this one',
+      brief: 'Let us work on your brand',
+      scores: [
+        'Your eye is still training — and that is fine. These rules are learned, not born.',
+        'Your eye catches half the story. The ones you missed are usually what decides the result.',
+        'Your eye is calibrated. You can tell built work from merely pretty work.',
+        'A professional eye. These are exactly the questions I open every identity with.',
+      ],
+      scoreLine: 'You got',
+    };
+
+// كل جولة: المبدأ + السؤال + الشرح + الخلل اللي بنزرعه بالنسخة الضعيفة
+const rounds = isAr
+  ? [
+      {
+        k: 'contrast',
+        name: 'التباين',
+        q: 'أي وحدة بتقدر تقراها بسرعة؟',
+        why: 'التباين مش ذوق — هو وصول. النص الباهت بيبيّن «راقي» على شاشة المصمّم، وبيختفي على شاشة الزبون بالشمس. أول سؤال بأي هوية: بينقرا ولا لأ؟',
+      },
+      {
+        k: 'hierarchy',
+        name: 'التسلسل',
+        q: 'أي وحدة بتعرف من وين تبلّش تقرا؟',
+        why: 'لما كل إشي بنفس الحجم، ما في إشي مهم. التسلسل بيقول للعين: هون ابدأ، وبعدين هون. بدونه الزائر بيقرر يمشي بدل ما يقرر يقرأ.',
+      },
+      {
+        k: 'colour',
+        name: 'الانضباط اللوني',
+        q: 'أي وحدة بتبيّن علامة وحدة؟',
+        why: 'كل لون بتضيفه بيقسم الانتباه. لون هوية واحد + رماديات = العين بتعرف وين تروح. أربع ألوان = ما في لون بيميّزك.',
+      },
+      {
+        k: 'space',
+        name: 'المساحة',
+        q: 'أي وحدة بتحسّها أغلى؟',
+        why: 'المساحة الفاضية مش ضياع — هي اللي بتقول «هذا العنصر يستاهل مساحته». التزاحم بيوحي بالرخص حتى لو المحتوى نفسه.',
+      },
+      {
+        k: 'consistency',
+        name: 'الاتساق',
+        q: 'أي وحدة بتبيّن نظام مش مجموعة قرارات؟',
+        why: 'زوايا مختلفة بنفس البطاقة معناها إنه ما في نظام. الاتساق هو الفرق بين هوية وبين تصميم انعمل مرة.',
+      },
+      {
+        k: 'focus',
+        name: 'التركيز',
+        q: 'أي وحدة بتعرف شو المطلوب منك؟',
+        why: 'ثلاث أزرار = ولا زر. كل تصميم إله فعل واحد أساسي، والباقي بيصير روابط هادية. هاد الفرق بين صفحة بتنشر وصفحة بتبيع.',
+      },
+    ]
+  : [
+      {
+        k: 'contrast',
+        name: 'Contrast',
+        q: 'Which one can you read instantly?',
+        why: 'Contrast is not taste, it is access. Faded text looks refined on a designer’s monitor and disappears on a customer’s phone in daylight. First question of any identity: can it be read?',
+      },
+      {
+        k: 'hierarchy',
+        name: 'Hierarchy',
+        q: 'Which one tells you where to start?',
+        why: 'When everything is the same size, nothing is important. Hierarchy tells the eye: begin here, then here. Without it the visitor decides to leave instead of deciding to read.',
+      },
+      {
+        k: 'colour',
+        name: 'Colour discipline',
+        q: 'Which one reads as a single brand?',
+        why: 'Every colour you add splits attention. One brand colour plus neutrals means the eye knows where to go. Four colours means no colour is yours.',
+      },
+      {
+        k: 'space',
+        name: 'Space',
+        q: 'Which one feels more expensive?',
+        why: 'Whitespace is not waste — it is what says this element deserves its room. Crowding reads as cheap even when the content is identical.',
+      },
+      {
+        k: 'consistency',
+        name: 'Consistency',
+        q: 'Which one looks like a system, not a set of decisions?',
+        why: 'Different corner radii inside one card means there is no system. Consistency is the difference between an identity and a design that happened once.',
+      },
+      {
+        k: 'focus',
+        name: 'Focus',
+        q: 'Which one tells you what to do?',
+        why: 'Three buttons is no button. Every design has one primary action, and the rest become quiet links. That is the difference between a page that posts and a page that sells.',
+      },
+    ];
+
+const mock = isAr
+  ? { eyebrow: 'عناية بالبشرة', title: 'روتين التفتيح', body: 'فيتامين سي · نياسيناميد · بانثينول', cta: 'اطلبيها الآن', alt1: 'شوف المكوّنات', alt2: 'تواصل معنا' }
+  : { eyebrow: 'Skincare', title: 'Brighten routine', body: 'Vitamin C · Niacinamide · Panthenol', cta: 'Shop now', alt1: 'See ingredients', alt2: 'Talk to us' };
+---
+
+<section class={`bx ${compact ? 'bx-compact' : ''}`} id="brand-eye">
+  <div class="container">
+    <div class="bx-head" data-reveal>
+      <p class="bx-eyebrow">{t.eyebrow}</p>
+      <h2>{t.title}</h2>
+      <p class="bx-lede">{compact ? t.compactLede : t.lede}</p>
+      {compact && href && <a class="btn btn-primary bx-go" href={href}>{t.play}</a>}
+    </div>
+
+    {
+      !compact && (
+        <div class="bx-board frame frame-on" data-reveal data-brand-eye>
+          <!-- شريط التقدّم -->
+          <div class="bx-bar">
+            <div class="bx-dots" data-bx-dots />
+            <span class="bx-count" data-bx-count />
+          </div>
+
+          <p class="bx-q" data-bx-q />
+
+          <div class="bx-options" data-bx-options>
+            {[0, 1].map((i) => (
+              <button type="button" class="bx-opt" data-bx-opt={i}>
+                <span class="bx-mark" data-bx-mark aria-hidden="true" />
+                <div class="bx-mock" data-bx-mock>
+                  <span class="m-eyebrow">{mock.eyebrow}</span>
+                  <span class="m-title">{mock.title}</span>
+                  <span class="m-body">{mock.body}</span>
+                  <span class="m-ctas">
+                    <span class="m-cta">{mock.cta}</span>
+                    <span class="m-cta m-cta-2">{mock.alt1}</span>
+                    <span class="m-cta m-cta-3">{mock.alt2}</span>
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <!-- الشرح بعد الاختيار -->
+          <div class="bx-why" data-bx-why hidden>
+            <p class="bx-verdict" data-bx-verdict />
+            <p class="bx-name" data-bx-name />
+            <p class="bx-text" data-bx-text />
+            <button type="button" class="btn btn-primary bx-next" data-bx-next />
+          </div>
+
+          <!-- النتيجة -->
+          <div class="bx-end" data-bx-end hidden>
+            <p class="bx-score" data-bx-score />
+            <p class="bx-verdict-final" data-bx-final />
+            <div class="bx-end-actions">
+              <button type="button" class="btn btn-ghost" data-bx-again>{t.again}</button>
+              <a class="btn btn-primary" href={`${isAr ? '/ar' : ''}/brief/`}>{t.brief}</a>
+            </div>
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+{
+  !compact && (
+    <script
+      is:inline
+      define:vars={{
+        rounds,
+        labels: {
+          round: t.round,
+          of: t.of,
+          right: t.right,
+          wrong: t.wrong,
+          next: t.next,
+          scores: t.scores,
+          scoreLine: t.scoreLine,
+          locale: isAr ? 'ar-EG' : 'en-US',
+        },
+      }}
+    >
+      // ═══════════════════════════════════════════════════════════
+      //  محرّك اللعبة
+      //  ⚠️ is:inline + define:vars: عشان النصوص العربية تجي من
+      //     الأستـرو مباشرة بدل ما نكرّرها بالجافاسكربت
+      //  ⚠️ بينشغّل مرة كل ما توصل الصفحة (astro:page-load) لأن
+      //     الموقع بينتقل بين الصفحات بدون إعادة تحميل
+      // ═══════════════════════════════════════════════════════════
+      (function () {
+        function boot() {
+          var board = document.querySelector('[data-brand-eye]');
+          if (!board || board.dataset.ready === '1') return;
+          board.dataset.ready = '1';
+
+          var opts = board.querySelectorAll('[data-bx-opt]');
+          var mocks = board.querySelectorAll('[data-bx-mock]');
+          var marks = board.querySelectorAll('[data-bx-mark]');
+          var qEl = board.querySelector('[data-bx-q]');
+          var dots = board.querySelector('[data-bx-dots]');
+          var count = board.querySelector('[data-bx-count]');
+          var why = board.querySelector('[data-bx-why]');
+          var verdict = board.querySelector('[data-bx-verdict]');
+          var nameEl = board.querySelector('[data-bx-name]');
+          var text = board.querySelector('[data-bx-text]');
+          var nextBtn = board.querySelector('[data-bx-next]');
+          var end = board.querySelector('[data-bx-end]');
+          var scoreEl = board.querySelector('[data-bx-score]');
+          var finalEl = board.querySelector('[data-bx-final]');
+          var againBtn = board.querySelector('[data-bx-again]');
+          var optWrap = board.querySelector('[data-bx-options]');
+
+          var i = 0;
+          var score = 0;
+          var goodSide = 0;
+          var locked = false;
+
+          // نقاط التقدّم
+          dots.innerHTML = '';
+          for (var d = 0; d < rounds.length; d++) {
+            var s = document.createElement('span');
+            dots.appendChild(s);
+          }
+          var dotEls = dots.children;
+
+          function render() {
+            var r = rounds[i];
+            locked = false;
+            // الجهة الصح بتتغيّر كل جولة — وإلا بتصير اللعبة حفظ مكان
+            goodSide = Math.random() < 0.5 ? 0 : 1;
+
+            qEl.textContent = r.q;
+            count.textContent =
+              labels.round +
+              ' ' +
+              (i + 1).toLocaleString(labels.locale) +
+              ' ' +
+              labels.of +
+              ' ' +
+              rounds.length.toLocaleString(labels.locale);
+            for (var d = 0; d < dotEls.length; d++) {
+              dotEls[d].className = d < i ? 'done' : d === i ? 'now' : '';
+            }
+
+            for (var s = 0; s < 2; s++) {
+              // النسخة المضبوطة ما إلها خلل، والثانية إلها خلل واحد بس
+              mocks[s].className = 'bx-mock' + (s === goodSide ? '' : ' flaw-' + r.k);
+              marks[s].textContent = '';
+              marks[s].className = 'bx-mark';
+              opts[s].disabled = false;
+              opts[s].className = 'bx-opt';
+            }
+            why.hidden = true;
+            end.hidden = true;
+            optWrap.hidden = false;
+            qEl.hidden = false;
+          }
+
+          function choose(side) {
+            if (locked) return;
+            locked = true;
+            var ok = side === goodSide;
+            if (ok) score++;
+
+            for (var s = 0; s < 2; s++) {
+              opts[s].disabled = true;
+              var isGood = s === goodSide;
+              opts[s].className = 'bx-opt ' + (isGood ? 'is-good' : 'is-bad');
+              marks[s].textContent = isGood ? '✓' : '✕';
+              marks[s].className = 'bx-mark ' + (isGood ? 'good' : 'bad');
+            }
+
+            var r = rounds[i];
+            verdict.textContent = ok ? labels.right : labels.wrong;
+            verdict.className = 'bx-verdict ' + (ok ? 'good' : 'bad');
+            nameEl.textContent = r.name;
+            text.textContent = r.why;
+            nextBtn.textContent = labels.next;
+            why.hidden = false;
+          }
+
+          function next() {
+            i++;
+            if (i >= rounds.length) return finish();
+            render();
+          }
+
+          function finish() {
+            optWrap.hidden = true;
+            qEl.hidden = true;
+            why.hidden = true;
+            end.hidden = false;
+            for (var d = 0; d < dotEls.length; d++) dotEls[d].className = 'done';
+            count.textContent = '';
+            // ⚠️ الأرقام بالعربي لازم تكون عربية زي باقي الموقع
+          var n = function (v) {
+            return v.toLocaleString(labels.locale);
+          };
+          scoreEl.textContent = labels.scoreLine + ' ' + n(score) + '/' + n(rounds.length);
+            var band = score <= 1 ? 0 : score <= 3 ? 1 : score <= 4 ? 2 : 3;
+            finalEl.textContent = labels.scores[band];
+          }
+
+          for (var s = 0; s < 2; s++) {
+            (function (n) {
+              opts[n].addEventListener('click', function () {
+                choose(n);
+              });
+            })(s);
+          }
+          nextBtn.addEventListener('click', next);
+          againBtn.addEventListener('click', function () {
+            i = 0;
+            score = 0;
+            render();
+          });
+
+          render();
+        }
+
+        boot();
+        document.addEventListener('astro:page-load', boot);
+      })();
+    </script>
+  )
+}
+
+<style>
+  /* ═══════════════ 🎛️ لوحة التحكم ═══════════════ */
+  .bx {
+    --mock-pad: 26px; /* المسافة الداخلية بالنسخة المضبوطة */
+    --mock-r: 12px; /* الزوايا بالنسخة المضبوطة */
+    padding-block: var(--section-gap);
+  }
+
+  .bx-compact {
+    padding-block: clamp(56px, 8vh, 96px);
+  }
+
+  .bx-eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .bx h2 {
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  html[lang='ar'] .bx h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .bx-lede {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 16.5px;
+    line-height: 1.8;
+    max-width: 56ch;
+  }
+
+  .bx-head {
+    margin-bottom: clamp(26px, 4vh, 40px);
+  }
+
+  .bx-go {
+    margin-top: 22px;
+  }
+
+  /* ─── اللوح ─── */
+  .bx-board {
+    padding: clamp(20px, 3vw, 38px);
+    /* ⚠️ الإطار بيقصّ المحتوى (overflow: hidden) — هون بدنا
+       المحتوى يتنفّس فمنرجّعه */
+    overflow: visible;
+  }
+
+  .bx-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .bx-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .bx-dots span {
+    width: 26px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--line);
+    transition: background-color 0.4s var(--ease-out);
+  }
+
+  .bx-dots span.done {
+    background: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  .bx-dots span.now {
+    background: var(--accent);
+  }
+
+  .bx-count {
+    font-family: var(--font-en);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .bx-q {
+    font-size: clamp(18px, 2.2vw, 25px);
+    font-weight: 700;
+    margin-bottom: clamp(18px, 2.6vh, 26px);
+  }
+
+  html[lang='ar'] .bx-q {
+    font-weight: 800;
+  }
+
+  .bx-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(12px, 2vw, 22px);
+  }
+
+  .bx-opt {
+    position: relative;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: var(--bg);
+    text-align: start;
+    overflow: hidden;
+    transition:
+      border-color 0.35s var(--ease-out),
+      transform 0.35s var(--ease-out);
+  }
+
+  .bx-opt:not(:disabled):hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+  }
+
+  .bx-opt.is-good {
+    border-color: var(--accent);
+  }
+
+  .bx-opt.is-bad {
+    border-color: color-mix(in srgb, #ff6b6b 45%, var(--line));
+    opacity: 0.62;
+  }
+
+  .bx-mark {
+    position: absolute;
+    top: 10px;
+    inset-inline-end: 10px;
+    z-index: 2;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--r-pill);
+    font-size: 13px;
+    font-weight: 700;
+    font-family: var(--font-en);
+  }
+
+  .bx-mark.good {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .bx-mark.bad {
+    background: #ff6b6b;
+    color: #17181b;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     النموذج المصغّر
+     ⚠️ النسختين نفس الكود بالضبط. الفرق الوحيد كلاس flaw-*
+        بيغيّر متغيّر واحد — وهاد هو المبدأ اللي عم نعلّمه.
+     ═══════════════════════════════════════════════════════ */
+  .bx-mock {
+    --m-body-op: 0.78;
+    --m-title: 21px;
+    --m-eyebrow-c: var(--accent);
+    --m-body-c: var(--muted);
+    --m-pad: var(--mock-pad);
+    --m-r: var(--mock-r);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: var(--m-pad);
+    background: var(--surface);
+    transition: all 0.45s var(--ease-out);
+  }
+
+  .m-eyebrow {
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--m-eyebrow-c);
+    border-radius: var(--m-r);
+  }
+
+  html[lang='ar'] .m-eyebrow {
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .m-title {
+    font-size: var(--m-title);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  .m-body {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--m-body-c);
+    opacity: var(--m-body-op);
+  }
+
+  .m-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .m-cta {
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: var(--m-r);
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  /* الأزرار الإضافية مخفية إلا بجولة التركيز */
+  .m-cta-2,
+  .m-cta-3 {
+    display: none;
+  }
+
+  /* ─── الخلل المزروع بكل جولة (واحد بس بكل مرة) ─── */
+  .flaw-contrast {
+    --m-body-op: 0.2;
+  }
+
+  .flaw-contrast .m-eyebrow {
+    color: color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+
+  .flaw-hierarchy {
+    --m-title: 13px;
+  }
+
+  .flaw-hierarchy .m-title {
+    font-weight: 500;
+  }
+
+  .flaw-colour {
+    --m-eyebrow-c: #ff8fd0;
+    --m-body-c: #7ad6ff;
+  }
+
+  .flaw-colour .m-title {
+    color: #ffd166;
+  }
+
+  .flaw-colour .m-cta {
+    background: #b57bff;
+    color: #fff;
+  }
+
+  .flaw-space {
+    --m-pad: 8px;
+    gap: 3px;
+  }
+
+  .flaw-consistency .m-cta {
+    border-radius: 999px;
+  }
+
+  .flaw-consistency .m-eyebrow {
+    border-radius: 0;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    padding: 3px 8px;
+  }
+
+  .flaw-consistency .m-title {
+    border-inline-start: 3px solid var(--accent);
+    padding-inline-start: 8px;
+    border-radius: 2px;
+  }
+
+  .flaw-focus .m-cta-2,
+  .flaw-focus .m-cta-3 {
+    display: inline-block;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+
+  /* ─── الشرح ─── */
+  .bx-why {
+    margin-top: clamp(18px, 2.6vh, 26px);
+    padding-top: clamp(18px, 2.6vh, 26px);
+    border-top: 1px solid var(--line);
+    animation: bx-in 0.5s var(--ease-out) both;
+  }
+
+  @keyframes bx-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  .bx-verdict {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .bx-verdict.good {
+    color: var(--accent);
+  }
+
+  .bx-verdict.bad {
+    color: #ff8f8f;
+  }
+
+  .bx-name {
+    font-size: clamp(19px, 2.2vw, 26px);
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  html[lang='ar'] .bx-name {
+    font-weight: 800;
+  }
+
+  .bx-text {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.85;
+    max-width: 62ch;
+  }
+
+  .bx-next {
+    margin-top: 20px;
+  }
+
+  /* ─── النتيجة ─── */
+  .bx-end {
+    animation: bx-in 0.5s var(--ease-out) both;
+    padding-block: clamp(14px, 2vh, 24px);
+  }
+
+  .bx-score {
+    font-family: var(--font-en);
+    font-size: clamp(30px, 4.4vw, 54px);
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+
+  .bx-verdict-final {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 16.5px;
+    line-height: 1.8;
+    max-width: 56ch;
+  }
+
+  .bx-end-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  @media (max-width: 620px) {
+    .bx-options {
+      grid-template-columns: 1fr;
+    }
+
+    .bx {
+      --mock-pad: 20px;
+    }
+  }
+</style>

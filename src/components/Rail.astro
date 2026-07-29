@@ -1,0 +1,206 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  شريط أفقي (كاروسيل) — قابل لإعادة الاستخدام بأي صفحة مشروع
+//
+//  ⚠️⚠️ ليش انبنى من جديد؟ النسخة القديمة كان فيها ثلاث أعطال:
+//   ١) عجلة الماوس فوق الشريط كانت **بتجمّد الصفحة** — ما بتنزل
+//      ولا بتطلع. السبب data-lenis-prevent (شوف الشرح بـ rails.js)
+//   ٢) حركة الإصبعين على الماوس باد ما كانت تشتغل
+//   ٣) التصميم بيوحي إنه بينسحب بالماوس — وما كان بينسحب
+//  الآن: العجلة العمودية بتمرّر الصفحة، والأفقية بتمرّر الشريط،
+//  والسحب شغّال مع اندفاع، وفي أزرار للي بيفضّل يضغط.
+//
+//  ✏️ الاستخدام:
+//     <Rail lang={lang} heading="..." note="..." hint="..."
+//           prev="..." next="..." tall>
+//        <figure class="frame">…</figure>
+//     </Rail>
+//     tall = شريط طولي (ستوريز ٩:١٦) بدل العريض
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+  heading: string;
+  note?: string;
+  hint?: string;
+  prev: string;
+  next: string;
+  tall?: boolean;
+}
+
+const { heading, note, hint, prev, next, tall = false } = Astro.props;
+---
+
+<section class={`rail-sec ${tall ? 'tall' : ''}`} data-rail-wrap>
+  <div class="container head">
+    <div data-reveal>
+      <h2>{heading}</h2>
+      {note && <p>{note}</p>}
+    </div>
+
+    <div class="tools" data-reveal>
+      {hint && <span class="hint">{hint}</span>}
+      <div class="btns">
+        <button type="button" class="nav-btn" data-rail-prev aria-label={prev}>
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M15 5l-7 7 7 7" />
+          </svg>
+        </button>
+        <button type="button" class="nav-btn" data-rail-next aria-label={next}>
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⚠️ ما في data-lenis-prevent هون — وجودها كان بيجمّد الصفحة -->
+  <div class="rail" data-rail>
+    <slot />
+  </div>
+</section>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .rail-sec {
+    --rail-h: clamp(230px, 32vh, 380px); /* ارتفاع اللوحات العريضة */
+    --rail-gap: clamp(12px, 1.6vw, 22px);
+    --pad: clamp(20px, 4vw, 48px);
+    padding-block: clamp(56px, 8vh, 104px);
+  }
+
+  .rail-sec.tall {
+    --rail-h: clamp(300px, 46vh, 520px); /* ارتفاع الستوريز */
+  }
+
+  .head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: clamp(22px, 3.5vh, 36px);
+  }
+
+  h2 {
+    font-size: clamp(26px, 3.4vw, 44px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  html[lang='ar'] h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .head p {
+    margin-top: 12px;
+    font-size: 16px;
+    line-height: 1.8;
+    max-width: 58ch;
+    color: var(--muted);
+  }
+
+  .tools {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+
+  .hint {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .btns {
+    display: flex;
+    gap: 8px;
+  }
+
+  .nav-btn {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    background: transparent;
+    color: var(--text);
+    transition:
+      border-color 0.35s var(--ease-out),
+      color 0.35s var(--ease-out),
+      opacity 0.35s var(--ease-out);
+  }
+
+  .nav-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* الزر بيبهت لما توصل للطرف (الكلاسات بتتحطّ من rails.js) */
+  [data-rail-wrap].at-start [data-rail-prev],
+  [data-rail-wrap].at-end [data-rail-next] {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* ما في مسافة سحب أصلاً؟ منخفّي الأزرار والتلميح كلياً */
+  [data-rail-wrap].no-pan .tools {
+    display: none;
+  }
+
+  /* اتجاه الأسهم بينعكس بالعربي */
+  html[dir='rtl'] .nav-btn svg {
+    transform: scaleX(-1);
+  }
+
+  /* ─── الشريط ─── */
+  .rail {
+    display: flex;
+    gap: var(--rail-gap);
+    overflow-x: auto;
+    padding-inline: var(--pad);
+    padding-block: 4px 16px;
+    /* ⚠️ ما في scroll-snap عمداً: اللوحات بعروض مختلفة (وحدة ٤٨٦
+       وحدة ٨٥٠)، فالالتقاط كان بيشدّ الشريط لورا بعد كل سحبة
+       وبيلغي الاندفاع. مع عناصر غير متساوية، السحب الحر أنضف. */
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--accent) 45%, transparent) transparent;
+    /* ⚠️ pan-y بيخلّي اللمس العمودي يمرّر الصفحة والأفقي يمرّر
+       الشريط — بدونها الإصبع بيعلق بالشريط عالموبايل */
+    touch-action: pan-y;
+    cursor: grab;
+  }
+
+  .rail.is-dragging {
+    cursor: grabbing;
+  }
+
+  /* أثناء السحب ما بدنا الصور تنسحب كصور */
+  .rail :global(img) {
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  /* ⚠️ هون بيت القصيد: الارتفاع محدّد والعرض تلقائي، فولا صورة
+     بتنحشر بصندوق ولا بيطلع فراغ حواليها */
+  .rail :global(.frame) {
+    flex: 0 0 auto;
+  }
+
+  .rail :global(.frame img) {
+    height: var(--rail-h);
+    width: auto;
+    max-width: none;
+  }
+
+  @media (max-width: 700px) {
+    .head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+  }
+</style>

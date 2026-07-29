@@ -66,6 +66,19 @@ const t = isAr
     <!-- تعتيم خفيف فوق الفيديو عشان النص يضل مقروء دايماً -->
     <div class="scrim" aria-hidden="true"></div>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         حبيبات فوق الفيديو (grain)
+         ⚠️ ليش؟ ريّان لاحظ إنه الفيديو عالموبايل بيبيّن «مبكسل».
+            صح — فريمات الموبايل مضغوطة لـ ٢٥ كيلوبايت للفريم عشان
+            الصفحة تفتح بسرعة على نت الأردن، والضغط بيعمل مربّعات
+            بالمساحات الملساء (السما، الحيط).
+            بدل ما نضاعف حجم التحميل، منحطّ طبقة حبيبات خفيفة:
+            بتكسر حواف المربّعات فالعين بتقراها «فيلم» مش «ضغط».
+         ⚠️ الحبيبات SVG جوّا الصفحة — بدون أي ملف إضافي ينحمّل.
+         ✏️ قوّتها من --grain (٠ = مطفي)
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="grain" aria-hidden="true"></div>
+
     <!-- ═══ النص الافتتاحي (بيذوب مع بداية السكرول) ═══ -->
     <div class="container overlay intro" data-seq-intro>
       <div class="panel">
@@ -197,6 +210,36 @@ const t = isAr
   /* بالعربي النص عاليمين، فالتعتيم لازم يبدأ من اليمين */
   html[dir='rtl'] .scrim {
     --text-side: left;
+  }
+
+  /* ─── طبقة الحبيبات ─── */
+  .grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--grain, 0.05);
+    mix-blend-mode: overlay;
+    /* ضجيج SVG: خفيف جداً بالحجم وبيتولّد بالمتصفح */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
+  }
+
+  /* الموبايل هو اللي فيه المشكلة فعلاً — فالحبيبات أقوى هناك */
+  @media (max-width: 767px) {
+    .grain {
+      --grain: 0.11;
+    }
+  }
+
+  /* الفريمات مش موجودة (الحالة الاحتياطية)؟ ما في إشي نغطّيه */
+  .hero:global(.seq-static) .grain {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grain {
+      --grain: 0.04;
+    }
   }
 
   /* ═══ العقدة الاحتياطية (لما ما يكون في فريمات) ═══ */

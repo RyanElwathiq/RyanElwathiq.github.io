@@ -19,6 +19,7 @@ import 'lenis/dist/lenis.css';
 import { initSequences } from './sequence.js';
 import { initLightbox } from './lightbox.js';
 import { initSignalBar, refreshSignalBar } from './signal.js';
+import { initRails } from './rails.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -359,6 +360,39 @@ function setupHorizontalPan() {
   if (mm && typeof mm.kill === 'function') cleanups.push(() => mm.kill());
 }
 
+// ─────────────────────────────────────────────
+//  إضاءة الإطار على الموبايل
+//  الماوس عنده :hover، والإصبع لأ. فلما يضغط الزائر على صورة
+//  بأي إطار (.frame) منحطّ كلاس .lit فتشتغل نفس الحركة: الخط
+//  الليموني واللمعة والتكبير الخفيف.
+//  ⚠️ إطار واحد مضيّ بنفس الوقت — عشان الصفحة ما تصير شجرة نور
+// ─────────────────────────────────────────────
+function setupTouchLight() {
+  if (!window.matchMedia('(hover: none)').matches) return () => {};
+
+  let lit = null;
+  const clear = () => {
+    if (lit) lit.classList.remove('lit');
+    lit = null;
+  };
+
+  const onDown = (e) => {
+    const f = e.target.closest('.frame');
+    if (f === lit) return;
+    clear();
+    if (f) {
+      f.classList.add('lit');
+      lit = f;
+    }
+  };
+
+  document.addEventListener('pointerdown', onDown, { passive: true });
+  return () => {
+    document.removeEventListener('pointerdown', onDown);
+    clear();
+  };
+}
+
 // ═══════════════════════════════════════════════════════════════
 //  التشغيل
 // ═══════════════════════════════════════════════════════════════
@@ -370,6 +404,8 @@ function init() {
   setupHorizontalPan();
   initLightbox();
   cleanups.push(initSignalBar());
+  cleanups.push(initRails());
+  cleanups.push(setupTouchLight());
 
   // الفيديوهات بتحمّل بشكل غير متزامن، فبعد ما تخلص كلها منرتّب
   // نقاط التثبيت ومنعيد حساب مواقعها. بدون هالخطوة كان قسم الفيديو
