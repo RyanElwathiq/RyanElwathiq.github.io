@@ -45,6 +45,14 @@ const shown = projects.slice(0, 2);
                 ))}
               </ul>
             )}
+
+            {/* ⚠️ كانت البطاقة كلها بدون أي رابط، فالزائر يضغط على
+                قصة د. سمير وما بيصير إشي — ولازم يروح لصفحة القسم
+                ويدوّر عليها. الرابط بغطّي البطاقة كلها (شوف .go::after)
+                فالضغط بأي مكان بيفتح القصة. */}
+            <a class="go" href={`${isAr ? '/ar' : ''}/work/${p.id}/`}>
+              {isAr ? 'اقرأ القصة ←' : 'Read the story →'}
+            </a>
           </div>
         </article>
       ))
@@ -99,10 +107,47 @@ const shown = projects.slice(0, 2);
     grid-template-columns: 1.1fr 1fr;
     gap: clamp(28px, 4vw, 64px);
     align-items: center;
+    /* ضروري: رابط البطاقة بيتمدّد بالنسبة لهذا العنصر */
+    position: relative;
   }
 
   .row + .row {
     margin-top: var(--row-gap);
+  }
+
+  /* ═══════════════ رابط «اقرأ القصة» ═══════════════
+     ⚠️ كانت البطاقة بدون أي رابط، فالزائر يضغط على قصة د. سمير
+        وما بيصير إشي — ولازم يروح لصفحة القسم ويدوّر عليها.
+     ⚠️ الـ ::after بيغطّي البطاقة كلها (بما فيها الصورة) عشان
+        الضغط بأي مكان يفتح القصة، مش بس على الكلمة الصغيرة. */
+  .go {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 22px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    transition: opacity 0.3s var(--ease-out);
+  }
+
+  .go::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: var(--r-card);
+  }
+
+  .row:hover .go {
+    opacity: 0.82;
+  }
+
+  .row:hover .media img {
+    transform: scale(1.03);
+  }
+
+  .media img {
+    transition: transform 0.6s var(--ease-out);
   }
 
   /* الصف الثاني معكوس: النص أول والصورة بعده */

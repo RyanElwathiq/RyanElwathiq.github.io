@@ -424,11 +424,40 @@ const switchLabel = isAr ? 'EN' : 'عربي';
     const openBtn = document.querySelector('[data-menu-open]');
     const closeBtn = document.querySelector('[data-menu-close]');
 
+    // ═══════════════════════════════════════════════════════════
+    //  ⚠️⚠️ أهم إشي بهذا الملف ⚠️⚠️
+    //  فتح القائمة بيقفل سكرول الصفحة بـ overflow: hidden. بس هاد
+    //  بيشيل شريط التمرير → بيتغيّر عرض الشاشة → بتتغيّر أطوال كل
+    //  الأقسام. ونظام الحركة (GSAP) بيكون حافظ مواقع الأقسام
+    //  المثبّتة بالقديم — فلما تسكّر القائمة بتلاقي الأقسام فوق
+    //  بعض، وقسم المواقع بيطلع بمكان غلط تماماً.
+    //  وهاد بالضبط اللي كان بيصير ومش راضي ينحل إلا بريفرش.
+    //
+    //  الحل: نحفظ مكان السكرول، ولما نسكّر منرجّعه ومنجبر النظام
+    //  يعيد حساب كل المواقع من جديد.
+    // ═══════════════════════════════════════════════════════════
+    let lockedY = 0;
+    const w = window as any;
+
     const setOpen = (open: boolean) => {
       sheet.hidden = !open;
       openBtn?.setAttribute('aria-expanded', String(open));
-      // منمنع سكرول الصفحة وراء القائمة
-      document.documentElement.style.overflow = open ? 'hidden' : '';
+      const root = document.documentElement;
+
+      if (open) {
+        lockedY = window.scrollY;
+        w.__lenis?.stop();
+        root.style.overflow = 'hidden';
+        return;
+      }
+
+      root.style.overflow = '';
+      w.__lenis?.start();
+      // منرجّع الصفحة لمكانها بالضبط قبل ما تنفتح القائمة
+      if (w.__lenis) w.__lenis.scrollTo(lockedY, { immediate: true, force: true });
+      else window.scrollTo(0, lockedY);
+      // ومنعيد حساب مواقع الأقسام المثبّتة
+      w.__gsap?.core?.globals?.().ScrollTrigger?.refresh();
     };
 
     openBtn?.addEventListener('click', () => setOpen(true));
@@ -448,7 +477,13 @@ const switchLabel = isAr ? 'EN' : 'عربي';
         if (!s || s.hidden) return;
         s.hidden = true;
         document.querySelector('[data-menu-open]')?.setAttribute('aria-expanded', 'false');
-        document.documentElement.style.overflow = '';
+        // ⚠️ نفس معالجة زر الإغلاق: نرجّع السكرول ونعيد حساب المواقع
+        //    (شوف الشرح المطوّل عند setOpen)
+        const root = document.documentElement;
+        const win = window as any;
+        root.style.overflow = '';
+        win.__lenis?.start();
+        win.__gsap?.core?.globals?.().ScrollTrigger?.refresh();
       });
     }
   }
