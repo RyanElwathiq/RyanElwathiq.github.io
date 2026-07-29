@@ -6,6 +6,7 @@
 //  ملاحظة: ما بنحط أسعار بالأرقام عمداً. السعر بينبنى على حجم الشغل،
 //  وذكر رقم ثابت بيقلّل قيمتك ويخوّف عملاء الشغل الكبير.
 // ═══════════════════════════════════════════════════════════════
+import Particles from './Particles.astro';
 interface Props {
   lang: 'en' | 'ar';
 }
@@ -120,6 +121,19 @@ const t = isAr
   <div class="container">
     <!-- ═══ الترويسة ═══ -->
     <div class="head">
+      <!-- ═══════════════════════════════════════════════════════
+           اللوجو بنقاط بالمساحة الفاضية جنب العنوان
+           ⚠️ هادي عن قصد: نفس محرّك الاسم المتفتّت، بس صغير
+              ومطفي ومحطوط بمكان ما بيزاحم النص. بيتفتّت وبيتجمّع
+              مع سكرولك وبيهرب من الماوس — بدون ما يسحب الانتباه
+              من العنوان.
+           ⚠️ مخفي عالموبايل: هناك ما في مساحة فاضية أصلاً،
+              وحطّه بيصير حشو ووزن زايد على نت الأردن.
+           ═══════════════════════════════════════════════════════ -->
+      <div class="head-dust" aria-hidden="true">
+        <Particles src="/assets/logo-white.png" size="small" />
+      </div>
+
       <p class="kicker" data-reveal>{t.kicker}</p>
       <h2 data-reveal>{t.heading}</h2>
       <p class="sub" data-reveal>{t.sub}</p>
@@ -186,8 +200,33 @@ const t = isAr
   }
 
   .head {
+    position: relative;
     max-width: 60ch;
     margin-bottom: clamp(40px, 6vh, 64px);
+  }
+
+  /* ─── اللوجو المتفتّت بالمساحة الفاضية على الطرف ───
+     مطفي وصغير عن قصد: بيعبّي الفراغ بدون ما يزاحم العنوان */
+  .head-dust {
+    position: absolute;
+    top: 50%;
+    inset-inline-start: calc(100% + clamp(20px, 3vw, 60px));
+    translate: 0 -50%;
+    width: min(300px, 22vw);
+    opacity: 0.45;
+    transition: opacity 0.5s var(--ease-out);
+  }
+
+  .head-dust:hover {
+    opacity: 0.8;
+  }
+
+  /* ⚠️ تحت ١١٠٠ بكسل ما في مساحة فاضية جنب العنوان — منخفّيه
+     كلياً بدل ما يزاحم النص أو ينط تحته */
+  @media (max-width: 1100px) {
+    .head-dust {
+      display: none;
+    }
   }
 
   .kicker {

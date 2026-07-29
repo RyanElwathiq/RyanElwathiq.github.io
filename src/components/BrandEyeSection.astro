@@ -40,6 +40,9 @@ const t = isAr
       lede: 'عشر جولات، وكل مرة أسئلة غير. بكل جولة نفس التصميم بنسختين والفرق بينهم مبدأ واحد. عندك ١٥ ثانية تختار الأقوى.',
       compactLede:
         'عشر جولات بتشرح ليش تصميم بيشتغل وتصميم لأ — والأسئلة بتتغيّر كل مرة. عندك ١٥ ثانية لكل وحدة.',
+      start: 'ابدأ اللعب',
+      coverTitle: 'قدّيش عينك بتشوف؟',
+      rules: ['١٠ جولات — نسختين من نفس التصميم', 'الفرق بينهم مبدأ واحد بس', '١٥ ثانية لكل جولة'],
       next: 'الجولة الجاية',
       again: 'العب من جديد',
       round: 'جولة',
@@ -65,6 +68,9 @@ const t = isAr
       lede: 'Ten rounds, different every time. Each shows the same design twice and one principle is all that separates them. You get 15 seconds to pick the stronger one.',
       compactLede:
         'Ten rounds on why one design works and another does not — new questions every time. Fifteen seconds each.',
+      start: 'Start',
+      coverTitle: 'How good is your eye?',
+      rules: ['10 rounds — the same design twice', 'One principle separates them', '15 seconds each'],
       next: 'Next round',
       again: 'Play again',
       round: 'Round',
@@ -109,6 +115,22 @@ const mock = isAr
     </div>
 
     <div class="bx-board frame frame-on" data-reveal data-brand-eye>
+      <!-- ═══════════════════════════════════════════════════════
+           شاشة البداية
+           ⚠️ اللعبة ما بتشتغل لحالها أول ما توصلها بالسكرول.
+              أول نسخة كانت تبلّش بمجرد ما تظهر، فالزائر بيوصل
+              وقد يكون الوقت خلص وهو ما لعب أصلاً — وكمان الضغطة
+              نفسها هي اللي بتخلّيه داخل باللعبة.
+           ═══════════════════════════════════════════════════════ -->
+      <div class="bx-cover" data-bx-cover>
+        <p class="bx-cover-kicker">{t.eyebrow}</p>
+        <p class="bx-cover-title">{t.coverTitle}</p>
+        <ul class="bx-rules">
+          {t.rules.map((r) => <li>{r}</li>)}
+        </ul>
+        <button type="button" class="btn btn-primary bx-start" data-bx-start>{t.start}</button>
+      </div>
+
       <!-- شريط التقدّم + المؤقّت -->
       <div class="bx-bar">
         <div class="bx-dots" data-bx-dots></div>
@@ -308,6 +330,9 @@ const mock = isAr
       var finalEl = board.querySelector('[data-bx-final]');
       var againBtn = board.querySelector('[data-bx-again]');
       var optWrap = board.querySelector('[data-bx-options]');
+      var cover = board.querySelector('[data-bx-cover]');
+      var startBtn = board.querySelector('[data-bx-start]');
+      var bar = board.querySelector('.bx-bar');
 
       var rounds = [];
       var i = 0;
@@ -434,6 +459,8 @@ const mock = isAr
 
       async function start() {
         stopTimer();
+        cover.hidden = true;
+        bar.hidden = false;
         rounds = await loadRounds(perGame);
         i = 0;
         score = 0;
@@ -454,18 +481,19 @@ const mock = isAr
       nextBtn.addEventListener('click', next);
       againBtn.addEventListener('click', start);
 
-      // ⚠️ المؤقّت ما بيبلّش إلا لما اللعبة تبيّن بالشاشة — وإلا
-      //    الزائر بيوصلها والوقت خالص وهو ما شافها أصلاً
-      var io = new IntersectionObserver(
-        function (e) {
-          if (e[0].isIntersecting) {
-            io.disconnect();
-            start();
-          }
-        },
-        { threshold: 0.35 }
-      );
-      io.observe(board);
+      // ⚠️ ما في تشغيل تلقائي: اللعبة بتستنّى الزائر يضغط «ابدأ».
+      //    الضغطة نفسها هي اللي بتخلّيه داخل باللعبة، وبتضمن إنه
+      //    ما بيوصل والوقت خالص وهو ما لعب.
+      startBtn.addEventListener('click', start);
+
+      // الحالة الأولى: الغطا ظاهر وكل إشي ثاني مخفي
+      cover.hidden = false;
+      bar.hidden = true;
+      timer.hidden = true;
+      qEl.hidden = true;
+      optWrap.hidden = true;
+      why.hidden = true;
+      end.hidden = true;
 
       // بنوقّف العدّاد لو الزائر غادر الصفحة أو طلع لتبويب ثاني
       document.addEventListener('astro:before-swap', stopTimer, { once: true });
@@ -524,6 +552,78 @@ const mock = isAr
     padding: clamp(20px, 3vw, 38px);
     /* ⚠️ الإطار بيقصّ المحتوى — هون بدنا المحتوى يتنفّس */
     overflow: visible;
+  }
+
+  /* ⚠️⚠️ ضروري: [hidden] بتحط display:none بس أي قاعدة فيها
+     display (grid/flex) بتغلبها بالأولوية. بدون هالسطر كانت
+     بطاقتين اللعبة تضل ظاهرة تحت شاشة البداية. */
+  .bx-options[hidden],
+  .bx-bar[hidden],
+  .bx-cover[hidden],
+  .bx-why[hidden],
+  .bx-end[hidden],
+  .bx-timer[hidden] {
+    display: none;
+  }
+
+  /* ─── شاشة البداية ─── */
+  .bx-cover {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding-block: clamp(14px, 3vh, 34px);
+  }
+
+  .bx-cover-kicker {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+  }
+
+  .bx-cover-title {
+    font-size: clamp(24px, 3.4vw, 40px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  html[lang='ar'] .bx-cover-title {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .bx-rules {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .bx-rules li {
+    position: relative;
+    padding-inline-start: 18px;
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .bx-rules li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .bx-start {
+    margin-top: 6px;
   }
 
   .bx-bar {

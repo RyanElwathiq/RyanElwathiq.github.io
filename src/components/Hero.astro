@@ -217,17 +217,40 @@ const t = isAr
     position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: var(--grain, 0.05);
+    /* ⚠️ رُفعت من ٠.٠٥ لـ ٠.٠٩ بعد ما ريّان دقّق عالديسكتوب ولسا
+       شايف التبكسل. الحبيبات بتكسر حواف مربّعات الضغط — كل ما
+       زادت شوي، قلّ إحساس «الفيديو المضغوط». فوق ٠.١٢ بتبيّن
+       الحبيبات نفسها فما منزيد أكثر. */
+    opacity: var(--grain, 0.09);
     mix-blend-mode: overlay;
     /* ضجيج SVG: خفيف جداً بالحجم وبيتولّد بالمتصفح */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
     background-size: 160px 160px;
   }
 
-  /* الموبايل هو اللي فيه المشكلة فعلاً — فالحبيبات أقوى هناك */
+  /* ═══════════════════════════════════════════════════════════
+     طبقة ثانية: تدرّج ناعم جداً فوق المساحات الملساء
+     ⚠️ التبكسل بيبيّن أكثر بالمناطق المتدرّجة (السما، الحيط) —
+        لأن الضغط بيحوّل التدرّج الناعم لمربّعات. هالطبقة بتضيف
+        تدرّج حقيقي فوقها فبتذوّب حدود المربّعات.
+        شفافة تقريباً (٤٪) — بتحسّها ولا بتشوفها.
+     ═══════════════════════════════════════════════════════════ */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      120% 90% at 50% 40%,
+      rgba(242, 243, 238, 0.05) 0%,
+      transparent 62%
+    );
+    mix-blend-mode: soft-light;
+  }
+
+  /* الموبايل فريماته أضغط، فالحبيبات أقوى هناك */
   @media (max-width: 767px) {
     .grain {
-      --grain: 0.11;
+      --grain: 0.13;
     }
   }
 
