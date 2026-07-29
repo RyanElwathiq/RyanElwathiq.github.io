@@ -24,16 +24,23 @@ interface Props {
   src?: string;
   /** small = فاصل هادي بين الأقسام · '' = الحجم الكامل */
   size?: 'small' | '';
+  /**
+   * قديش الشكل بيعبّي مربّعه. ١ = بالضبط.
+   * أكبر من ١ = بيكبر أكثر من المساحة وبينقصّ من الأطراف — وهاد
+   * مقصود لما بدنا اللوجو ياخد الفراغ كله بدل ما يقعد بنصّه صغير.
+   */
+  scale?: number;
   label?: string;
 }
 
-const { text = 'RAYAN ELWATHIQ', src, size = '', label = '' } = Astro.props;
+const { text = 'RAYAN ELWATHIQ', src, size = '', scale = 0.92, label = '' } = Astro.props;
 ---
 
 <section
   class={`dust ${size === 'small' ? 'dust-sm' : ''}`}
   data-dust
   data-dust-src={src}
+  data-dust-scale={scale}
   aria-label={label || (src ? 'Rayan Elwathiq' : text)}
 >
   <canvas data-dust-canvas aria-hidden="true"></canvas>
@@ -114,9 +121,11 @@ const { text = 'RAYAN ELWATHIQ', src, size = '', label = '' } = Astro.props;
 
         if (art) {
           // ─── نمط اللوجو: منرسم الصورة بالنص ونقرأ شفافيتها ───
-          // ⚠️ ٠.٩٢ مش ٠.٧: أول نسخة كانت تترك هوامش كبيرة فاضية
-          //    فاللوجو يبيّن صغير جوّا مساحة كبيرة. هلق بيعبّي مربّعه.
-          const s = Math.min((W * 0.92) / art.naturalWidth, (H * 0.94) / art.naturalHeight);
+          // ⚠️ نسبة التعبئة بتجي من data-dust-scale.
+          //    أكبر من ١ = الشكل بيكبر أكثر من المساحة وأطرافه
+          //    بتنقصّ — مقصود لما بدنا اللوجو ياخد الفراغ كله.
+          const fill = parseFloat((root as HTMLElement).dataset.dustScale || '0.92') || 0.92;
+          const s = Math.min((W * fill) / art.naturalWidth, (H * fill) / art.naturalHeight);
           const w = art.naturalWidth * s;
           const h = art.naturalHeight * s;
           o.drawImage(art, (W - w) / 2, (H - h) / 2, w, h);

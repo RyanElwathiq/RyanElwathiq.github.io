@@ -141,7 +141,7 @@ const t = isAr
       </div>
 
       <div class="head-dust" aria-hidden="true">
-        <Particles src="/assets/logo-white.png" />
+        <Particles src="/assets/logo-white.png" scale={1.45} />
       </div>
     </div>
 
@@ -231,6 +231,14 @@ const t = isAr
 
   .head-dust:hover {
     opacity: 0.85;
+  }
+
+  /* ⚠️ اللوجو بدّه ياخد الفراغ كله: منكبّر مساحته هون، والشكل
+     نفسه بينرسم أكبر منها (scale={1.45}) فأطرافه بتنقصّ.
+     ريّان طلبها هيك بالضبط — «عادي لو تاكل نصه». */
+  .head-dust :global(.dust) {
+    height: clamp(300px, 30vw, 520px);
+    margin-block: 0;
   }
 
   /* ⚠️ تحت ١١٠٠ بكسل ما في مساحة فاضية — منرجّع عمود واحد
