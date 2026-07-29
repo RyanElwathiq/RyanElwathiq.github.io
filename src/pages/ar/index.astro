@@ -36,19 +36,19 @@ import { forHome, hasMore } from '../../utils/work.js';
 
 // ✏️ علامات شريط الإشارة فوق — كل علامة بتنقل لقسمها
 const marks = [
-  { id: 'about', label: 'من أنا' },
-  { id: 'work', label: 'فيديو' },
-  { id: 'growth', label: 'نمو' },
-  { id: 'designs', label: 'تصميم' },
-  { id: 'websites', label: 'مواقع' },
-  { id: 'knot', label: 'ثلاثي الأبعاد' },
   { id: 'loss', label: 'الخسارة' },
-  { id: 'pricing', label: 'كيف بشتغل' },
+  { id: 'brand-eye', label: 'عين البراند' },
+  { id: 'about', label: 'من أنا' },
+  { id: 'knot', label: 'ثلاثي الأبعاد' },
   { id: 'budget', label: 'الميزانية' },
   { id: 'lab', label: 'مختبر الأفكار' },
+  { id: 'growth', label: 'نمو' },
+  { id: 'work', label: 'فيديو' },
+  { id: 'designs', label: 'تصميم' },
+  { id: 'websites', label: 'مواقع' },
   { id: 'lab-work', label: 'التجارب' },
-  { id: 'brand-eye', label: 'عين البراند' },
   { id: 'signals', label: 'إشارات' },
+  { id: 'pricing', label: 'كيف بشتغل' },
   { id: 'faq', label: 'أسئلة' },
   { id: 'brief', label: 'ابدأ' },
   { id: 'contact', label: 'تواصل' },
@@ -66,8 +66,36 @@ const marks = [
   <main id="top">
     <Hero lang="ar" />
     <Stats lang="ar" />
-    <About lang="ar" />
 
+    <!-- ══════════════ ١) المشكلة ══════════════
+         الزائر لازم يعرف إنه عنده مشكلة قبل ما نعرض عليه حل.
+         «قدّيش عم تخسر» بتحوّل الغياب لرقم، و«عين البراند»
+         بتخلّيه يجرّب بعينه ليش تصميم بينجح وتصميم لأ. -->
+    <LossSection lang="ar" id="loss" />
+    <BrandEyeSection lang="ar" compact href="/ar/work/luvit/#brand-eye" />
+
+    <!-- ══════════════ ٢) كيف بفكّر ══════════════
+         مين أنا، وشو بعرف، وكيف بفكّر بالميزانية وبالأفكار.
+         هون بينبني السبب اللي بيخلّي الشغل الجاي مقنع. -->
+    <About lang="ar" />
+    <Skills lang="ar" />
+    <KnotSection lang="ar" id="knot" />
+    <!-- لعبة الميزانية: نسخة مختصرة هون، والكاملة على /ar/budget/ -->
+    <BudgetSection lang="ar" id="budget" compact />
+    <LampLab lang="ar" id="lab" />
+
+    <!-- ══════════════ ٣) الإثبات ══════════════
+         قصص النمو أول — لأنها الوحيدة اللي فيها أرقام.
+         وبعدها الشغل كله، وبالآخر التجارب اللي بتبيّن المسار. -->
+    <CaseRows
+      lang="ar"
+      projects={forHome('marketing')}
+      heading="قصص نمو"
+      allHref="/ar/marketing/"
+      allLabel="كل شغل التسويق"
+      id="growth"
+      showAll={hasMore('marketing', 2)}
+    />
     <!-- الفيديوهات: سحب أفقي مع السكرول عالديسكتوب -->
     <WorkStrip
       lang="ar"
@@ -79,17 +107,6 @@ const marks = [
       pan={true}
       showAll={hasMore('video')}
     />
-
-    <CaseRows
-      lang="ar"
-      projects={forHome('marketing')}
-      heading="قصص نمو"
-      allHref="/ar/marketing/"
-      allLabel="كل شغل التسويق"
-      id="growth"
-      showAll={hasMore('marketing', 2)}
-    />
-
     <DesignsGrid
       lang="ar"
       projects={forHome('design')}
@@ -99,7 +116,6 @@ const marks = [
       id="designs"
       showAll={hasMore('design')}
     />
-
     <Websites
       lang="ar"
       projects={forHome('website')}
@@ -108,25 +124,17 @@ const marks = [
       allLabel="كل المواقع"
       showAll={hasMore('website')}
     />
-
-    <Skills lang="ar" />
-    <!-- العقدة ثلاثية الأبعاد: إثبات عملي بعد قائمة المهارات -->
-    <KnotSection lang="ar" id="knot" />
-    <!-- «قديش عم تخسر بدون موقع؟» — قبل الأسعار عن قصد: الزائر بيشوف
-         حجم المشكلة الأول، وبعدها بيشوف قديش بتكلّف. الكاملة على /ar/loss/ -->
-    <LossSection lang="ar" id="loss" />
-    <Pricing lang="ar" />
-    <!-- لعبة الميزانية: نسخة مختصرة هون، والكاملة على /ar/budget/ -->
-    <BudgetSection lang="ar" id="budget" compact />
-    <LampLab lang="ar" id="lab" />
-    <!-- «عين البراند»: لمحة بس — اللعبة الكاملة بصفحة LUV IT -->
-    <!-- التجارب: البدايات والمختبر — قبل اللعبة عن قصد،
-         لأن اللي بيقرأ عن المسافة بيصير جاهز يجرّب عينه -->
+    <!-- التجارب: البدايات والمختبر — آخر الإثبات، لأنها بتقول
+         «شوف المسافة» بعد ما شاف النتيجة -->
     <Lab lang="ar" id="lab-work" />
-    <BrandEyeSection lang="ar" compact href="/ar/work/luvit/#brand-eye" />
     <Signals lang="ar" id="signals" />
     <Education lang="ar" />
-    <!-- ⚠️ قاعدة ثابتة: الأسئلة الشائعة دايماً آخر قسم قبل التواصل -->
+
+    <!-- ══════════════ ٤) القرار ══════════════
+         بعد ما شاف المشكلة والتفكير والإثبات: كيف بشتغل،
+         وشو أسئلته، وكيف يبدأ.
+         ⚠️ قاعدة ثابتة: الأسئلة الشائعة دايماً قبل التواصل. -->
+    <Pricing lang="ar" />
     <Faq lang="ar" id="faq" />
     <!-- نموذج الطلب: نفس نموذج صفحة /ar/brief/ بالضبط -->
     <BriefSection lang="ar" id="brief" />
