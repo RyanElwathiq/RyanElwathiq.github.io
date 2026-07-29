@@ -285,8 +285,45 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
     line-height: 1;
     padding: 4px 7px;
     border-radius: 5px;
-    pointer-events: none;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+    /* ⚠️⚠️ الشارة صارت مقبض سحب ⚠️⚠️
+       زي شريط تمرير المتصفح: تضغط عليها وتسحب فالصفحة بتمشي معك.
+       كانت pointer-events: none فما كان ينفع تمسكها أصلاً.
+       touch-action: none ضرورية — بدونها الإصبع بيمرّر الصفحة
+       عمودياً بدل ما يسحب الشارة أفقياً. */
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    /* ⚠️ الأب (.marks) عليه pointer-events: none عشان ما يحجب
+       الجديلة — فلازم نرجّعها للشارة صراحةً، وإلا ما بتنمسك */
+    pointer-events: auto;
+    transition:
+      scale 0.25s var(--ease-out),
+      box-shadow 0.25s var(--ease-out);
+  }
+
+  /* منطقة مسك أكبر من الشارة نفسها — الشارة ٢٤ بكسل بس،
+     وهاي بتوسّعها لـ ٤٤ بدون ما يتغيّر شكلها ولا بكسل */
+  .pct::after {
+    content: '';
+    position: absolute;
+    inset: -14px -12px;
+  }
+
+  .pct:hover {
+    scale: 1.08;
+  }
+
+  .pct.is-dragging {
+    cursor: grabbing;
+    scale: 1.16;
+    box-shadow: 0 3px 16px color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  /* أثناء السحب: ما بدنا النص ينحدد ولا المؤشّر يتغيّر بالصفحة */
+  :global(html.signal-dragging) {
+    cursor: grabbing;
+    user-select: none;
   }
 
   html[dir='rtl'] .pct {

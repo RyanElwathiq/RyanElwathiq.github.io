@@ -23,6 +23,8 @@ export function initSignalBar() {
   const knot = bar.querySelector('[data-signal-knot]');
   const marks = [...bar.querySelectorAll('[data-mark]')];
   const clock = bar.querySelector('[data-signal-clock]');
+  // المسار: منقيس عليه مكان السحب
+  const track = bar.querySelector('[data-signal-marks]') || bar.querySelector('[data-signal-track]');
 
   const isAr = document.documentElement.lang === 'ar';
   const cleanups = [];
@@ -122,6 +124,12 @@ export function initSignalBar() {
   const MARK_GAP = 10; // أقل مسافة مسموحة بين اسمين (بكسل)
   const BADGE_GAP = 6; // هامش حول شارة النسبة قبل ما تخفي الاسم
 
+  // حالة تهدئة الرجفة أثناء القفزات السريعة (شوف الشرح بـ update)
+  let lastP = 0;
+  let hushed = false;
+  let settleBadge = 0;
+  cleanups.push(() => clearTimeout(settleBadge));
+
   const placeMarks = () => {
     const max = document.documentElement.scrollHeight - window.innerHeight;
     if (max <= 0) return;
@@ -187,22 +195,56 @@ export function initSignalBar() {
       else m.removeAttribute('data-passed');
     });
 
-    // ⚠️ شارة النسبة بتمرق فوق أسماء الأقسام وهي ماشية.
-    //    فبنخفي الاسم اللي هي واقفة فوقه، وبنرجّعه أول ما تبتعد.
-    if (pct) {
-      const b = pct.getBoundingClientRect();
-      marks.forEach((m) => {
-        const name = m.querySelector('.name');
-        if (!name || m.hasAttribute('data-crowded')) {
-          m.removeAttribute('data-under-badge');
-          return;
-        }
-        const r = name.getBoundingClientRect();
-        const hit = b.left < r.right + BADGE_GAP && b.right > r.left - BADGE_GAP;
-        if (hit) m.setAttribute('data-under-badge', '');
-        else m.removeAttribute('data-under-badge');
-      });
+    // ⚠️⚠️ ليش التحقّق من التغيّر الكبير؟ ⚠️⚠️
+    //  شارة النسبة بتمرق فوق أسماء الأقسام وهي ماشية، ومنخفي
+    //  الاسم اللي هي واقفة فوقه. بس لما الزائر يضغط على قسم بعيد،
+    //  الشارة بتطير من ٢٪ لـ ٨٠٪ بلحظة — فبتمرق فوق **كل**
+    //  الأسماء وحدة وحدة، وكل وحدة بتختفي وبترجع بسرعة.
+    //  النتيجة اللي وصفها ريّان: «كأنه الكود بينكتب وبينمسح
+    //  وبيرجع ينكتب بسرعة».
+    //  الحل: أثناء الحركة السريعة منوقّف الفحص ومنرجّع كل الأسماء،
+    //  ولما تهدا الحركة منحسب مرة وحدة بس.
+    const fast = Math.abs(p - lastP) > 0.012;
+    lastP = p;
+
+    if (!pct) return;
+
+    if (fast) {
+      if (!hushed) {
+        hushed = true;
+        marks.forEach((m) => m.removeAttribute('data-under-badge'));
+      }
+      clearTimeout(settleBadge);
+      settleBadge = setTimeout(() => {
+        hushed = false;
+        syncBadge();
+      }, 140);
+      return;
     }
+    if (!hushed) syncBadge();
+  };
+
+  // بتحسب أي اسم مغطّى بالشارة — بتنادى لما تهدا الحركة بس
+  const syncBadge = () => {
+    if (!pct) return;
+    const b = pct.getBoundingClientRect();
+    marks.forEach((m) => {
+      const name = m.querySelector('.name');
+      if (!name || m.hasAttribute('data-crowded')) {
+        m.removeAttribute('data-under-badge');
+        return;
+      }
+      const r = name.getBoundingClientRect();
+      const hit = b.left < r.right + BADGE_GAP && b.right > r.left - BADGE_GAP;
+      // ⚠️ منكتب بس لما الحالة تتغيّر فعلاً.
+      //    الكتابة بنفس القيمة مع كل حركة سكرول بتعتبر تغيير عند
+      //    المتصفح، فبيعيد حساب التنسيق بلا داعي — وهاد جزء من
+      //    الرجفة اللي لاحظها ريّان.
+      const had = m.hasAttribute('data-under-badge');
+      if (hit === had) return;
+      if (hit) m.setAttribute('data-under-badge', '');
+      else m.removeAttribute('data-under-badge');
+    });
   };
 
   // ⚠️ منربط التحديث بمصدرين:
@@ -217,6 +259,75 @@ export function initSignalBar() {
   if (lenis && typeof lenis.on === 'function') {
     lenis.on('scroll', update);
     cleanups.push(() => lenis.off && lenis.off('scroll', update));
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  //  ٣ب) سحب شارة النسبة = تمرير الموقع
+  //
+  //  زي شريط التمرير تبع المتصفح بالضبط: بتضغط على المربّع اللي
+  //  فيه النسبة، وبتضل ضاغط وتسحب يمين أو شمال، والصفحة بتمشي
+  //  معك مباشرة. ولما تفلت بتوقف.
+  //
+  //  ⚠️ الحركة فورية بدون نعومة عن قصد: السحب لازم يحسّ إنه
+  //     ملزوق بإصبعك. لو مرّرناه على السكرول الناعم بيتأخّر عنك
+  //     وبتحسّه معلّق.
+  //  ⚠️ بالعربي الشريط معكوس (RTL) فالحساب بينعكس معه.
+  // ═══════════════════════════════════════════════════════════
+  if (pct && track) {
+    let dragging = false;
+
+    const applyFromX = (clientX) => {
+      const r = track.getBoundingClientRect();
+      if (r.width <= 0) return;
+      let p = (clientX - r.left) / r.width;
+      if (document.documentElement.dir === 'rtl') p = 1 - p;
+      p = Math.min(1, Math.max(0, p));
+
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const y = p * max;
+      const lenisNow = window.__lenis;
+      if (lenisNow) lenisNow.scrollTo(y, { immediate: true, force: true });
+      else window.scrollTo(0, y);
+      update();
+    };
+
+    const onDown = (e) => {
+      dragging = true;
+      pct.setPointerCapture?.(e.pointerId);
+      pct.classList.add('is-dragging');
+      document.documentElement.classList.add('signal-dragging');
+      applyFromX(e.clientX);
+      e.preventDefault();
+    };
+
+    const onMove = (e) => {
+      if (!dragging) return;
+      applyFromX(e.clientX);
+      e.preventDefault();
+    };
+
+    const onUp = (e) => {
+      if (!dragging) return;
+      dragging = false;
+      pct.releasePointerCapture?.(e.pointerId);
+      pct.classList.remove('is-dragging');
+      document.documentElement.classList.remove('signal-dragging');
+      // بعد ما يفلت منرجّع فحص الأسماء مرة وحدة
+      hushed = false;
+      syncBadge();
+    };
+
+    pct.addEventListener('pointerdown', onDown);
+    pct.addEventListener('pointermove', onMove);
+    pct.addEventListener('pointerup', onUp);
+    pct.addEventListener('pointercancel', onUp);
+    cleanups.push(() => {
+      pct.removeEventListener('pointerdown', onDown);
+      pct.removeEventListener('pointermove', onMove);
+      pct.removeEventListener('pointerup', onUp);
+      pct.removeEventListener('pointercancel', onUp);
+      document.documentElement.classList.remove('signal-dragging');
+    });
   }
 
   // ─────────────────────────────────────────────
