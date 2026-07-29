@@ -1,0 +1,931 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  صفحة LUV IT — مصمّمة خصيصاً، مش القالب العام
+//
+//  ليش صفحة خاصة؟ لأن أصول هذا المشروع مختلفة عن باقي المشاريع:
+//  فيه منتجات مفرّغة على خلفية شفافة، ولوحات عريضة جداً، وثلاثيات
+//  انستغرام مقصوصة عشان تنزل جنب بعض. لو حطّيناهم بشبكة عادية
+//  بتضيع نص قيمتهم.
+//
+//  ⚠️⚠️ قاعدة الصفحة كلها: ولا صورة بتنحشر بصندوق ⚠️⚠️
+//  كل صورة بتنعرض بنسبتها الأصلية (width/height من luvit.json).
+//  ريّان لاحظ بصفحة المراجعة إنه الصور العريضة بيبيّن حواليها
+//  مساحات سودا — هداك كان صندوق العرض المربّع مش الصور نفسها
+//  (فحصنا الـ ١١٧ صورة بـ _check/barscan.mjs وطلعوا كلهم نظاف).
+//  بس الملاحظة صح بالمبدأ: أي شبكة موحّدة بتعمل نفس الإشي.
+//  فالحل هون: اللوحات العريضة إلها شريط أفقي بارتفاع ثابت وعرض
+//  حر، والطولية إلها شريط ٩:١٦، والمربّعة إلها الشبكة. لكل شكل
+//  مكانه.
+//
+//  ✏️ بدك تضيف أو تشيل صور؟ ما تعدّل هذا الملف —
+//     عدّل التصنيف بـ _check/luvitdist.mjs وشغّله، وهو بيكتب
+//     src/data/luvit.json وهاي الصفحة بتقرأ منه لحالها.
+// ═══════════════════════════════════════════════════════════════
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Lightbox from '../components/Lightbox.astro';
+import assets from '../data/luvit.json';
+
+interface Props {
+  project: any;
+  lang: 'en' | 'ar';
+}
+
+const { project: p, lang } = Astro.props;
+const isAr = lang === 'ar';
+
+const title = isAr ? p.titleAr : p.title;
+const role = isAr ? p.roleAr : p.role;
+const desc = isAr ? p.descAr : p.desc;
+const story = (isAr ? p.storyAr : p.story) || {};
+
+const a = assets as Record<string, { file: string; id: string; w: number; h: number }[]>;
+
+// كل النصوص باللغتين بمكان واحد — أسهل بالتعديل من تفريقها بالصفحة
+const t = isAr
+  ? {
+      home: 'الرئيسية',
+      back: 'التسويق',
+      meta: ['٢٠٢٦', 'دخول السوق الأردني', 'علامة تركية'],
+      identity: 'العلامة',
+      identityNote:
+        'علامة جاهزة جاية من تركيا — شغلي كان أخلّيها تحكي عربي بدون ما تفقد شكلها. نفس اللوجو، نفس السماوي، بس على كل مقاس ولكل منصة، ومكتوبة بصوت السوق اللي داخلين عليه.',
+      shelf: 'ثمن منتجات، رفّ واحد',
+      shelfNote:
+        'كل عبوة انفرغت من خلفيتها عشان تنحطّ بأي تصميم بدون ما نرجع للمصوّر. هاد اللي خلّى إنتاج التصاميم أسرع ٤٠٪.',
+      boards: 'نعلّم الروتين، مش نعلن المنتج',
+      boardsNote:
+        'اللوحات هاي هي جوهر الاستراتيجية: مين إحنا، شو الفجوة بالسوق، وكيف تختار روتينك. الزائر بيطلع فاهم بشرته، والمنتج بيجي نتيجة طبيعية للفهم.',
+      boardsHint: 'اسحب →',
+      feed: 'مبني للشبكة',
+      feedNote:
+        'كل بوست مقصوص من صورة وحدة أكبر. لما تنزل الثلاثية على الصفحة بتقرأها العين كلوحة وحدة متواصلة — مش ثلاث بوستات جنب بعض.',
+      feedBefore: 'قبل التقصيص',
+      stories: 'الستوريز',
+      storiesNote: 'أطقم ستوري كاملة بنفس اللغة — إعلان، شرح مكوّن، وسؤال بيفتح محادثة.',
+      posts: 'البوستات',
+      highlights: 'أغلفة الهايلايت',
+      influencers: 'الإنفلونسرز',
+      influencersNote: 'انعرضوا بتصميم بيدمجهم مع العلامة، مش صور منفردة مرمية بالصفحة.',
+      shoot: 'الجلسة اللي ما نزّلناها',
+      shootNote:
+        'جلسة تصوير كاملة إجت مع العلامة — وما استخدمناها بالأردن، لأنها بتحكي لجمهور ثاني. حطّيتها هون لأنها بتوضّح الفرق: نفس المنتج، سوقين مختلفين، وقرار تسويقي بينهم.',
+      lab: 'قبل ما تستقرّ الهوية',
+      labNote:
+        'تجارب أولى وأغلفة ما انعتمدت. ما بخبّيها — هي اللي بتوضّح إنه النتيجة النهائية كانت اختيار، مش أول شي طلع.',
+      chLabel: 'التحدي',
+      apLabel: 'المقاربة',
+      reLabel: 'النتيجة',
+      pieces: 'قطعة',
+    }
+  : {
+      home: 'Home',
+      back: 'Marketing',
+      meta: ['2026', 'Jordan market entry', 'Turkish label'],
+      identity: 'The mark',
+      identityNote:
+        'A finished brand arriving from Turkey — my job was to make it speak Arabic without losing its face. Same logo, same cyan, but working at every size, on every platform, in the voice of the market it was entering.',
+      shelf: 'Eight products, one shelf',
+      shelfNote:
+        'Every bottle was cut out from its background so it could drop into any design without going back to the photographer. That is where the 40% faster turnaround came from.',
+      boards: 'Teach the routine, do not announce the product',
+      boardsNote:
+        'These boards are the strategy itself: who we are, what the gap in the market is, and how to choose your routine. The visitor leaves understanding their skin — the product becomes the natural conclusion.',
+      boardsHint: 'Drag →',
+      feed: 'Built for the grid',
+      feedNote:
+        'Each post is sliced out of one larger image. When the set lands on the profile the eye reads it as a single continuous artwork — not three posts sitting next to each other.',
+      feedBefore: 'Before slicing',
+      stories: 'Stories',
+      storiesNote: 'Full story sets in one language — an announcement, an ingredient explainer, and a question that opens a conversation.',
+      posts: 'The posts',
+      highlights: 'Highlight covers',
+      influencers: 'Influencers',
+      influencersNote: 'Presented inside a design that folds them into the brand, rather than dropped on the page as loose photos.',
+      shoot: 'The shoot we held back',
+      shootNote:
+        'A full photoshoot came with the brand — and we never ran it in Jordan, because it speaks to a different audience. It sits here because it shows the difference: same product, two markets, and a marketing decision in between.',
+      lab: 'Before the identity settled',
+      labNote:
+        'Early experiments and covers that were never approved. I am not hiding them — they are what proves the final result was a choice, not the first thing that came out.',
+      chLabel: 'Challenge',
+      apLabel: 'Approach',
+      reLabel: 'Result',
+      pieces: 'pieces',
+    };
+
+// عدد القطع = كل أصول LUV IT المصنّفة (بينحسب لحاله من luvit.json)
+// ⚠️ بالعربي لازم يكون بالأرقام العربية زي باقي الموقع — بدونها
+//    كانت الشريحة تطلع «116 قطعة» جنب «٢٠٢٦»، وهاي بتبيّن سهو
+const total = Object.values(a).reduce((n, arr) => n + arr.length, 0);
+const totalText = total.toLocaleString(isAr ? 'ar-EG' : 'en-US');
+const blocks = [
+  { label: t.chLabel, text: story.challenge },
+  { label: t.apLabel, text: story.approach },
+  { label: t.reLabel, text: story.result },
+].filter((b) => b.text);
+
+// كل الصور بتمرق من هون: نفس الترتيب ونفس الخصائص، مرة وحدة
+const img = (x: { file: string; w: number; h: number }, alt: string, eager = false) => ({
+  src: x.file,
+  width: x.w,
+  height: x.h,
+  alt,
+  loading: eager ? ('eager' as const) : ('lazy' as const),
+  decoding: 'async' as const,
+});
+---
+
+<Base
+  title={`${title} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`}
+  description={desc}
+  lang={lang}
+  image={a.coverFinal?.[0]?.file}
+>
+  <Nav lang={lang} />
+
+  <main id="top" class="luv">
+    <!-- ═══════════ الترويسة (على خلفية الموقع الغامقة) ═══════════ -->
+    <div class="container">
+      <nav class="crumbs">
+        <a href={`${isAr ? '/ar' : ''}/#growth`}>{t.home}</a>
+        <span aria-hidden="true">/</span>
+        <a href={`${isAr ? '/ar' : ''}/marketing/`}>{t.back}</a>
+      </nav>
+
+      <header class="head">
+        <p class="role" data-reveal>{role}</p>
+        <h1 data-reveal>{title}</h1>
+        <p class="lede" data-reveal>{desc}</p>
+        <ul class="meta" data-reveal>
+          {t.meta.map((m) => <li>{m}</li>)}
+          <li class="count">{totalText} {t.pieces}</li>
+        </ul>
+      </header>
+    </div>
+
+    <!-- ═══════════ الغلاف: بعرض الشاشة وبنسبته الأصلية ═══════════ -->
+    {
+      a.coverFinal?.[0] && (
+        <figure class="band" data-reveal>
+          <img {...img(a.coverFinal[0], title, true)} />
+        </figure>
+      )
+    }
+
+    <!-- ═══════════════════════════════════════════════════════════
+         غرفة العلامة — من هون الصفحة بتلبس ألوان LUV IT بدل
+         ألوان الموقع. مقصودة: الزائر بيحسّ إنه دخل عالم العميل.
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="room">
+      <div class="container">
+        <!-- ─── اللوجو والألوان ─── -->
+        <div class="identity">
+          <div class="mark" data-reveal>
+            {a.logo?.[0] && <img {...img(a.logo[0], `${title} logo`)} />}
+          </div>
+          <div class="mark-copy" data-reveal>
+            <h2>{t.identity}</h2>
+            <p>{t.identityNote}</p>
+            <ul class="swatches">
+              <li style="--c: #4FC3DC"><span></span>#4FC3DC</li>
+              <li style="--c: #1B4C63"><span></span>#1B4C63</li>
+              <li style="--c: #EAF4F9"><span></span>#EAF4F9</li>
+              <li style="--c: #2B2B2B"><span></span>#2B2B2B</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ─── الرفّ: المنتجات المفرّغة ───
+             ⚠️ ارتفاعات متفاوتة مقصودة (nth-child) — لو كانوا كلهم
+                بنفس الارتفاع بيبيّنوا صف جرد مش رفّ. -->
+        <div class="shelf-head" data-reveal>
+          <h2>{t.shelf}</h2>
+          <p>{t.shelfNote}</p>
+        </div>
+      </div>
+
+      <div class="shelf" data-stagger>
+        {a.png?.map((x, i) => (
+          <figure class="bottle">
+            <img {...img(x, `${title} — product ${i + 1}`)} />
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         اللوحات العريضة
+         ⚠️ هون بالضبط المشكلة اللي حذّر منها ريّان: هاي لوحات
+            عرضها ٤ أضعاف ارتفاعها. أي شبكة بتحطّها بصندوق
+            بتترك مساحات فاضية فوق وتحت. الحل: ارتفاع ثابت
+            (height) وعرض حر (width: auto) وشريط بينسحب أفقياً.
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="wide">
+      <div class="container wide-head">
+        <div data-reveal>
+          <h2>{t.boards}</h2>
+          <p>{t.boardsNote}</p>
+        </div>
+        <span class="hint" data-reveal>{t.boardsHint}</span>
+      </div>
+
+      <!-- data-lenis-prevent: بدون هالخاصية السكرول الناعم بياخد
+           حركة الماوس باد قبل ما توصل للشريط -->
+      <div class="rail" data-lenis-prevent>
+        {a.boards?.map((x, i) => (
+          <figure class="board">
+            <img {...img(x, `${title} — board ${i + 1}`)} />
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <!-- ═══════════ الشبكة: الثلاثيات ═══════════ -->
+    <section class="room room-mist">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          <h2>{t.feed}</h2>
+          <p>{t.feedNote}</p>
+        </div>
+
+        <!-- ⚠️ gap: 2px مقصود — الثلاثية لازم تبيّن صورة وحدة
+             متواصلة زي ما بتبيّن على انستغرام بالضبط -->
+        <div class="feed" data-stagger>
+          {a.triptych?.map((x, i) => (
+            <figure class="tile">
+              <img {...img(x, `${title} — grid ${i + 1}`)} />
+            </figure>
+          ))}
+        </div>
+
+        {a.triptychFirst?.length > 0 && (
+          <div class="before" data-reveal>
+            <span class="tag">{t.feedBefore}</span>
+            <div class="before-row">
+              {a.triptychFirst.map((x, i) => (
+                <figure>
+                  <img {...img(x, `${title} — before ${i + 1}`)} />
+                </figure>
+              ))}
+              {a.soft?.map((x) => (
+                <figure>
+                  <img {...img(x, `${title} — soft`)} />
+                </figure>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- ═══════════ الستوريز: شريط ٩:١٦ ═══════════ -->
+    <section class="wide">
+      <div class="container wide-head">
+        <div data-reveal>
+          <h2>{t.stories}</h2>
+          <p>{t.storiesNote}</p>
+        </div>
+      </div>
+      <div class="rail rail-tall" data-lenis-prevent>
+        {a.stories?.map((x, i) => (
+          <figure class="phone">
+            <img {...img(x, `${title} — story ${i + 1}`)} />
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <!-- ═══════════ البوستات + الهايلايت + الإنفلونسرز ═══════════ -->
+    <section class="room">
+      <div class="container">
+        <div class="sec-head" data-reveal>
+          <h2>{t.posts}</h2>
+        </div>
+        <div class="grid" data-stagger>
+          {a.posts?.map((x, i) => (
+            <figure class="card">
+              <img {...img(x, `${title} — post ${i + 1}`)} />
+            </figure>
+          ))}
+        </div>
+
+        <div class="split">
+          {a.highlights?.length > 0 && (
+            <div data-reveal>
+              <h3>{t.highlights}</h3>
+              <div class="mini">
+                {a.highlights.map((x, i) => (
+                  <figure class="card">
+                    <img {...img(x, `${title} — highlight ${i + 1}`)} />
+                  </figure>
+                ))}
+              </div>
+            </div>
+          )}
+          {a.influencers?.length > 0 && (
+            <div data-reveal>
+              <h3>{t.influencers}</h3>
+              <p class="small">{t.influencersNote}</p>
+              <div class="mini mini-4">
+                {a.influencers.map((x, i) => (
+                  <figure class="card">
+                    <img {...img(x, `${title} — influencer ${i + 1}`)} />
+                  </figure>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         الجلسة — القسم الوحيد اللي بيرجع للخلفية الغامقة عمداً:
+         الصور خلفيتها بيضا، فبتقصّ نفسها على الغامق وبتبيّن أقوى.
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="shoot container">
+      <div class="sec-head" data-reveal>
+        <h2>{t.shoot}</h2>
+        <p>{t.shootNote}</p>
+      </div>
+      <div class="shoot-grid" data-stagger>
+        {a.shoot?.map((x, i) => (
+          <figure class="card">
+            <img {...img(x, `${title} — shoot ${i + 1}`)} />
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <!-- ═══════════ التجارب قبل الهوية ═══════════ -->
+    <section class="lab container">
+      <div class="sec-head" data-reveal>
+        <h2>{t.lab}</h2>
+        <p>{t.labNote}</p>
+      </div>
+      <div class="lab-grid" data-stagger>
+        {[...(a.preIdentity || []), ...(a.coverLab || []), ...(a.minimal || []), ...(a.products || [])].map(
+          (x, i) => (
+            <figure class="card">
+              <img {...img(x, `${title} — experiment ${i + 1}`)} />
+            </figure>
+          )
+        )}
+      </div>
+    </section>
+
+    <!-- ═══════════ القصة ═══════════ -->
+    {
+      blocks.length > 0 && (
+        <div class="container story">
+          {blocks.map((b) => (
+            <section class="block" data-reveal>
+              <h2>{b.label}</h2>
+              <p>{b.text}</p>
+            </section>
+          ))}
+        </div>
+      )
+    }
+  </main>
+
+  <Footer lang={lang} />
+  <Lightbox lang={lang} />
+</Base>
+
+<style>
+  /* ═══════════════ 🎛️ لوحة التحكم ═══════════════ */
+  .luv {
+    /* ألوان LUV IT — بتشتغل جوّا هالصفحة بس */
+    --luv-cyan: #4fc3dc;
+    --luv-ink: #123a4d;
+    --luv-mist: #eaf4f9;
+    --luv-paper: #f7fbfd;
+
+    --h2: clamp(26px, 3.4vw, 44px); /* حجم عناوين الأقسام */
+    --gap: clamp(56px, 8vh, 104px); /* المسافة بين الأقسام */
+    --rail-h: clamp(230px, 32vh, 380px); /* ارتفاع شريط اللوحات */
+    --phone-h: clamp(300px, 46vh, 520px); /* ارتفاع شريط الستوريز */
+    padding-top: calc(108px + clamp(26px, 4vh, 52px));
+  }
+
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 26px;
+  }
+
+  .crumbs a:hover {
+    color: var(--accent);
+  }
+
+  .crumbs span {
+    opacity: 0.5;
+  }
+
+  .role {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: clamp(36px, 5.6vw, 76px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 18px;
+  }
+
+  html[lang='ar'] h1 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .lede {
+    color: var(--muted);
+    font-size: clamp(16px, 1.8vw, 21px);
+    line-height: 1.7;
+    max-width: 58ch;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin-top: 26px;
+  }
+
+  .meta li {
+    font-size: 13px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 7px 16px;
+  }
+
+  .meta .count {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    font-family: var(--font-en);
+  }
+
+  /* ─── الغلاف بعرض الشاشة، وبنسبته الأصلية ─── */
+  .band {
+    margin: clamp(40px, 6vh, 72px) 0 0;
+    background: var(--luv-mist);
+  }
+
+  .band img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     غرفة العلامة — خلفية فاتحة، والنص بينقلب غامق
+     ═══════════════════════════════════════════════════════ */
+  .room {
+    background: var(--luv-paper);
+    color: var(--luv-ink);
+    padding-block: var(--gap);
+  }
+
+  .room-mist {
+    background: var(--luv-mist);
+  }
+
+  .room h2,
+  .room h3 {
+    color: var(--luv-ink);
+  }
+
+  .room p {
+    color: color-mix(in srgb, var(--luv-ink) 72%, white);
+  }
+
+  h2 {
+    font-size: var(--h2);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  html[lang='ar'] h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  h3 {
+    font-size: clamp(17px, 1.9vw, 21px);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .sec-head {
+    max-width: 62ch;
+    margin-bottom: clamp(26px, 4vh, 42px);
+  }
+
+  .sec-head p,
+  .wide-head p,
+  .mark-copy p,
+  .shelf-head p {
+    margin-top: 12px;
+    font-size: 16px;
+    line-height: 1.8;
+    max-width: 58ch;
+  }
+
+  /* ─── اللوجو والألوان ─── */
+  .identity {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(24px, 4vw, 64px);
+    align-items: center;
+  }
+
+  .mark {
+    display: grid;
+    place-items: center;
+    padding: clamp(28px, 5vw, 64px);
+    border-radius: var(--r-card);
+    background: var(--luv-ink);
+  }
+
+  .mark img {
+    width: min(300px, 70%);
+    height: auto;
+  }
+
+  .swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin-top: 22px;
+  }
+
+  .swatches li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-en);
+    font-size: 12.5px;
+    color: color-mix(in srgb, var(--luv-ink) 70%, white);
+  }
+
+  .swatches span {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: var(--c);
+    border: 1px solid rgba(18, 58, 77, 0.14);
+  }
+
+  /* ─── الرفّ: منتجات مفرّغة على خلفية فاتحة ─── */
+  .shelf-head {
+    margin-top: var(--gap);
+  }
+
+  .shelf {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: clamp(6px, 1.6vw, 26px);
+    margin-top: clamp(24px, 4vh, 44px);
+    padding-inline: clamp(20px, 4vw, 48px);
+    /* أرضية خفيفة تحت المنتجات — بتوحي برفّ بدون ما نرسم رفّ */
+    background: linear-gradient(180deg, transparent 62%, rgba(79, 195, 220, 0.13) 100%);
+  }
+
+  .bottle {
+    margin: 0;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .bottle img {
+    width: 100%;
+    height: auto;
+    /* ارتفاعات متفاوتة: الرفّ بيبيّن حقيقي مش صف جرد */
+    transform-origin: bottom center;
+    transition: transform 0.5s var(--ease-out);
+  }
+
+  .bottle:nth-child(2n) img {
+    transform: scale(0.88);
+  }
+
+  .bottle:nth-child(3n) img {
+    transform: scale(0.94);
+  }
+
+  .bottle:hover img {
+    transform: scale(1.06) translateY(-6px);
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     الأشرطة الأفقية — الحل لمشكلة الصور العريضة
+     الارتفاع ثابت والعرض حر: يعني ولا صورة بتتحشر بصندوق
+     وولا مساحة فاضية بتطلع حواليها.
+     ═══════════════════════════════════════════════════════ */
+  .wide {
+    padding-block: var(--gap);
+  }
+
+  .wide-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: clamp(22px, 3.5vh, 36px);
+  }
+
+  .hint {
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .rail {
+    display: flex;
+    gap: clamp(12px, 1.6vw, 22px);
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    padding-inline: clamp(20px, 4vw, 48px);
+    padding-bottom: 14px;
+    scrollbar-width: thin;
+  }
+
+  .board,
+  .phone {
+    margin: 0;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    border-radius: var(--r-card);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--surface);
+  }
+
+  /* ⚠️ هون بيت القصيد: الارتفاع محدّد والعرض تلقائي */
+  .board img {
+    height: var(--rail-h);
+    width: auto;
+    max-width: none;
+  }
+
+  .phone img {
+    height: var(--phone-h);
+    width: auto;
+    max-width: none;
+  }
+
+  /* ═══════════════ شبكة انستغرام ═══════════════ */
+  .feed {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* مسافة شعرة بس — عشان تبيّن صورة وحدة متواصلة */
+    gap: 2px;
+    max-width: 780px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .tile {
+    margin: 0;
+  }
+
+  .tile img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .before {
+    margin-top: clamp(30px, 5vh, 52px);
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--luv-ink);
+    background: rgba(79, 195, 220, 0.22);
+    border-radius: var(--r-pill);
+    padding: 5px 14px;
+    margin-bottom: 14px;
+  }
+
+  .before-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .before-row figure {
+    margin: 0;
+    flex: 1 1 200px;
+    max-width: 300px;
+    border-radius: var(--r-card);
+    overflow: hidden;
+  }
+
+  .before-row img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     الشبكات — أعمدة (masonry) مش صفوف
+     ⚠️ ليش أعمدة؟ لأن صور المشروع بمقاسات مختلفة (١:١، ٤:٥،
+        ٩:١٦). بشبكة صفوف، أطول صورة بالصف بتحدّد ارتفاعه
+        وبيضل فراغ أسود تحت القصار — وهاي بالضبط الحالة اللي
+        حذّر منها ريّان («مساحات سودا حوالين الصور»).
+        بالأعمدة كل صورة بتاخد ارتفاعها الحقيقي والعمود بيتعبّى
+        بدون أي فراغ — بدون ما نقصّ ولا صورة.
+     ═══════════════════════════════════════════════════════ */
+  .grid,
+  .shoot-grid,
+  .lab-grid {
+    column-gap: clamp(10px, 1.4vw, 18px);
+  }
+
+  .grid {
+    columns: 4 230px;
+  }
+
+  .card {
+    /* ⚠️ ضروري: بدونها الصورة بتنقسم بين عمودين */
+    break-inside: avoid;
+    margin: 0 0 clamp(10px, 1.4vw, 18px);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    background: rgba(18, 58, 77, 0.06);
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .card img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(24px, 4vw, 56px);
+    margin-top: var(--gap);
+  }
+
+  .small {
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+
+  .mini {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    /* بدونها أقصر صورة بتتمطّط لارتفاع أطول وحدة بالصف */
+    align-items: start;
+  }
+
+  .mini-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* ═══════════════ الجلسة (خلفية غامقة) ═══════════════ */
+  .shoot,
+  .lab {
+    padding-block: var(--gap);
+  }
+
+  .shoot .sec-head p,
+  .lab .sec-head p {
+    color: var(--muted);
+  }
+
+  .shoot-grid {
+    columns: 4 240px;
+  }
+
+  .shoot .card {
+    background: #fff;
+  }
+
+  /* ═══════════════ التجارب ═══════════════ */
+  .lab-grid {
+    columns: 6 150px;
+    column-gap: 10px;
+  }
+
+  .lab .card {
+    margin-bottom: 10px;
+  }
+
+  /* التجارب بتنعرض مطفية شوي — بتضوّي لما تمرّ عليها.
+     مقصود: هي سياق مش بطل الصفحة. */
+  .lab .card {
+    background: var(--surface);
+    opacity: 0.55;
+    filter: saturate(0.7);
+    transition:
+      opacity 0.4s var(--ease-out),
+      filter 0.4s var(--ease-out),
+      transform 0.4s var(--ease-out);
+  }
+
+  .lab .card:hover {
+    opacity: 1;
+    filter: none;
+  }
+
+  /* ═══════════════ القصة ═══════════════ */
+  .story {
+    padding-block: var(--gap) 0;
+  }
+
+  .block {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 24px;
+    padding-bottom: clamp(36px, 5vh, 64px);
+  }
+
+  .block + .block {
+    padding-top: clamp(36px, 5vh, 64px);
+    border-top: 1px solid var(--line);
+  }
+
+  .block h2 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .block p {
+    font-size: clamp(16px, 1.7vw, 19px);
+    line-height: 1.8;
+    max-width: 62ch;
+    color: var(--muted);
+  }
+
+  /* ═══════════════ موبايل ═══════════════ */
+  @media (max-width: 860px) {
+    .identity,
+    .split {
+      grid-template-columns: 1fr;
+    }
+
+    .block {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    /* الرفّ بينكسر لصفّين — تسع عبوات بصف واحد عالموبايل
+       بتصير كل عبوة ٣٠ بكسل */
+    .shelf {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .bottle:nth-child(2n) img,
+    .bottle:nth-child(3n) img {
+      transform: none;
+    }
+
+    .feed {
+      gap: 1.5px;
+    }
+
+    .grid,
+    .shoot-grid {
+      columns: 2;
+    }
+
+    .lab-grid {
+      columns: 3;
+    }
+
+    .mini-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

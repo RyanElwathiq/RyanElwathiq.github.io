@@ -1,0 +1,14 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  LUV IT — الصفحة الوحيدة اللي إلها تصميم خاص
+//  باقي المشاريع بتستخدم القالب العام (work/[id].astro)
+//  ⚠️ لهيك مستثنى من getStaticPaths بملف [id].astro — لو شيلت
+//     الاستثناء بتصير الصفحة مبنية مرتين وأسترو بيوقف بخطأ.
+// ═══════════════════════════════════════════════════════════════
+import LuvitPage from '../../layouts/LuvitPage.astro';
+import work from '../../data/work.json';
+
+const project = work.projects.find((p) => p.id === 'luvit');
+---
+
+<LuvitPage project={project} lang="en" />

@@ -1,0 +1,846 @@
+{
+  "shoot": [
+    {
+      "file": "/assets/work/luvit/shoot-01.webp",
+      "id": "COVER-007",
+      "w": 1500,
+      "h": 1862,
+      "kb": 159
+    },
+    {
+      "file": "/assets/work/luvit/shoot-02.webp",
+      "id": "COVER-008",
+      "w": 1500,
+      "h": 1862,
+      "kb": 168
+    },
+    {
+      "file": "/assets/work/luvit/shoot-03.webp",
+      "id": "COVER-009",
+      "w": 1500,
+      "h": 1862,
+      "kb": 131
+    },
+    {
+      "file": "/assets/work/luvit/shoot-04.webp",
+      "id": "COVER-010",
+      "w": 1500,
+      "h": 1862,
+      "kb": 139
+    },
+    {
+      "file": "/assets/work/luvit/shoot-05.webp",
+      "id": "COVER-011",
+      "w": 1500,
+      "h": 1862,
+      "kb": 105
+    },
+    {
+      "file": "/assets/work/luvit/shoot-06.webp",
+      "id": "COVER-012",
+      "w": 1500,
+      "h": 1862,
+      "kb": 117
+    },
+    {
+      "file": "/assets/work/luvit/shoot-07.webp",
+      "id": "COVER-013",
+      "w": 1500,
+      "h": 1862,
+      "kb": 143
+    },
+    {
+      "file": "/assets/work/luvit/shoot-08.webp",
+      "id": "COVER-014",
+      "w": 1500,
+      "h": 1862,
+      "kb": 195
+    },
+    {
+      "file": "/assets/work/luvit/shoot-09.webp",
+      "id": "COVER-015",
+      "w": 1500,
+      "h": 1862,
+      "kb": 195
+    },
+    {
+      "file": "/assets/work/luvit/shoot-10.webp",
+      "id": "COVER-016",
+      "w": 1500,
+      "h": 1862,
+      "kb": 157
+    },
+    {
+      "file": "/assets/work/luvit/shoot-11.webp",
+      "id": "COVER-017",
+      "w": 1500,
+      "h": 1862,
+      "kb": 209
+    },
+    {
+      "file": "/assets/work/luvit/shoot-12.webp",
+      "id": "COVER-018",
+      "w": 1500,
+      "h": 1862,
+      "kb": 163
+    },
+    {
+      "file": "/assets/work/luvit/shoot-13.webp",
+      "id": "COVER-019",
+      "w": 1500,
+      "h": 1862,
+      "kb": 159
+    },
+    {
+      "file": "/assets/work/luvit/shoot-14.webp",
+      "id": "COVER-020",
+      "w": 1500,
+      "h": 1862,
+      "kb": 104
+    },
+    {
+      "file": "/assets/work/luvit/shoot-15.webp",
+      "id": "COVER-021",
+      "w": 1500,
+      "h": 1862,
+      "kb": 140
+    },
+    {
+      "file": "/assets/work/luvit/shoot-16.webp",
+      "id": "COVER-022",
+      "w": 1500,
+      "h": 1862,
+      "kb": 147
+    },
+    {
+      "file": "/assets/work/luvit/shoot-17.webp",
+      "id": "COVER-023",
+      "w": 1500,
+      "h": 1862,
+      "kb": 125
+    },
+    {
+      "file": "/assets/work/luvit/shoot-18.webp",
+      "id": "COVER-024",
+      "w": 1500,
+      "h": 1862,
+      "kb": 188
+    },
+    {
+      "file": "/assets/work/luvit/shoot-19.webp",
+      "id": "COVER-025",
+      "w": 1500,
+      "h": 1862,
+      "kb": 136
+    },
+    {
+      "file": "/assets/work/luvit/shoot-20.webp",
+      "id": "COVER-026",
+      "w": 1500,
+      "h": 1862,
+      "kb": 142
+    },
+    {
+      "file": "/assets/work/luvit/shoot-21.webp",
+      "id": "COVER-027",
+      "w": 1500,
+      "h": 1862,
+      "kb": 154
+    },
+    {
+      "file": "/assets/work/luvit/shoot-22.webp",
+      "id": "COVER-028",
+      "w": 1500,
+      "h": 1862,
+      "kb": 137
+    }
+  ],
+  "png": [
+    {
+      "file": "/assets/work/luvit/png-01.webp",
+      "id": "PNG-001",
+      "w": 1100,
+      "h": 3129,
+      "kb": 84
+    },
+    {
+      "file": "/assets/work/luvit/png-02.webp",
+      "id": "PNG-002",
+      "w": 1100,
+      "h": 3073,
+      "kb": 68
+    },
+    {
+      "file": "/assets/work/luvit/png-03.webp",
+      "id": "PNG-003",
+      "w": 1100,
+      "h": 3129,
+      "kb": 83
+    },
+    {
+      "file": "/assets/work/luvit/png-04.webp",
+      "id": "PNG-004",
+      "w": 1100,
+      "h": 3050,
+      "kb": 80
+    },
+    {
+      "file": "/assets/work/luvit/png-05.webp",
+      "id": "PNG-005",
+      "w": 1100,
+      "h": 3108,
+      "kb": 70
+    },
+    {
+      "file": "/assets/work/luvit/png-06.webp",
+      "id": "PNG-006",
+      "w": 1100,
+      "h": 3108,
+      "kb": 70
+    },
+    {
+      "file": "/assets/work/luvit/png-07.webp",
+      "id": "PNG-007",
+      "w": 1100,
+      "h": 3052,
+      "kb": 81
+    },
+    {
+      "file": "/assets/work/luvit/png-08.webp",
+      "id": "PNG-008",
+      "w": 308,
+      "h": 937,
+      "kb": 23
+    }
+  ],
+  "triptych": [
+    {
+      "file": "/assets/work/luvit/triptych-01.webp",
+      "id": "POST-012",
+      "w": 1080,
+      "h": 1440,
+      "kb": 155
+    },
+    {
+      "file": "/assets/work/luvit/triptych-02.webp",
+      "id": "POST-013",
+      "w": 1080,
+      "h": 1440,
+      "kb": 153
+    },
+    {
+      "file": "/assets/work/luvit/triptych-03.webp",
+      "id": "POST-014",
+      "w": 1080,
+      "h": 1440,
+      "kb": 173
+    }
+  ],
+  "triptychFirst": [
+    {
+      "file": "/assets/work/luvit/triptychFirst-01.webp",
+      "id": "POST-009",
+      "w": 1080,
+      "h": 1350,
+      "kb": 81
+    },
+    {
+      "file": "/assets/work/luvit/triptychFirst-02.webp",
+      "id": "POST-010",
+      "w": 1080,
+      "h": 1350,
+      "kb": 78
+    }
+  ],
+  "boards": [
+    {
+      "file": "/assets/work/luvit/boards-01.webp",
+      "id": "HIGH-001",
+      "w": 2000,
+      "h": 1185,
+      "kb": 173
+    },
+    {
+      "file": "/assets/work/luvit/boards-02.webp",
+      "id": "HIGH-004",
+      "w": 1080,
+      "h": 1920,
+      "kb": 106
+    },
+    {
+      "file": "/assets/work/luvit/boards-03.webp",
+      "id": "HIGH-016",
+      "w": 2000,
+      "h": 889,
+      "kb": 168
+    },
+    {
+      "file": "/assets/work/luvit/boards-04.webp",
+      "id": "HIGH-017",
+      "w": 2000,
+      "h": 889,
+      "kb": 168
+    },
+    {
+      "file": "/assets/work/luvit/boards-05.webp",
+      "id": "POST-011",
+      "w": 2000,
+      "h": 889,
+      "kb": 254
+    },
+    {
+      "file": "/assets/work/luvit/boards-06.webp",
+      "id": "POSTL-003",
+      "w": 2000,
+      "h": 833,
+      "kb": 147
+    }
+  ],
+  "stories": [
+    {
+      "file": "/assets/work/luvit/stories-01.webp",
+      "id": "HIGH-005",
+      "w": 760,
+      "h": 1351,
+      "kb": 65
+    },
+    {
+      "file": "/assets/work/luvit/stories-02.webp",
+      "id": "HIGH-006",
+      "w": 760,
+      "h": 1351,
+      "kb": 73
+    },
+    {
+      "file": "/assets/work/luvit/stories-03.webp",
+      "id": "HIGH-008",
+      "w": 760,
+      "h": 1351,
+      "kb": 69
+    },
+    {
+      "file": "/assets/work/luvit/stories-04.webp",
+      "id": "HIGH-009",
+      "w": 760,
+      "h": 1351,
+      "kb": 74
+    },
+    {
+      "file": "/assets/work/luvit/stories-05.webp",
+      "id": "HIGH-010",
+      "w": 760,
+      "h": 1351,
+      "kb": 91
+    },
+    {
+      "file": "/assets/work/luvit/stories-06.webp",
+      "id": "HIGH-018",
+      "w": 760,
+      "h": 1350,
+      "kb": 86
+    },
+    {
+      "file": "/assets/work/luvit/stories-07.webp",
+      "id": "HIGH-019",
+      "w": 760,
+      "h": 1350,
+      "kb": 94
+    },
+    {
+      "file": "/assets/work/luvit/stories-08.webp",
+      "id": "HIGH-020",
+      "w": 760,
+      "h": 1350,
+      "kb": 84
+    },
+    {
+      "file": "/assets/work/luvit/stories-09.webp",
+      "id": "HIGH-021",
+      "w": 760,
+      "h": 1350,
+      "kb": 71
+    }
+  ],
+  "posts": [
+    {
+      "file": "/assets/work/luvit/posts-01.webp",
+      "id": "HIGH-011",
+      "w": 1080,
+      "h": 1920,
+      "kb": 131
+    },
+    {
+      "file": "/assets/work/luvit/posts-02.webp",
+      "id": "HIGH-012",
+      "w": 1080,
+      "h": 1920,
+      "kb": 109
+    },
+    {
+      "file": "/assets/work/luvit/posts-03.webp",
+      "id": "HIGH-013",
+      "w": 1080,
+      "h": 1920,
+      "kb": 116
+    },
+    {
+      "file": "/assets/work/luvit/posts-04.webp",
+      "id": "HIGH-014",
+      "w": 1080,
+      "h": 1920,
+      "kb": 143
+    },
+    {
+      "file": "/assets/work/luvit/posts-05.webp",
+      "id": "HIGH-015",
+      "w": 1080,
+      "h": 1920,
+      "kb": 131
+    },
+    {
+      "file": "/assets/work/luvit/posts-06.webp",
+      "id": "POST-001",
+      "w": 1080,
+      "h": 1350,
+      "kb": 152
+    },
+    {
+      "file": "/assets/work/luvit/posts-07.webp",
+      "id": "POST-003",
+      "w": 1080,
+      "h": 1350,
+      "kb": 145
+    },
+    {
+      "file": "/assets/work/luvit/posts-08.webp",
+      "id": "POST-004",
+      "w": 1080,
+      "h": 1350,
+      "kb": 166
+    },
+    {
+      "file": "/assets/work/luvit/posts-09.webp",
+      "id": "POST-005",
+      "w": 1080,
+      "h": 1424,
+      "kb": 114
+    },
+    {
+      "file": "/assets/work/luvit/posts-10.webp",
+      "id": "POST-006",
+      "w": 1080,
+      "h": 1350,
+      "kb": 117
+    },
+    {
+      "file": "/assets/work/luvit/posts-11.webp",
+      "id": "POST-007",
+      "w": 1080,
+      "h": 1440,
+      "kb": 156
+    },
+    {
+      "file": "/assets/work/luvit/posts-12.webp",
+      "id": "POST-015",
+      "w": 1080,
+      "h": 1350,
+      "kb": 108
+    },
+    {
+      "file": "/assets/work/luvit/posts-13.webp",
+      "id": "POSTL-001",
+      "w": 1080,
+      "h": 1080,
+      "kb": 80
+    },
+    {
+      "file": "/assets/work/luvit/posts-14.webp",
+      "id": "POSTL-002",
+      "w": 1080,
+      "h": 1350,
+      "kb": 108
+    },
+    {
+      "file": "/assets/work/luvit/posts-15.webp",
+      "id": "POSTL-004",
+      "w": 1080,
+      "h": 864,
+      "kb": 73
+    }
+  ],
+  "highlights": [
+    {
+      "file": "/assets/work/luvit/highlights-01.webp",
+      "id": "HIGH-003",
+      "w": 760,
+      "h": 760,
+      "kb": 24
+    },
+    {
+      "file": "/assets/work/luvit/highlights-02.webp",
+      "id": "HIGH-007",
+      "w": 760,
+      "h": 760,
+      "kb": 24
+    }
+  ],
+  "influencers": [
+    {
+      "file": "/assets/work/luvit/influencers-01.webp",
+      "id": "HIGH-023",
+      "w": 900,
+      "h": 900,
+      "kb": 26
+    },
+    {
+      "file": "/assets/work/luvit/influencers-02.webp",
+      "id": "HIGH-024",
+      "w": 900,
+      "h": 900,
+      "kb": 27
+    },
+    {
+      "file": "/assets/work/luvit/influencers-03.webp",
+      "id": "HIGH-025",
+      "w": 900,
+      "h": 900,
+      "kb": 32
+    },
+    {
+      "file": "/assets/work/luvit/influencers-04.webp",
+      "id": "HIGH-026",
+      "w": 900,
+      "h": 900,
+      "kb": 25
+    }
+  ],
+  "soft": [
+    {
+      "file": "/assets/work/luvit/soft-01.webp",
+      "id": "POST-008",
+      "w": 1080,
+      "h": 1350,
+      "kb": 103
+    }
+  ],
+  "products": [
+    {
+      "file": "/assets/work/luvit/products-01.webp",
+      "id": "ROOT-001",
+      "w": 1200,
+      "h": 1490,
+      "kb": 31
+    },
+    {
+      "file": "/assets/work/luvit/products-02.webp",
+      "id": "ROOT-002",
+      "w": 1200,
+      "h": 1490,
+      "kb": 29
+    },
+    {
+      "file": "/assets/work/luvit/products-03.webp",
+      "id": "ROOT-018",
+      "w": 1200,
+      "h": 1200,
+      "kb": 14
+    },
+    {
+      "file": "/assets/work/luvit/products-04.webp",
+      "id": "ROOT-019",
+      "w": 1200,
+      "h": 1200,
+      "kb": 15
+    },
+    {
+      "file": "/assets/work/luvit/products-05.webp",
+      "id": "ROOT-020",
+      "w": 1200,
+      "h": 1200,
+      "kb": 15
+    }
+  ],
+  "coverFinal": [
+    {
+      "file": "/assets/work/luvit/coverFinal-01.webp",
+      "id": "ROOT-011",
+      "w": 1800,
+      "h": 790,
+      "kb": 87
+    },
+    {
+      "file": "/assets/work/luvit/coverFinal-02.webp",
+      "id": "ROOT-017",
+      "w": 1774,
+      "h": 887,
+      "kb": 77
+    }
+  ],
+  "coverLab": [
+    {
+      "file": "/assets/work/luvit/coverLab-01.webp",
+      "id": "ROOT-005",
+      "w": 1400,
+      "h": 533,
+      "kb": 39
+    },
+    {
+      "file": "/assets/work/luvit/coverLab-02.webp",
+      "id": "ROOT-006",
+      "w": 1400,
+      "h": 533,
+      "kb": 39
+    },
+    {
+      "file": "/assets/work/luvit/coverLab-03.webp",
+      "id": "ROOT-007",
+      "w": 1400,
+      "h": 533,
+      "kb": 47
+    },
+    {
+      "file": "/assets/work/luvit/coverLab-04.webp",
+      "id": "ROOT-008",
+      "w": 1400,
+      "h": 533,
+      "kb": 39
+    },
+    {
+      "file": "/assets/work/luvit/coverLab-05.webp",
+      "id": "ROOT-009",
+      "w": 1400,
+      "h": 615,
+      "kb": 76
+    },
+    {
+      "file": "/assets/work/luvit/coverLab-06.webp",
+      "id": "ROOT-010",
+      "w": 1400,
+      "h": 615,
+      "kb": 60
+    },
+    {
+      "file": "/assets/work/luvit/coverLab-07.webp",
+      "id": "ROOT-014",
+      "w": 1400,
+      "h": 622,
+      "kb": 46
+    },
+    {
+      "file": "/assets/work/luvit/coverLab-08.webp",
+      "id": "ROOT-015",
+      "w": 1400,
+      "h": 533,
+      "kb": 32
+    },
+    {
+      "file": "/assets/work/luvit/coverLab-09.webp",
+      "id": "ROOT-016",
+      "w": 1400,
+      "h": 699,
+      "kb": 65
+    },
+    {
+      "file": "/assets/work/luvit/coverLab-10.webp",
+      "id": "COVER-030",
+      "w": 1400,
+      "h": 781,
+      "kb": 51
+    }
+  ],
+  "minimal": [
+    {
+      "file": "/assets/work/luvit/minimal-01.webp",
+      "id": "PROD-019",
+      "w": 1000,
+      "h": 1250,
+      "kb": 45
+    },
+    {
+      "file": "/assets/work/luvit/minimal-02.webp",
+      "id": "COVER-001",
+      "w": 1000,
+      "h": 1241,
+      "kb": 36
+    },
+    {
+      "file": "/assets/work/luvit/minimal-03.webp",
+      "id": "COVER-002",
+      "w": 1000,
+      "h": 1241,
+      "kb": 38
+    },
+    {
+      "file": "/assets/work/luvit/minimal-04.webp",
+      "id": "COVER-003",
+      "w": 1000,
+      "h": 1241,
+      "kb": 33
+    },
+    {
+      "file": "/assets/work/luvit/minimal-05.webp",
+      "id": "COVER-004",
+      "w": 1000,
+      "h": 1241,
+      "kb": 27
+    },
+    {
+      "file": "/assets/work/luvit/minimal-06.webp",
+      "id": "COVER-005",
+      "w": 1000,
+      "h": 1616,
+      "kb": 79
+    }
+  ],
+  "preIdentity": [
+    {
+      "file": "/assets/work/luvit/preIdentity-01.webp",
+      "id": "PROD-001",
+      "w": 900,
+      "h": 1125,
+      "kb": 62
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-02.webp",
+      "id": "PROD-002",
+      "w": 900,
+      "h": 1125,
+      "kb": 42
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-03.webp",
+      "id": "PROD-003",
+      "w": 900,
+      "h": 1125,
+      "kb": 40
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-04.webp",
+      "id": "PROD-004",
+      "w": 900,
+      "h": 1125,
+      "kb": 56
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-05.webp",
+      "id": "PROD-005",
+      "w": 900,
+      "h": 1125,
+      "kb": 37
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-06.webp",
+      "id": "PROD-006",
+      "w": 900,
+      "h": 1125,
+      "kb": 45
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-07.webp",
+      "id": "PROD-007",
+      "w": 900,
+      "h": 1125,
+      "kb": 60
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-08.webp",
+      "id": "PROD-008",
+      "w": 900,
+      "h": 1125,
+      "kb": 61
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-09.webp",
+      "id": "PROD-009",
+      "w": 900,
+      "h": 1125,
+      "kb": 37
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-10.webp",
+      "id": "PROD-010",
+      "w": 900,
+      "h": 1125,
+      "kb": 119
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-11.webp",
+      "id": "PROD-011",
+      "w": 900,
+      "h": 1125,
+      "kb": 62
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-12.webp",
+      "id": "PROD-012",
+      "w": 900,
+      "h": 1125,
+      "kb": 28
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-13.webp",
+      "id": "PROD-013",
+      "w": 900,
+      "h": 1125,
+      "kb": 57
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-14.webp",
+      "id": "PROD-014",
+      "w": 900,
+      "h": 1125,
+      "kb": 45
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-15.webp",
+      "id": "PROD-015",
+      "w": 900,
+      "h": 1125,
+      "kb": 36
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-16.webp",
+      "id": "PROD-016",
+      "w": 900,
+      "h": 1125,
+      "kb": 31
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-17.webp",
+      "id": "PROD-017",
+      "w": 900,
+      "h": 1125,
+      "kb": 36
+    },
+    {
+      "file": "/assets/work/luvit/preIdentity-18.webp",
+      "id": "PROD-018",
+      "w": 900,
+      "h": 1125,
+      "kb": 36
+    }
+  ],
+  "logo": [
+    {
+      "file": "/assets/work/luvit/logo-01.webp",
+      "id": "LOGO-001",
+      "w": 851,
+      "h": 851,
+      "kb": 10
+    },
+    {
+      "file": "/assets/work/luvit/logo-02.webp",
+      "id": "LOGO-002",
+      "w": 850,
+      "h": 850,
+      "kb": 11
+    },
+    {
+      "file": "/assets/work/luvit/logo-03.webp",
+      "id": "LOGO-003",
+      "w": 252,
+      "h": 129,
+      "kb": 3
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  LUV IT — النسخة العربية من الصفحة الخاصة
+//  (نفس الشرح الموجود بملف src/pages/work/luvit.astro)
+// ═══════════════════════════════════════════════════════════════
+import LuvitPage from '../../../layouts/LuvitPage.astro';
+import work from '../../../data/work.json';
+
+const project = work.projects.find((p) => p.id === 'luvit');
+---
+
+<LuvitPage project={project} lang="ar" />

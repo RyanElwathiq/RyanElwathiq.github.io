@@ -18,10 +18,19 @@ import work from '../../data/work.json';
 
 // Astro بيبني صفحة لكل مشروع من هون
 export function getStaticPaths() {
-  return work.projects.map((p) => ({
-    params: { id: p.id },
-    props: { project: p },
-  }));
+  // ⚠️ مشاريع إلها صفحة مصمّمة خصيصاً — لازم تنستثنى من هون،
+  //    وإلا أسترو بيلاقي مسارين لنفس الرابط وبيوقف بخطأ.
+  //    LUV IT إلها src/pages/work/luvit.astro
+  // ⚠️ لازم تكون **جوّا** الدالة: أسترو بيرفع getStaticPaths لبرّا
+  //    الصفحة، فأي متغيّر مكتوب فوق ما بيشوفه
+  const BESPOKE = ['luvit'];
+
+  return work.projects
+    .filter((p) => !BESPOKE.includes(p.id))
+    .map((p) => ({
+      params: { id: p.id },
+      props: { project: p },
+    }));
 }
 
 const { project } = Astro.props;

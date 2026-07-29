@@ -126,7 +126,17 @@
           "label": "Faster design turnaround",
           "labelAr": "أسرع في إنتاج التصاميم"
         }
-      ]
+      ],
+      "story": {
+        "challenge": "A Turkish skincare label entering Jordan with a full product line and no local voice. The market problem was not awareness — it was choice. Shelves and feeds are crowded with conflicting advice, so people do not reject a product, they freeze in front of the options. And the brand's global assets, shot for a different audience, did not read here.",
+        "approach": "I rebuilt the brand for this market from the content up. Instead of posting bottles, the feed teaches a routine: which step does what, which skin type it suits, why it is three products and not one. The identity was re-voiced in Arabic across every format — highlight covers, story sets, and a grid designed so posts sit together as one continuous image. An AI-assisted design pipeline let one person produce at agency pace.",
+        "result": "117 finished pieces in a single visual language, a routine-first content system that answers real objections instead of announcing offers, and a 40% faster turnaround from brief to published design."
+      },
+      "storyAr": {
+        "challenge": "علامة عناية بالبشرة تركية داخلة على الأردن بخط منتجات كامل وبدون صوت محلي. مشكلة السوق ما كانت الوعي — كانت الاختيار. الرفوف والصفحات مليانة نصائح متضاربة، فالناس ما بترفض المنتج، بتتجمّد قدّام الخيارات. وأصول العلامة العالمية، المصوّرة لجمهور ثاني، ما كانت بتقرأ هون.",
+        "approach": "بنيت العلامة لهذا السوق من المحتوى لفوق. بدل ما ننزّل عبوات، الصفحة صارت تعلّم روتين: كل خطوة شو بتعمل، لأي نوع بشرة، وليش هي ثلاث منتجات مش واحد. والهوية انكتبت بصوت عربي على كل مقاس — أغلفة الهايلايت، أطقم الستوري، وشبكة مصمّمة بحيث البوستات تنزل جنب بعض كأنها صورة وحدة متواصلة. ونظام تصميم مدعوم بالذكاء الاصطناعي خلّى شخص واحد ينتج بسرعة وكالة.",
+        "result": "١١٧ قطعة جاهزة بلغة بصرية وحدة، ونظام محتوى بيبدأ من الروتين وبيجاوب على اعتراضات حقيقية بدل ما يعلن عروض، وإنتاج أسرع ٤٠٪ من البريف للتصميم المنشور."
+      }
     },
     {
       "id": "arkan",
