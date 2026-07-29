@@ -1,8 +1,21 @@
 ---
 // ═══════════════════════════════════════════════════════════════
 //  شريط الأرقام — عدّادات بتعد لحالها لما توصلها بالسكرول
-//  ✏️ تعديل الأرقام: من مصفوفة stats تحت
+//
+//  ⚠️⚠️ هالأرقام **بتتحدّث لحالها** ⚠️⚠️
+//  ما عاد فيه رقم مكتوب بالإيد. كلهم بينحسبوا من work.json:
+//   • عدد العملاء  = عدد المشاريع الحقيقية (بدون التجارب والمواقع)
+//   • عدد الأعمال  = مجموع التصاميم والفيديوهات المعروضة
+//   • باقي الأرقام = أقوى إنجازات مكتوبة بحقل stats بالمشاريع
+//
+//  يعني كل ما تضيف مشروع أو معرض أو رقم إنجاز، الشريط بيتحدّث
+//  لحاله بدون ما تلمس هذا الملف.
+//
+//  ✏️ بدك تضيف رقم إنجاز جديد؟ حطّه بـ stats داخل المشروع
+//     بملف src/data/work.json، وهو بيوصل لهون تلقائياً.
 // ═══════════════════════════════════════════════════════════════
+import work from '../data/work.json';
+
 interface Props {
   lang: 'en' | 'ar';
 }
@@ -10,13 +23,48 @@ interface Props {
 const { lang } = Astro.props;
 const isAr = lang === 'ar';
 
-// ─── الأرقام (عدّل من هون) ───
-// value = الرقم | suffix = اللاحقة (+ أو K أو %) | label = الشرح
+// المشاريع اللي بتنحسب كـ«عميل»: نستثني موقعنا والمشاريع المعلّقة
+const NOT_CLIENTS = ['portfolio', 'coming-soon-1'];
+const clients = work.projects.filter((p: any) => !NOT_CLIENTS.includes(p.id));
+
+// مجموع كل التصاميم والفيديوهات المعروضة فعلياً بالموقع
+const pieces = work.projects.reduce(
+  (n: number, p: any) => n + (p.gallery?.length || 0) + (p.videos?.length || 0),
+  0
+);
+
+// ─── أقوى رقمين إنجاز من المشاريع ───
+// بنقرأ كل حقول stats، وبناخد الأرقام الأكبر (أقوى دليل)
+const parse = (v: string) => {
+  const n = parseFloat(String(v).replace(/[^0-9.]/g, '')) || 0;
+  return /K/i.test(v) ? n * 1000 : n;
+};
+
+const achievements = work.projects
+  .flatMap((p: any) => p.stats || [])
+  // منستثني «صفر إنفاق» — صفر مش رقم بيكبر بالعدّاد
+  .filter((s: any) => parse(s.value) > 0)
+  .sort((a: any, b: any) => parse(b.value) - parse(a.value))
+  .slice(0, 2)
+  .map((s: any) => {
+    const raw = String(s.value);
+    const num = parseFloat(raw.replace(/[^0-9.]/g, '')) || 0;
+    const suffix = raw.replace(/[0-9.,]/g, ''); // K أو % أو +
+    return { value: num, suffix, label: isAr ? s.labelAr : s.label };
+  });
+
 const stats = [
-  { value: 6, suffix: '+', label: isAr ? 'عملاء اشتغلت معهم' : 'Client engagements' },
-  { value: 2395, suffix: '', label: isAr ? 'متابع عضوي خلال 30 يوم' : 'Organic followers in 30 days' },
-  { value: 290, suffix: 'K', label: isAr ? 'مشاهدة على بوست واحد' : 'Views on a single post' },
-  { value: 40, suffix: '%', label: isAr ? 'أسرع بإنتاج التصاميم' : 'Faster creative turnaround' },
+  {
+    value: clients.length,
+    suffix: '+',
+    label: isAr ? 'عملاء اشتغلت معهم' : 'Client engagements',
+  },
+  ...achievements,
+  {
+    value: pieces,
+    suffix: '+',
+    label: isAr ? 'عمل منشور بالموقع' : 'Pieces published here',
+  },
 ];
 ---
 
