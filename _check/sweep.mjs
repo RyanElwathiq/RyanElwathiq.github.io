@@ -19,7 +19,16 @@ for (const p of pages) {
   const errs = [];
   const onErr = (e) => errs.push(`${p} :: ${e.message || e.text()}`);
   page.on('pageerror', onErr);
-  page.on('console', (m) => m.type() === 'error' && errs.push(`${p} :: ${m.text()}`));
+  // ⚠️ منتجاهل رسائل الأخطاء الجاية من إطارات خارجية (يوتيوب).
+  //    مشغّل يوتيوب بيسجّل أخطاءه الداخلية بكونسول الصفحة الأم،
+  //    وهاي مش أخطاءنا وما منقدر نصلّحها — وكانت بتطلع إنذار كاذب
+  //    على صفحات المشاريع اللي فيها فيديوهات.
+  page.on('console', (m) => {
+    if (m.type() !== 'error') return;
+    const from = m.location()?.url || '';
+    if (/youtube|ytimg|googlevideo|doubleclick/.test(from)) return;
+    errs.push(`${p} :: ${m.text()}`);
+  });
 
   await page.goto(base + p, { waitUntil: 'networkidle' }).catch(() => {});
   await page.waitForTimeout(700);
