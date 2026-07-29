@@ -130,13 +130,19 @@ const t = isAr
            ⚠️ مخفي عالموبايل: هناك ما في مساحة فاضية أصلاً،
               وحطّه بيصير حشو ووزن زايد على نت الأردن.
            ═══════════════════════════════════════════════════════ -->
-      <div class="head-dust" aria-hidden="true">
-        <Particles src="/assets/logo-white.png" size="small" />
+      <!-- ⚠️ النص لازم يكون ملفوف بعنصر واحد: الترويسة شبكة
+           عمودين، ولو تركنا الكيكر والعنوان والوصف إخوة للوجو
+           بيتوزّعوا على العمودين بالتناوب وبتنقلب الترويسة رأساً
+           على عقب (صار فعلاً بأول محاولة). -->
+      <div class="head-copy">
+        <p class="kicker" data-reveal>{t.kicker}</p>
+        <h2 data-reveal>{t.heading}</h2>
+        <p class="sub" data-reveal>{t.sub}</p>
       </div>
 
-      <p class="kicker" data-reveal>{t.kicker}</p>
-      <h2 data-reveal>{t.heading}</h2>
-      <p class="sub" data-reveal>{t.sub}</p>
+      <div class="head-dust" aria-hidden="true">
+        <Particles src="/assets/logo-white.png" />
+      </div>
     </div>
 
     <!-- ═══ طرق التعاون الثلاث ═══
@@ -199,31 +205,42 @@ const t = isAr
     padding-block: clamp(56px, 9vh, 110px) 0;
   }
 
+  /* ═══════════════════════════════════════════════════════
+     الترويسة = عمودين: النص واللوجو المتفتّت
+     ⚠️⚠️ ليش عمود مش موضع مطلق؟ ⚠️⚠️
+     أول نسخة كانت position: absolute برّا حدود النص، فطلعت
+     تخرج عن الحاوية وتنقصّ بالطرف (body عليه overflow-x: clip)،
+     وكمان كانت صغيرة مقارنة بالفراغ الحقيقي.
+     بالعمود: بتاخد كل المساحة الفاضية فعلياً، وما بتنقصّ أبداً
+     مهما كان عرض الشاشة.
+     ═══════════════════════════════════════════════════════ */
   .head {
-    position: relative;
-    max-width: 60ch;
+    display: grid;
+    grid-template-columns: minmax(0, 60ch) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(24px, 4vw, 70px);
     margin-bottom: clamp(40px, 6vh, 64px);
   }
 
-  /* ─── اللوجو المتفتّت بالمساحة الفاضية على الطرف ───
-     مطفي وصغير عن قصد: بيعبّي الفراغ بدون ما يزاحم العنوان */
+  /* اللوجو المتفتّت: مطفي عن قصد — بيعبّي الفراغ بدون ما يزاحم */
   .head-dust {
-    position: absolute;
-    top: 50%;
-    inset-inline-start: calc(100% + clamp(20px, 3vw, 60px));
-    translate: 0 -50%;
-    width: min(300px, 22vw);
-    opacity: 0.45;
+    width: 100%;
+    opacity: 0.42;
     transition: opacity 0.5s var(--ease-out);
   }
 
   .head-dust:hover {
-    opacity: 0.8;
+    opacity: 0.85;
   }
 
-  /* ⚠️ تحت ١١٠٠ بكسل ما في مساحة فاضية جنب العنوان — منخفّيه
-     كلياً بدل ما يزاحم النص أو ينط تحته */
+  /* ⚠️ تحت ١١٠٠ بكسل ما في مساحة فاضية — منرجّع عمود واحد
+     ومنخفّي اللوجو بدل ما يزاحم النص */
   @media (max-width: 1100px) {
+    .head {
+      display: block;
+      max-width: 60ch;
+    }
+
     .head-dust {
       display: none;
     }
