@@ -29,6 +29,7 @@ import Footer from '../components/Footer.astro';
 import Lightbox from '../components/Lightbox.astro';
 import BrandEyeSection from '../components/BrandEyeSection.astro';
 import Particles from '../components/Particles.astro';
+import Lab from '../components/Lab.astro';
 // 🎛️ منطق «شو يظهر بالهوم» كله بملف واحد مشروح: src/utils/work.js
 //    (الترتيب، العدد، والتحكم اليدوي بحقل "home" بملف work.json)
 import { forHome, hasMore } from '../utils/work.js';
@@ -45,6 +46,7 @@ const marks = [
   { id: 'pricing', label: 'How I work' },
   { id: 'budget', label: 'Budget' },
   { id: 'lab', label: 'Idea lab' },
+  { id: 'lab-work', label: 'The lab' },
   { id: 'brand-eye', label: 'Brand Eye' },
   { id: 'signals', label: 'Signals' },
   { id: 'faq', label: 'FAQ' },
@@ -118,6 +120,9 @@ const marks = [
     <BudgetSection lang="en" id="budget" compact />
     <LampLab lang="en" id="lab" />
     <!-- «عين البراند»: لمحة بس — اللعبة الكاملة بصفحة LUV IT -->
+    <!-- التجارب: البدايات والمختبر — قبل اللعبة عن قصد،
+         لأن اللي بيقرأ عن المسافة بيصير جاهز يجرّب عينه -->
+    <Lab lang="en" id="lab-work" />
     <BrandEyeSection lang="en" compact href="/work/luvit/#brand-eye" />
     <Signals lang="en" id="signals" />
     <Education lang="en" />

@@ -1,0 +1,98 @@
+{
+  "tracks": {
+    "start": [
+      {
+        "label": "Nada Fayyad",
+        "labelAr": "ندى فياض",
+        "line": "Wedding dresses and suits, UAE. An online project from the very beginning — designs only, no say in anything else.",
+        "lineAr": "فساتين وبدلات أعراس بالإمارات. مشروع أونلاين من أول الطريق — تصاميم بس، بدون رأي بأي إشي ثاني.",
+        "year": "",
+        "shots": [
+          "/assets/work/nada-fayyad/nada-fayyad-01.webp",
+          "/assets/work/nada-fayyad/nada-fayyad-02.webp"
+        ]
+      },
+      {
+        "label": "Tampa",
+        "labelAr": "تامبا",
+        "line": "A phone and accessories shop. A small set of designs — the kind of job everyone starts with.",
+        "lineAr": "محل تلفونات وإكسسوارات. مجموعة تصاميم بسيطة — الشغلة اللي بيبلّش فيها الكل.",
+        "year": "",
+        "shots": [
+          "/assets/work/tampa/tampa-01.webp",
+          "/assets/work/tampa/tampa-02.webp"
+        ]
+      },
+      {
+        "label": "MLR & Halem Spa",
+        "labelAr": "سبا MLR وحليم",
+        "line": "Practice work while I was still learning. Not commissioned, not published — just reps.",
+        "lineAr": "شغل تمرين وأنا لسا ببدايتي. مش مطلوب ولا منشور — بس تكرار وصقل.",
+        "year": "",
+        "shots": [
+          "/assets/work/spa/spa-01.webp",
+          "/assets/work/spa/spa-02.webp",
+          "/assets/work/spa/spa-03.webp",
+          "/assets/work/spa/spa-04.webp"
+        ]
+      },
+      {
+        "label": "Progress & clinics",
+        "labelAr": "بروجرِس والعيادات",
+        "line": "Real estate in the UAE and two clinics in Egypt. Design handed a topic, not a problem.",
+        "lineAr": "عقارات بالإمارات وعيادتين بمصر. تصميم بيوصله موضوع، مش مشكلة.",
+        "year": "",
+        "shots": [
+          "/assets/work/progress/progress-01.webp",
+          "/assets/work/progress/progress-02.webp",
+          "/assets/work/clinics/clinics-01.webp",
+          "/assets/work/clinics/clinics-02.webp"
+        ]
+      },
+      {
+        "label": "Early miscellaneous",
+        "labelAr": "شغل مبكّر متفرّق",
+        "line": "A proposed identity, a tourism company, a joke design for a client. Kept because they are part of the road.",
+        "lineAr": "هوية مقترحة، وشركة سياحية، وتصميم فكاهي لعميل. محفوظين لأنهم جزء من الطريق.",
+        "year": "",
+        "shots": [
+          "/assets/work/misc/misc-01.webp",
+          "/assets/work/misc/misc-02.webp",
+          "/assets/work/misc/misc-03.webp"
+        ]
+      }
+    ],
+    "lab": [
+      {
+        "label": "WE Telecom — fictional",
+        "labelAr": "وي للاتصالات — وهمي",
+        "line": "Not a client. A self-set brief on a brand at national scale, testing modern styles and AI inside the design pipeline.",
+        "lineAr": "مش عميل. بريف كتبته لحالي على علامة بحجم وطني، بجرّب فيه أساليب حديثة ودمج الذكاء الاصطناعي بسير التصميم.",
+        "year": "",
+        "shots": [
+          "/assets/work/lab/lab-01.webp",
+          "/assets/work/lab/lab-02.webp",
+          "/assets/work/lab/lab-03.webp",
+          "/assets/work/lab/lab-04.webp",
+          "/assets/work/lab/lab-05.webp",
+          "/assets/work/lab/lab-06.webp"
+        ]
+      },
+      {
+        "label": "Technique studies",
+        "labelAr": "دراسات تقنية",
+        "line": "Fruit inside a realistic ice cube, type wrapped onto packaging. Single problems, solved for their own sake.",
+        "lineAr": "فواكه جوّا مكعّب ثلج واقعي، ونص ملفوف على عبوة. مشاكل مفردة، بتنحل لذاتها.",
+        "year": "",
+        "shots": [
+          "/assets/work/lab/lab-07.webp",
+          "/assets/work/lab/lab-08.webp",
+          "/assets/work/lab/lab-09.webp",
+          "/assets/work/lab/lab-10.webp",
+          "/assets/work/lab/lab-11.webp",
+          "/assets/work/lab/lab-12.webp"
+        ]
+      }
+    ]
+  }
+}
