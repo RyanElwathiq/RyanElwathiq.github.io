@@ -22,6 +22,12 @@ const isAr = lang === 'ar';
 
 <style>
   .lightbox {
+    /* ⚠️⚠️ margin: auto ضروري ⚠️⚠️
+       نافذة <dialog> بتتوسّط الشاشة عن طريق margin: auto اللي
+       بيحطّه المتصفح لحاله. بس عننا بالـ global.css في قاعدة
+       بتصفّر الهوامش لكل العناصر (* { margin: 0 })، وهاي كانت
+       بتلغي التوسيط — فالفيديو كان بيفتح بزاوية الصفحة العليا. */
+    margin: auto;
     width: min(1100px, 92vw);
     border: 1px solid var(--line);
     border-radius: var(--r-card);

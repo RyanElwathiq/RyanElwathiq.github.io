@@ -202,6 +202,17 @@
     addEventListener('mouseleave', () => root.removeAttribute('data-cursor-on'));
     addEventListener('mouseenter', () => root.setAttribute('data-cursor-on', ''));
 
+    // ⚠️⚠️ إطارات الفيديو (يوتيوب) ⚠️⚠️
+    //  الـ iframe صفحة مستقلة بحالها، والمتصفح ما بيعطي الصفحة الأم
+    //  حركة الماوس اللي صارت جوّاه — لأسباب أمنية. فكانت النقطة
+    //  تتجمّد على حافة الفيديو وتضل واقفة هناك لحد ما يطلع الماوس.
+    //  الحل: أول ما يدخل الماوس على إطار، منخفي مؤشّرنا ومنرجّع
+    //  مؤشّر المتصفح العادي — وهاد أصلاً الأنسب فوق مشغّل فيديو
+    //  لأنه بده يشوف أزرار التشغيل والصوت.
+    const html = document.documentElement;
+    html.addEventListener('pointerleave', () => root.removeAttribute('data-cursor-on'));
+    html.addEventListener('pointerenter', () => root.setAttribute('data-cursor-on', ''));
+
     // لو وصل جهاز لمس واشتغل عليه، منطفي المؤشّر المخصّص
     addEventListener(
       'touchstart',

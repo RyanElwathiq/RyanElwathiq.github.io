@@ -1,7 +1,7 @@
 // كنس شامل: كل الصفحات — أخطاء، روابط مكسورة، تمرير أفقي، عناصر محجوبة
 import { chromium } from '@playwright/test';
 
-const base = 'http://localhost:4321';
+const base = process.argv[2] || 'http://localhost:4321';
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 
