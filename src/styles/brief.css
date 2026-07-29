@@ -264,7 +264,7 @@ html[dir='rtl'] .brief-panel[data-dir='-1'] {
   margin-top: 14px;
   font-size: 14px;
   font-weight: 600;
-  color: #ff6b5b;
+  color: var(--danger);
 }
 
 .brief-note {

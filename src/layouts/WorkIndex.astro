@@ -6,6 +6,7 @@
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import Particles from '../components/Particles.astro';
 import Lightbox from '../components/Lightbox.astro';
 import WorkCard from '../components/WorkCard.astro';
 import work from '../data/work.json';
@@ -54,6 +55,14 @@ const backLabel = isAr ? '→ الرئيسية' : '← Home';
         {projects.map((p) => <WorkCard project={p} lang={lang} />)}
       </div>
     </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         فاصل هادي: اللوجو بنقاط بالمساحة الفاضية آخر الصفحة.
+         ⚠️ نفس محرّك الاسم المتفتّت بالضبط — ما في كود جديد ولا
+            ملف جديد ينحمّل، بس بيقرأ شكل اللوجو بدل الحروف.
+            وبيوقف الرسم تماماً لما يطلع برّا الشاشة.
+         ═══════════════════════════════════════════════════════════ -->
+    <Particles src="/assets/logo-white.png" size="small" />
   </main>
 
   <Footer lang={lang} />

@@ -38,6 +38,32 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 let lenis = null;
 let cleanups = [];
 
+// ═══════════════════════════════════════════════════════════════
+//  حركة سكرول آمنة — كل قفزة لقسم بتمرق من هون
+//
+//  ⚠️⚠️ عطل حقيقي كان هون ⚠️⚠️
+//  لما الزائر مفعّل «تقليل الحركة» بجهازه، السكرول الناعم (Lenis)
+//  ما بينشغّل أصلاً وبيضل null. وروابط الأقسام كانت تنادي
+//  lenis.scrollTo مباشرة → بترمي خطأ وما بيصير ولا إشي: الضغط
+//  على «الأسئلة» أو «تواصل» ما بيوديك لأي مكان.
+//  والزائر اللي مفعّل هالخيار غالباً بيكون محتاجه فعلاً.
+//  الحل: Lenis إذا موجود، وإلا سكرول المتصفح العادي.
+// ═══════════════════════════════════════════════════════════════
+function scrollToY(y, immediate) {
+  if (lenis) {
+    lenis.scrollTo(
+      y,
+      immediate ? { immediate: true, force: true } : { duration: ANCHOR_DURATION }
+    );
+    return;
+  }
+  window.scrollTo({ top: y, behavior: immediate ? 'auto' : 'smooth' });
+}
+
+function resizeScroll() {
+  if (lenis) lenis.resize();
+}
+
 // ─────────────────────────────────────────────
 //  تنظيف كل شي قبل الانتقال لصفحة ثانية
 // ─────────────────────────────────────────────
@@ -82,8 +108,20 @@ function setupSmoothScroll() {
 
   window.__lenis = lenis;
   window.__gsap = gsap;
+}
 
-  // روابط الأنكور (#work، #designs، #pricing…) بتسكرول بنعومة مع تعويض النافبار
+// ─────────────────────────────────────────────
+//  1ب) روابط الأقسام (#work، #designs، #pricing…)
+//
+//  ⚠️⚠️ ليش دالة مستقلة؟ ⚠️⚠️
+//  كانت مكتوبة جوّا setupSmoothScroll، وهديك بترجع من أولها لو
+//  الزائر مفعّل «تقليل الحركة». يعني كل روابط الأقسام كانت
+//  **مش مسجّلة أصلاً** لهالزائر — الضغط على «الأسئلة» ما بيعمل
+//  إشي غير إنه يحط # بالرابط. طلعت بفحص _check/anchors.mjs.
+//  هلق بتنسجّل دايماً، والحركة بتمرق من scrollToY اللي بيتصرّف
+//  مع الحالتين.
+// ─────────────────────────────────────────────
+function setupAnchors() {
   const onClick = (e) => {
     const a = e.target.closest('a[href*="#"]');
     if (!a) return;
@@ -107,7 +145,7 @@ function setupSmoothScroll() {
     //    الحركة — فالزر بيبين كأنه ما بيعمل إشي. فمنجبر إعادة
     //    الحساب أول ما يضغط، وهاي بتحدّث Lenis كمان.
     ScrollTrigger.refresh();
-    lenis.resize();
+    resizeScroll();
 
     const y0 = target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
     const distance = Math.abs(y0 - window.scrollY);
@@ -120,11 +158,7 @@ function setupSmoothScroll() {
     //    (قريب) يشتغل عادي. وكمان انزلاق 16 ألف بكسل تجربة سيئة.
     const isFarJump = distance > window.innerHeight * 2.5;
 
-    if (isFarJump) {
-      lenis.scrollTo(y0, { immediate: true, force: true });
-    } else {
-      lenis.scrollTo(y0, { duration: ANCHOR_DURATION });
-    }
+    scrollToY(y0, isFarJump);
 
     settleTo(url.hash, isFarJump ? FAR_RETRIES : ANCHOR_RETRIES);
 
@@ -137,9 +171,9 @@ function setupSmoothScroll() {
       if (Math.abs(el.getBoundingClientRect().top - NAV_OFFSET) < 120) return;
 
       ScrollTrigger.refresh();
-      lenis.resize();
+      resizeScroll();
       const y = el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
-      lenis.scrollTo(y, { immediate: true, force: true });
+      scrollToY(y, true);
     }, 2600);
     cleanups.push(() => clearTimeout(fallback));
   };
@@ -171,7 +205,7 @@ function settleTo(hash, schedule) {
     if (!el) return;
 
     // نتأكد إن Lenis عارف الارتفاع الحقيقي قبل ما نطلب منه يتحرك
-    if (lenis) lenis.resize();
+    resizeScroll();
 
     const y = el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
     const drift = Math.abs(y - window.scrollY);
@@ -180,8 +214,7 @@ function settleTo(hash, schedule) {
       return;
     }
 
-    if (lenis) lenis.scrollTo(y, { immediate: true, force: true });
-    else window.scrollTo(0, y);
+    scrollToY(y, true);
   };
 
   schedule.forEach((ms) => timers.push(setTimeout(step, ms)));
@@ -398,6 +431,8 @@ function setupTouchLight() {
 // ═══════════════════════════════════════════════════════════════
 function init() {
   setupSmoothScroll();
+  // ⚠️ لازم تنادى دايماً — مش جوّا setupSmoothScroll. شوف الشرح فوقها
+  setupAnchors();
 
   setupCounters();
   setupWordGlow();

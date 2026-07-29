@@ -7,7 +7,7 @@
   --gap: clamp(30px, 4.5vh, 52px);
   --big: clamp(48px, 9vw, 104px); /* حجم الرقم الكبير */
   --field-gap: clamp(22px, 3vh, 32px);
-  --danger: #ff6b5b; /* لون الخسارة */
+  /* ⚠️ اللون صار بـ tokens.css — هون بس منشير إله */
 }
 
 /* ─── الترويسة ─── */

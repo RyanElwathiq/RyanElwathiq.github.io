@@ -518,7 +518,10 @@ const t = isAr
             ctx.strokeStyle = 'rgba(160, 164, 155, 0.45)';
             ctx.shadowBlur = 0;
           } else {
-            ctx.strokeStyle = '#D9FF3F';
+            // ⚠️ من نظام الهوية مش مكتوب بالإيد — لو تغيّر اللون بتغيّر معه
+            ctx.strokeStyle =
+              getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() ||
+              '#D9FF3F';
             ctx.shadowColor = 'rgba(217, 255, 63, 0.5)';
             ctx.shadowBlur = 8;
           }

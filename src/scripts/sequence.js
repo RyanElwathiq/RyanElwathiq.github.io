@@ -123,7 +123,14 @@ async function setupOne(section, priority) {
     const img = images[k];
     if (!img) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // ⚠️ عالموبايل منقصّ كثافة البكسل لـ ١.٢٥ بدل ٢.
+    //    ليش؟ الفريم بينرسم من جديد مع كل حركة سكرول، وبكثافة ٢
+    //    المتصفح بيكتب ٤ أضعاف البكسلات كل إطار — وهاد كان جزء
+    //    كبير من التقطيع على تلفون متوسط.
+    //    والفرق بالعين؟ ما بيبيّن: الفريمات نفسها مضغوطة، وفوقها
+    //    طبقة حبيبات بتغطّي أي نعومة زايدة.
+    const isPhone = window.innerWidth < 768;
+    const dpr = Math.min(window.devicePixelRatio || 1, isPhone ? 1.25 : 2);
     const cw = Math.round(canvas.clientWidth * dpr);
     const ch = Math.round(canvas.clientHeight * dpr);
     if (cw === 0 || ch === 0) return;

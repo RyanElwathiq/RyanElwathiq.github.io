@@ -433,7 +433,7 @@ html[lang='ar'] .bud-panel-title {
 
 /* أقل من 1 = المضاعف بيأكل من نتيجتك، فبيصير أحمر */
 .bud-mult-fill.is-low {
-  background: #ff6b5b;
+  background: var(--danger);
 }
 
 .bud-mult-val {

@@ -20,13 +20,22 @@
 // ═══════════════════════════════════════════════════════════════
 interface Props {
   text?: string;
+  /** صورة بدل النص — منستخدمها للوجو بالمساحات الفاضية */
+  src?: string;
+  /** small = فاصل هادي بين الأقسام · '' = الحجم الكامل */
+  size?: 'small' | '';
   label?: string;
 }
 
-const { text = 'RAYAN ELWATHIQ', label = '' } = Astro.props;
+const { text = 'RAYAN ELWATHIQ', src, size = '', label = '' } = Astro.props;
 ---
 
-<section class="dust" data-dust aria-label={label || text}>
+<section
+  class={`dust ${size === 'small' ? 'dust-sm' : ''}`}
+  data-dust
+  data-dust-src={src}
+  aria-label={label || (src ? 'Rayan Elwathiq' : text)}
+>
   <canvas data-dust-canvas aria-hidden="true"></canvas>
   <!-- بديل للقارئ الصوتي وللي مطفّي الجافاسكربت -->
   <p class="dust-text">{text}</p>
@@ -85,7 +94,7 @@ const { text = 'RAYAN ELWATHIQ', label = '' } = Astro.props;
       // ─── نبني النقاط من شكل الاسم ───
       // منرسم النص على كانفس مخفي، ومنقرأ البكسلات المليانة،
       // وكل بكسل مليان بيصير نقطة.
-      function build() {
+      function build(art?: HTMLImageElement) {
         const rect = root.getBoundingClientRect();
         W = Math.round(rect.width);
         H = Math.round(rect.height);
@@ -103,18 +112,26 @@ const { text = 'RAYAN ELWATHIQ', label = '' } = Astro.props;
         const o = off.getContext('2d', { willReadFrequently: true });
         if (!o) return;
 
-        // نضبّط حجم الخط بحيث الاسم يعبّي العرض المتاح
-        const font = getComputedStyle(document.body).getPropertyValue('--font-en').trim();
-        let size = Math.round(H * 0.62);
-        o.textAlign = 'center';
-        o.textBaseline = 'middle';
-        for (let i = 0; i < 30; i++) {
-          o.font = `700 ${size}px ${font}`;
-          if (o.measureText(label).width <= W * 0.88) break;
-          size -= Math.max(1, Math.round(size * 0.06));
+        if (art) {
+          // ─── نمط اللوجو: منرسم الصورة بالنص ونقرأ شفافيتها ───
+          const s = Math.min((W * 0.7) / art.naturalWidth, (H * 0.82) / art.naturalHeight);
+          const w = art.naturalWidth * s;
+          const h = art.naturalHeight * s;
+          o.drawImage(art, (W - w) / 2, (H - h) / 2, w, h);
+        } else {
+          // ─── نمط الاسم: منضبّط حجم الخط ليعبّي العرض المتاح ───
+          const font = getComputedStyle(document.body).getPropertyValue('--font-en').trim();
+          let size = Math.round(H * 0.62);
+          o.textAlign = 'center';
+          o.textBaseline = 'middle';
+          for (let i = 0; i < 30; i++) {
+            o.font = `700 ${size}px ${font}`;
+            if (o.measureText(label).width <= W * 0.88) break;
+            size -= Math.max(1, Math.round(size * 0.06));
+          }
+          o.fillStyle = '#fff';
+          o.fillText(label, W / 2, H / 2);
         }
-        o.fillStyle = '#fff';
-        o.fillText(label, W / 2, H / 2);
 
         const data = o.getImageData(0, 0, W, H).data;
 
@@ -216,7 +233,16 @@ const { text = 'RAYAN ELWATHIQ', label = '' } = Astro.props;
         //    التذييل — يعني ما بيوصل لنص الشاشة أبداً مهما نزّلت،
         //    فالاسم كان يضل مبعثر ولا يستقر ولا مرة.
         //    هلق: أول ما يطلّ = مبعثر، وبعد نص شاشة سكرول = مستقر.
-        const p = (vh - r.top) / (vh * 0.55);
+        // ⚠️ لو القسم كله ظاهر بالشاشة = مستقر تماماً، خلص.
+        //    بدون هالسطر كان الاسم يوصل ٩٠٪ ويقف — لأنه آخر إشي
+        //    قبل التذييل، فمهما نزّلت ما بيوصل لنص الشاشة أبداً
+        //    وبيضل الحروف مبعثرة شوي.
+        if (r.bottom <= vh + 4 && r.top >= -4) {
+          progress = 1;
+          kick();
+          return;
+        }
+        const p = (vh - r.top) / (vh * 0.32);
         progress = Math.max(0, Math.min(1, p));
         kick();
       };
@@ -247,19 +273,33 @@ const { text = 'RAYAN ELWATHIQ', label = '' } = Astro.props;
       );
       io.observe(root);
 
-      const onResize = () => {
-        build();
+      // ─── مصدر الشكل: صورة اللوجو أو النص ───
+      const srcUrl = (root as HTMLElement).dataset.dustSrc;
+      let art: HTMLImageElement | undefined;
+
+      const rebuild = () => {
+        build(art);
         onScroll();
         kick();
       };
+      const onResize = rebuild;
 
-      // الخط لازم يكون محمّل قبل ما نقرأ شكل الحروف —
-      // بدونها بتنبنى النقاط على خط النظام وبيطلع الاسم بشكل ثاني
-      (document.fonts?.ready || Promise.resolve()).then(() => {
-        build();
-        onScroll();
-        kick();
-      });
+      if (srcUrl) {
+        const im = new Image();
+        im.decoding = 'async';
+        im.src = srcUrl;
+        im.decode()
+          .then(() => {
+            art = im;
+            rebuild();
+          })
+          // الصورة ما وصلت؟ منرجع للاسم بدل ما نترك مساحة فاضية
+          .catch(rebuild);
+      } else {
+        // الخط لازم يكون محمّل قبل ما نقرأ شكل الحروف — بدونها
+        // بتنبنى النقاط على خط النظام وبيطلع الاسم بشكل ثاني
+        (document.fonts?.ready || Promise.resolve()).then(rebuild);
+      }
 
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', onResize);
@@ -299,6 +339,12 @@ const { text = 'RAYAN ELWATHIQ', label = '' } = Astro.props;
     margin-block: clamp(30px, 6vh, 70px);
     /* الماوس لازم يوصل للكانفس عشان النقاط تهرب منه */
     touch-action: pan-y;
+  }
+
+  /* الفاصل الهادي: اللوجو بالمساحات الفاضية بين الأقسام */
+  .dust-sm {
+    height: clamp(110px, 13vw, 170px);
+    margin-block: clamp(20px, 4vh, 46px);
   }
 
   .dust canvas {
