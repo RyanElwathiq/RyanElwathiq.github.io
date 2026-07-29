@@ -2,33 +2,12 @@
   "tracks": {
     "start": [
       {
-        "label": "Nada Fayyad",
-        "labelAr": "ندى فياض",
-        "line": "Wedding dresses and suits, UAE. An online project from the very beginning — designs only, no say in anything else.",
-        "lineAr": "فساتين وبدلات أعراس بالإمارات. مشروع أونلاين من أول الطريق — تصاميم بس، بدون رأي بأي إشي ثاني.",
-        "year": "",
-        "shots": [
-          "/assets/work/nada-fayyad/nada-fayyad-01.webp",
-          "/assets/work/nada-fayyad/nada-fayyad-02.webp"
-        ]
-      },
-      {
-        "label": "Tampa",
-        "labelAr": "تامبا",
-        "line": "A phone and accessories shop. A small set of designs — the kind of job everyone starts with.",
-        "lineAr": "محل تلفونات وإكسسوارات. مجموعة تصاميم بسيطة — الشغلة اللي بيبلّش فيها الكل.",
-        "year": "",
-        "shots": [
-          "/assets/work/tampa/tampa-01.webp",
-          "/assets/work/tampa/tampa-02.webp"
-        ]
-      },
-      {
         "label": "MLR & Halem Spa",
         "labelAr": "سبا MLR وحليم",
-        "line": "Practice work while I was still learning. Not commissioned, not published — just reps.",
-        "lineAr": "شغل تمرين وأنا لسا ببدايتي. مش مطلوب ولا منشور — بس تكرار وصقل.",
-        "year": "",
+        "phase": "2017 – 2018",
+        "phaseAr": "٢٠١٧ – ٢٠١٨",
+        "line": "Stock photography, floral clipart, a decorative script. No grid and no hierarchy — the honest look of a first year.",
+        "lineAr": "صورة مخزن، وكليب-آرت ورد، وخط مزخرف. بلا شبكة وبلا تسلسل — شكل السنة الأولى بصراحة.",
         "shots": [
           "/assets/work/spa/spa-01.webp",
           "/assets/work/spa/spa-02.webp",
@@ -37,11 +16,24 @@
         ]
       },
       {
+        "label": "Tampa",
+        "labelAr": "تامبا",
+        "phase": "2017 – 2018",
+        "phaseAr": "٢٠١٧ – ٢٠١٨",
+        "line": "A phone shop. Simple, but the product finally sits in a deliberate layout instead of floating.",
+        "lineAr": "محل تلفونات. بسيط، بس المنتج أخيراً قاعد بتخطيط مقصود بدل ما يطفو.",
+        "shots": [
+          "/assets/work/tampa/tampa-01.webp",
+          "/assets/work/tampa/tampa-02.webp"
+        ]
+      },
+      {
         "label": "Progress & clinics",
         "labelAr": "بروجرِس والعيادات",
-        "line": "Real estate in the UAE and two clinics in Egypt. Design handed a topic, not a problem.",
-        "lineAr": "عقارات بالإمارات وعيادتين بمصر. تصميم بيوصله موضوع، مش مشكلة.",
-        "year": "",
+        "phase": "2019",
+        "phaseAr": "٢٠١٩",
+        "line": "Real estate in the UAE and two clinics in Egypt. First appearance of information design: steps, icons, a point being explained.",
+        "lineAr": "عقارات بالإمارات وعيادتين بمصر. أول ظهور لتصميم المعلومة: خطوات وأيقونات وفكرة بتنشرح.",
         "shots": [
           "/assets/work/progress/progress-01.webp",
           "/assets/work/progress/progress-02.webp",
@@ -50,11 +42,24 @@
         ]
       },
       {
-        "label": "Early miscellaneous",
-        "labelAr": "شغل مبكّر متفرّق",
-        "line": "A proposed identity, a tourism company, a joke design for a client. Kept because they are part of the road.",
-        "lineAr": "هوية مقترحة، وشركة سياحية، وتصميم فكاهي لعميل. محفوظين لأنهم جزء من الطريق.",
-        "year": "",
+        "label": "Nada Fayyad",
+        "labelAr": "ندى فياض",
+        "phase": "2019 – 2020",
+        "phaseAr": "٢٠١٩ – ٢٠٢٠",
+        "line": "Wedding dresses, UAE. The turning point — this is the first piece with a real offer and a reason to act, not just a pretty frame.",
+        "lineAr": "فساتين أعراس بالإمارات. نقطة التحوّل — أول قطعة فيها عرض حقيقي وسبب للتصرّف، مش بس إطار حلو.",
+        "shots": [
+          "/assets/work/nada-fayyad/nada-fayyad-01.webp",
+          "/assets/work/nada-fayyad/nada-fayyad-02.webp"
+        ]
+      },
+      {
+        "label": "Identities and one-offs",
+        "labelAr": "هويات وشغل متفرّق",
+        "phase": "2020",
+        "phaseAr": "٢٠٢٠",
+        "line": "A proposed identity, a tourism brand, a campaign visual. By here the work is making decisions, not decorating.",
+        "lineAr": "هوية مقترحة، وعلامة سياحية، وتصميم حملة. لهون صار الشغل بياخد قرارات، مش بيزخرف.",
         "shots": [
           "/assets/work/misc/misc-01.webp",
           "/assets/work/misc/misc-02.webp",
@@ -66,9 +71,10 @@
       {
         "label": "WE Telecom — fictional",
         "labelAr": "وي للاتصالات — وهمي",
-        "line": "Not a client. A self-set brief on a brand at national scale, testing modern styles and AI inside the design pipeline.",
+        "phase": "Today",
+        "phaseAr": "اليوم",
+        "line": "Not a client. A brief I set myself on a brand at national scale, testing modern styles and folding AI into the pipeline.",
         "lineAr": "مش عميل. بريف كتبته لحالي على علامة بحجم وطني، بجرّب فيه أساليب حديثة ودمج الذكاء الاصطناعي بسير التصميم.",
-        "year": "",
         "shots": [
           "/assets/work/lab/lab-01.webp",
           "/assets/work/lab/lab-02.webp",
@@ -81,9 +87,10 @@
       {
         "label": "Technique studies",
         "labelAr": "دراسات تقنية",
+        "phase": "Today",
+        "phaseAr": "اليوم",
         "line": "Fruit inside a realistic ice cube, type wrapped onto packaging. Single problems, solved for their own sake.",
         "lineAr": "فواكه جوّا مكعّب ثلج واقعي، ونص ملفوف على عبوة. مشاكل مفردة، بتنحل لذاتها.",
-        "year": "",
         "shots": [
           "/assets/work/lab/lab-07.webp",
           "/assets/work/lab/lab-08.webp",
