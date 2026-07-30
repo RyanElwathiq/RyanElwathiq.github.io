@@ -1,0 +1,27 @@
+# ═══════════════════════════════════════════════════════════════
+#  إعدادات الـ Worker
+#
+#  ⚠️ ما في ولا مفتاح سرّي بهذا الملف — وهاد مقصود.
+#     الملف بينرفع على GitHub، والمفاتيح بتنحط من لوحة Cloudflare
+#     أو بأمر wrangler secret put، وبتضل مخزّنة عندهم مشفّرة.
+# ═══════════════════════════════════════════════════════════════
+
+name = "ryanalali-api"
+main = "src/index.js"
+compatibility_date = "2026-07-30"
+
+# مختبر الأفكار — موديلات Cloudflare نفسها، مجانية وبلا مفاتيح
+[ai]
+binding = "AI"
+
+# ─── متغيّرات مش سرّية (بينفع تنكتب هون) ───
+[vars]
+# وين بدك توصلك الطلبات
+MAIL_TO = "ryan.elwathiq@gmail.com"
+# مين المرسِل. بيضل onboarding@resend.dev لحد ما نوثّق دومينك
+MAIL_FROM = "Rayan Portfolio <onboarding@resend.dev>"
+
+# ─── المفاتيح السرّية — بتنحط بأوامر منفصلة، مش هون ───
+#   npx wrangler secret put RESEND_KEY
+#   npx wrangler secret put TELEGRAM_BOT_TOKEN
+#   npx wrangler secret put TELEGRAM_CHAT_ID
