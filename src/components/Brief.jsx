@@ -67,6 +67,10 @@ const COPY = {
     errService: 'اختار خدمة وحدة على الأقل.',
     errName: 'اكتب اسمك.',
     errEmail: 'اكتب إيميل صحيح.',
+    // ⚠️ الرسالة بتقول له شو يعمل، مش بس إنه في خطأ. زر «انسخ
+    //    الطلب» موجود تحت أصلاً فما بيضيع اللي كتبه.
+    errSend: 'ما قدرنا نبعت الطلب. جرّب كمان مرة، أو انسخ الطلب من الزر تحت وابعتهولي واتساب.',
+    sending: 'عم نبعت…',
     // ─── بعد الإرسال ───
     doneTitle: 'تمام، فتحت بريدك',
     doneBody:
@@ -116,6 +120,8 @@ const COPY = {
     errService: 'Pick at least one service.',
     errName: 'Please enter your name.',
     errEmail: 'Please enter a valid email.',
+    errSend: 'We could not send the brief. Try again, or copy it with the button below and send it over WhatsApp.',
+    sending: 'Sending…',
     doneTitle: 'Done — your email is open',
     doneBody:
       'All your answers are pre-filled in a message. Just hit send from your email app. Did it not open? Use "Copy the brief" and send it to me on WhatsApp or email.',
@@ -136,6 +142,10 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
   const [done, setDone] = useState(false);
   const [copied, setCopied] = useState(false);
   const [err, setErr] = useState('');
+  const [sending, setSending] = useState(false);
+  // فخّ السبام: حقل مخفي عن الإنسان، الروبوتات بتعبّيه لأنها
+  // بتقرأ الـ HTML مش الشاشة. لو انتعبّى، الـ Worker بيتجاهل الطلب.
+  const [trap, setTrap] = useState('');
 
   const [services, setServices] = useState([]);
   const [biz, setBiz] = useState('');
@@ -169,12 +179,46 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
     ].join('\n');
   }, [services, biz, budget, when, details, name, mail, phone, isAr]);
 
-  // ⚠️ هون بس بتتغيّر الطريقة لما نعمل Cloudflare Worker
-  const submit = () => {
-    const subject = isAr ? `طلب مشروع — ${biz || name}` : `Project brief — ${biz || name}`;
-    const href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(briefText)}`;
-    window.location.href = href;
-    setDone(true);
+  // ═══════════════════════════════════════════════════════════
+  //  الإرسال
+  //
+  //  كان بيفتح برنامج البريد عند الزائر (mailto) — ونص الناس
+  //  بتوقف عند هالخطوة. صار بيروح للـ Worker مباشرة، والطلب
+  //  بيوصل ريّان إيميل وتنبيه تيليجرام بنفس اللحظة.
+  //
+  //  ⚠️ لو الإرسال فشل لأي سبب (نت الزائر، الخدمة واقعة)، ما
+  //     منقوله «تم». منرجّعه للفورم مع رسالة وزر «انسخ الطلب»
+  //     الموجود أصلاً — عشان ما يضيع طلب حقيقي بالصمت.
+  // ═══════════════════════════════════════════════════════════
+  const API = 'https://ryanalali-api.ryanalali-api.workers.dev';
+
+  const submit = async () => {
+    if (sending) return;
+    setErr('');
+    setSending(true);
+
+    const stop = new AbortController();
+    const timer = setTimeout(() => stop.abort(), 20000);
+
+    try {
+      const r = await fetch(API + '/brief', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: stop.signal,
+        body: JSON.stringify({
+          lang, name, mail, phone, biz, budget, when, services, details,
+          // فخّ السبام — الحقل المخفي تحت. الإنسان ما بيشوفه
+          website: trap,
+        }),
+      });
+      if (!r.ok) throw new Error('send-failed');
+      setDone(true);
+    } catch {
+      setErr(t.errSend);
+    } finally {
+      clearTimeout(timer);
+      setSending(false);
+    }
   };
 
   const copy = async () => {
@@ -366,6 +410,24 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
         )}
       </div>
 
+      {/* ═══ فخّ السبام ═══
+          الروبوت بيقرأ الـ HTML وبيعبّي أي حقل بيلاقيه، والإنسان
+          ما بيشوفه أصلاً. لو انتعبّى، الـ Worker بيتجاهل الطلب.
+          ⚠️ display:none بس — مع tabIndex=-1 و aria-hidden عشان
+             قارئ الشاشة ما يوصله ويحيّر مستخدم كفيف. */}
+      <div style={{ display: 'none' }} aria-hidden="true">
+        <label>
+          Website
+          <input
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={trap}
+            onChange={(e) => setTrap(e.target.value)}
+          />
+        </label>
+      </div>
+
       {err && (
         <p className="brief-err" role="alert">
           {err}
@@ -387,13 +449,14 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
           <button
             type="button"
             className="btn btn-primary"
+            disabled={sending}
             onClick={() => {
               if (!name.trim()) return setErr(t.errName);
               if (!isEmail(mail)) return setErr(t.errEmail);
               submit();
             }}
           >
-            {t.send}
+            {sending ? t.sending : t.send}
           </button>
         )}
       </div>

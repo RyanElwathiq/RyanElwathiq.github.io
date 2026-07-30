@@ -41,6 +41,13 @@ const t = isAr
       generate: 'ولّد لي فكرة',
       again: 'فكرة ثانية',
       restart: 'غيّر إجاباتي',
+      aiTag: 'وفكرة كمان من الذكاء الاصطناعي',
+      aiLoading: 'عم تتولّد…',
+      // ⚠️ التحذير مقصود يكون صريح مش مطمّن. قسنا الموديل المجاني
+      //    وطلع ما بيقرأ عربي منيح، والزائر لازم يعرف قبل ما يحكم
+      //    على شغل ريّان من نتيجة غلط.
+      aiWarn:
+        'هاي مولّدة بالذكاء الاصطناعي، فممكن تطلع غلط أو مش دقيقة — خُذها كنقطة بداية مش كخطة. للنتائج الأدق جرّب اللعبة بالإنجليزي. وبنشتغل على تحسين النموذج قريباً.',
       labelHook: 'الخطاف',
       labelFormat: 'الشكل',
       labelAngle: 'الزاوية',
@@ -69,6 +76,10 @@ const t = isAr
       generate: 'Generate an idea',
       again: 'Another idea',
       restart: 'Change my answers',
+      aiTag: 'And one more, from AI',
+      aiLoading: 'generating…',
+      aiWarn:
+        'This one is AI-generated, so it can be wrong or imprecise — treat it as a starting point, not a plan. We are working on a better model.',
       labelHook: 'Hook',
       labelFormat: 'Format',
       labelAngle: 'Angle',
@@ -207,6 +218,19 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
             <div class="r"><span>{t.labelAngle}</span><p data-r-angle></p></div>
             <div class="r"><span>{t.labelProof}</span><p data-r-proof></p></div>
             <div class="r"><span>{t.labelCloser}</span><p data-r-closer></p></div>
+          </div>
+
+          <!-- ═══ فكرة من الذكاء الاصطناعي ═══
+               ⚠️ بتوصل بعد الفكرة المركّبة، مش بدلها. لو الخدمة
+               وقعت أو تأخّرت، الزائر بيضل شايف نتيجة كاملة —
+               ما بينكسر إشي وما بيستنى على فاضي. -->
+          <div class="ai-block" data-ai-block hidden>
+            <div class="ai-head">
+              <span class="ai-tag">{t.aiTag}</span>
+              <span class="ai-load" data-ai-load>{t.aiLoading}</span>
+            </div>
+            <p class="ai-text" data-ai-text></p>
+            <p class="ai-warn">{t.aiWarn}</p>
           </div>
 
           <div class="actions">
@@ -725,6 +749,80 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     border-top: 1px solid var(--line);
   }
 
+  /* ─── بلوك الذكاء الاصطناعي ─── */
+  .ai-block {
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px dashed color-mix(in srgb, var(--muted) 30%, transparent);
+  }
+
+  .ai-block[hidden] {
+    display: none;
+  }
+
+  .ai-head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .ai-tag {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* ⚠️ نبضة خفيفة بس — الانتظار قصير، وأي حركة أقوى بتلفت
+     الانتباه عن الفكرة اللي فوقها وهي الأهم */
+  .ai-load {
+    font-size: 12px;
+    color: var(--muted);
+    animation: ai-pulse 1.4s ease-in-out infinite;
+  }
+
+  .ai-load[hidden] {
+    display: none;
+  }
+
+  @keyframes ai-pulse {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 0.9;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ai-load {
+      animation: none;
+      opacity: 0.7;
+    }
+  }
+
+  .ai-text {
+    font-size: clamp(15px, 1.6vw, 17px);
+    line-height: 1.85;
+    color: var(--text);
+  }
+
+  .ai-text:empty {
+    display: none;
+  }
+
+  .ai-warn {
+    margin-top: 12px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+    opacity: 0.75;
+  }
+
   .disclaimer {
     margin-top: 20px;
     font-size: 13px;
@@ -794,6 +892,64 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     const bizInput = lab.querySelector('[data-biz]') as HTMLInputElement;
     const notesInput = lab.querySelector('[data-notes]') as HTMLTextAreaElement;
     const askMail = lab.querySelector('[data-ask-mail]') as HTMLAnchorElement;
+
+    // ═══════════════════════════════════════════════════════
+    //  فكرة الذكاء الاصطناعي — بتوصل بعد الفكرة المركّبة
+    //
+    //  ⚠️ ليش «بعد» مش «بدل»؟ لأنه الفكرة المركّبة فورية وما
+    //     بتفشل أبداً. لو ربطنا كل النتيجة بالخدمة، أي تأخير
+    //     أو انقطاع بيخلّي الزائر قاعد يتفرّج على شاشة فاضية.
+    //     هيك: نتيجة كاملة فوراً، والذكاء الاصطناعي إضافة.
+    //
+    //  ولو فشل الطلب — منخبّي البلوك كله بهدوء. الزائر ما بيشوف
+    //  رسالة خطأ ولا بيعرف إنه في إشي كان المفروض يجي.
+    // ═══════════════════════════════════════════════════════
+    const API = 'https://ryanalali-api.ryanalali-api.workers.dev';
+    const aiBlock = lab.querySelector('[data-ai-block]') as HTMLElement;
+    const aiText = lab.querySelector('[data-ai-text]') as HTMLElement;
+    const aiLoad = lab.querySelector('[data-ai-load]') as HTMLElement;
+    let aiRun = 0;
+
+    async function askAI(answers: any, notes: string) {
+      if (!aiBlock) return;
+      const run = ++aiRun; // عشان نتيجة قديمة ما تكتب فوق جديدة
+
+      aiBlock.hidden = false;
+      aiText.textContent = '';
+      aiLoad.hidden = false;
+
+      // ما نخلّي الزائر مستني للأبد لو الخدمة بطيئة
+      const stop = new AbortController();
+      const timer = setTimeout(() => stop.abort(), 25000);
+
+      try {
+        const label = (sel: string) =>
+          (lab.querySelector(sel + '.is-on') as HTMLElement)?.textContent?.trim() || '';
+
+        const r = await fetch(API + '/idea', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: stop.signal,
+          body: JSON.stringify({
+            lang: isAr ? 'ar' : 'en',
+            industry: label('[data-industry]'),
+            goal: label('[data-goal]'),
+            notes: [answers.biz, notes].filter(Boolean).join(' — '),
+          }),
+        });
+
+        const d = await r.json();
+        if (run !== aiRun) return; // الزائر ضغط «فكرة ثانية» بالأثناء
+        if (!r.ok || !d?.idea) throw new Error('no-idea');
+
+        aiLoad.hidden = true;
+        aiText.textContent = d.idea;
+      } catch {
+        if (run === aiRun) aiBlock.hidden = true;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
 
     const isAr = document.documentElement.lang === 'ar';
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1104,6 +1260,7 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 
       form.hidden = true;
       result.hidden = false;
+      askAI(answers, (notesInput?.value || '').trim());
       if (!reduce) result.animate([{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(0.16,1,0.3,1)' });
     };
 
