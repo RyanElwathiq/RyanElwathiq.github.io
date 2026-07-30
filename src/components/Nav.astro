@@ -39,6 +39,9 @@ const t = isAr
       labWork: 'التجارب',
       seo: 'السيو',
       data: 'تحليل البيانات',
+      gProblem: 'المشكلة', gThink: 'كيف بفكّر', gProof: 'الشغل', gStart: 'ابدأ',
+      about: 'من أنا', knot: 'ثلاثي الأبعاد', growth: 'قصص النمو',
+      designs: 'التصاميم', websites: 'المواقع', video: 'الفيديو',
       pricing: 'كيف بشتغل',
       faq: 'أسئلة شائعة',
       blog: 'إشارات',
@@ -56,6 +59,9 @@ const t = isAr
       labWork: 'The lab',
       seo: 'SEO',
       data: 'Data',
+      gProblem: 'The problem', gThink: 'How I think', gProof: 'The work', gStart: 'Start',
+      about: 'About', knot: '3D', growth: 'Growth stories',
+      designs: 'Designs', websites: 'Websites', video: 'Video',
       pricing: 'How I work',
       faq: 'FAQ',
       blog: 'Signals',
@@ -73,18 +79,57 @@ const links = [
   { label: t.contact, href: `${home}#contact` },
 ];
 
-// ✏️ روابط قائمة الموبايل — كاملة، لأن الشاشة كاملة وفيها مساحة
-const sheetLinks = [
-  { label: t.work, href: `${home}#work` },
-  { label: t.pricing, href: `${home}#pricing` },
-  { label: t.brief, href: isAr ? '/ar/brief/' : '/brief/' },
-  { label: t.budget, href: isAr ? '/ar/budget/' : '/budget/' },
-  { label: t.loss, href: isAr ? '/ar/loss/' : '/loss/' },
-  { label: t.lab, href: `${home}#lab` },
-  { label: t.eye, href: `${home}#brand-eye` },
-  { label: t.faq, href: `${home}#faq` },
-  { label: t.blog, href: blogHref },
-  { label: t.contact, href: `${home}#contact` },
+// ═══════════════════════════════════════════════════════════════
+//  روابط قائمة الموبايل — **كل** أقسام الموقع
+//
+//  ⚠️ قاعدة من ريّان: أي قسم جديد لازم يكون بالقائمة وبشريط
+//     الإشارة. الفحص لقى ١٢ قسم ناقص من القائمة (كانت ١٠ روابط
+//     مقابل ١٨ قسم) — يعني نص الموقع ما إله طريق من الموبايل
+//     إلا السكرول.
+//  ⚠️ مجمّعة بنفس ترتيب الصفحة (مشكلة → تفكير → شغل → قرار)
+//     لأن ١٨ رابط بقائمة مسطّحة بتصير جدار.
+//  ✏️ ضفت قسم؟ ضيفه هون وبشريط الإشارة (marks بصفحة index)
+//     وبأيقونات SignalBar.
+// ═══════════════════════════════════════════════════════════════
+const sheetGroups = [
+  {
+    title: t.gProblem,
+    links: [
+      { label: t.loss, href: `${home}#loss` },
+      { label: t.eye, href: `${home}#brand-eye` },
+    ],
+  },
+  {
+    title: t.gThink,
+    links: [
+      { label: t.about, href: `${home}#about` },
+      { label: t.seo, href: `${home}#seo` },
+      { label: t.data, href: `${home}#data` },
+      { label: t.knot, href: `${home}#knot` },
+      { label: t.budget, href: `${home}#budget` },
+      { label: t.lab, href: `${home}#lab` },
+    ],
+  },
+  {
+    title: t.gProof,
+    links: [
+      { label: t.growth, href: `${home}#growth` },
+      { label: t.video, href: `${home}#work` },
+      { label: t.designs, href: `${home}#designs` },
+      { label: t.websites, href: `${home}#websites` },
+      { label: t.labWork, href: `${home}#lab-work` },
+      { label: t.blog, href: `${home}#signals` },
+    ],
+  },
+  {
+    title: t.gStart,
+    links: [
+      { label: t.pricing, href: `${home}#pricing` },
+      { label: t.faq, href: `${home}#faq` },
+      { label: t.brief, href: `${home}#brief` },
+      { label: t.contact, href: `${home}#contact` },
+    ],
+  },
 ];
 
 const switchLabel = isAr ? 'EN' : 'عربي';
@@ -121,7 +166,14 @@ const switchLabel = isAr ? 'EN' : 'عربي';
   </button>
 
   <nav class="sheet-links" aria-label={isAr ? 'قائمة التنقل' : 'Navigation menu'}>
-    {sheetLinks.map((l, i) => <a href={l.href} style={`--i:${i}`}>{l.label}</a>)}
+    {sheetGroups.map((g, gi) => (
+      <div class="sheet-group">
+        <p class="sheet-title">{g.title}</p>
+        {g.links.map((l, i) => (
+          <a href={l.href} style={`--i:${gi * 5 + i}`}>{l.label}</a>
+        ))}
+      </div>
+    ))}
   </nav>
 
   <a class="sheet-lang" href={switchHref}>{switchLabel}</a>
@@ -323,16 +375,44 @@ const switchLabel = isAr ? 'EN' : 'عربي';
     color: var(--text);
   }
 
+  /* ═══════════════════════════════════════════════════════
+     ⚠️ القائمة صارت ١٨ قسم بدل ١٠ (كان نص الموقع بلا طريق من
+        الموبايل إلا السكرول). بعمودين ومجمّعة، فبتزبط بالشاشة
+        بدون سكرول داخلي وبتنقرا كبنية مش كجدار.
+     ═══════════════════════════════════════════════════════ */
   .sheet-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(16px, 3.5vh, 30px) clamp(18px, 6vw, 44px);
+    align-items: start;
+    width: min(520px, 88vw);
+    text-align: start;
+  }
+
+  .sheet-group {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
+    gap: 7px;
+  }
+
+  .sheet-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+
+  html[lang='ar'] .sheet-title {
+    letter-spacing: 0;
+    text-transform: none;
   }
 
   .sheet-links a {
-    /* أصغر شوي من قبل عشان الستة روابط يزبطوا بالشاشة */
-    font-size: clamp(24px, 6.6vw, 34px);
+    /* ⚠️ أصغر من قبل بكثير: ١٨ رابط بحجم ٣٤ بكسل ما بيزبطوا
+       بشاشة تلفون. هلق بحجم مريح للّمس وبيبانوا كلهم مرة وحدة. */
+    font-size: clamp(15px, 4.1vw, 19px);
     font-weight: 700;
     letter-spacing: -0.02em;
     /* دخول متتابع: كل رابط بيطلع بعد اللي قبله */
