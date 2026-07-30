@@ -20,6 +20,57 @@ interface Props {
 const { lang, sections = [] } = Astro.props;
 const isAr = lang === 'ar';
 
+// ═══════════════════════════════════════════════════════════════
+//  أيقونة لكل قسم
+//
+//  ⚠️⚠️ ليش أيقونات؟ ⚠️⚠️
+//  الشريط صار فيه ١٦ قسم. لما تتزاحم الأسماء، الكود بيخفي
+//  المتزاحم ويترك شرطة صغيرة — فريّان ما لقي «عين البراند»
+//  على الشريط أصلاً، ومعه حق: الشرطة ما بتقول ولا إشي.
+//  الحل اللي طلبه: لما يكثروا، خلّيهم أيقونات.
+//  فهلق كل علامة إلها أيقونة بتضل ظاهرة دايماً، والاسم بيبيّن
+//  لما يكون في مساحة أو لما تمرّ عليها بالماوس.
+//
+//  ✏️ ضفت قسم جديد؟ ضيف إله أيقونة هون بنفس المعرّف.
+//     أي قسم بلا أيقونة بياخد الدائرة الافتراضية — فبتعرف فوراً
+//     إنه ناقص.
+// ═══════════════════════════════════════════════════════════════
+const ICONS: Record<string, string> = {
+  // الخسارة: سهم نازل
+  loss: 'M3 7l6 6 4-4 8 8M21 17v-5h-5',
+  // عين البراند: عين
+  'brand-eye': 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z M12 9a3 3 0 100 6 3 3 0 000-6z',
+  // من أنا: شخص
+  about: 'M12 12a4 4 0 100-8 4 4 0 000 8z M4 21c0-4 4-6 8-6s8 2 8 6',
+  // ثلاثي الأبعاد: مكعّب
+  knot: 'M12 2l9 5v10l-9 5-9-5V7l9-5z M3 7l9 5 9-5 M12 12v10',
+  // الميزانية: محفظة
+  budget: 'M3 7h15a3 3 0 013 3v7a2 2 0 01-2 2H5a2 2 0 01-2-2V7z M3 7V6a2 2 0 012-2h11 M17 13h.01',
+  // مختبر الأفكار: لمبة
+  lab: 'M9 18h6 M10 21h4 M12 3a6 6 0 00-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0012 3z',
+  // نمو: سهم طالع
+  growth: 'M3 17l6-6 4 4 8-8 M21 7v5h-5',
+  // فيديو: زر تشغيل
+  work: 'M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5z M10 8.5l5 3.5-5 3.5v-7z',
+  // تصميم: قلم
+  designs: 'M12 19l7-7a2.8 2.8 0 00-4-4l-7 7-1 5 5-1z M14 6l4 4',
+  // مواقع: شاشة
+  websites: 'M3 5h18v11H3z M3 9h18 M9 20h6 M12 16v4',
+  // التجارب: دورق مختبر
+  'lab-work': 'M9 3h6 M10 3v6L5 19a2 2 0 002 2h10a2 2 0 002-2l-5-10V3 M7.5 14h9',
+  // إشارات: موجة بث
+  signals: 'M5 8a9 9 0 000 8 M2.5 5a13 13 0 000 14 M19 8a9 9 0 010 8 M21.5 5a13 13 0 010 14 M12 10a2 2 0 100 4 2 2 0 000-4z',
+  // كيف بشتغل: حقيبة
+  pricing: 'M3 8h18v11a2 2 0 01-2 2H5a2 2 0 01-2-2V8z M9 8V6a2 2 0 012-2h2a2 2 0 012 2v2 M3 13h18',
+  // أسئلة: علامة استفهام
+  faq: 'M12 21a9 9 0 100-18 9 9 0 000 18z M9.5 9.5a2.5 2.5 0 015 .3c0 1.7-2.5 1.9-2.5 3.7 M12 17h.01',
+  // ابدأ: ورقة
+  brief: 'M6 3h8l4 4v14a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z M14 3v5h4 M9 13h6 M9 17h6',
+  // تواصل: ظرف
+  contact: 'M3 6h18v12H3z M3 7l9 6 9-6',
+};
+const FALLBACK = 'M12 21a9 9 0 100-18 9 9 0 000 18z';
+
 const t = isAr
   ? { available: 'متاح لمشاريع جديدة', amman: 'عمّان' }
   : { available: 'Available for work', amman: 'Amman' };
@@ -79,8 +130,12 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
     <div class="marks" data-signal-marks>
       {
         sections.map((s) => (
-          <button class="mark" data-mark={s.id} type="button" aria-label={s.label}>
+          <button class="mark" data-mark={s.id} type="button" aria-label={s.label} title={s.label}>
             <span class="tick" aria-hidden="true" />
+            {/* الأيقونة بتضل ظاهرة دايماً حتى لو انخفى الاسم */}
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+              <path d={ICONS[s.id] || FALLBACK} />
+            </svg>
             <span class="name">{s.label}</span>
           </button>
         ))
@@ -236,9 +291,50 @@ const strandB = strand(Math.PI); // معكوس تماماً → بينقاطعو
     border-radius: 4px;
   }
 
-  /* الأسماء المتزاحمة بتنخفي ويضل شرطتها (بيتحدد بالجافاسكربت) */
+  /* ─── الأيقونة ───
+     ⚠️ هي البديل الدائم للاسم. الاسم بيروح ويجي حسب الزحمة،
+        بس الأيقونة بتضل — فالزائر دايماً بيشوف إنه في قسم هون
+        وبيعرف نوعه. قبلها كانت تضل شرطة صغيرة ما بتقول إشي. */
+  .ico {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    /* خلفية الشريط تحتها عشان تقصّ الخيط بدل ما تتراكب معه */
+    background: var(--bg);
+    border-radius: 3px;
+    box-sizing: content-box;
+    padding: 2px;
+  }
+
+  /* الأسماء المتزاحمة بتنخفي وتضل الأيقونة (بيتحدد بالجافاسكربت) */
   .mark[data-crowded] .name {
     display: none;
+  }
+
+  /* ولما تمرّ على أيقونة متزاحمة، اسمها بيطلع فوقها */
+  .mark[data-crowded]:hover .name,
+  .mark[data-crowded]:focus-visible .name {
+    display: block;
+    position: absolute;
+    top: 100%;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    margin-top: 4px;
+    z-index: 3;
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    font-size: 11.5px;
+    pointer-events: none;
+  }
+
+  html[dir='rtl'] .mark[data-crowded]:hover .name,
+  html[dir='rtl'] .mark[data-crowded]:focus-visible .name {
+    transform: translateX(50%);
   }
 
   /* الاسم اللي شارة النسبة واقفة فوقه بيختفي مؤقتاً ويرجع

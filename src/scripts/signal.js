@@ -159,12 +159,66 @@ export function initSignalBar() {
     boxes.forEach(({ el, r }) => {
       if (r.left < lastRight + MARK_GAP) {
         el.setAttribute('data-crowded', '');
-        // بعد إخفاء الاسم منعيد قياس الشرطة لوحدها
+        // بعد إخفاء الاسم منعيد قياس الأيقونة لوحدها
         lastRight = el.getBoundingClientRect().right;
       } else {
         lastRight = r.right;
       }
     });
+
+    // ═══════════════════════════════════════════════════════════
+    //  ٣) نبعّد المتلاصقين
+    //
+    //  ⚠️⚠️ عطل حقيقي كان هون ⚠️⚠️
+    //  العلامات بتتحط بموقعها الحقيقي بالنسبة لطول الصفحة. ولما
+    //  قسمين قريبين من بعض، أيقوناتهم بتتراكب فوق بعض حرفياً —
+    //  فالضغط على وحدة بيوصل للثانية، والأولى بتصير مش قابلة
+    //  للضغط أصلاً.
+    //  هاد اللي خلّى ريّان يقول «عين البراند مش موجودة»: هي
+    //  موجودة، بس مدفونة تحت «من أنا».
+    //  الحل: بعد التوزيع، منمشي على الترتيب ومنزحزح أي علامة
+    //  قريبة أكثر من اللازم — إزاحة بصرية صغيرة، والرابط بيضل
+    //  رايح لقسمه الصحيح.
+    // ═══════════════════════════════════════════════════════════
+    const trackEl = marks[0]?.parentElement;
+    if (!trackEl) return;
+    const trackW = trackEl.getBoundingClientRect().width;
+    if (trackW <= 0) return;
+
+    // أقل فراغ بين علامة وعلامة (بالبكسل)
+    const CLEAR = 6;
+
+    // ⚠️ منقيس العرض الحقيقي لكل علامة مش رقم ثابت: العلامة اللي
+    //    اسمها ظاهر عرضها ٨٠ بكسل واللي أيقونة بس عرضها ١٩ —
+    //    فخطوة ثابتة بتفشل مع الخليط. ومنعيد الحساب مرتين لأن
+    //    الإزاحة نفسها بتغيّر المواقع.
+    const seq = marks
+      .filter((m) => m.style.display !== 'none')
+      .map((m) => ({ el: m, at: parseFloat(m.dataset.at || '0') * 100 }))
+      .sort((a, b) => a.at - b.at);
+
+    for (let pass = 0; pass < 2; pass++) {
+      let prevRight = -Infinity;
+      seq.forEach((s) => {
+        const w = s.el.getBoundingClientRect().width || 20;
+        // العلامة متمركزة على موقعها، فنصف عرضها بيطلع لكل جهة
+        const halfPct = (w / 2 / trackW) * 100;
+        const clearPct = (CLEAR / trackW) * 100;
+        const wantLeft = s.at - halfPct;
+        const left = Math.max(wantLeft, prevRight + clearPct);
+        s.pos = Math.min(left + halfPct, 100);
+        prevRight = s.pos + halfPct;
+      });
+
+      // تجاوزنا الطرف؟ منرجّع الكل للورا بنفس المقدار
+      const over = prevRight - 100;
+      if (over > 0) seq.forEach((s) => (s.pos = Math.max(0, s.pos - over)));
+
+      seq.forEach((s) => {
+        s.el.style.insetInlineStart = s.pos.toFixed(2) + '%';
+        s.at = s.pos; // الجولة الجاية بتنطلق من الموقع الجديد
+      });
+    }
   };
 
   // ─────────────────────────────────────────────
