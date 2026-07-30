@@ -7,10 +7,16 @@
 interface Props {
   project: any;
   lang: 'en' | 'ar';
+  // مستوى عنوان البطاقة.
+  // ⚠️ ٣ بالأقسام (لأنه فوقها عنوان قسم h2)، و٢ بصفحات القوائم
+  //    (لأنه فوقها عنوان الصفحة h1 مباشرة — والقفز h1→h3 بيكسر
+  //    التسلسل، وقارئات الشاشة بتقول «في عنوان ناقص»).
+  level?: 2 | 3;
 }
 
-const { project: p, lang } = Astro.props;
+const { project: p, lang, level = 3 } = Astro.props;
 const isAr = lang === 'ar';
+const H = `h${level}` as 'h2' | 'h3';
 
 const title = isAr ? p.titleAr : p.title;
 const role = isAr ? p.roleAr : p.role;
@@ -41,7 +47,7 @@ const more = isAr ? 'تفاصيل المشروع ←' : 'Project details →';
   }
 
   <p class="role">{role}</p>
-  <h3><a href={href}>{title}</a></h3>
+  <H><a href={href}>{title}</a></H>
   <p class="desc">{desc}</p>
   <a class="more" href={href}>{more}</a>
 
@@ -129,16 +135,19 @@ const more = isAr ? 'تفاصيل المشروع ←' : 'Project details →';
     margin-bottom: 6px;
   }
 
+  h2,
   h3 {
     font-size: clamp(19px, 1.9vw, 23px);
     font-weight: 700;
     margin-bottom: 8px;
   }
 
+  h2 a,
   h3 a {
     transition: color 0.3s var(--ease-out);
   }
 
+  .card:hover h2 a,
   .card:hover h3 a {
     color: var(--accent);
   }

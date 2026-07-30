@@ -6,6 +6,7 @@
 //  ✏️ كم عمل يظهر بالهوم؟ غيّر HOME_LIMIT تحت مباشرة
 // ═══════════════════════════════════════════════════════════════
 import Base from '../../layouts/Base.astro';
+import { homeSchema } from '../../data/home-schema.js';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
 import Stats from '../../components/Stats.astro';
@@ -64,6 +65,7 @@ const marks = [
   description="بورتفوليو ريّان الواثق: تسويق رقمي، نمو، SEO، إدارة علاقات العملاء، إعلانات مدفوعة، استراتيجية إبداعية، هوية بصرية، ومونتاج فيديو."
   lang="ar"
   sections={marks}
+  schema={homeSchema('ar')}
 >
   <Nav lang="ar" />
 

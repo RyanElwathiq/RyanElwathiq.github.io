@@ -52,7 +52,9 @@ const backLabel = isAr ? '→ الرئيسية' : '← Home';
       <p class="intro" data-reveal>{intro}</p>
 
       <div class="grid" data-stagger>
-        {projects.map((p) => <WorkCard project={p} lang={lang} />)}
+        {/* ⚠️ level=2: هون فوق البطاقات عنوان الصفحة h1 مباشرة،
+            مش عنوان قسم — فلازم البطاقات تكون h2 عشان التسلسل يضل صح */}
+        {projects.map((p) => <WorkCard project={p} lang={lang} level={2} />)}
       </div>
     </div>
 

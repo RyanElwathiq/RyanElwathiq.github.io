@@ -41,6 +41,8 @@ const isAr = lang === 'ar';
 const title = isAr ? p.titleAr : p.title;
 const role = isAr ? p.roleAr : p.role;
 const desc = isAr ? p.descAr : p.desc;
+// وصف جوجل غير النص الظاهر — شوف الشرح بـ ProjectPage.astro
+const metaDesc = (isAr ? p.seoDescAr : p.seoDesc) || desc;
 const story = (isAr ? p.storyAr : p.story) || {};
 
 const a = assets as Record<string, { file: string; id: string; w: number; h: number }[]>;
@@ -153,7 +155,7 @@ const palette = ['#4FC3DC', '#1B4C63', '#EAF4F9', '#2B2B2B'];
 
 <Base
   title={`${title} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`}
-  description={desc}
+  description={metaDesc}
   lang={lang}
   image={a.coverFinal?.[0]?.file}
 >

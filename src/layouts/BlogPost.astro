@@ -63,9 +63,50 @@ const t = isAr
 
 const blogHref = isAr ? '/ar/signals/' : '/signals/';
 const contactHref = isAr ? '/ar/#contact' : '/#contact';
+
+// ═══ بيانات منظّمة للمقال ═══
+//  BlogPosting بيخلّي المقال يطلع بنتائج جوجل بالتاريخ والكاتب،
+//  و BreadcrumbList بيبدّل الرابط الطويل بمسار «الإشارات › المقال».
+const home = 'https://ryanalali.me';
+const here = `${home}${Astro.url.pathname}`;
+const cover = post.data.cover ? `${home}${post.data.cover}` : `${home}/og.jpg`;
+
+const articleSchema = [
+  {
+    '@type': 'BlogPosting',
+    '@id': here + '#article',
+    headline: title,
+    description,
+    image: cover,
+    datePublished: date.toISOString().slice(0, 10),
+    dateModified: date.toISOString().slice(0, 10),
+    inLanguage: isAr ? 'ar-JO' : 'en',
+    keywords: tags,
+    wordCount: words,
+    author: { '@id': home + '/#me' },
+    publisher: { '@id': home + '/#me' },
+    mainEntityOfPage: { '@id': here + '#page' },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    '@id': here + '#crumbs',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: isAr ? 'الرئيسية' : 'Home', item: isAr ? home + '/ar/' : home + '/' },
+      { '@type': 'ListItem', position: 2, name: isAr ? 'الإشارات' : 'Signals', item: home + blogHref },
+      { '@type': 'ListItem', position: 3, name: title },
+    ],
+  },
+];
 ---
 
-<Base title={`${seoTitle || title} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`} description={description} lang={lang}>
+<Base
+  title={`${seoTitle || title} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`}
+  description={description}
+  lang={lang}
+  altUrl={alt ? switchTo : null}
+  image={post.data.cover}
+  schema={articleSchema}
+>
   <Nav lang={lang} switchTo={switchTo} />
 
   <main id="top" class="post">

@@ -6,6 +6,7 @@
 //  ✏️ كم عمل يظهر بالهوم؟ غيّر HOME_LIMIT تحت مباشرة
 // ═══════════════════════════════════════════════════════════════
 import Base from '../layouts/Base.astro';
+import { homeSchema } from '../data/home-schema.js';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import Stats from '../components/Stats.astro';
@@ -64,6 +65,7 @@ const marks = [
   description="Rayan Elwathiq portfolio: digital marketing, growth, SEO, CRM, paid media, creative strategy, branding, and video editing."
   lang="en"
   sections={marks}
+  schema={homeSchema('en')}
 >
   <Nav lang="en" />
 

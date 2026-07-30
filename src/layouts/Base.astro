@@ -20,15 +20,100 @@ interface Props {
   sections?: { id: string; label: string }[];
   // صورة معاينة مخصصة لهالصفحة (اختياري) — مثال: '/assets/x.png'
   image?: string;
+  // رابط نفس الصفحة باللغة الثانية.
+  // ⚠️ بالعادة بينحسب لحاله (/loss/ ↔ /ar/loss/) — بس المقالات
+  //    اسم ملفها بيختلف بين اللغتين، فبتمرّره الصفحة صريح.
+  //    و null معناها «ما إلها نسخة بلغة تانية» فبنشيل الوسوم.
+  altUrl?: string | null;
+  // عقد بيانات منظّمة زيادة تخصّ هالصفحة (مقال · مشروع · مسار)
+  schema?: Record<string, any>[];
 }
 
-const { title, description, lang = 'en', sections = [], image } = Astro.props;
+const {
+  title,
+  description,
+  lang = 'en',
+  sections = [],
+  image,
+  altUrl,
+  schema = [],
+} = Astro.props;
 const dir = lang === 'ar' ? 'rtl' : 'ltr';
 
 // ─── روابط مطلقة (واتساب وفيسبوك بيرفضوا الروابط النسبية) ───
 const site = Astro.site ?? new URL('https://ryanalali.me');
 const ogImage = new URL(image ?? '/og.jpg', site).href;
-const pageUrl = new URL(Astro.url.pathname, site).href;
+const path = Astro.url.pathname;
+const pageUrl = new URL(path, site).href;
+
+// ═══════════════════════════════════════════════════════════════
+//  hreflang — بيقول لجوجل «هاي نفس الصفحة بلغتين، مش نسختين مكررة»
+//
+//  بدونه: جوجل بيشوف /loss/ و /ar/loss/ كصفحتين متشابهتين،
+//  فبيختار وحدة ويهمل التانية — أو بيعرض الإنجليزي لواحد بيدوّر
+//  بالعربي. مع هالوسوم بيعرض لكل زائر نسخة لغته.
+//
+//  الاقتران بينحسب من الرابط (كل الصفحات مرآة)، والمقالات بس
+//  بتمرّر altUrl لأنه اسم ملفها بيختلف بين اللغتين.
+// ═══════════════════════════════════════════════════════════════
+const sibling = altUrl === undefined ? (path.startsWith('/ar/') ? path.slice(3) : '/ar' + path) : altUrl;
+const enUrl = sibling && new URL(lang === 'ar' ? sibling : path, site).href;
+const arUrl = sibling && new URL(lang === 'ar' ? path : sibling, site).href;
+
+// ═══════════════════════════════════════════════════════════════
+//  البيانات المنظّمة (JSON-LD)
+//
+//  هاد اللي بيخلّي جوجل يفهم إنه هذا موقع **شخص** اسمه ريّان،
+//  شغله تسويق، بالأردن — مش مجرد صفحات فيها كلام. وهو نفسه
+//  اللي بتقرأه أدوات الذكاء الاصطناعي لما تجاوب «مين ريّان الواثق».
+//
+//  @id بيربط العقد ببعضها: الموقع ملك الشخص، والمقال كاتبه الشخص.
+// ═══════════════════════════════════════════════════════════════
+const personId = site.href + '#me';
+const siteId = site.href + '#site';
+
+const graph = [
+  {
+    '@type': 'Person',
+    '@id': personId,
+    name: lang === 'ar' ? 'ريّان الواثق' : 'Rayan Elwathiq',
+    alternateName: lang === 'ar' ? 'Rayan Elwathiq' : 'ريّان الواثق',
+    url: site.href,
+    image: new URL('/assets/logo-white.png', site).href,
+    jobTitle: lang === 'ar' ? 'مسوّق ومصمّم تجارب رقمية' : 'Marketer and digital experience designer',
+    description:
+      lang === 'ar'
+        ? 'مسوّق بيشتغل على السبب مش العرَض: ليش الزبون ما اشترى، وليش التصميم ما اشتغل.'
+        : 'A marketer who works on the cause, not the symptom: why the customer did not buy, and why the design did not work.',
+    knowsLanguage: ['ar', 'en'],
+    address: { '@type': 'PostalAddress', addressCountry: 'JO' },
+    knowsAbout:
+      lang === 'ar'
+        ? ['التسويق الرقمي', 'تحسين محركات البحث', 'تحليل البيانات', 'هوية العلامة التجارية', 'تجربة المستخدم']
+        : ['Digital marketing', 'SEO', 'Data analysis', 'Brand identity', 'User experience'],
+  },
+  {
+    '@type': 'WebSite',
+    '@id': siteId,
+    url: site.href,
+    name: lang === 'ar' ? 'ريّان الواثق' : 'Rayan Elwathiq',
+    inLanguage: lang === 'ar' ? 'ar-JO' : 'en',
+    publisher: { '@id': personId },
+  },
+  {
+    '@type': 'WebPage',
+    '@id': pageUrl + '#page',
+    url: pageUrl,
+    name: title,
+    description,
+    inLanguage: lang === 'ar' ? 'ar-JO' : 'en',
+    isPartOf: { '@id': siteId },
+    about: { '@id': personId },
+  },
+  ...schema,
+];
+
+const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
 ---
 
 <!doctype html>
@@ -42,6 +127,21 @@ const pageUrl = new URL(Astro.url.pathname, site).href;
     <!-- ═══ معاينة الروابط (واتساب · فيسبوك · لينكدإن · تويتر) ═══
          ⚠️ الصورة لازم تكون برابط مطلق، وإلا بتطلع المعاينة بيضا -->
     <link rel="canonical" href={pageUrl} />
+
+    <!-- ═══ نفس الصفحة باللغة الثانية — عشان جوجل ما يحسبها تكرار ═══ -->
+    {
+      enUrl && arUrl && (
+        <>
+          <link rel="alternate" hreflang="en" href={enUrl} />
+          <link rel="alternate" hreflang="ar" href={arUrl} />
+          <link rel="alternate" hreflang="x-default" href={enUrl} />
+        </>
+      )
+    }
+
+    <!-- ═══ بيانات منظّمة — بتخلي جوجل والذكاء الاصطناعي يفهموا مين ريّان ═══ -->
+    <script type="application/ld+json" is:inline set:html={jsonld} />
+
     <meta property="og:site_name" content={lang === 'ar' ? 'ريّان الواثق' : 'Rayan Elwathiq'} />
     <meta property="og:locale" content={lang === 'ar' ? 'ar_JO' : 'en_US'} />
     <meta property="og:type" content="website" />

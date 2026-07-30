@@ -104,7 +104,8 @@
         "challenge": "A doctor with real expertise and zero digital presence. Medical content usually falls into one of two traps: it reads like a textbook nobody finishes, or like an ad nobody believes. Neither builds trust.",
         "approach": "We built the brand from scratch: guidelines, visual identity, an editing system, and hook writing. The key decision was in the content itself — we built it around what patients actually ask and worry about, not around what is medically interesting. Carousels were designed in threes so they read as one piece on the profile grid, so a visitor lands in something organised rather than a random feed.",
         "result": "From zero to 2,395 organic followers in 30 days, and 290K views on a single post — with zero ad spend. One of the largest projects I have run end to end: writing, direction, supervising the shoot, and editing."
-      }
+      },
+      "seoDesc": "Built a doctor's Instagram presence from zero to 2,395 organic followers in 30 days — brand guidelines, visual identity, and a full editing workflow."
     },
     {
       "id": "luvit",
@@ -136,7 +137,8 @@
         "challenge": "علامة عناية بالبشرة تركية داخلة على الأردن بخط منتجات كامل وبدون صوت محلي. مشكلة السوق ما كانت الوعي — كانت الاختيار. الرفوف والصفحات مليانة نصائح متضاربة، فالناس ما بترفض المنتج، بتتجمّد قدّام الخيارات. وأصول العلامة العالمية، المصوّرة لجمهور ثاني، ما كانت بتقرأ هون.",
         "approach": "بنيت العلامة لهذا السوق من المحتوى لفوق. بدل ما ننزّل عبوات، الصفحة صارت تعلّم روتين: كل خطوة شو بتعمل، لأي نوع بشرة، وليش هي ثلاث منتجات مش واحد. والهوية انكتبت بصوت عربي على كل مقاس — أغلفة الهايلايت، أطقم الستوري، وشبكة مصمّمة بحيث البوستات تنزل جنب بعض كأنها صورة وحدة متواصلة. ونظام تصميم مدعوم بالذكاء الاصطناعي خلّى شخص واحد ينتج بسرعة وكالة.",
         "result": "١١٧ قطعة جاهزة بلغة بصرية وحدة، ونظام محتوى بيبدأ من الروتين وبيجاوب على اعتراضات حقيقية بدل ما يعلن عروض، وإنتاج أسرع ٤٠٪ من البريف للتصميم المنشور."
-      }
+      },
+      "seoDesc": "Digital brand development for a Turkish skincare label entering Jordan: visual identity, content strategy, and phased organic growth planning."
     },
     {
       "id": "arkan",
@@ -491,7 +493,9 @@
         "challenge": "A company that wanted a logo and identity — but the real need was a system that stays consistent as they grow.",
         "approach": "We built the logo and identity alongside a social design system made to scale, not just to look good in a presentation deck.",
         "result": "An identity that keeps working after handover, not only on the day of it."
-      }
+      },
+      "seoDesc": "Logo, brand identity, and a social design system for Stylomation — built to stay consistent as the brand grows, not just to look good in a deck.",
+      "seoDescAr": "لوجو وهوية بصرية ونظام تصميم سوشال لـ Stylomation — مبني ليضل متناسق مع نمو العلامة، مش بس ليبيّن حلو بالعرض التقديمي."
     },
     {
       "id": "the-place",
@@ -529,7 +533,9 @@
         "challenge": "An architect and interior designer starting out — good work, but nothing tying it together visually.",
         "approach": "A set of pieces in one identity, plus an animated logo intro that gives his presence a signature in the first two seconds of any film.",
         "result": "A coherent visual presence for a practice still in its early days."
-      }
+      },
+      "seoDesc": "Brand identity and an animated logo intro for The Place — an architect and interior designer starting out, given one coherent visual presence.",
+      "seoDescAr": "هوية بصرية ومقدّمة لوجو متحرّكة لـ The Place — مهندس معماري ومصمم ديكور ببداياته، صار إله حضور بصري متماسك بمكان واحد."
     },
     {
       "id": "dream-crests",
@@ -581,7 +587,9 @@
       "stats": [],
       "videos": [
         "b9vHzrtzllQ"
-      ]
+      ],
+      "seoDesc": "Motion graphics for Al-Mofakron Aluminium — a short brand introduction piece: concept, design, and animation by Rayan Elwathiq.",
+      "seoDescAr": "موشن جرافيك للمفكرون للألمنيوم — مقطع قصير بيعرّف بالعلامة: الفكرة والتصميم والتحريك من شغل ريّان الواثق."
     },
     {
       "id": "al-razi",
@@ -600,7 +608,9 @@
       "stats": [],
       "videos": [
         "X_W7HjNdxjw"
-      ]
+      ],
+      "seoDesc": "Motion graphics for Al-Razi — animated product cards that flip through the catalogue, designed and built for Instagram feed and stories.",
+      "seoDescAr": "موشن جرافيك لـ Al-Razi — كروت منتجات متحرّكة بتتقلّب لتعرض الكتالوج، مصمّمة ومبنية لفيد إنستغرام والستوري."
     },
     {
       "id": "knockout",
@@ -642,7 +652,9 @@
         "challenge": "An early-stage media startup needing content and motion graphics on a starting budget.",
         "approach": "A set of designs and motion pieces — this was one of the projects where I learned motion graphics by doing it on live work.",
         "result": "The company did not last, but the work did — and it is an honest part of the learning curve."
-      }
+      },
+      "seoDesc": "Motion graphics and content design for Knockout, an early-stage media startup working on a starting budget — designs and motion pieces produced on live work.",
+      "seoDescAr": "موشن جرافيك وتصميم محتوى لـ Knockout، شركة ميديا ناشئة بميزانية بدايات — تصاميم ومقاطع متحرّكة اتنفّذت على شغل حقيقي مش تمارين."
     }
   ],
   "links": {

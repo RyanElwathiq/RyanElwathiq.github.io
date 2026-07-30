@@ -252,7 +252,13 @@ export default function LossCalc({ lang = 'ar', briefHref = '/brief/', asH1 = fa
       </div>
 
       {/* ─── من وين بتيجي الخسارة ─── */}
-      <h3 className="loss-block-title">{t.whereTitle}</h3>
+      {/* ⚠️ نفس منطق asH1: لما الحاسبة تكون هي عنوان الصفحة (h1)،
+          هذا العنوان لازم يصير h2 — مش h3 — عشان ما نقفز درجة */}
+      {asH1 ? (
+        <h2 className="loss-block-title">{t.whereTitle}</h2>
+      ) : (
+        <h3 className="loss-block-title">{t.whereTitle}</h3>
+      )}
       <ul className="loss-reasons">
         {r.breakdown.map((b) => {
           const info = reasons.find((x) => x.key === b.key)[isAr ? 'ar' : 'en'];
