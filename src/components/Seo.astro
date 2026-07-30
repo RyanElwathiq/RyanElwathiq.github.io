@@ -60,7 +60,7 @@ const layers = seo.layers.map((l: any, i: number) => ({
   myth: isAr ? l.myth : l.mythEn,
   real: isAr ? l.real : l.realEn,
   items: isAr ? l.items : l.itemsEn,
-  tools: l.tools,
+  tools: [...l.tools, ...(l.toolsExtra ? [isAr ? l.toolsExtra : l.toolsExtraEn] : [])],
 }));
 
 const contactHref = isAr ? '/ar/#contact' : '/#contact';

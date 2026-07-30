@@ -82,7 +82,9 @@
         "Long-tail queries where intent is unambiguous",
         "The gap between what you target and what actually arrives"
       ],
-      "tools": ["Search Console", "Ahrefs", "Semrush", "SERP analysis"]
+      "tools": ["Search Console", "Ahrefs", "Semrush"],
+      "toolsExtra": "قراءة نتائج البحث",
+      "toolsExtraEn": "SERP analysis"
     },
     {
       "id": "content",
