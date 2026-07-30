@@ -217,11 +217,11 @@ const t = isAr
     position: absolute;
     inset: 0;
     pointer-events: none;
-    /* ⚠️ رُفعت من ٠.٠٥ لـ ٠.٠٩ بعد ما ريّان دقّق عالديسكتوب ولسا
-       شايف التبكسل. الحبيبات بتكسر حواف مربّعات الضغط — كل ما
-       زادت شوي، قلّ إحساس «الفيديو المضغوط». فوق ٠.١٢ بتبيّن
-       الحبيبات نفسها فما منزيد أكثر. */
-    opacity: var(--grain, 0.09);
+    /* ⚠️ نزلت من ٠.٠٩ لـ ٠.٠٤ بعد ما انحلّت المشكلة من جذرها.
+       كانت مرفوعة عشان **تغطّي** تبكسل الضغط. هلق الفريمات
+       انولدت من جديد بـ ffmpeg بجودة نظيفة، فالحبيبات رجعت
+       لدورها الأصلي: لمسة سينمائية خفيفة مش ستارة. */
+    opacity: var(--grain, 0.04);
     mix-blend-mode: overlay;
     /* ضجيج SVG: خفيف جداً بالحجم وبيتولّد بالمتصفح */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
@@ -247,10 +247,10 @@ const t = isAr
     mix-blend-mode: soft-light;
   }
 
-  /* الموبايل فريماته أضغط، فالحبيبات أقوى هناك */
+  /* الموبايل فريماته أضغط بشعرة، فبيستفيد من حبيبات أعلى بشعرة */
   @media (max-width: 767px) {
     .grain {
-      --grain: 0.13;
+      --grain: 0.06;
     }
   }
 

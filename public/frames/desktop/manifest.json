@@ -1,855 +1,738 @@
 {
   "source": "hero-desktop.mp4",
-  "source_duration": 5.04,
-  "source_fps": 24.0,
-  "source_frames": 121,
-  "frame_count": 120,
-  "width": 1920,
-  "height": 1080,
+  "source_fps": 24,
+  "frame_count": 121,
   "format": "webp",
   "quality": 76,
+  "scale": "1440:-2",
   "filename_pattern": "frame_%04d.webp",
-  "total_bytes": 2205656,
+  "total_bytes": 1499374,
   "frames": [
     {
       "index": 0,
       "file": "frame_0000.webp",
-      "source_frame": 0,
-      "timestamp": 0.0,
-      "bytes": 7184
+      "timestamp": 0,
+      "bytes": 4186
     },
     {
       "index": 1,
       "file": "frame_0001.webp",
-      "source_frame": 1,
       "timestamp": 0.0417,
-      "bytes": 7492
+      "bytes": 4376
     },
     {
       "index": 2,
       "file": "frame_0002.webp",
-      "source_frame": 2,
       "timestamp": 0.0833,
-      "bytes": 7416
+      "bytes": 4408
     },
     {
       "index": 3,
       "file": "frame_0003.webp",
-      "source_frame": 3,
       "timestamp": 0.125,
-      "bytes": 7672
+      "bytes": 4464
     },
     {
       "index": 4,
       "file": "frame_0004.webp",
-      "source_frame": 4,
       "timestamp": 0.1667,
-      "bytes": 7812
+      "bytes": 4736
     },
     {
       "index": 5,
       "file": "frame_0005.webp",
-      "source_frame": 5,
       "timestamp": 0.2083,
-      "bytes": 7998
+      "bytes": 4828
     },
     {
       "index": 6,
       "file": "frame_0006.webp",
-      "source_frame": 6,
       "timestamp": 0.25,
-      "bytes": 8138
+      "bytes": 4898
     },
     {
       "index": 7,
       "file": "frame_0007.webp",
-      "source_frame": 7,
       "timestamp": 0.2917,
-      "bytes": 8370
+      "bytes": 4920
     },
     {
       "index": 8,
       "file": "frame_0008.webp",
-      "source_frame": 8,
       "timestamp": 0.3333,
-      "bytes": 8538
+      "bytes": 5144
     },
     {
       "index": 9,
       "file": "frame_0009.webp",
-      "source_frame": 9,
       "timestamp": 0.375,
-      "bytes": 8960
+      "bytes": 5380
     },
     {
       "index": 10,
       "file": "frame_0010.webp",
-      "source_frame": 10,
       "timestamp": 0.4167,
-      "bytes": 8980
+      "bytes": 5424
     },
     {
       "index": 11,
       "file": "frame_0011.webp",
-      "source_frame": 11,
       "timestamp": 0.4583,
-      "bytes": 9200
+      "bytes": 5500
     },
     {
       "index": 12,
       "file": "frame_0012.webp",
-      "source_frame": 12,
       "timestamp": 0.5,
-      "bytes": 9334
+      "bytes": 5782
     },
     {
       "index": 13,
       "file": "frame_0013.webp",
-      "source_frame": 13,
       "timestamp": 0.5417,
-      "bytes": 9672
+      "bytes": 5862
     },
     {
       "index": 14,
       "file": "frame_0014.webp",
-      "source_frame": 14,
       "timestamp": 0.5833,
-      "bytes": 9606
+      "bytes": 6008
     },
     {
       "index": 15,
       "file": "frame_0015.webp",
-      "source_frame": 15,
       "timestamp": 0.625,
-      "bytes": 10136
+      "bytes": 6202
     },
     {
       "index": 16,
       "file": "frame_0016.webp",
-      "source_frame": 16,
       "timestamp": 0.6667,
-      "bytes": 10022
+      "bytes": 6300
     },
     {
       "index": 17,
       "file": "frame_0017.webp",
-      "source_frame": 17,
       "timestamp": 0.7083,
-      "bytes": 10222
+      "bytes": 6388
     },
     {
       "index": 18,
       "file": "frame_0018.webp",
-      "source_frame": 18,
       "timestamp": 0.75,
-      "bytes": 10254
+      "bytes": 6400
     },
     {
       "index": 19,
       "file": "frame_0019.webp",
-      "source_frame": 19,
       "timestamp": 0.7917,
-      "bytes": 10462
+      "bytes": 6690
     },
     {
       "index": 20,
       "file": "frame_0020.webp",
-      "source_frame": 20,
       "timestamp": 0.8333,
-      "bytes": 10578
+      "bytes": 6808
     },
     {
       "index": 21,
       "file": "frame_0021.webp",
-      "source_frame": 21,
       "timestamp": 0.875,
-      "bytes": 10844
+      "bytes": 6872
     },
     {
       "index": 22,
       "file": "frame_0022.webp",
-      "source_frame": 22,
       "timestamp": 0.9167,
-      "bytes": 10818
+      "bytes": 6906
     },
     {
       "index": 23,
       "file": "frame_0023.webp",
-      "source_frame": 23,
       "timestamp": 0.9583,
-      "bytes": 11206
+      "bytes": 7166
     },
     {
       "index": 24,
       "file": "frame_0024.webp",
-      "source_frame": 24,
-      "timestamp": 1.0,
-      "bytes": 11318
+      "timestamp": 1,
+      "bytes": 7350
     },
     {
       "index": 25,
       "file": "frame_0025.webp",
-      "source_frame": 25,
       "timestamp": 1.0417,
-      "bytes": 11620
+      "bytes": 7448
     },
     {
       "index": 26,
       "file": "frame_0026.webp",
-      "source_frame": 26,
       "timestamp": 1.0833,
-      "bytes": 11694
+      "bytes": 7522
     },
     {
       "index": 27,
       "file": "frame_0027.webp",
-      "source_frame": 27,
       "timestamp": 1.125,
-      "bytes": 12078
+      "bytes": 7756
     },
     {
       "index": 28,
       "file": "frame_0028.webp",
-      "source_frame": 28,
       "timestamp": 1.1667,
-      "bytes": 12184
+      "bytes": 7806
     },
     {
       "index": 29,
       "file": "frame_0029.webp",
-      "source_frame": 29,
       "timestamp": 1.2083,
-      "bytes": 12312
+      "bytes": 7928
     },
     {
       "index": 30,
       "file": "frame_0030.webp",
-      "source_frame": 30,
       "timestamp": 1.25,
-      "bytes": 12522
+      "bytes": 8106
     },
     {
       "index": 31,
       "file": "frame_0031.webp",
-      "source_frame": 31,
       "timestamp": 1.2917,
-      "bytes": 12732
+      "bytes": 8316
     },
     {
       "index": 32,
       "file": "frame_0032.webp",
-      "source_frame": 32,
       "timestamp": 1.3333,
-      "bytes": 12844
+      "bytes": 8378
     },
     {
       "index": 33,
       "file": "frame_0033.webp",
-      "source_frame": 33,
       "timestamp": 1.375,
-      "bytes": 13048
+      "bytes": 8464
     },
     {
       "index": 34,
       "file": "frame_0034.webp",
-      "source_frame": 34,
       "timestamp": 1.4167,
-      "bytes": 13238
+      "bytes": 8580
     },
     {
       "index": 35,
       "file": "frame_0035.webp",
-      "source_frame": 35,
       "timestamp": 1.4583,
-      "bytes": 13320
+      "bytes": 8684
     },
     {
       "index": 36,
       "file": "frame_0036.webp",
-      "source_frame": 36,
       "timestamp": 1.5,
-      "bytes": 13442
+      "bytes": 8822
     },
     {
       "index": 37,
       "file": "frame_0037.webp",
-      "source_frame": 37,
       "timestamp": 1.5417,
-      "bytes": 13734
+      "bytes": 8916
     },
     {
       "index": 38,
       "file": "frame_0038.webp",
-      "source_frame": 38,
       "timestamp": 1.5833,
-      "bytes": 14042
+      "bytes": 9246
     },
     {
       "index": 39,
       "file": "frame_0039.webp",
-      "source_frame": 39,
       "timestamp": 1.625,
-      "bytes": 14248
+      "bytes": 9342
     },
     {
       "index": 40,
       "file": "frame_0040.webp",
-      "source_frame": 40,
       "timestamp": 1.6667,
-      "bytes": 14536
+      "bytes": 9644
     },
     {
       "index": 41,
       "file": "frame_0041.webp",
-      "source_frame": 41,
       "timestamp": 1.7083,
-      "bytes": 14776
+      "bytes": 9686
     },
     {
       "index": 42,
       "file": "frame_0042.webp",
-      "source_frame": 42,
       "timestamp": 1.75,
-      "bytes": 14900
+      "bytes": 10038
     },
     {
       "index": 43,
       "file": "frame_0043.webp",
-      "source_frame": 43,
       "timestamp": 1.7917,
-      "bytes": 15210
+      "bytes": 10164
     },
     {
       "index": 44,
       "file": "frame_0044.webp",
-      "source_frame": 44,
       "timestamp": 1.8333,
-      "bytes": 15374
+      "bytes": 10312
     },
     {
       "index": 45,
       "file": "frame_0045.webp",
-      "source_frame": 45,
       "timestamp": 1.875,
-      "bytes": 15676
+      "bytes": 10374
     },
     {
       "index": 46,
       "file": "frame_0046.webp",
-      "source_frame": 46,
       "timestamp": 1.9167,
-      "bytes": 15604
+      "bytes": 10468
     },
     {
       "index": 47,
       "file": "frame_0047.webp",
-      "source_frame": 47,
       "timestamp": 1.9583,
-      "bytes": 15792
+      "bytes": 10516
     },
     {
       "index": 48,
       "file": "frame_0048.webp",
-      "source_frame": 48,
-      "timestamp": 2.0,
-      "bytes": 15830
+      "timestamp": 2,
+      "bytes": 10648
     },
     {
       "index": 49,
       "file": "frame_0049.webp",
-      "source_frame": 49,
       "timestamp": 2.0417,
-      "bytes": 15944
+      "bytes": 10794
     },
     {
       "index": 50,
       "file": "frame_0050.webp",
-      "source_frame": 50,
       "timestamp": 2.0833,
-      "bytes": 16096
+      "bytes": 10800
     },
     {
       "index": 51,
       "file": "frame_0051.webp",
-      "source_frame": 51,
       "timestamp": 2.125,
-      "bytes": 16412
+      "bytes": 10882
     },
     {
       "index": 52,
       "file": "frame_0052.webp",
-      "source_frame": 52,
       "timestamp": 2.1667,
-      "bytes": 16494
+      "bytes": 11120
     },
     {
       "index": 53,
       "file": "frame_0053.webp",
-      "source_frame": 53,
       "timestamp": 2.2083,
-      "bytes": 16806
+      "bytes": 11182
     },
     {
       "index": 54,
       "file": "frame_0054.webp",
-      "source_frame": 54,
       "timestamp": 2.25,
-      "bytes": 16794
+      "bytes": 11224
     },
     {
       "index": 55,
       "file": "frame_0055.webp",
-      "source_frame": 55,
       "timestamp": 2.2917,
-      "bytes": 16966
+      "bytes": 11326
     },
     {
       "index": 56,
       "file": "frame_0056.webp",
-      "source_frame": 56,
       "timestamp": 2.3333,
-      "bytes": 17242
+      "bytes": 11532
     },
     {
       "index": 57,
       "file": "frame_0057.webp",
-      "source_frame": 57,
       "timestamp": 2.375,
-      "bytes": 17420
+      "bytes": 11720
     },
     {
       "index": 58,
       "file": "frame_0058.webp",
-      "source_frame": 58,
       "timestamp": 2.4167,
-      "bytes": 17538
+      "bytes": 11702
     },
     {
       "index": 59,
       "file": "frame_0059.webp",
-      "source_frame": 59,
       "timestamp": 2.4583,
-      "bytes": 17514
+      "bytes": 11730
     },
     {
       "index": 60,
       "file": "frame_0060.webp",
-      "source_frame": 61,
-      "timestamp": 2.5417,
-      "bytes": 18162
+      "timestamp": 2.5,
+      "bytes": 11980
     },
     {
       "index": 61,
       "file": "frame_0061.webp",
-      "source_frame": 62,
-      "timestamp": 2.5833,
-      "bytes": 18444
+      "timestamp": 2.5417,
+      "bytes": 12270
     },
     {
       "index": 62,
       "file": "frame_0062.webp",
-      "source_frame": 63,
-      "timestamp": 2.625,
-      "bytes": 18576
+      "timestamp": 2.5833,
+      "bytes": 12342
     },
     {
       "index": 63,
       "file": "frame_0063.webp",
-      "source_frame": 64,
-      "timestamp": 2.6667,
-      "bytes": 19138
+      "timestamp": 2.625,
+      "bytes": 12518
     },
     {
       "index": 64,
       "file": "frame_0064.webp",
-      "source_frame": 65,
-      "timestamp": 2.7083,
-      "bytes": 19054
+      "timestamp": 2.6667,
+      "bytes": 12876
     },
     {
       "index": 65,
       "file": "frame_0065.webp",
-      "source_frame": 66,
-      "timestamp": 2.75,
-      "bytes": 19354
+      "timestamp": 2.7083,
+      "bytes": 12810
     },
     {
       "index": 66,
       "file": "frame_0066.webp",
-      "source_frame": 67,
-      "timestamp": 2.7917,
-      "bytes": 19490
+      "timestamp": 2.75,
+      "bytes": 13086
     },
     {
       "index": 67,
       "file": "frame_0067.webp",
-      "source_frame": 68,
-      "timestamp": 2.8333,
-      "bytes": 20076
+      "timestamp": 2.7917,
+      "bytes": 13244
     },
     {
       "index": 68,
       "file": "frame_0068.webp",
-      "source_frame": 69,
-      "timestamp": 2.875,
-      "bytes": 20156
+      "timestamp": 2.8333,
+      "bytes": 13626
     },
     {
       "index": 69,
       "file": "frame_0069.webp",
-      "source_frame": 70,
-      "timestamp": 2.9167,
-      "bytes": 20408
+      "timestamp": 2.875,
+      "bytes": 13706
     },
     {
       "index": 70,
       "file": "frame_0070.webp",
-      "source_frame": 71,
-      "timestamp": 2.9583,
-      "bytes": 20670
+      "timestamp": 2.9167,
+      "bytes": 13764
     },
     {
       "index": 71,
       "file": "frame_0071.webp",
-      "source_frame": 72,
-      "timestamp": 3.0,
-      "bytes": 21238
+      "timestamp": 2.9583,
+      "bytes": 14054
     },
     {
       "index": 72,
       "file": "frame_0072.webp",
-      "source_frame": 73,
-      "timestamp": 3.0417,
-      "bytes": 20998
+      "timestamp": 3,
+      "bytes": 14480
     },
     {
       "index": 73,
       "file": "frame_0073.webp",
-      "source_frame": 74,
-      "timestamp": 3.0833,
-      "bytes": 21278
+      "timestamp": 3.0417,
+      "bytes": 14296
     },
     {
       "index": 74,
       "file": "frame_0074.webp",
-      "source_frame": 75,
-      "timestamp": 3.125,
-      "bytes": 21484
+      "timestamp": 3.0833,
+      "bytes": 14454
     },
     {
       "index": 75,
       "file": "frame_0075.webp",
-      "source_frame": 76,
-      "timestamp": 3.1667,
-      "bytes": 22002
+      "timestamp": 3.125,
+      "bytes": 14650
     },
     {
       "index": 76,
       "file": "frame_0076.webp",
-      "source_frame": 77,
-      "timestamp": 3.2083,
-      "bytes": 21862
+      "timestamp": 3.1667,
+      "bytes": 15054
     },
     {
       "index": 77,
       "file": "frame_0077.webp",
-      "source_frame": 78,
-      "timestamp": 3.25,
-      "bytes": 22022
+      "timestamp": 3.2083,
+      "bytes": 14860
     },
     {
       "index": 78,
       "file": "frame_0078.webp",
-      "source_frame": 79,
-      "timestamp": 3.2917,
-      "bytes": 22292
+      "timestamp": 3.25,
+      "bytes": 15046
     },
     {
       "index": 79,
       "file": "frame_0079.webp",
-      "source_frame": 80,
-      "timestamp": 3.3333,
-      "bytes": 22720
+      "timestamp": 3.2917,
+      "bytes": 15356
     },
     {
       "index": 80,
       "file": "frame_0080.webp",
-      "source_frame": 81,
-      "timestamp": 3.375,
-      "bytes": 22460
+      "timestamp": 3.3333,
+      "bytes": 15854
     },
     {
       "index": 81,
       "file": "frame_0081.webp",
-      "source_frame": 82,
-      "timestamp": 3.4167,
-      "bytes": 22742
+      "timestamp": 3.375,
+      "bytes": 15702
     },
     {
       "index": 82,
       "file": "frame_0082.webp",
-      "source_frame": 83,
-      "timestamp": 3.4583,
-      "bytes": 23278
+      "timestamp": 3.4167,
+      "bytes": 15760
     },
     {
       "index": 83,
       "file": "frame_0083.webp",
-      "source_frame": 84,
-      "timestamp": 3.5,
-      "bytes": 23524
+      "timestamp": 3.4583,
+      "bytes": 15966
     },
     {
       "index": 84,
       "file": "frame_0084.webp",
-      "source_frame": 85,
-      "timestamp": 3.5417,
-      "bytes": 23552
+      "timestamp": 3.5,
+      "bytes": 16164
     },
     {
       "index": 85,
       "file": "frame_0085.webp",
-      "source_frame": 86,
-      "timestamp": 3.5833,
-      "bytes": 23626
+      "timestamp": 3.5417,
+      "bytes": 16216
     },
     {
       "index": 86,
       "file": "frame_0086.webp",
-      "source_frame": 87,
-      "timestamp": 3.625,
-      "bytes": 24008
+      "timestamp": 3.5833,
+      "bytes": 16300
     },
     {
       "index": 87,
       "file": "frame_0087.webp",
-      "source_frame": 88,
-      "timestamp": 3.6667,
-      "bytes": 24372
+      "timestamp": 3.625,
+      "bytes": 16480
     },
     {
       "index": 88,
       "file": "frame_0088.webp",
-      "source_frame": 89,
-      "timestamp": 3.7083,
-      "bytes": 24222
+      "timestamp": 3.6667,
+      "bytes": 16760
     },
     {
       "index": 89,
       "file": "frame_0089.webp",
-      "source_frame": 90,
-      "timestamp": 3.75,
-      "bytes": 24826
+      "timestamp": 3.7083,
+      "bytes": 16592
     },
     {
       "index": 90,
       "file": "frame_0090.webp",
-      "source_frame": 91,
-      "timestamp": 3.7917,
-      "bytes": 24690
+      "timestamp": 3.75,
+      "bytes": 16768
     },
     {
       "index": 91,
       "file": "frame_0091.webp",
-      "source_frame": 92,
-      "timestamp": 3.8333,
-      "bytes": 25314
+      "timestamp": 3.7917,
+      "bytes": 17120
     },
     {
       "index": 92,
       "file": "frame_0092.webp",
-      "source_frame": 93,
-      "timestamp": 3.875,
-      "bytes": 25008
+      "timestamp": 3.8333,
+      "bytes": 17462
     },
     {
       "index": 93,
       "file": "frame_0093.webp",
-      "source_frame": 94,
-      "timestamp": 3.9167,
-      "bytes": 25390
+      "timestamp": 3.875,
+      "bytes": 17340
     },
     {
       "index": 94,
       "file": "frame_0094.webp",
-      "source_frame": 95,
-      "timestamp": 3.9583,
-      "bytes": 25438
+      "timestamp": 3.9167,
+      "bytes": 17638
     },
     {
       "index": 95,
       "file": "frame_0095.webp",
-      "source_frame": 96,
-      "timestamp": 4.0,
-      "bytes": 26028
+      "timestamp": 3.9583,
+      "bytes": 17760
     },
     {
       "index": 96,
       "file": "frame_0096.webp",
-      "source_frame": 97,
-      "timestamp": 4.0417,
-      "bytes": 25682
+      "timestamp": 4,
+      "bytes": 18020
     },
     {
       "index": 97,
       "file": "frame_0097.webp",
-      "source_frame": 98,
-      "timestamp": 4.0833,
-      "bytes": 26036
+      "timestamp": 4.0417,
+      "bytes": 17872
     },
     {
       "index": 98,
       "file": "frame_0098.webp",
-      "source_frame": 99,
-      "timestamp": 4.125,
-      "bytes": 26180
+      "timestamp": 4.0833,
+      "bytes": 18020
     },
     {
       "index": 99,
       "file": "frame_0099.webp",
-      "source_frame": 100,
-      "timestamp": 4.1667,
-      "bytes": 26774
+      "timestamp": 4.125,
+      "bytes": 18096
     },
     {
       "index": 100,
       "file": "frame_0100.webp",
-      "source_frame": 101,
-      "timestamp": 4.2083,
-      "bytes": 26458
+      "timestamp": 4.1667,
+      "bytes": 18582
     },
     {
       "index": 101,
       "file": "frame_0101.webp",
-      "source_frame": 102,
-      "timestamp": 4.25,
-      "bytes": 26928
+      "timestamp": 4.2083,
+      "bytes": 18230
     },
     {
       "index": 102,
       "file": "frame_0102.webp",
-      "source_frame": 103,
-      "timestamp": 4.2917,
-      "bytes": 27002
+      "timestamp": 4.25,
+      "bytes": 18642
     },
     {
       "index": 103,
       "file": "frame_0103.webp",
-      "source_frame": 104,
-      "timestamp": 4.3333,
-      "bytes": 27242
+      "timestamp": 4.2917,
+      "bytes": 18578
     },
     {
       "index": 104,
       "file": "frame_0104.webp",
-      "source_frame": 105,
-      "timestamp": 4.375,
-      "bytes": 27206
+      "timestamp": 4.3333,
+      "bytes": 18804
     },
     {
       "index": 105,
       "file": "frame_0105.webp",
-      "source_frame": 106,
-      "timestamp": 4.4167,
-      "bytes": 27438
+      "timestamp": 4.375,
+      "bytes": 18836
     },
     {
       "index": 106,
       "file": "frame_0106.webp",
-      "source_frame": 107,
-      "timestamp": 4.4583,
-      "bytes": 27504
+      "timestamp": 4.4167,
+      "bytes": 19058
     },
     {
       "index": 107,
       "file": "frame_0107.webp",
-      "source_frame": 108,
-      "timestamp": 4.5,
-      "bytes": 28010
+      "timestamp": 4.4583,
+      "bytes": 18930
     },
     {
       "index": 108,
       "file": "frame_0108.webp",
-      "source_frame": 109,
-      "timestamp": 4.5417,
-      "bytes": 27578
+      "timestamp": 4.5,
+      "bytes": 19274
     },
     {
       "index": 109,
       "file": "frame_0109.webp",
-      "source_frame": 110,
-      "timestamp": 4.5833,
-      "bytes": 27716
+      "timestamp": 4.5417,
+      "bytes": 19136
     },
     {
       "index": 110,
       "file": "frame_0110.webp",
-      "source_frame": 111,
-      "timestamp": 4.625,
-      "bytes": 27940
+      "timestamp": 4.5833,
+      "bytes": 19236
     },
     {
       "index": 111,
       "file": "frame_0111.webp",
-      "source_frame": 112,
-      "timestamp": 4.6667,
-      "bytes": 28196
+      "timestamp": 4.625,
+      "bytes": 19160
     },
     {
       "index": 112,
       "file": "frame_0112.webp",
-      "source_frame": 113,
-      "timestamp": 4.7083,
-      "bytes": 28000
+      "timestamp": 4.6667,
+      "bytes": 19418
     },
     {
       "index": 113,
       "file": "frame_0113.webp",
-      "source_frame": 114,
-      "timestamp": 4.75,
-      "bytes": 28108
+      "timestamp": 4.7083,
+      "bytes": 19446
     },
     {
       "index": 114,
       "file": "frame_0114.webp",
-      "source_frame": 115,
-      "timestamp": 4.7917,
-      "bytes": 28244
+      "timestamp": 4.75,
+      "bytes": 19556
     },
     {
       "index": 115,
       "file": "frame_0115.webp",
-      "source_frame": 116,
-      "timestamp": 4.8333,
-      "bytes": 28444
+      "timestamp": 4.7917,
+      "bytes": 19614
     },
     {
       "index": 116,
       "file": "frame_0116.webp",
-      "source_frame": 117,
-      "timestamp": 4.875,
-      "bytes": 28072
+      "timestamp": 4.8333,
+      "bytes": 19768
     },
     {
       "index": 117,
       "file": "frame_0117.webp",
-      "source_frame": 118,
-      "timestamp": 4.9167,
-      "bytes": 28152
+      "timestamp": 4.875,
+      "bytes": 19498
     },
     {
       "index": 118,
       "file": "frame_0118.webp",
-      "source_frame": 119,
-      "timestamp": 4.9583,
-      "bytes": 28194
+      "timestamp": 4.9167,
+      "bytes": 19588
     },
     {
       "index": 119,
       "file": "frame_0119.webp",
-      "source_frame": 120,
-      "timestamp": 5.0,
-      "bytes": 28436
+      "timestamp": 4.9583,
+      "bytes": 19654
+    },
+    {
+      "index": 120,
+      "file": "frame_0120.webp",
+      "timestamp": 5,
+      "bytes": 19830
     }
   ]
 }
