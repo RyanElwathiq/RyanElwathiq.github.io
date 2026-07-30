@@ -89,11 +89,18 @@ async function run(path, lang) {
   await page.waitForTimeout(9000);
 
   // ─── شو شاف الزائر؟ ───
+  // ⚠️ منقيس العنصر نفسه مش كلمات مفتاحية بالنص.
+  //    أول نسخة كانت تدوّر على كلمات، فطلعت «ولا رسالة» بالإنجليزي
+  //    مع إنه الشاشة ظاهرة — فحص كذّاب بيخبّي عطل حقيقي.
   out.screen = await page.evaluate(() => {
     const b = document.querySelector('.brief');
     const err = b?.querySelector('.brief-err')?.textContent?.trim() || '';
-    const txt = (b?.textContent || '').replace(/\s+/g, ' ');
-    return { err, done: /تم|وصل|Thanks|received|sent/i.test(txt) };
+    const head = b?.querySelector('.brief-done h3, .done h3');
+    return {
+      err,
+      done: !!head,
+      title: head?.textContent?.trim() || '',
+    };
   });
 
   await page.close();

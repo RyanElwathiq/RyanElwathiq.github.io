@@ -21,6 +21,12 @@ MAIL_TO = "ryan.elwathiq@gmail.com"
 # مين المرسِل. بيضل onboarding@resend.dev لحد ما نوثّق دومينك
 MAIL_FROM = "Rayan Portfolio <onboarding@resend.dev>"
 
+# رقم محادثة ريّان بتيليجرام — لوين بيروح تنبيه الطلبات.
+# ⚠️ مش سرّي: هو معرّفك بتيليجرام وأي بوت بتحكي معه بيشوفه،
+#    وما بيسمح لحدا يقرأ رسايلك ولا يبعت باسمك. السرّي هو
+#    توكن البوت، وهو محطوط كـ secret مش هون.
+TELEGRAM_CHAT_ID = "1778887119"
+
 # ─── المفاتيح السرّية — بتنحط بأوامر منفصلة، مش هون ───
 #   npx wrangler secret put RESEND_KEY
 #   npx wrangler secret put TELEGRAM_BOT_TOKEN

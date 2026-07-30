@@ -72,9 +72,12 @@ const COPY = {
     errSend: 'ما قدرنا نبعت الطلب. جرّب كمان مرة، أو انسخ الطلب من الزر تحت وابعتهولي واتساب.',
     sending: 'عم نبعت…',
     // ─── بعد الإرسال ───
-    doneTitle: 'تمام، فتحت بريدك',
+    // ⚠️ كان مكتوب «فتحت بريدك» أيام ما الفورم كان بيفتح mailto.
+    //    هلق الطلب بيوصل مباشرة — والنص لازم يقول اللي بيصير فعلاً،
+    //    وإلا الزائر بيقعد يستنى بريد ما رح يفتح.
+    doneTitle: 'وصلني طلبك',
     doneBody:
-      'كل إجاباتك معبّاية جاهزة برسالة — بس اضغط إرسال من بريدك. ما فتح معك؟ استخدم زر «انسخ الطلب» وابعتلي إياه واتساب أو إيميل.',
+      'قرأته أنا شخصياً — مش نموذج آلي. برجعلك خلال ٢٤ ساعة، وغالباً أسرع. وإذا استعجلت، احكيني واتساب مباشرة.',
     doneAgain: 'ابدأ طلب جديد',
     orReach: 'أو تواصل معي مباشرة:',
     note: 'ما بشارك تفاصيل مشروعك مع حدا. بترجعلك مني شخصياً.',
@@ -122,9 +125,9 @@ const COPY = {
     errEmail: 'Please enter a valid email.',
     errSend: 'We could not send the brief. Try again, or copy it with the button below and send it over WhatsApp.',
     sending: 'Sending…',
-    doneTitle: 'Done — your email is open',
+    doneTitle: 'Your brief reached me',
     doneBody:
-      'All your answers are pre-filled in a message. Just hit send from your email app. Did it not open? Use "Copy the brief" and send it to me on WhatsApp or email.',
+      'I read it myself — no automated form in between. You will hear back within 24 hours, usually sooner. In a hurry? Message me on WhatsApp directly.',
     doneAgain: 'Start another brief',
     orReach: 'Or reach me directly:',
     note: 'I do not share your project details with anyone. You hear back from me personally.',
