@@ -30,6 +30,8 @@ import Lightbox from '../components/Lightbox.astro';
 import BrandEyeSection from '../components/BrandEyeSection.astro';
 import Particles from '../components/Particles.astro';
 import Lab from '../components/Lab.astro';
+import Seo from '../components/Seo.astro';
+import Data from '../components/Data.astro';
 // 🎛️ منطق «شو يظهر بالهوم» كله بملف واحد مشروح: src/utils/work.js
 //    (الترتيب، العدد، والتحكم اليدوي بحقل "home" بملف work.json)
 import { forHome, hasMore } from '../utils/work.js';
@@ -39,6 +41,8 @@ const marks = [
   { id: 'loss', label: 'Loss' },
   { id: 'brand-eye', label: 'Brand Eye' },
   { id: 'about', label: 'About' },
+  { id: 'seo', label: 'SEO' },
+  { id: 'data', label: 'Data' },
   { id: 'knot', label: '3D' },
   { id: 'budget', label: 'Budget' },
   { id: 'lab', label: 'Idea lab' },
@@ -79,6 +83,8 @@ const marks = [
          هون بينبني السبب اللي بيخلّي الشغل الجاي مقنع. -->
     <About lang="en" />
     <Skills lang="en" />
+    <Seo lang="en" id="seo" />
+    <Data lang="en" id="data" />
     <KnotSection lang="en" id="knot" />
     <!-- لعبة الميزانية: نسخة مختصرة هون، والكاملة على /budget/ -->
     <BudgetSection lang="en" id="budget" compact />

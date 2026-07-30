@@ -1,0 +1,419 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «السيو مش كلمات مفتاحية» — طبقات السيو
+//
+//  ⚠️ ليش هذا القسم موجود؟
+//  ريّان قال: «انا مش مجرد KEYWORDS وبس». والمشكلة إنه أي حدا
+//  بيقدر يكتب «خبير SEO» بسيرته. فالقسم ما بيدّعي خبرة —
+//  **بيعرضها**: بكل طبقة في الاعتقاد الشائع، والواقع، والأدوات.
+//  اللي بيفهم بيعرف إنه هذا كلام حدا اشتغل فعلاً، واللي ما
+//  بيفهم بيطلع فاهم إنه الموضوع أعمق مما تصوّر.
+//
+//  ⚠️ الطبقات بتنفتح وحدة وحدة بضغطة. ما بنفتحهم كلهم عشان
+//     القسم ما يصير جدار نص — القيمة إنه الزائر بيختار وين يغوص.
+//
+//  ✏️ المحتوى كله من src/data/seo.json
+//  ⚠️ الأدوات بأسماءها الحقيقية — شيل أي وحدة ما بتستخدمها فعلاً
+// ═══════════════════════════════════════════════════════════════
+import seo from '../data/seo.json';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'seo' } = Astro.props;
+const isAr = lang === 'ar';
+
+const t = isAr
+  ? {
+      kicker: 'تحسين محركات البحث',
+      heading: 'السيو مش كلمات مفتاحية.',
+      lede: 'أغلب اللي بينباع كـ«خدمة SEO» هو الطبقة الأولى بس — وهي أسهل طبقة. تحت منها خمس طبقات، وكل وحدة فيهم بتقدر توقف المشروع لحالها مهما كتبت كلمات مفتاحية. هاي الطبقات، وشو بيصير بكل وحدة.',
+      mythLabel: 'الاعتقاد الشائع',
+      realLabel: 'الواقع',
+      toolsLabel: 'الأدوات',
+      depth: 'العمق',
+      open: 'افتح',
+      note: 'كل طبقة بتشتغل على مشكلة مختلفة. وترتيبها مقصود: ما في فايدة من محتوى ممتاز على صفحة جوجل ما بيقدر يوصلها.',
+      cta: 'عندك موقع وبدك تعرف وين المشكلة؟',
+      ctaBtn: 'احكيلي عنه',
+    }
+  : {
+      kicker: 'Search',
+      heading: 'SEO is not keywords.',
+      lede: 'Most of what gets sold as "SEO" is the first layer only — and it is the easiest one. Below it are five more, and any single one of them can stall a project no matter how many keywords you write. Here are the layers, and what actually happens in each.',
+      mythLabel: 'The common belief',
+      realLabel: 'What it actually is',
+      toolsLabel: 'Tools',
+      depth: 'Depth',
+      open: 'Open',
+      note: 'Each layer solves a different problem, and the order is deliberate: excellent content is worth nothing on a page Google cannot reach.',
+      cta: 'Have a site and want to know where the problem is?',
+      ctaBtn: 'Tell me about it',
+    };
+
+const layers = seo.layers.map((l: any, i: number) => ({
+  id: l.id,
+  n: i + 1,
+  name: isAr ? l.name : l.nameEn,
+  myth: isAr ? l.myth : l.mythEn,
+  real: isAr ? l.real : l.realEn,
+  items: isAr ? l.items : l.itemsEn,
+  tools: l.tools,
+}));
+
+const contactHref = isAr ? '/ar/#contact' : '/#contact';
+---
+
+<section class="seo" id={id}>
+  <div class="container">
+    <div class="head">
+      <p class="kicker" data-reveal>{t.kicker}</p>
+      <h2 data-reveal>{t.heading}</h2>
+      <p class="lede" data-reveal>{t.lede}</p>
+    </div>
+
+    <div class="layers" data-seo>
+      {
+        layers.map((l, i) => (
+          <article class={`layer frame ${i === 0 ? 'is-open' : ''}`} data-seo-layer>
+            <button class="bar" type="button" data-seo-toggle aria-expanded={i === 0 ? 'true' : 'false'}>
+              {/* مقياس العمق: كل طبقة أعمق من اللي قبلها */}
+              <span class="depth" aria-hidden="true">
+                <i style={`--fill:${((i + 1) / layers.length) * 100}%`} />
+              </span>
+              <span class="n" aria-hidden="true">{String(l.n).padStart(2, '0')}</span>
+              <span class="name">{l.name}</span>
+              <span class="myth">{l.myth}</span>
+              <span class="chev" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </span>
+            </button>
+
+            <div class="body" data-seo-body>
+              <div class="body-in">
+                <p class="real">{l.real}</p>
+                <ul class="items">
+                  {l.items.map((it: string) => (
+                    <li>{it}</li>
+                  ))}
+                </ul>
+                <div class="tools">
+                  <span class="tools-label">{t.toolsLabel}</span>
+                  {l.tools.map((tool: string) => (
+                    <span class="tool">{tool}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="foot" data-reveal>
+      <p class="note">{t.note}</p>
+      <div class="cta">
+        <p>{t.cta}</p>
+        <a class="btn btn-primary" href={contactHref}>{t.ctaBtn}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ═══════════════════════════════════════════════════════════
+  //  فتح وإغلاق الطبقات — وحدة مفتوحة بنفس الوقت
+  //  ⚠️ الارتفاع بينحسب بالبكسل مش auto، لأن الانتقال (transition)
+  //     ما بيشتغل على height: auto. منقيسه ومنحطّه، وبعد ما تخلص
+  //     الحركة منرجّعه auto عشان يتمدّد لو تغيّر عرض الشاشة.
+  // ═══════════════════════════════════════════════════════════
+  function initSeo() {
+    document.querySelectorAll('[data-seo]').forEach((root) => {
+      if ((root as HTMLElement).dataset.ready === '1') return;
+      (root as HTMLElement).dataset.ready = '1';
+
+      const layers = [...root.querySelectorAll('[data-seo-layer]')] as HTMLElement[];
+
+      const setOpen = (layer: HTMLElement, open: boolean) => {
+        const body = layer.querySelector('[data-seo-body]') as HTMLElement;
+        const btn = layer.querySelector('[data-seo-toggle]') as HTMLElement;
+        if (!body || !btn) return;
+
+        layer.classList.toggle('is-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+        if (open) {
+          body.style.height = body.scrollHeight + 'px';
+          const done = () => {
+            body.style.height = 'auto';
+            body.removeEventListener('transitionend', done);
+          };
+          body.addEventListener('transitionend', done);
+        } else {
+          // من auto لرقم، وبعدها لصفر — وإلا ما في حركة
+          body.style.height = body.scrollHeight + 'px';
+          void body.offsetHeight;
+          body.style.height = '0px';
+        }
+      };
+
+      layers.forEach((layer, i) => {
+        const btn = layer.querySelector('[data-seo-toggle]');
+        // الحالة الأولى: الأولى مفتوحة والباقي مسكّرة
+        const body = layer.querySelector('[data-seo-body]') as HTMLElement;
+        if (body) body.style.height = i === 0 ? 'auto' : '0px';
+
+        btn?.addEventListener('click', () => {
+          const open = layer.classList.contains('is-open');
+          layers.forEach((l) => l !== layer && setOpen(l, false));
+          setOpen(layer, !open);
+        });
+      });
+    });
+  }
+
+  initSeo();
+  document.addEventListener('astro:page-load', initSeo);
+</script>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .seo {
+    padding-block: var(--section-gap);
+  }
+
+  .kicker {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-size: clamp(28px, 4.4vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+
+  html[lang='ar'] h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .lede {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 16.5px;
+    line-height: 1.85;
+    max-width: 64ch;
+  }
+
+  .head {
+    margin-bottom: clamp(30px, 5vh, 52px);
+  }
+
+  /* ─── الطبقات ─── */
+  .layers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .layer {
+    overflow: hidden;
+  }
+
+  .bar {
+    display: grid;
+    grid-template-columns: 4px 34px minmax(0, 190px) minmax(0, 1fr) 34px;
+    align-items: center;
+    gap: clamp(10px, 1.6vw, 20px);
+    width: 100%;
+    padding: clamp(16px, 2vw, 22px) clamp(16px, 2.2vw, 26px);
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: start;
+  }
+
+  /* مقياس العمق: خط عمودي بيطول مع كل طبقة */
+  .depth {
+    display: block;
+    align-self: stretch;
+    min-height: 30px;
+    border-radius: 3px;
+    background: var(--line);
+    overflow: hidden;
+  }
+
+  .depth i {
+    display: block;
+    width: 100%;
+    height: var(--fill);
+    background: var(--accent);
+    border-radius: 3px;
+  }
+
+  .n {
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  .layer.is-open .n {
+    color: var(--accent);
+  }
+
+  .name {
+    font-size: clamp(15px, 1.8vw, 19px);
+    font-weight: 700;
+  }
+
+  html[lang='ar'] .name {
+    font-weight: 800;
+  }
+
+  /* الاعتقاد الشائع مشطوب — الرسالة بتوصل قبل ما تفتح الطبقة */
+  .myth {
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    text-decoration-thickness: 1.5px;
+    opacity: 0.75;
+  }
+
+  .chev {
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    transition: transform 0.4s var(--ease-out), color 0.3s var(--ease-out);
+  }
+
+  .layer.is-open .chev {
+    transform: rotate(180deg);
+    color: var(--accent);
+  }
+
+  /* ─── المحتوى المفتوح ─── */
+  .body {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.45s var(--ease-out);
+  }
+
+  .body-in {
+    padding: 0 clamp(16px, 2.2vw, 26px) clamp(20px, 2.6vw, 28px);
+    /* بمحاذاة العنوان مش من أول البطاقة */
+    padding-inline-start: calc(4px + 34px + clamp(10px, 1.6vw, 20px) * 2 + 34px);
+  }
+
+  .real {
+    color: var(--text);
+    font-size: 15.5px;
+    line-height: 1.85;
+    max-width: 66ch;
+  }
+
+  .items {
+    list-style: none;
+    padding: 0;
+    margin: 18px 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px 24px;
+  }
+
+  .items li {
+    position: relative;
+    padding-inline-start: 16px;
+    font-size: 14.5px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .items li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0.68em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+
+  .tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .tools-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-inline-end: 4px;
+  }
+
+  .tool {
+    font-family: var(--font-en);
+    font-size: 12.5px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 5px 13px;
+  }
+
+  /* ─── الخاتمة ─── */
+  .foot {
+    margin-top: clamp(28px, 4vh, 44px);
+  }
+
+  .note {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.8;
+    max-width: 62ch;
+  }
+
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  .cta p {
+    font-size: 16.5px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 860px) {
+    .bar {
+      grid-template-columns: 4px 30px minmax(0, 1fr) 28px;
+      row-gap: 6px;
+    }
+
+    /* الاعتقاد الشائع بينزل سطر تحت عالموبايل */
+    .myth {
+      grid-column: 3 / -1;
+      font-size: 13px;
+    }
+
+    .body-in {
+      padding-inline-start: clamp(16px, 2.2vw, 26px);
+    }
+  }
+</style>

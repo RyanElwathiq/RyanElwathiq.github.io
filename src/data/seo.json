@@ -1,0 +1,160 @@
+{
+  "_readme": [
+    "طبقات السيو — من الشكل اللي بيعرفه الكل، لتحت.",
+    "كل طبقة: الاعتقاد الشائع، الواقع، والأدوات.",
+    "⚠️ الأدوات مكتوبة بأسماءها الحقيقية. شيل أي أداة ما بتستخدمها فعلاً —",
+    "   ادّعاء أداة ما بتعرفها بينكشف بأول سؤال تقني بمقابلة أو اجتماع."
+  ],
+  "layers": [
+    {
+      "id": "technical",
+      "name": "الطبقة التقنية",
+      "nameEn": "Technical",
+      "myth": "«حط الكلمة المفتاحية بالعنوان وخلص»",
+      "mythEn": "\"Put the keyword in the title and you are done\"",
+      "real": "قبل ما تفكّر بالكلمات: هل جوجل بيقدر يوصل للصفحة أصلاً؟ ميزانية الزحف، والصفحات المكرّرة اللي بتاكلها، والمحتوى اللي بينبني بالجافاسكربت وما بينقرا، وسلاسل التحويلات، والصفحات اليتيمة، وسرعة التحميل الحقيقية عند المستخدم مش بالمختبر.",
+      "realEn": "Before keywords: can Google reach the page at all? Crawl budget, the duplicate pages eating it, content built in JavaScript that never gets read, redirect chains, orphan pages, and real-user load speed rather than lab speed.",
+      "items": [
+        "ميزانية الزحف وتضخّم الفهرس",
+        "عرض الجافاسكربت وما بيوصل للزاحف",
+        "الروابط القانونية وسلاسل التحويل",
+        "hreflang للمواقع بلغتين",
+        "robots.txt وخرائط الموقع",
+        "Core Web Vitals من بيانات مستخدمين حقيقيين",
+        "البيانات المنظّمة (Schema)"
+      ],
+      "itemsEn": [
+        "Crawl budget and index bloat",
+        "JavaScript rendering and what the crawler never sees",
+        "Canonicals and redirect chains",
+        "hreflang for bilingual sites",
+        "robots.txt and sitemaps",
+        "Core Web Vitals from real user data",
+        "Structured data (Schema)"
+      ],
+      "tools": ["Screaming Frog", "Search Console", "PageSpeed Insights", "Rich Results Test"]
+    },
+    {
+      "id": "architecture",
+      "name": "بنية الموقع",
+      "nameEn": "Architecture",
+      "myth": "«اعمل صفحة لكل كلمة مفتاحية»",
+      "mythEn": "\"Make a page for every keyword\"",
+      "real": "الموقع شبكة روابط مش قائمة صفحات. عشر صفحات بتتنافس على نفس النية بتضعف بعضها بدل ما تقوّي — وهاي أكثر مشكلة بلاقيها بمواقع جاهزة. البنية الصح: صفحة أساسية لكل موضوع، وحواليها صفحات فرعية بتربط عليها.",
+      "realEn": "A site is a link graph, not a list of pages. Ten pages competing for the same intent weaken each other instead of adding up — the single most common problem I find in existing sites. The right structure is one page per topic with supporting pages linking into it.",
+      "items": [
+        "تنافس الصفحات على نفس النية (cannibalisation)",
+        "الروابط الداخلية كشبكة توزّع القوة",
+        "عمق النقرات من الصفحة الرئيسية",
+        "عناقيد المواضيع والصفحات المحورية",
+        "التنقّل المفلتر وصفحات لا نهائية",
+        "الصفحات اليتيمة اللي ما إلها رابط داخلي"
+      ],
+      "itemsEn": [
+        "Pages competing for the same intent (cannibalisation)",
+        "Internal links as a network that distributes authority",
+        "Click depth from the home page",
+        "Topic clusters and pillar pages",
+        "Faceted navigation and infinite URL space",
+        "Orphan pages with no internal link"
+      ],
+      "tools": ["Screaming Frog", "Ahrefs", "Semrush", "Search Console"]
+    },
+    {
+      "id": "intent",
+      "name": "نية البحث",
+      "nameEn": "Search intent",
+      "myth": "«الكلمة إلها ١٠ آلاف بحث شهري، يلا نستهدفها»",
+      "mythEn": "\"This keyword gets 10K searches, let us target it\"",
+      "real": "حجم البحث ما بيقول شو بده الباحث. نفس الكلمة ممكن يكون وراها حدا بده يتعلّم، وحدا بده يشتري، وحدا بده يقارن — وكل نية بدها صفحة مختلفة. وقبل ما تكتب: شوف مين راكب بالصفحة الأولى فعلاً، لأن جوجل عم يقلّك بالضبط شو بيعتبره الجواب.",
+      "realEn": "Search volume does not tell you what the searcher wants. The same phrase can hide someone learning, someone buying and someone comparing — and each needs a different page. Before writing, look at who actually ranks: Google is telling you exactly what it considers the answer.",
+      "items": [
+        "تصنيف النية: تعلّم · مقارنة · شراء · وصول",
+        "قراءة الصفحة الأولى قبل الكتابة",
+        "خصائص نتائج البحث (مقتطفات، أسئلة، خرائط، صور)",
+        "الكلمات الطويلة اللي فيها نية واضحة",
+        "الفجوة بين ما تستهدفه وما بيوصلك فعلاً"
+      ],
+      "itemsEn": [
+        "Intent classification: learn · compare · buy · navigate",
+        "Reading page one before writing a word",
+        "SERP features (snippets, People Also Ask, maps, images)",
+        "Long-tail queries where intent is unambiguous",
+        "The gap between what you target and what actually arrives"
+      ],
+      "tools": ["Search Console", "Ahrefs", "Semrush", "SERP analysis"]
+    },
+    {
+      "id": "content",
+      "name": "المحتوى",
+      "nameEn": "Content",
+      "myth": "«اكتب ١٥٠٠ كلمة وحط الكلمة ٨ مرات»",
+      "mythEn": "\"Write 1,500 words and repeat the keyword eight times\"",
+      "real": "الصفحة اللي بتربح هي اللي بتجاوب على السؤال أسرع وأوضح من غيرها، وبتضيف إشي مش موجود بالصفحة الأولى أصلاً. والمحتوى بيذبل: صفحة كانت أولى قبل سنة بتنزل لأن غيرها تحدّث. فالشغل مش نشر — الشغل دورة تحديث.",
+      "realEn": "The page that wins answers the question faster and clearer than the rest, and adds something page one does not already contain. Content also decays: a page that ranked first a year ago slips because others updated. So the job is not publishing — it is a refresh cycle.",
+      "items": [
+        "الجواب أول، مش بعد ٦٠٠ كلمة تمهيد",
+        "معلومة إضافية مش موجودة بالصفحة الأولى",
+        "ذبول المحتوى ودورات التحديث",
+        "الخبرة والمصدر والمؤلف (E-E-A-T)",
+        "تغطية الموضوع كامل مش كلمة واحدة"
+      ],
+      "itemsEn": [
+        "The answer first, not after 600 words of preamble",
+        "Information gain over what page one already says",
+        "Content decay and refresh cycles",
+        "Experience, expertise, authority, trust (E-E-A-T)",
+        "Covering the topic, not one keyword"
+      ],
+      "tools": ["Search Console", "Ahrefs", "Semrush"]
+    },
+    {
+      "id": "authority",
+      "name": "السلطة والروابط",
+      "nameEn": "Authority",
+      "myth": "«اشتري ١٠٠ باكلينك بـ ٥٠ دينار»",
+      "mythEn": "\"Buy 100 backlinks for 50 dinars\"",
+      "real": "الروابط المشتراة إما ما بتعمل إشي أو بتأذي. الرابط اللي بينفع هو اللي حدا حطّه لأنه محتاج يستشهد فيك. يعني الشغل مش شراء روابط — الشغل تبني إشي يستاهل الاستشهاد: بحث، أداة، رقم من السوق ما حدا نشره.",
+      "realEn": "Bought links either do nothing or do damage. The link that works is one someone placed because they needed to cite you. So the work is not buying links — it is building something worth citing: research, a tool, a number from your market nobody has published.",
+      "items": [
+        "أصول تستاهل الاستشهاد بدل شراء روابط",
+        "علاقات إعلامية وذكر العلامة بدون رابط",
+        "توزيع نصوص الروابط الطبيعي",
+        "تنظيف ملف روابط ملوّث",
+        "الذكر بدون رابط كإشارة"
+      ],
+      "itemsEn": [
+        "Assets worth citing instead of purchased links",
+        "Digital PR and unlinked brand mentions",
+        "Natural anchor text distribution",
+        "Cleaning up a toxic link profile",
+        "Brand mentions as a signal in themselves"
+      ],
+      "tools": ["Ahrefs", "Search Console", "Semrush"]
+    },
+    {
+      "id": "measure",
+      "name": "القياس",
+      "nameEn": "Measurement",
+      "myth": "«صرنا أول واحد بجوجل»",
+      "mythEn": "\"We are number one on Google\"",
+      "real": "الترتيب لحاله ما بيدفع فواتير. الرقم اللي بيهم: كم واحد ضغط، وكم واحد منهم صار عميل، وكم كلّفت الزيارة مقارنة بالإعلان. وواجهة Search Console بتعطيك ألف صف بس — البيانات الكاملة بتطلع من الـ API، وهون بيبدأ الشغل الحقيقي.",
+      "realEn": "A ranking alone pays nothing. The numbers that matter: how many clicked, how many became customers, and what a visit costs compared to advertising. And the Search Console interface caps at 1,000 rows — the full data comes out of the API, and that is where the real work starts.",
+      "items": [
+        "نقرات وظهور ونسبة نقر لكل عنقود كلمات",
+        "سحب البيانات الكاملة من واجهة برمجة Search Console",
+        "ربط البحث بالتحويلات مش بالزيارات",
+        "كلفة الزيارة العضوية مقابل المدفوعة",
+        "لوحة تقارير بتقرأها إنت مش بتحتاجني أشرحها"
+      ],
+      "itemsEn": [
+        "Clicks, impressions and CTR per query cluster",
+        "Pulling full data through the Search Console API",
+        "Tying search to conversions, not sessions",
+        "Cost per organic visit versus paid",
+        "A dashboard you can read without me explaining it"
+      ],
+      "tools": ["Search Console API", "GA4", "Looker Studio", "BigQuery"]
+    }
+  ]
+}
