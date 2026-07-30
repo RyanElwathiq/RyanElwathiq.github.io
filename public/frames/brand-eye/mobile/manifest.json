@@ -1,0 +1,10 @@
+{
+  "source": "generated (brand system)",
+  "source_fps": 24,
+  "frame_count": 120,
+  "format": "webp",
+  "width": 720,
+  "height": 1280,
+  "filename_pattern": "frame_%04d.webp",
+  "total_bytes": 2274256
+}

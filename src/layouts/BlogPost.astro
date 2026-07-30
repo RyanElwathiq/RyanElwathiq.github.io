@@ -79,7 +79,7 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
                 تثبيت، رحلة السكرول بتخلص قبل ما الزائر يبدأ ينزل،
                 فالفيديو كان يطلع ثابت عالموبايل. وهاي الصفحة فيها
                 فيديو واحد بس، فما في خطر تداخل تثبيتات. -->
-        <header class="film" data-seq data-seq-pin-always data-seq-length="1.2" data-seq-desktop={film}>
+        <header class="film" data-seq data-seq-pin-always data-seq-length="1.2" data-seq-desktop={film} data-seq-mobile={film + "mobile/"}>
           <div class="film-sticky" data-seq-sticky>
             <canvas aria-hidden="true"></canvas>
             <div class="film-veil" aria-hidden="true" />
@@ -200,20 +200,45 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
       links.set(h.id, a);
     });
 
-    // إضاءة العنوان الحالي
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          const a = links.get((e.target as HTMLElement).id);
-          if (a) a.classList.toggle('is-now', e.isIntersecting);
-        });
-        // لو أكثر من واحد ظاهر، منخلي الأول بس
-        const on = [...links.values()].filter((a) => a.classList.contains('is-now'));
-        on.slice(1).forEach((a) => a.classList.remove('is-now'));
-      },
-      { rootMargin: '-120px 0px -70% 0px' }
-    );
-    heads.forEach((h) => io.observe(h));
+    // ═══════════════════════════════════════════════════════
+    //  إضاءة القسم الحالي
+    //
+    //  ⚠️⚠️ النسخة الأولى كانت غلط ⚠️⚠️
+    //  كانت تضوّي العنوان **وهو ظاهر بالشاشة بس**. النتيجة اللي
+    //  لاحظها ريّان: اللون بيتغيّر مع كل حركة سكرول، وبلحظات
+    //  ما بيكون في ولا عنوان مضوّي أصلاً (لما تكون بنص فقرة
+    //  طويلة وما في عنوان بالشاشة) — فالفهرس ما بيقول لك وين إنت.
+    //
+    //  الصح: **دايماً** في قسم واحد مضوّي، وهو آخر عنوان مرقت
+    //  عليه. بيضل مضوّي لحد ما توصل اللي بعده. مؤشّر موقع ثابت،
+    //  مش وميض.
+    // ═══════════════════════════════════════════════════════
+    let active: HTMLAnchorElement | null = null;
+
+    const setActive = (a: HTMLAnchorElement | null) => {
+      if (a === active) return; // ما منكتب إلا لما يتغيّر فعلاً
+      active?.classList.remove('is-now');
+      a?.classList.add('is-now');
+      active = a;
+    };
+
+    const sync = () => {
+      const line = 140; // تحت الشريط والكبسولة
+      let current = heads[0];
+      for (const h of heads) {
+        if (h.getBoundingClientRect().top <= line) current = h;
+        else break;
+      }
+      setActive(links.get(current.id) || null);
+    };
+
+    sync();
+    window.addEventListener('scroll', sync, { passive: true });
+    // السكرول الناعم بيرسل حدثه الخاص كمان
+    (window as any).__lenis?.on?.('scroll', sync);
+    document.addEventListener('astro:before-swap', () => window.removeEventListener('scroll', sync), {
+      once: true,
+    });
   }
 
   initToc();
