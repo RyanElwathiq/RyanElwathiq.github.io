@@ -38,7 +38,7 @@
       "order": 1,
       "youtube": "UZiQXVxdAeU",
       "preview": "",
-      "cover": "/assets/project-dr-samir.png",
+      "cover": "/assets/work/dr-samir/dr-samir-03.webp",
       "desc": "Built a brand-new Instagram presence from 0 to 2,395 followers organically in 30 days: brand guidelines, visual identity, video QA, hook writing, and a full editing workflow.",
       "descAr": "بناء حضور جديد كلياً على إنستغرام من صفر إلى 2,395 متابع بشكل عضوي خلال 30 يوم: دليل هوية، إشراف على الفيديو، كتابة الخطافات، ونظام مونتاج متكامل.",
       "stats": [
@@ -118,7 +118,7 @@
       "order": 2,
       "youtube": "",
       "preview": "",
-      "cover": "/assets/project-luvit.png",
+      "cover": "/assets/work/luvit/coverFinal-01.webp",
       "desc": "Led digital brand development for a Turkish skincare label entering the Jordanian market: visual identity, content strategy, and phased organic growth planning with an AI-assisted design workflow.",
       "descAr": "قيادة التطوير الرقمي لعلامة عناية بالبشرة تركية تدخل السوق الأردني: هوية بصرية، استراتيجية محتوى، وخطة نمو عضوي مرحلية مع نظام تصميم مدعوم بالذكاء الاصطناعي.",
       "stats": [
@@ -151,7 +151,7 @@
       "order": 3,
       "youtube": "65eGhthqMEY",
       "preview": "",
-      "cover": "/assets/project-arkan.png",
+      "cover": "/assets/work/arkan-al-anan/arkan-al-anan-01.webp",
       "desc": "Developed the storytelling concept, supervised the creative direction, and edited key parts of the final real-estate marketing video.",
       "descAr": "تطوير الفكرة القصصية، الإشراف على الإخراج الإبداعي، ومونتاج أجزاء أساسية من الفيديو التسويقي العقاري.",
       "stats": [],
@@ -219,7 +219,7 @@
       "order": 1,
       "youtube": "1OMyXBxrTQA",
       "preview": "",
-      "cover": "/assets/clients/orient-h-white.png",
+      "cover": "/assets/work/orient-enam/orient-enam-01.webp",
       "desc": "Developed brand guidelines, logo direction, a marketing plan, and communication improvements for the company's identity and positioning.",
       "descAr": "تطوير دليل الهوية، توجيه الشعار، خطة تسويقية، وتحسينات على أسلوب التواصل لهوية الشركة وموقعها بالسوق.",
       "stats": [],
@@ -298,9 +298,9 @@
       "order": 9,
       "youtube": "",
       "preview": "",
-      "cover": "/assets/project-luvit.png",
+      "cover": "/assets/hero-creative-direction.png",
       "url": "https://plasmajo.com",
-      "status": "live",
+      "status": "wip",
       "desc": "Designed and built the LUVIT e-commerce experience on WordPress: a custom design system, a GSAP motion language, and an Apple-style scroll-sequence hero.",
       "descAr": "تصميم وبناء تجربة متجر لوفيت على ووردبريس: نظام تصميم مخصص، لغة حركة GSAP، وهيرو سكرول-سيكوينس بأسلوب أبل.",
       "stats": [],
@@ -318,7 +318,8 @@
         "challenge": "المتجر على ووردبريس مع إضافات بتبني الماركب تبعها بنفسها، يعني تغيير الثيم لحاله ما كان بيكفي. التصميم كان لازم يعيش فوق WooCommerce وصفحات الدفع بدون ما يكسرها.",
         "approach": "بنيت طبقة توكنز تصميم واحدة ونظام حركة مشترك، وبعدين ربطتهم بماركب الإضافات عبر طبقة توافق. والهيرو بيستخدم سكرول-سيكوينس بأسلوب أبل بنسختين فريمات: وحدة للموبايل ووحدة للديسكتوب.",
         "result": "متجر بيقرأ كعلامة تجارية مش كقالب، بهيرو بيمسك انتباه الزائر، ومكتبة مكوّنات بتخلي كل قسم جديد متناسق مع اللي قبله."
-      }
+      },
+      "_ملاحظة": "⚠️ plasmajo.com حالياً بيعرض صفحة Coming Soon تبع Hostinger. رجّع status لـ live أول ما المتجر ينزل فعلاً."
     },
     {
       "id": "portfolio",
@@ -330,7 +331,7 @@
       "order": 10,
       "youtube": "",
       "preview": "",
-      "cover": "/assets/hero-creative-direction.png",
+      "cover": "/assets/work/portfolio-cover.jpg",
       "url": "https://ryanalali.me",
       "status": "live",
       "desc": "A bilingual portfolio built from scratch: a scroll-driven film engine, a custom design system, and Arabic-first RTL throughout.",
@@ -604,7 +605,7 @@
       "descAr": "كروت منتجات تتقلّب لتعرض الكتالوج، مبنية لإنستغرام.",
       "youtube": "X_W7HjNdxjw",
       "preview": "",
-      "cover": "/assets/logo-white.png",
+      "cover": "/assets/work/al-razi-cover.jpg",
       "stats": [],
       "videos": [
         "X_W7HjNdxjw"
