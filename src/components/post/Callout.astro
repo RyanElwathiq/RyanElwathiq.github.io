@@ -1,0 +1,86 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  لوح ملاحظة داخل المقال
+//
+//  ليش موجود؟ المقالات كانت نص مرصوص من أوله لآخره. اللوح بيكسر
+//  الرصّ وبيعطي العين نقطة استراحة، وبيقول «هاي الفكرة المهمة».
+//
+//  ✏️ الاستخدام بأي مقال:
+//     import Callout from '../../components/post/Callout.astro';
+//     <Callout title="الخلاصة">النص هون</Callout>
+//     وللتحذير: <Callout kind="warn" title="خلّي بالك">…</Callout>
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  title?: string;
+  /** note = ليموني (افتراضي) · warn = أحمر · quiet = رمادي */
+  kind?: 'note' | 'warn' | 'quiet';
+}
+
+const { title, kind = 'note' } = Astro.props;
+---
+
+<aside class={`callout k-${kind}`}>
+  {title && <p class="c-title">{title}</p>}
+  <div class="c-body"><slot /></div>
+</aside>
+
+<style>
+  .callout {
+    --c: var(--accent);
+    position: relative;
+    margin: 2em 0;
+    padding: clamp(18px, 2.4vw, 26px);
+    padding-inline-start: clamp(22px, 2.8vw, 32px);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: var(--surface);
+  }
+
+  /* شريط ملوّن على الحافة — بيعرّف نوع اللوح بلمحة */
+  .callout::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 3px;
+    border-start-start-radius: var(--r-card);
+    border-end-start-radius: var(--r-card);
+    background: var(--c);
+  }
+
+  .k-warn {
+    --c: var(--danger);
+  }
+
+  .k-quiet {
+    --c: var(--line);
+  }
+
+  .c-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c);
+    margin-bottom: 8px;
+  }
+
+  .k-quiet .c-title {
+    color: var(--muted);
+  }
+
+  /* ⚠️ :global ضروري — المحتوى جاي من المقال (slot) فما بياخد
+     ستايل المكوّن إلا هيك */
+  .c-body :global(p) {
+    margin: 0 0 0.8em;
+    color: var(--text);
+    font-size: 15.5px;
+    line-height: 1.8;
+  }
+
+  .c-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .c-body :global(strong) {
+    color: var(--text);
+  }
+</style>

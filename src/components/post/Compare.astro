@@ -1,0 +1,138 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  مقارنة عمودين داخل المقال: «الشائع» مقابل «الواقع»
+//
+//  ليش موجود؟ أغلب أفكار المقالات عننا مبنية على «الناس بتظن كذا،
+//  والواقع كذا». وكتابتها كفقرتين بتضيع الفكرة. بعمودين متقابلين
+//  بتوصل بلمحة قبل ما يقرأ.
+//
+//  ✏️ الاستخدام:
+//     <Compare
+//       leftTitle="الاعتقاد الشائع"
+//       rightTitle="الواقع"
+//       rows={[['حط الكلمة بالعنوان', 'شوف إذا جوجل بيوصل للصفحة أصلاً']]}
+//     />
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  leftTitle: string;
+  rightTitle: string;
+  /** كل صف: [الطرف الأول، الطرف الثاني] */
+  rows: [string, string][];
+}
+
+const { leftTitle, rightTitle, rows } = Astro.props;
+---
+
+<div class="cmp">
+  <div class="cmp-head">
+    <span class="h left">{leftTitle}</span>
+    <span class="h right">{rightTitle}</span>
+  </div>
+  {
+    rows.map(([a, b]) => (
+      <div class="row">
+        <span class="cell left">{a}</span>
+        <span class="arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </span>
+        <span class="cell right">{b}</span>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .cmp {
+    margin: 2em 0;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .cmp-head,
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 34px 1fr;
+    align-items: center;
+    gap: 0;
+  }
+
+  .cmp-head {
+    background: color-mix(in srgb, var(--text) 4%, transparent);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .h {
+    padding: 12px clamp(14px, 2vw, 20px);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .h.left {
+    color: var(--muted);
+  }
+
+  .h.right {
+    color: var(--accent);
+    grid-column: 3;
+  }
+
+  .row + .row {
+    border-top: 1px solid var(--line);
+  }
+
+  .cell {
+    padding: clamp(12px, 1.8vw, 17px) clamp(14px, 2vw, 20px);
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+
+  /* الطرف الشائع مشطوب — الرسالة بتوصل بدون ما تقرأ */
+  .cell.left {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in srgb, var(--danger) 55%, transparent);
+    text-decoration-thickness: 1.5px;
+  }
+
+  .cell.right {
+    color: var(--text);
+  }
+
+  .arrow {
+    display: grid;
+    place-items: center;
+    color: color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+
+  /* السهم بينعكس بالعربي */
+  html[dir='rtl'] .arrow svg {
+    transform: scaleX(-1);
+  }
+
+  /* عالموبايل: العمودين فوق بعض مع سهم نازل بينهم */
+  @media (max-width: 640px) {
+    .cmp-head {
+      display: none;
+    }
+
+    .row {
+      grid-template-columns: 1fr;
+      padding-block: 6px;
+    }
+
+    .arrow {
+      justify-content: start;
+      padding-inline-start: 14px;
+    }
+
+    .arrow svg,
+    html[dir='rtl'] .arrow svg {
+      transform: rotate(90deg);
+    }
+  }
+</style>

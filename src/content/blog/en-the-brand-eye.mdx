@@ -12,6 +12,9 @@ draft: false
 {/* ⚠️ This line pulls in the Brand Eye game so it can be played inside
        the article. Do not remove it if you want the game to stay. */}
 import BrandEyeSection from '../../components/BrandEyeSection.astro';
+import Callout from '../../components/post/Callout.astro';
+import Compare from '../../components/post/Compare.astro';
+import Steps from '../../components/post/Steps.astro';
 
 There is a sentence I hear constantly from clients after they see a design:
 
@@ -21,7 +24,24 @@ That is the most honest sentence in this business. Because a visitor feels the f
 
 The trouble is that when we cannot name the flaw, we blame taste. "My taste is different from yours." That is the worst place for a design conversation to end, because it closes the door on any improvement.
 
-**The truth is that most designs do not fail because they are ugly. They fail because they break one principle.**
+<Callout title="The short version">
+  Most designs do not fail because they are ugly. They fail because they break **one principle** — and that break is visible in two seconds.
+</Callout>
+
+## The difference in one line
+
+<Compare
+  leftTitle="What usually gets sold"
+  rightTitle="What actually works"
+  rows={[
+    ["Make it look nice", "Make it readable first, then make it look nice"],
+    ["Everything at the same size", "The eye must know where to start"],
+    ["Four colours so it feels rich", "One brand colour and neutrals"],
+    ["Fill every empty space", "Emptiness is what raises the value"],
+    ["Every element gets its own shape", "One rule applied to all of them"],
+    ["Three buttons for every option", "One primary action, the rest quiet links"],
+  ]}
+/>
 
 ## The six principles
 
@@ -70,6 +90,15 @@ Theory gets forgotten. So I built a short game: each round shows the same design
 Ten rounds, and the questions change every time. You do not need to be a designer — in fact, if you are not one the result is more honest, because your visitors are not designers either.
 
 <BrandEyeSection lang="en" />
+
+## How to use this in practice
+
+<Steps items={[
+  { t: "Name the flaw instead of feeling it", d: "Instead of \"something is missing\", say \"the contrast is weak\" or \"there is no hierarchy\". One clear sentence saves a week of revisions." },
+  { t: "Ask what the single action is", d: "What should the visitor do on this page? If there is no single answer, the design is not finished." },
+  { t: "Test it on your phone in daylight", d: "Not on an office monitor. Contrast and text-size problems surface immediately." },
+  { t: "Ask for the reason, not the look", d: "\"Why did you choose this?\" — the designer who can answer is the one who understands you." },
+]} />
 
 ## Why this matters if you own the business
 

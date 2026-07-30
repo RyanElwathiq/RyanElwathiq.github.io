@@ -1,0 +1,102 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  خطوات مرقّمة داخل المقال
+//
+//  ليش موجود؟ القائمة المرقّمة العادية بالماركداون بتبيّن ضعيفة
+//  وبتضيع وسط النص. هاي بتعطي كل خطوة مساحتها وخط زمني بيربطهم،
+//  فالقارئ بيعرف إنه هاد تسلسل مش تعداد.
+//
+//  ✏️ الاستخدام:
+//     <Steps items={[
+//       { t: 'العنوان', d: 'الشرح' },
+//       { t: 'العنوان', d: 'الشرح' },
+//     ]} />
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  items: { t: string; d: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<ol class="steps">
+  {
+    items.map((s, i) => (
+      <li>
+        <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <div class="txt">
+          <p class="t">{s.t}</p>
+          <p class="d">{s.d}</p>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 2em 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .steps li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    gap: clamp(12px, 1.8vw, 20px);
+    padding-block: clamp(14px, 2vw, 20px);
+  }
+
+  .steps li + li {
+    border-top: 1px solid var(--line);
+  }
+
+  /* الخط الزمني: بيوصل الأرقام ببعض */
+  .steps li:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 23px;
+    top: calc(clamp(14px, 2vw, 20px) + 30px);
+    bottom: 0;
+    width: 1px;
+    background: var(--line);
+  }
+
+  .num {
+    position: relative;
+    z-index: 1;
+    width: 46px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-en);
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent-ink);
+    background: var(--accent);
+    border-radius: var(--r-pill);
+  }
+
+  .t {
+    font-size: 16.5px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 6px;
+    line-height: 1.4;
+  }
+
+  html[lang='ar'] .t {
+    font-weight: 800;
+  }
+
+  .d {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+</style>

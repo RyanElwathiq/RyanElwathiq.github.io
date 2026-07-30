@@ -49,6 +49,7 @@ const t = isAr
       ctaBody: 'احكيلي عن وضعك وبساعدك تحدد أول خطوة تستاهل وقتك ومصاريفك.',
       ctaBtn: 'احكيلي',
       more: 'كل الإشارات',
+      tocLabel: 'بهذا المقال',
     }
   : {
       back: '← All signals',
@@ -57,6 +58,7 @@ const t = isAr
       ctaBody: 'Tell me about your situation and I will help you work out the first step worth your time and budget.',
       ctaBtn: 'Get in touch',
       more: 'All signals',
+      tocLabel: 'In this article',
     };
 
 const blogHref = isAr ? '/ar/signals/' : '/signals/';
@@ -119,8 +121,23 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
         )
       }
 
-      <div class="body">
-        <slot />
+      <!-- ═══════════════════════════════════════════════════════
+           المقال + فهرس جانبي لاصق
+           ⚠️ الفهرس بينبني بالجافاسكربت من عناوين المقال نفسه —
+              يعني ما بتحتاج تكتبه بأي مقال، وما بينسى يتحدّث لما
+              تعدّل العناوين.
+           ⚠️ مخفي تحت ١٠٨٠ بكسل: بالشاشات الضيقة بياخد مساحة
+              القراءة نفسها فبيضرّ أكثر ما بينفع.
+           ═══════════════════════════════════════════════════════ -->
+      <div class="layout">
+        <nav class="toc" data-toc aria-label={t.tocLabel}>
+          <p class="toc-title">{t.tocLabel}</p>
+          <ol data-toc-list></ol>
+        </nav>
+
+        <div class="body" data-post-body>
+          <slot />
+        </div>
       </div>
 
       <!-- ═══ دعوة للتواصل بآخر المقال ═══ -->
@@ -139,6 +156,69 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 
   <Footer lang={lang} />
 </Base>
+
+<script>
+  // ═══════════════════════════════════════════════════════════
+  //  الفهرس الجانبي — بينبني من عناوين المقال نفسه
+  //
+  //  ⚠️ ليش بالجافاسكربت مش مكتوب بكل مقال؟ لأنه بيصير ينسى
+  //     يتحدّث. أي عنوان بتضيفه أو بتغيّره بينعكس فوراً هون.
+  //  ⚠️ العنوان اللي عم تقرأه بينضوّي — بـ IntersectionObserver
+  //     مش بحساب مواقع مع كل حركة سكرول (أرخص بكثير للمعالج).
+  // ═══════════════════════════════════════════════════════════
+  function initToc() {
+    const nav = document.querySelector('[data-toc]') as HTMLElement | null;
+    const list = document.querySelector('[data-toc-list]');
+    const body = document.querySelector('[data-post-body]');
+    if (!nav || !list || !body) return;
+    if (nav.dataset.ready === '1') return;
+    nav.dataset.ready = '1';
+
+    const heads = [...body.querySelectorAll('h2')] as HTMLElement[];
+    // مقال قصير ما بيحتاج فهرس — بيصير حشو
+    if (heads.length < 3) {
+      nav.hidden = true;
+      return;
+    }
+
+    const slug = (s: string) =>
+      s
+        .trim()
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}]+/gu, '-')
+        .replace(/^-|-$/g, '');
+
+    const links = new Map<string, HTMLAnchorElement>();
+    heads.forEach((h, i) => {
+      if (!h.id) h.id = slug(h.textContent || '') || 'h' + i;
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.textContent = (h.textContent || '').trim();
+      li.appendChild(a);
+      list.appendChild(li);
+      links.set(h.id, a);
+    });
+
+    // إضاءة العنوان الحالي
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          const a = links.get((e.target as HTMLElement).id);
+          if (a) a.classList.toggle('is-now', e.isIntersecting);
+        });
+        // لو أكثر من واحد ظاهر، منخلي الأول بس
+        const on = [...links.values()].filter((a) => a.classList.contains('is-now'));
+        on.slice(1).forEach((a) => a.classList.remove('is-now'));
+      },
+      { rootMargin: '-120px 0px -70% 0px' }
+    );
+    heads.forEach((h) => io.observe(h));
+  }
+
+  initToc();
+  document.addEventListener('astro:page-load', initToc);
+</script>
 
 <style>
   /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
@@ -444,5 +524,161 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
       flex: 1;
       justify-content: center;
     }
+  }
+</style>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════
+     تخطيط المقال: فهرس لاصق + نص
+     ⚠️ الفهرس على الطرف بمساحة كانت فاضية أصلاً — ما أخذنا ولا
+        بكسل من عرض القراءة (٦٨ حرف زي ما هو).
+     ═══════════════════════════════════════════════════════════ */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 210px;
+    gap: clamp(28px, 4vw, 64px);
+    align-items: start;
+  }
+
+  .toc {
+    position: sticky;
+    top: 130px;
+    order: 2;
+    padding-inline-start: 16px;
+    border-inline-start: 1px solid var(--line);
+  }
+
+  .toc-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+  }
+
+  .toc ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .toc a {
+    display: block;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .toc a:hover {
+    color: var(--text);
+  }
+
+  /* العنوان اللي عم تقرأه */
+  .toc a.is-now {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ⚠️ تحت ١٠٨٠ بكسل الفهرس بياخد من مساحة القراءة — منخفّيه */
+  @media (max-width: 1080px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+
+    .toc {
+      display: none;
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     الجداول داخل المقال
+     ⚠️ ما كان فيها ولا سطر ستايل — أي جدول بيكتبه ريّان بالماركداون
+        كان بيطلع بشكل المتصفح الافتراضي (أبيض بحدود رمادية) وسط
+        تصميم غامق. صار جدول من نظام الهوية.
+     ═══════════════════════════════════════════════════════════ */
+  .body :global(table) {
+    width: 100%;
+    margin: 2em 0;
+    border-collapse: collapse;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    font-size: 14.5px;
+    /* الجداول العريضة بتنسحب لحالها بدل ما تكسر الصفحة */
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .body :global(thead) {
+    background: color-mix(in srgb, var(--text) 5%, transparent);
+  }
+
+  .body :global(th) {
+    text-align: start;
+    padding: 12px 16px;
+    font-weight: 700;
+    color: var(--text);
+    font-size: 13px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .body :global(td) {
+    padding: 12px 16px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .body :global(tbody tr:last-child td) {
+    border-bottom: 0;
+  }
+
+  .body :global(tbody tr:hover td) {
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+  }
+
+  /* أول عمود عادةً هو المفتاح — منخلّيه أوضح */
+  .body :global(tbody td:first-child) {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* ─── فاصل بين أجزاء المقال ─── */
+  .body > :global(hr) {
+    margin: 2.6em 0;
+    border: 0;
+    height: 1px;
+    background: linear-gradient(
+      to inline-end,
+      var(--accent) 0,
+      var(--line) 12%,
+      var(--line) 88%,
+      transparent 100%
+    );
+  }
+
+  /* ─── صور داخل المقال ─── */
+  .body :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--r-card);
+    border: 1px solid var(--line);
+    margin: 1.8em 0;
+  }
+
+  /* ─── كود ─── */
+  .body :global(code) {
+    font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+    font-size: 0.9em;
+    color: var(--accent);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 2px 6px;
   }
 </style>
