@@ -44,13 +44,43 @@ const COPY = {
     // ─── الخطوة ٢ ───
     q2biz: 'اسم مشروعك',
     q2bizPh: 'مثلاً: كافيه الركن',
+    // ⚠️ سؤال جديد: الاسم لحاله ما بيقول اشي. «نضال للتجارة» ما
+    //    بتعرّفنا شو بيبيع، بينما «كافيه» بتعرّفنا. بلا هالسطر
+    //    الرد بيطلع عام.
+    q2what: 'بشو بيشتغل؟',
+    q2whatPh: 'مثلاً: كافيه ومحمصة بن',
     q2budget: 'الميزانية التقريبية',
     budgets: ['لسا ما حدّدت', 'أقل من ٥٠٠ د', '٥٠٠ – ٢٠٠٠ د', '٢٠٠٠ – ٥٠٠٠ د', 'فوق ٥٠٠٠ د'],
     q2when: 'إيمتى بدك تبدأ؟',
     whens: ['بأسرع وقت', 'خلال شهر', 'خلال ٣ شهور', 'بس بستكشف'],
-    q2details: 'احكيلي عن المشروع',
-    q2detailsPh:
-      'شو بتعمل؟ مين جمهورك؟ شو المشكلة اللي بدك تحلها؟ كل ما حكيت أكثر، كل ما كان ردّي أدق.',
+
+    // ═══════════════════════════════════════════════════════════
+    //  الأسئلة الثلاثة — بدل المربّع الواحد
+    //
+    //  كان في مربّع واحد اسمه «احكيلي عن المشروع» وتحته placeholder
+    //  فيه ثلاث أسئلة. مشكلتان بهاد:
+    //   • الـ placeholder بيختفي أول ما يبلّش يكتب، فبينسى السؤال
+    //   • ثلاث أسئلة بمربّع واحد = جواب على وحدة أو ولا وحدة
+    //
+    //  الحل: ثلاث خانات، كل وحدة سؤال واحد بعنوان **ثابت** (مش
+    //  placeholder)، ومثال حقيقي بيعلّمه العمق المطلوب.
+    //  والأمثلة مقصودة تكون لمشاريع صغيرة — عشان اللي عنده بسطة
+    //  ما يحس إنه المكان مش إله.
+    // ═══════════════════════════════════════════════════════════
+    q2pain: 'شو المشكلة اللي مخلّيتك تدوّر عن حدا؟',
+    q2painPh: 'مثلاً: محلي من سنتين، اللي بيجي بيرجع وراضي — بس ما في زباين جداد خالص.',
+    q2tried: 'شو جرّبت قبل، وشو صار؟',
+    q2triedPh: 'مثلاً: بوستات ممولة بـ٢٠٠ دينار. إجت رسايل «كم السعر؟» وما اشترى ولا واحد.',
+    q2win: 'لو زبط الشغل، شو بيتغيّر عندك؟',
+    q2winPh: 'مثلاً: ١٠ طلبات بالأسبوع بدل ٣، وأقدر أوظّف حدا يساعدني.',
+    q2optional: 'اختياري — بس بيفرق كثير',
+
+    // ─── مقياس قوة الإشارة ───
+    sigLabel: 'قوة إشارتك',
+    sig0: 'ما وصلني اشي بعد',
+    sig1: 'إشارة ضعيفة — ردّي رح يكون عام',
+    sig2: 'إشارة واضحة',
+    sig3: 'إشارة قوية — هيك بقدر أفيدك فعلاً',
     // ─── الخطوة ٣ ───
     q3name: 'اسمك',
     q3namePh: 'الاسم الكامل',
@@ -103,13 +133,26 @@ const COPY = {
     ],
     q2biz: 'Business name',
     q2bizPh: 'e.g. Corner Cafe',
+    q2what: 'What does it do?',
+    q2whatPh: 'e.g. cafe and coffee roastery',
     q2budget: 'Rough budget',
     budgets: ['Not decided yet', 'Under 500 JD', '500 – 2,000 JD', '2,000 – 5,000 JD', 'Over 5,000 JD'],
     q2when: 'When do you want to start?',
     whens: ['As soon as possible', 'Within a month', 'Within 3 months', 'Just exploring'],
-    q2details: 'Tell me about it',
-    q2detailsPh:
-      'What do you do? Who is your audience? What problem are you solving? The more you tell me, the sharper my answer.',
+
+    q2pain: 'What problem sent you looking for help?',
+    q2painPh: "e.g. Two years open, everyone who comes returns happy — but no new customers at all.",
+    q2tried: 'What have you already tried, and what happened?',
+    q2triedPh: 'e.g. 200 JD on boosted posts. Got "how much?" messages, nobody bought.',
+    q2win: 'If this works, what changes for you?',
+    q2winPh: 'e.g. 10 orders a week instead of 3, enough to hire someone.',
+    q2optional: 'Optional — but it makes a real difference',
+
+    sigLabel: 'Signal strength',
+    sig0: 'Nothing received yet',
+    sig1: 'Weak signal — my reply will be generic',
+    sig2: 'Clear signal',
+    sig3: 'Strong signal — now I can actually help',
     q3name: 'Your name',
     q3namePh: 'Full name',
     q3email: 'Your email',
@@ -153,9 +196,13 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
 
   const [services, setServices] = useState([]);
   const [biz, setBiz] = useState('');
+  const [what, setWhat] = useState('');
   const [budget, setBudget] = useState(t.budgets[0]);
   const [when, setWhen] = useState(t.whens[0]);
-  const [details, setDetails] = useState('');
+  // ثلاث خانات بدل خانة وحدة — شوف الشرح عند q2pain بالنصوص فوق
+  const [pain, setPain] = useState('');
+  const [tried, setTried] = useState('');
+  const [win, setWin] = useState('');
   const [name, setName] = useState('');
   const [mail, setMail] = useState('');
   const [phone, setPhone] = useState('');
@@ -188,6 +235,62 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
     if (label && t.services.includes(label)) setServices([label]);
   }, [isAr, t.services]);
 
+  // ═══════════════════════════════════════════════════════════
+  //  دمج الأسئلة الثلاثة بحقل details واحد
+  //
+  //  ليش منجمّعهم بدل ما نبعتهم منفصلين؟ لأنه الـ Worker وقاعدة
+  //  البيانات بيتوقّعوا حقل `details` واحد. لو بعتنا ثلاثة حقول
+  //  جديدة، بدها تعديل بالـ Worker وترحيل لجدول D1 والطلبات
+  //  القديمة بتصير ناقصة أعمدة.
+  //  بالدمج: صفر تعديل بالخلفية، وكلود بياخد نص **مرتّب بعناوين**
+  //  أوضح من فقرة مبعثرة. والعناوين بتساعده يفهم أي جزء شو.
+  //  والفاضي بينشال — عشان ما يوصل «جرّب قبل: —» بلا فايدة.
+  // ═══════════════════════════════════════════════════════════
+  const details = useMemo(() => {
+    const L = isAr
+      ? ['المشكلة', 'جرّب قبل', 'شكل النجاح عنده']
+      : ['The problem', 'Already tried', 'What success looks like'];
+    return [
+      pain && `${L[0]}: ${pain.trim()}`,
+      tried && `${L[1]}: ${tried.trim()}`,
+      win && `${L[2]}: ${win.trim()}`,
+    ]
+      .filter(Boolean)
+      .join('\n\n');
+  }, [pain, tried, win, isAr]);
+
+  // اسم المشروع + شو بيشتغل، بسطر واحد
+  const bizFull = useMemo(
+    () => [biz.trim(), what.trim()].filter(Boolean).join(' — '),
+    [biz, what],
+  );
+
+  // ═══════════════════════════════════════════════════════════
+  //  قوة الإشارة
+  //
+  //  مش زينة: هي تغذية راجعة فورية بتخلي الزائر يكتب أكثر.
+  //  الناس بتستجيب لمؤشر تقدّم بيتحرك وهي بتكتب أكثر بكثير من
+  //  جملة «كل ما حكيت أكثر كل ما كان ردّي أدق» — لأن الجملة
+  //  وعد مجرّد، والمؤشر نتيجة بيشوفها بعينه.
+  //
+  //  والمقياس مربوط بلغة البراند (إشارة/Signal) مش مجرد شريط.
+  //
+  //  ⚠️ المقياس على **مجموع** الثلاثة مش على كل وحدة، عشان اللي
+  //     بيكتب فقرة كاملة بخانة وحدة ما ينعاقب.
+  // ═══════════════════════════════════════════════════════════
+  //  ⚠️ العتبات معايرة على الأمثلة اللي تحت الخانات: كل مثال
+  //     ٥٥–٧٠ حرف، فاللي بيعبّي الثلاثة متل الأمثلة بيوصل ~١٧٥.
+  //     أول معايرة كانت ٣ = ١٨٠+، يعني اللي عمل كل المطلوب بيوقف
+  //     عند «واضحة» وما بياخد المكافأة — وهاي بتحبط بدل ما تشجّع.
+  //     صارت ١٤٠ عشان الالتزام بالأمثلة يوصل «قوية» بمساحة مريحة.
+  const signal = useMemo(() => {
+    const n = (pain + tried + win).replace(/\s+/g, ' ').trim().length;
+    if (n === 0) return 0;
+    if (n < 60) return 1;
+    if (n < 140) return 2;
+    return 3;
+  }, [pain, tried, win]);
+
   // ─── نص الطلب النهائي ───
   const briefText = useMemo(() => {
     const L = isAr
@@ -195,7 +298,7 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
       : ['Services', 'Business', 'Budget', 'Timeline', 'Details', 'Name', 'Email', 'Phone'];
     return [
       `${L[0]}: ${services.join('، ') || '—'}`,
-      `${L[1]}: ${biz || '—'}`,
+      `${L[1]}: ${bizFull || '—'}`,
       `${L[2]}: ${budget}`,
       `${L[3]}: ${when}`,
       '',
@@ -206,7 +309,7 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
       `${L[6]}: ${mail}`,
       `${L[7]}: ${phone || '—'}`,
     ].join('\n');
-  }, [services, biz, budget, when, details, name, mail, phone, isAr]);
+  }, [services, bizFull, budget, when, details, name, mail, phone, isAr]);
 
   // ═══════════════════════════════════════════════════════════
   //  الإرسال
@@ -235,7 +338,10 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
         headers: { 'Content-Type': 'application/json' },
         signal: stop.signal,
         body: JSON.stringify({
-          lang, name, mail, phone, biz, budget, when, services, details,
+          // ⚠️ biz بينبعت كـ bizFull («الاسم — شو بيشتغل») و details
+          //    بينبعت مدموج من الأسئلة الثلاثة. أسماء الحقول ما
+          //    تغيّرت عن قصد — الـ Worker وجدول D1 ما بدهم أي تعديل.
+          lang, name, mail, phone, biz: bizFull, budget, when, services, details,
           // فخّ السبام — الحقل المخفي تحت. الإنسان ما بيشوفه
           website: trap,
         }),
@@ -375,6 +481,10 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
               <input id="b-biz" value={biz} onChange={(e) => setBiz(e.target.value)} placeholder={t.q2bizPh} />
             </div>
             <div className="brief-field">
+              <label htmlFor="b-what">{t.q2what}</label>
+              <input id="b-what" value={what} onChange={(e) => setWhat(e.target.value)} placeholder={t.q2whatPh} />
+            </div>
+            <div className="brief-field">
               <label htmlFor="b-budget">{t.q2budget}</label>
               <Select
                 id="b-budget"
@@ -394,15 +504,68 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
                 ariaLabel={t.q2when}
               />
             </div>
+            {/* ═══ الأسئلة الثلاثة ═══
+                كل سؤال بعنوان ثابت فوقه — مش placeholder — عشان
+                يضل باين وهو بيكتب. والمثال بيعلّمه العمق المطلوب. */}
             <div className="brief-field is-wide">
-              <label htmlFor="b-details">{t.q2details}</label>
+              <label htmlFor="b-pain">{t.q2pain}</label>
               <textarea
-                id="b-details"
-                rows={5}
-                value={details}
-                onChange={(e) => setDetails(e.target.value)}
-                placeholder={t.q2detailsPh}
+                id="b-pain"
+                rows={3}
+                value={pain}
+                onChange={(e) => setPain(e.target.value)}
+                placeholder={t.q2painPh}
               />
+            </div>
+
+            <div className="brief-field is-wide">
+              <label htmlFor="b-tried">
+                {t.q2tried} <span className="brief-opt">{t.q2optional}</span>
+              </label>
+              <textarea
+                id="b-tried"
+                rows={3}
+                value={tried}
+                onChange={(e) => setTried(e.target.value)}
+                placeholder={t.q2triedPh}
+              />
+            </div>
+
+            <div className="brief-field is-wide">
+              <label htmlFor="b-win">
+                {t.q2win} <span className="brief-opt">{t.q2optional}</span>
+              </label>
+              <textarea
+                id="b-win"
+                rows={3}
+                value={win}
+                onChange={(e) => setWin(e.target.value)}
+                placeholder={t.q2winPh}
+              />
+            </div>
+
+            {/* ═══ مقياس قوة الإشارة ═══
+                aria-live عشان قارئ الشاشة يسمع التغيّر — بس polite
+                مش assertive، عشان ما يقاطعه بكل حرف بيكتبه. */}
+            <div className="brief-field is-wide">
+              <div className="sig" data-level={signal}>
+                <div className="sig-head">
+                  <span className="sig-label">{t.sigLabel}</span>
+                  <span className="sig-state" aria-live="polite">
+                    {[t.sig0, t.sig1, t.sig2, t.sig3][signal]}
+                  </span>
+                </div>
+                <div
+                  className="sig-bars"
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={3}
+                  aria-valuenow={signal}
+                  aria-label={t.sigLabel}
+                >
+                  <i /><i /><i />
+                </div>
+              </div>
             </div>
           </div>
         )}

@@ -175,6 +175,105 @@ html[dir='rtl'] .brief-panel[data-dir='-1'] {
   color: var(--accent-ink);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   «اختياري — بس بيفرق كثير»
+
+   ⚠️ الصياغة مقصودة: «اختياري» لحالها بتقول «تجاهلني»، والنجمة
+      الحمرا بتقول «إجباري» وبتزعج. الجملة الكاملة بتخلي الزائر
+      يعرف إنه حر — وإنه في مقابل لو كتب.
+   ═══════════════════════════════════════════════════════════════ */
+.brief-opt {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   مقياس قوة الإشارة
+
+   ثلاث شرط بتضوي وحدة وحدة كل ما كتب أكثر. مربوط بلغة البراند
+   (إشارة/Signal) — مش مجرد شريط تقدّم عام.
+
+   ليش موجود أصلاً؟ جملة «كل ما حكيت أكثر كل ما كان ردّي أدق»
+   وعد مجرّد. الشريط اللي بيتحرك وهو بيكتب **نتيجة بيشوفها**،
+   وهاد بيخلي الناس تكتب أكثر بكثير.
+   ═══════════════════════════════════════════════════════════════ */
+.sig {
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  padding: 14px 16px;
+  background: rgba(242, 243, 238, 0.02);
+  transition: border-color 0.4s var(--ease-out), background 0.4s var(--ease-out);
+}
+
+.sig[data-level='3'] {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+
+.sig-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.sig-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.sig-state {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: end;
+  transition: color 0.4s var(--ease-out);
+}
+
+.sig[data-level='1'] .sig-state { color: var(--danger); }
+.sig[data-level='2'] .sig-state { color: var(--text); }
+.sig[data-level='3'] .sig-state { color: var(--accent); }
+
+.sig-bars {
+  display: flex;
+  gap: 5px;
+}
+
+.sig-bars i {
+  flex: 1;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(242, 243, 238, 0.09);
+  transition: background 0.45s var(--ease-out), transform 0.45s var(--ease-out);
+  transform-origin: var(--sig-origin, left);
+}
+
+html[dir='rtl'] .sig-bars i { --sig-origin: right; }
+
+/* الشرطة بتضوي لما مستواها ≤ المستوى الحالي */
+.sig[data-level='1'] .sig-bars i:nth-child(1) { background: var(--danger); }
+.sig[data-level='2'] .sig-bars i:nth-child(-n + 2) { background: var(--text); }
+.sig[data-level='3'] .sig-bars i { background: var(--accent); }
+
+/* ⚠️ الشرطة الأخيرة بتنبض لما توصل «إشارة قوية» — مكافأة صغيرة
+      بتثبّت السلوك. ومطفية لمن بيفضّل حركة أقل. */
+.sig[data-level='3'] .sig-bars i:nth-child(3) {
+  animation: sig-pulse 1.8s var(--ease-out) infinite;
+}
+
+@keyframes sig-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sig[data-level='3'] .sig-bars i:nth-child(3) { animation: none; }
+}
+
 /* ─── الخانات ─── */
 .brief-grid {
   display: grid;
