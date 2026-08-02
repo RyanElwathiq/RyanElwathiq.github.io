@@ -37,7 +37,9 @@ const MOBILE_BREAKPOINT = 768;
 const PRELOAD_CONCURRENCY = 3;
 
 // شغّل كل السيكوينسات الموجودة بالصفحة
-// (بترجع Promise عشان نعمل ترتيب وتحديث لكل نقاط التثبيت بعدها)
+// (بترجع Promise بمصفوفة دوال تنظيف — المسار الحي للموبايل بيسجّل
+//  مستمعين على window ولازم ينشالوا قبل الانتقال لصفحة ثانية،
+//  وmotion.js بياخدها وبيسجّلها عنده)
 export function initSequences() {
   const all = [...document.querySelectorAll('[data-seq]')];
   return Promise.all(
@@ -200,14 +202,25 @@ async function setupOne(section, priority) {
   };
 
   // القسم قريب من الشاشة؟ نزّل هلق. بعيد؟ استنّى لما يقرب.
-  if (typeof IntersectionObserver === 'undefined') {
+  // ⚠️ المسار الحي للموبايل (تحت) بيشغّل التحميل بنفسه من موقع
+  //    القسم الحقيقي — المراقب هون للمسار المثبّت/الديسكتوب بس.
+  let preloadStarted = false;
+  const startPreload = () => {
+    if (preloadStarted) return;
+    preloadStarted = true;
     preload();
-  } else {
+  };
+
+  const useLiveScrub = !shouldPin && isMobile;
+
+  if (typeof IntersectionObserver === 'undefined') {
+    startPreload();
+  } else if (!useLiveScrub) {
     const io = new IntersectionObserver(
       (entries) => {
         if (!entries[0].isIntersecting) return;
         io.disconnect();
-        preload();
+        startPreload();
       },
       { rootMargin: '150% 0px' } // بيبلّش قبل شاشة ونص من وصوله
     );
@@ -223,6 +236,77 @@ async function setupOne(section, priority) {
 
   // ─── ربط السكرول بالفريمات ───
   let frame = 0;
+
+  // ═══════════════════════════════════════════════════════════════
+  //  ⚠️⚠️ المسار الحي — علاج «الفيديو معلّق عالموبايل» ⚠️⚠️
+  //
+  //  عالموبايل الأقسام البعيدة عليها content-visibility: auto
+  //  (شوف global.css) — يعني ارتفاعها **تقديري** (٧٠٠ بكسل) لحد
+  //  ما توصلها، وأول ما تنرسم بياخد ارتفاعها الحقيقي. النتيجة:
+  //  مواقع كل اللي تحتها بتزحف آلاف البكسلات عن الأرقام اللي
+  //  حفظها ScrollTrigger وقت الحساب — قسناها: انحراف ٢٦٧٦ بكسل
+  //  عند قسم المواقع. فالتمرير الحقيقي بيمرق عن النطاق المحفوظ
+  //  والفيديو بيضل واقف عالفريم الأول، وحتى مراقب التحميل ما
+  //  بيوصله الحدث لأن القسم «مقفّز» لحظة المراقبة.
+  //
+  //  الحل: الفيديو غير المثبّت عالموبايل ما بيعتمد على أرقام
+  //  محفوظة أبداً — بيقرأ موقعه الحقيقي (getBoundingClientRect)
+  //  مع كل حركة سكرول وبيحسب تقدّمه منه مباشرة. محصّن ضد أي
+  //  زحف، وقراءة عنصر واحد بالإطار ما بتنحس.
+  //  (الديسكتوب بيضل على ScrollTrigger — ما عليه content-visibility
+  //   والتثبيت بده نظامه الكامل.)
+  // ═══════════════════════════════════════════════════════════════
+  if (useLiveScrub) {
+    let raf = 0;
+
+    const update = () => {
+      raf = 0;
+      const r = section.getBoundingClientRect();
+      const vh = window.innerHeight;
+
+      // التحميل بيبلّش لما يصير القسم على بعد شاشتين ونص
+      if (r.top < vh * 2.5) startPreload();
+
+      // نفس نطاق النسخة المثبّتة سابقاً: الرحلة من دخوله من تحت
+      // (top = vh) لظهوره كامل (bottom = vh)
+      const p = Math.min(1, Math.max(0, (vh - r.top) / (r.height || 1)));
+
+      const target = Math.round(p * (count - 1));
+      if (target !== frame) {
+        frame = target;
+        current = target;
+        draw(target);
+      }
+
+      if (intro) {
+        const ip = Math.min(p / INTRO_FADE_END, 1);
+        intro.style.opacity = String(1 - ip);
+      }
+      if (outro) {
+        const op = Math.min(1, Math.max(0, (p - OUTRO_START) / (1 - OUTRO_START - 0.05)));
+        outro.style.opacity = String(op);
+      }
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    const lenis = window.__lenis;
+    if (lenis && typeof lenis.on === 'function') lenis.on('scroll', onScroll);
+
+    update();
+
+    // دالة تنظيف — motion.js بيسجّلها وبينفّذها قبل مغادرة الصفحة
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (lenis && typeof lenis.off === 'function') lenis.off('scroll', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }
 
   // هل العنصر بأعلى الصفحة؟ (بيغيّر نطاق الرحلة — شوف تحت)
   const atPageTop = section.getBoundingClientRect().top + window.scrollY < window.innerHeight * 0.5;
