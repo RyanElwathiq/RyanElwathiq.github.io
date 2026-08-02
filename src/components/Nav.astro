@@ -225,7 +225,10 @@ const switchLabel = isAr ? 'EN' : 'عربي';
 
   <nav class="sheet-links" aria-label={isAr ? 'قائمة التنقل' : 'Navigation menu'}>
     {sheetGroups.map((g, gi) => (
-      <div class="sheet-group">
+      /* ⚠️ مجموعة الخدمات (الأولى) بتاخد عرض الشبكة كامل وبتتوزّع
+         على عمودين جوّاها — ٩ روابط بعمود واحد كانت بتطوّل القائمة
+         للضعف وبتخلي باقي المجموعات تنزل تحت الشاشة. */
+      <div class={`sheet-group${gi === 0 ? ' is-wide' : ''}`}>
         <p class="sheet-title">{g.title}</p>
         {g.links.map((l, i) => (
           <a href={l.href} style={`--i:${gi * 5 + i}`}>{l.label}</a>
@@ -542,11 +545,31 @@ const switchLabel = isAr ? 'EN' : 'عربي';
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+
+    /* ⚠️ كان justify-content: center — وهاي غلطة بتظهر بس لما
+       المحتوى يصير أطول من الشاشة (صار معنا لما ضفنا ٩ روابط
+       خدمات). التوسيط بيوزّع الزيادة فوق وتحت بالتساوي، **والجزء
+       اللي فوق بيصير غير قابل للوصول** — ما بتقدر تسكرل لفوق
+       تشوفه. عنوان «خدماتي» كان محبوس هناك.
+
+       الحل: البداية من فوق + margin تلقائي عالأطفال. لما المحتوى
+       يزبط بالشاشة بيضل متوسّط زي قبل، ولما يزيد بيبدأ من فوق
+       وبينسكرل عادي. أحسن الحالتين. */
+    justify-content: flex-start;
+    overflow-y: auto;
+    /* بيمنع تمرير الصفحة اللي تحت لما توصل لآخر القائمة */
+    overscroll-behavior: contain;
+    padding-block: 84px 36px; /* مساحة لزر الإغلاق فوق وتنفّس تحت */
+
     gap: 8px;
     background: color-mix(in srgb, var(--bg) 94%, transparent);
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
+  }
+
+  /* التوسيط الآمن: بيشتغل لما في مساحة، وبينحلّ لحاله لما ما في */
+  .sheet-links {
+    margin-block: auto;
   }
 
   .sheet[hidden] {
@@ -585,6 +608,19 @@ const switchLabel = isAr ? 'EN' : 'عربي';
     display: flex;
     flex-direction: column;
     gap: 7px;
+  }
+
+  /* مجموعة الخدمات: عرض كامل + روابطها على عمودين */
+  .sheet-group.is-wide {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px clamp(18px, 6vw, 44px);
+    margin-bottom: clamp(4px, 1.5vh, 14px);
+  }
+
+  .sheet-group.is-wide .sheet-title {
+    grid-column: 1 / -1;
   }
 
   .sheet-title {
@@ -729,6 +765,11 @@ const switchLabel = isAr ? 'EN' : 'عربي';
         lockedY = window.scrollY;
         w.__lenis?.stop();
         root.style.overflow = 'hidden';
+        // ⚠️ القائمة صارت بتنسكرل لما تطول عن الشاشة، والمتصفح
+        //    بيحتفظ بآخر موقع تمرير. بلا هالسطر بتفتح من نص
+        //    القائمة وأول مجموعة بتكون فوق الشاشة — وهاد بالضبط
+        //    اللي خلّى «خدماتي» تبين مخفية.
+        sheet.scrollTop = 0;
         return;
       }
 
