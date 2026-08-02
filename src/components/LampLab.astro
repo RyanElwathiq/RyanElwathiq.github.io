@@ -37,7 +37,7 @@ const t = isAr
       q3ph: 'مثلاً: كافيه الركن',
       q4: 'إشي ثاني بتحب أعرفه؟ (اختياري)',
       q4ph: 'مثلاً: جمهوري شباب من 18 لـ 25، ومشكلتي إن الناس بتيجي مرة وما بترجع…',
-      q4hint: 'كل ما تحكي أكثر، كل ما صارت الفكرة أقرب لمشروعك — وبتوصلني معك لو حبيت تتواصل.',
+      q4hint: 'كل ما تحكي أكثر، كل ما صارت الفكرة أقرب لمشروعك، وبتوصلني معك لو حبيت تتواصل.',
       generate: 'ولّد لي فكرة',
       again: 'فكرة ثانية',
       restart: 'غيّر إجاباتي',
@@ -47,7 +47,7 @@ const t = isAr
       //    وطلع ما بيقرأ عربي منيح، والزائر لازم يعرف قبل ما يحكم
       //    على شغل ريّان من نتيجة غلط.
       aiWarn:
-        'هاي مولّدة بالذكاء الاصطناعي، فممكن تطلع غلط أو مش دقيقة — خُذها كنقطة بداية مش كخطة. للنتائج الأدق جرّب اللعبة بالإنجليزي. وبنشتغل على تحسين النموذج قريباً.',
+        'هاي مولّدة بالذكاء الاصطناعي، فممكن تطلع غلط أو مش دقيقة، خُذها كنقطة بداية مش كخطة. للنتائج الأدق جرّب اللعبة بالإنجليزي. وبنشتغل على تحسين النموذج قريباً.',
       labelHook: 'الخطاف',
       labelFormat: 'الشكل',
       labelAngle: 'الزاوية',
@@ -72,14 +72,14 @@ const t = isAr
       q3ph: 'e.g. Corner Cafe',
       q4: 'Anything else I should know? (optional)',
       q4ph: 'e.g. my audience is 18 to 25, and my problem is people come once and never return…',
-      q4hint: 'The more you tell me, the closer the idea gets — and it reaches me if you decide to get in touch.',
+      q4hint: 'The more you tell me, the closer the idea gets, and it reaches me if you decide to get in touch.',
       generate: 'Generate an idea',
       again: 'Another idea',
       restart: 'Change my answers',
       aiTag: 'And one more, from AI',
       aiLoading: 'generating…',
       aiWarn:
-        'This one is AI-generated, so it can be wrong or imprecise — treat it as a starting point, not a plan. We are working on a better model.',
+        'This one is AI-generated, so it can be wrong or imprecise: treat it as a starting point, not a plan. We are working on a better model.',
       labelHook: 'Hook',
       labelFormat: 'Format',
       labelAngle: 'Angle',
@@ -101,7 +101,7 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 
   <div class="container inner">
     <!-- ═══ مفتاح الإضاءة (موبايل فقط) ═══
-         عالموبايل السحب مش عملي، فمنستبدله بمفتاح بالضغط —
+         عالموبايل السحب مش عملي، فمنستبدله بمفتاح بالضغط، 
          شكل مألوف وواضح إنه بينضغط -->
     <button class="switch" data-switch type="button" aria-pressed="false">
       <span class="switch-track" aria-hidden="true"><span class="switch-knob"></span></span>
@@ -222,7 +222,7 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 
           <!-- ═══ فكرة من الذكاء الاصطناعي ═══
                ⚠️ بتوصل بعد الفكرة المركّبة، مش بدلها. لو الخدمة
-               وقعت أو تأخّرت، الزائر بيضل شايف نتيجة كاملة —
+               وقعت أو تأخّرت، الزائر بيضل شايف نتيجة كاملة، 
                ما بينكسر إشي وما بيستنى على فاضي. -->
           <div class="ai-block" data-ai-block hidden>
             <div class="ai-head">
@@ -934,7 +934,7 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
             lang: isAr ? 'ar' : 'en',
             industry: label('[data-industry]'),
             goal: label('[data-goal]'),
-            notes: [answers.biz, notes].filter(Boolean).join(' — '),
+            notes: [answers.biz, notes].filter(Boolean).join('. '),
           }),
         });
 
@@ -1073,7 +1073,7 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     let originX = 0; // مكان بداية الإصبع (أفقي)
     let travelled = 0; // أقصى مسافة تحركتها
 
-    let lastX = 0; // آخر موقع أفقي — منحسب منه سرعة الأرجحة
+    let lastX = 0; // آخر موقع أفقي، منحسب منه سرعة الأرجحة
 
     const onDown = (e: PointerEvent) => {
       e.preventDefault();

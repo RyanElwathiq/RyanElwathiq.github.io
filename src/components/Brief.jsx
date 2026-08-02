@@ -68,19 +68,19 @@ const COPY = {
     //  ما يحس إنه المكان مش إله.
     // ═══════════════════════════════════════════════════════════
     q2pain: 'شو المشكلة اللي مخلّيتك تدوّر عن حدا؟',
-    q2painPh: 'مثلاً: محلي من سنتين، اللي بيجي بيرجع وراضي — بس ما في زباين جداد خالص.',
+    q2painPh: 'مثلاً: محلي من سنتين، اللي بيجي بيرجع وراضي. بس ما في زباين جداد خالص.',
     q2tried: 'شو جرّبت قبل، وشو صار؟',
     q2triedPh: 'مثلاً: بوستات ممولة بـ٢٠٠ دينار. إجت رسايل «كم السعر؟» وما اشترى ولا واحد.',
     q2win: 'لو زبط الشغل، شو بيتغيّر عندك؟',
     q2winPh: 'مثلاً: ١٠ طلبات بالأسبوع بدل ٣، وأقدر أوظّف حدا يساعدني.',
-    q2optional: 'اختياري — بس بيفرق كثير',
+    q2optional: 'اختياري. بس بيفرق كثير',
 
     // ─── مقياس قوة الإشارة ───
     sigLabel: 'قوة إشارتك',
     sig0: 'ما وصلني اشي بعد',
-    sig1: 'إشارة ضعيفة — ردّي رح يكون عام',
+    sig1: 'إشارة ضعيفة، ردّي رح يكون عام',
     sig2: 'إشارة واضحة',
-    sig3: 'إشارة قوية — هيك بقدر أفيدك فعلاً',
+    sig3: 'إشارة قوية، هيك بقدر أفيدك فعلاً',
     // ─── الخطوة ٣ ───
     q3name: 'اسمك',
     q3namePh: 'الاسم الكامل',
@@ -108,7 +108,7 @@ const COPY = {
     //    وإلا الزائر بيقعد يستنى بريد ما رح يفتح.
     doneTitle: 'وصلني طلبك',
     doneBody:
-      'قرأته أنا شخصياً — مش نموذج آلي. برجعلك خلال ٢٤ ساعة، وغالباً أسرع. وإذا استعجلت، احكيني واتساب مباشرة.',
+      'قرأته أنا شخصياً. مش نموذج آلي. برجعلك خلال ٢٤ ساعة، وغالباً أسرع. وإذا استعجلت، احكيني واتساب مباشرة.',
     doneAgain: 'ابدأ طلب جديد',
     orReach: 'أو تواصل معي مباشرة:',
     note: 'ما بشارك تفاصيل مشروعك مع حدا. بترجعلك مني شخصياً.',
@@ -141,18 +141,18 @@ const COPY = {
     whens: ['As soon as possible', 'Within a month', 'Within 3 months', 'Just exploring'],
 
     q2pain: 'What problem sent you looking for help?',
-    q2painPh: "e.g. Two years open, everyone who comes returns happy — but no new customers at all.",
+    q2painPh: "e.g. Two years open, everyone who comes returns happy, but no new customers at all.",
     q2tried: 'What have you already tried, and what happened?',
     q2triedPh: 'e.g. 200 JD on boosted posts. Got "how much?" messages, nobody bought.',
     q2win: 'If this works, what changes for you?',
     q2winPh: 'e.g. 10 orders a week instead of 3, enough to hire someone.',
-    q2optional: 'Optional — but it makes a real difference',
+    q2optional: 'Optional, but it makes a real difference',
 
     sigLabel: 'Signal strength',
     sig0: 'Nothing received yet',
-    sig1: 'Weak signal — my reply will be generic',
+    sig1: 'Weak signal. My reply will be generic',
     sig2: 'Clear signal',
-    sig3: 'Strong signal — now I can actually help',
+    sig3: 'Strong signal. Now I can actually help',
     q3name: 'Your name',
     q3namePh: 'Full name',
     q3email: 'Your email',
@@ -171,7 +171,7 @@ const COPY = {
     sending: 'Sending…',
     doneTitle: 'Your brief reached me',
     doneBody:
-      'I read it myself — no automated form in between. You will hear back within 24 hours, usually sooner. In a hurry? Message me on WhatsApp directly.',
+      'I read it myself. No automated form in between. You will hear back within 24 hours, usually sooner. In a hurry? Message me on WhatsApp directly.',
     doneAgain: 'Start another brief',
     orReach: 'Or reach me directly:',
     note: 'I do not share your project details with anyone. You hear back from me personally.',
@@ -267,7 +267,7 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
 
   // اسم المشروع + شو بيشتغل، بسطر واحد
   const bizFull = useMemo(
-    () => [biz.trim(), what.trim()].filter(Boolean).join(' — '),
+    () => [biz.trim(), what.trim()].filter(Boolean).join(': '),
     [biz, what],
   );
 
@@ -303,17 +303,17 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
       ? ['الخدمات', 'المشروع', 'الميزانية', 'البداية', 'التفاصيل', 'الاسم', 'الإيميل', 'الهاتف']
       : ['Services', 'Business', 'Budget', 'Timeline', 'Details', 'Name', 'Email', 'Phone'];
     return [
-      `${L[0]}: ${services.join('، ') || '—'}`,
-      `${L[1]}: ${bizFull || '—'}`,
+      `${L[0]}: ${services.join('، ') || '، '}`,
+      `${L[1]}: ${bizFull || '. '}`,
       `${L[2]}: ${budget}`,
       `${L[3]}: ${when}`,
       '',
       `${L[4]}:`,
-      details || '—',
+      details || ': ',
       '',
       `${L[5]}: ${name}`,
       `${L[6]}: ${mail}`,
-      `${L[7]}: ${phone || '—'}`,
+      `${L[7]}: ${phone || '. '}`,
     ].join('\n');
   }, [services, bizFull, budget, when, details, name, mail, phone, isAr]);
 
@@ -438,7 +438,7 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
     <div className="brief">
       <div className="brief-head">
         <p className="brief-kicker">{t.kicker}</p>
-        {/* بالصفحة المخصّصة بيصير h1 — كل صفحة لازم يكون فيها عنوان
+        {/* بالصفحة المخصّصة بيصير h1. كل صفحة لازم يكون فيها عنوان
             رئيسي واحد بالضبط (جوجل وقارئ الشاشة بيعتمدوا عليه) */}
         {asH1 ? <h1>{t.title}</h1> : <h2>{t.title}</h2>}
         <p className="brief-sub">{t.sub}</p>
@@ -511,7 +511,7 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
               />
             </div>
             {/* ═══ الأسئلة الثلاثة ═══
-                كل سؤال بعنوان ثابت فوقه — مش placeholder — عشان
+                كل سؤال بعنوان ثابت فوقه. مش placeholder، عشان
                 يضل باين وهو بيكتب. والمثال بيعلّمه العمق المطلوب. */}
             <div className="brief-field is-wide">
               <label htmlFor="b-pain">{t.q2pain}</label>
@@ -551,7 +551,7 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
             </div>
 
             {/* ═══ مقياس قوة الإشارة ═══
-                aria-live عشان قارئ الشاشة يسمع التغيّر — بس polite
+                aria-live عشان قارئ الشاشة يسمع التغيّر. بس polite
                 مش assertive، عشان ما يقاطعه بكل حرف بيكتبه. */}
             <div className="brief-field is-wide">
               <div className="sig" data-level={signal}>
@@ -611,7 +611,7 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
       {/* ═══ فخّ السبام ═══
           الروبوت بيقرأ الـ HTML وبيعبّي أي حقل بيلاقيه، والإنسان
           ما بيشوفه أصلاً. لو انتعبّى، الـ Worker بيتجاهل الطلب.
-          ⚠️ display:none بس — مع tabIndex=-1 و aria-hidden عشان
+          ⚠️ display:none بس، مع tabIndex=-1 و aria-hidden عشان
              قارئ الشاشة ما يوصله ويحيّر مستخدم كفيف. */}
       <div style={{ display: 'none' }} aria-hidden="true">
         <label>

@@ -22,22 +22,22 @@ const COPY = {
     title: 'عندك ميزانية تسويق. وين بتحطها؟',
     sub: 'وزّع ميزانيتك على القنوات الخمس وشوف شو بترجّعلك. لما تخلص، بوريك توزيعي أنا وليش.',
     budgetLabel: 'ميزانية التنفيذ الشهرية:',
-    zeroSum: 'كل دينار بتزيده على قناة، بيطلع من القنوات الثانية — زي الواقع بالضبط.',
+    zeroSum: 'كل دينار بتزيده على قناة، بيطلع من القنوات الثانية، زي الواقع بالضبط.',
     dinar: 'د',
     // ═══ صندوق التوضيح فوق — أهم نص باللعبة ═══
-    briefTitle: 'قبل ما تلعب — ثلاث نقاط لازم تكون واضحة',
+    briefTitle: 'قبل ما تلعب، ثلاث نقاط لازم تكون واضحة',
     brief: [
       {
         h: 'الرقم شهري ومتكرر.',
-        p: 'لو اخترت ١٠٠٠ دينار، هاي ميزانية كل شهر — مش دفعة وحدة. ولهيك رقم الشهر الأول ورقم الشهر السادس بيطلعوا مختلفين.',
+        p: 'لو اخترت ١٠٠٠ دينار، هاي ميزانية كل شهر. مش دفعة وحدة. ولهيك رقم الشهر الأول ورقم الشهر السادس بيطلعوا مختلفين.',
       },
       {
         h: '«الموقع والـ SEO» صرف شهري مستمر.',
-        p: 'صفحات جديدة، تحسينات، محتوى، وترتيب بجوجل. بناء موقع من الصفر مشروع لحاله وله ميزانية لحالها — لا تقرا ٢٠٠ دينار هون على إنها سعر موقع.',
+        p: 'صفحات جديدة، تحسينات، محتوى، وترتيب بجوجل. بناء موقع من الصفر مشروع لحاله وله ميزانية لحالها، لا تقرا ٢٠٠ دينار هون على إنها سعر موقع.',
       },
       {
         h: 'هاي ميزانية التنفيذ، مش أتعابي.',
-        p: 'المبلغ اللي بتوزّعه بيروح لميتا، وللتصوير والإنتاج، وللاستضافة والأدوات — مصاريف بتدفعها بغض النظر عن مين بيشتغل معك. أتعابي مقابل القرارات اللي بتخلّي هالمصاريف ترجّع بدل ما تضيع، وبنتفق عليها لحال حسب حجم الشغل.',
+        p: 'المبلغ اللي بتوزّعه بيروح لميتا، وللتصوير والإنتاج، وللاستضافة والأدوات، مصاريف بتدفعها بغض النظر عن مين بيشتغل معك. أتعابي مقابل القرارات اللي بتخلّي هالمصاريف ترجّع بدل ما تضيع، وبنتفق عليها لحال حسب حجم الشغل.',
       },
     ],
     feeReminder:
@@ -60,14 +60,14 @@ const COPY = {
     mine: 'توزيعي',
     lead: 'عميل',
     compareTitle: 'شوف الفرق',
-    compareWin: 'توزيعك أحسن من توزيعي 👏 وهاد مش سهل — شكلك بتفهم باللعبة.',
+    compareWin: 'توزيعك أحسن من توزيعي 👏 وهاد مش سهل، شكلك بتفهم باللعبة.',
     compareTie: 'توزيعك قريب كتير من توزيعي. شغل حلو.',
     compareLose: 'نفس الميزانية بالضبط، والفرق بالتوزيع بس.',
     notesTitle: 'ليش',
     ctaText: 'بدك توزيع مبني على مشروعك إنت مش على متوسطات؟',
     ctaBtn: 'احكيلي عن مشروعك',
     disclaimer:
-      'هاي محاكاة تعليمية مبنية على متوسطات السوق الأردني وتجربتي بالشغل. الأرقام تقريبية وبتتغيّر حسب مجالك ومنتجك وجودة التنفيذ، وهي ميزانية تنفيذ شهرية ما بتشمل أتعابي. «عميل محتمل» = رسالة أو استفسار أو تعبئة نموذج — مش عملية بيع مكتملة.',
+      'هاي محاكاة تعليمية مبنية على متوسطات السوق الأردني وتجربتي بالشغل. الأرقام تقريبية وبتتغيّر حسب مجالك ومنتجك وجودة التنفيذ، وهي ميزانية تنفيذ شهرية ما بتشمل أتعابي. «عميل محتمل» = رسالة أو استفسار أو تعبئة نموذج. مش عملية بيع مكتملة.',
     more: 'افتح اللعبة كاملة ←',
     // ملاحظات بتظهر حسب توزيعك
     notes: {
@@ -77,7 +77,7 @@ const COPY = {
       },
       noWeb: {
         h: 'ما في موقع = بتدفع عشان توصل لناس وبعدين بتفقدهم',
-        p: 'الإعلان بيوقّف الشخص. الموقع هو اللي بيقنعه. بدون موقع، كل قنواتك بتشتغل بـ 60٪ من قوّتها — ومحدا بيقدر يلاقيك على جوجل، ومحدا بيقدر يشتري وإنت نايم.',
+        p: 'الإعلان بيوقّف الشخص. الموقع هو اللي بيقنعه. بدون موقع، كل قنواتك بتشتغل بـ 60٪ من قوّتها، ومحدا بيقدر يلاقيك على جوجل، ومحدا بيقدر يشتري وإنت نايم.',
       },
       noBrand: {
         h: 'ما في هوية = الناس بتشوفك بس ما بتتذكرك',
@@ -85,11 +85,11 @@ const COPY = {
       },
       creatorHeavy: {
         h: 'المؤثرين ثقة مستعارة',
-        p: 'بتجيب قفزة كبيرة بيوم واحد، وبعدين بتنسى. لما تخلص الحملة، ما بيضلّك إشي تملكه — لا محتوى، ولا جمهور، ولا بيانات.',
+        p: 'بتجيب قفزة كبيرة بيوم واحد، وبعدين بتنسى. لما تخلص الحملة، ما بيضلّك إشي تملكه، لا محتوى، ولا جمهور، ولا بيانات.',
       },
       noAds: {
         h: 'بدون إعلانات، البداية بطيئة كتير',
-        p: 'المحتوى العضوي والـ SEO بيرجّعوا أكثر على المدى الطويل، بس بيحتاجوا شهور. الإعلان بيشتري وقت — بيوصلك لناس من أول يوم بينما الباقي عم يكبر.',
+        p: 'المحتوى العضوي والـ SEO بيرجّعوا أكثر على المدى الطويل، بس بيحتاجوا شهور. الإعلان بيشتري وقت، بيوصلك لناس من أول يوم بينما الباقي عم يكبر.',
       },
       noContent: {
         h: 'الـ SEO ما بيشتغل بدون محتوى',
@@ -97,7 +97,7 @@ const COPY = {
       },
       allIn: {
         h: 'حطّيت كل إشي بقناة وحدة',
-        p: 'كل قناة إلها سقف. بعده، كل دينار زيادة بنفس المكان بيرجّع أقل من اللي قبله. وبنفس الوقت، محدا بيشتري من أول لقاء — لما يشوفك بالإعلان وبعدين يلاقي محتواك وبعدين يفوت عالموقع، وقتها بيصدّقك.',
+        p: 'كل قناة إلها سقف. بعده، كل دينار زيادة بنفس المكان بيرجّع أقل من اللي قبله. وبنفس الوقت، محدا بيشتري من أول لقاء، لما يشوفك بالإعلان وبعدين يلاقي محتواك وبعدين يفوت عالموقع، وقتها بيصدّقك.',
       },
     },
   },
@@ -106,9 +106,9 @@ const COPY = {
     title: 'You have a marketing budget. Where does it go?',
     sub: 'Split your budget across the five channels and watch what comes back. When you are done, I will show you my split and why.',
     budgetLabel: 'Monthly delivery budget:',
-    zeroSum: 'Every dinar you add to one channel comes out of another — exactly like real life.',
+    zeroSum: 'Every dinar you add to one channel comes out of another. Exactly like real life.',
     dinar: 'JD',
-    briefTitle: 'Before you play — three things to be clear about',
+    briefTitle: 'Before you play. Three things to be clear about',
     brief: [
       {
         h: 'This number is monthly and recurring.',
@@ -116,11 +116,11 @@ const COPY = {
       },
       {
         h: '"Website + SEO" is ongoing monthly spend.',
-        p: 'New pages, improvements, content, and search ranking work. Building a website from scratch is a separate project with its own budget — do not read 200 JD here as the price of a website.',
+        p: 'New pages, improvements, content, and search ranking work. Building a website from scratch is a separate project with its own budget. Do not read 200 JD here as the price of a website.',
       },
       {
         h: 'This is the delivery budget, not my fee.',
-        p: 'What you allocate goes to Meta, to production and shooting, to hosting and tools — costs you pay regardless of who works with you. My fee covers the decisions that make that spend come back instead of disappear, and we agree on it separately based on scope.',
+        p: 'What you allocate goes to Meta, to production and shooting, to hosting and tools. Costs you pay regardless of who works with you. My fee covers the decisions that make that spend come back instead of disappear, and we agree on it separately based on scope.',
       },
     ],
     feeReminder:
@@ -143,14 +143,14 @@ const COPY = {
     mine: 'Mine',
     lead: 'leads',
     compareTitle: 'Here is the difference',
-    compareWin: 'Your split beats mine. That is not easy — you clearly know this game.',
+    compareWin: 'Your split beats mine. That is not easy. You clearly know this game.',
     compareTie: 'Your split is very close to mine. Nicely done.',
     compareLose: 'Exact same budget. The only difference is where it went.',
     notesTitle: 'Why',
     ctaText: 'Want a split built on your business instead of averages?',
     ctaBtn: 'Tell me about your business',
     disclaimer:
-      'This is an educational simulation based on Jordanian market averages and my own client work. Numbers are estimates and shift with your industry, product, and execution quality, and this is a monthly delivery budget that does not include my fee. A "lead" means a message, enquiry, or form fill — not a closed sale.',
+      'This is an educational simulation based on Jordanian market averages and my own client work. Numbers are estimates and shift with your industry, product, and execution quality, and this is a monthly delivery budget that does not include my fee. A "lead" means a message, enquiry, or form fill: not a closed sale.',
     more: 'Open the full simulator →',
     notes: {
       close: {
@@ -159,7 +159,7 @@ const COPY = {
       },
       noWeb: {
         h: 'No website means you pay to reach people, then lose them',
-        p: 'Ads stop the scroll. The website is what convinces. Without one, every channel runs at about 60% of its power — nobody finds you on Google, and nobody can buy while you sleep.',
+        p: 'Ads stop the scroll. The website is what convinces. Without one, every channel runs at about 60% of its power. Nobody finds you on Google, and nobody can buy while you sleep.',
       },
       noBrand: {
         h: 'No identity means people see you but do not remember you',
@@ -167,11 +167,11 @@ const COPY = {
       },
       creatorHeavy: {
         h: 'Creators are borrowed trust',
-        p: 'You get a spike in a day, then it fades. When the campaign ends you own nothing — no content, no audience, no data.',
+        p: 'You get a spike in a day, then it fades. When the campaign ends you own nothing. No content, no audience, no data.',
       },
       noAds: {
         h: 'Without ads, the first months are very slow',
-        p: 'Organic content and SEO return more long term, but they need months. Ads buy time — they put you in front of people from day one while everything else grows.',
+        p: 'Organic content and SEO return more long term, but they need months. Ads buy time. They put you in front of people from day one while everything else grows.',
       },
       noContent: {
         h: 'SEO does not work without content',
@@ -179,7 +179,7 @@ const COPY = {
       },
       allIn: {
         h: 'You put everything in one channel',
-        p: 'Every channel has a ceiling. Past it, each extra dinar in the same place returns less than the one before. And nobody buys on first contact — they believe you when they see your ad, then find your content, then land on your site.',
+        p: 'Every channel has a ceiling. Past it, each extra dinar in the same place returns less than the one before. And nobody buys on first contact. They believe you when they see your ad, then find your content, then land on your site.',
       },
     },
   },
@@ -321,7 +321,7 @@ export default function BudgetGame({
       </div>
 
       {/* ═══════════════════════════════════════════════════════════
-          صندوق التوضيح — ⚠️ لا تحذفه.
+          صندوق التوضيح، ⚠️ لا تحذفه.
           بيمنع الزائر يفهم إنه رقم اللعبة هو سعر الخدمة، وبيوضّح
           إنه الميزانية شهرية متكرّرة وإنها ميزانية تنفيذ مش أتعاب.
           ═══════════════════════════════════════════════════════════ */}
@@ -421,7 +421,7 @@ export default function BudgetGame({
             <div>
               <p className="bud-stat-label">{t.statCpl}</p>
               <p className="bud-stat-value">
-                {yours.cpl ? yours.cpl.toFixed(1) : '—'}
+                {yours.cpl ? yours.cpl.toFixed(1) : '. '}
                 <span className="bud-stat-unit">{t.dinar}</span>
               </p>
             </div>
@@ -527,7 +527,7 @@ export default function BudgetGame({
             })}
           </div>
 
-          {/* ⚠️ التذكير بالأتعاب بيتكرّر هون عمداً — هاي اللحظة اللي
+          {/* ⚠️ التذكير بالأتعاب بيتكرّر هون عمداً. هاي اللحظة اللي
               بيقرّر فيها الزائر، ولازم يكون الفرق واضح قبلها */}
           <p className="bud-fee">{t.feeReminder}</p>
 

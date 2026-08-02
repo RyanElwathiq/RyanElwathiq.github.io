@@ -63,7 +63,7 @@ function service(lang) {
   return {
     '@type': 'ProfessionalService',
     '@id': HOME + '/#service',
-    name: ar ? 'ريّان الواثق — تسويق ونموّ' : 'Rayan Elwathiq — Marketing & Growth',
+    name: ar ? 'ريّان الواثق، تسويق ونموّ' : 'Rayan Elwathiq، Marketing & Growth',
     url: HOME + (ar ? '/ar/' : '/'),
     inLanguage: ar ? 'ar-JO' : 'en',
     founder: { '@id': ME },

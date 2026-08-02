@@ -204,7 +204,7 @@ const projectSchema = [
             <div class="shots-grid">
               {p.gallery.map((g: string, i: number) => (
                 <figure class="shot">
-                  <img src={g} alt={`${title} — ${i + 1}`} loading="lazy" decoding="async" />
+                  <img src={g} alt={`${title}: ${i + 1}`} loading="lazy" decoding="async" />
                 </figure>
               ))}
             </div>

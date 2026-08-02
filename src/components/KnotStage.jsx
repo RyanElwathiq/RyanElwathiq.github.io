@@ -87,7 +87,7 @@ function Scene({ drag, onProgress, onLock, locked, resetKey }) {
 
   return (
     <>
-      {/* ═══ حلقة الهدف — ثابتة بالفراغ ═══ */}
+      {/* ═══ حلقة الهدف، ثابتة بالفراغ ═══ */}
       <mesh position={TARGET} rotation={[0, 0, 0]}>
         <torusGeometry args={[0.34, 0.032, 16, 48]} />
         <meshBasicMaterial

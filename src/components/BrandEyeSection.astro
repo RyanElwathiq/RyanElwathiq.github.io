@@ -39,10 +39,10 @@ const t = isAr
       title: 'عين البراند',
       lede: 'عشر جولات، وكل مرة أسئلة غير. بكل جولة نفس التصميم بنسختين والفرق بينهم مبدأ واحد. عندك ١٥ ثانية تختار الأقوى.',
       compactLede:
-        'عشر جولات بتشرح ليش تصميم بيشتغل وتصميم لأ — والأسئلة بتتغيّر كل مرة. عندك ١٥ ثانية لكل وحدة.',
+        'عشر جولات بتشرح ليش تصميم بيشتغل وتصميم لأ، والأسئلة بتتغيّر كل مرة. عندك ١٥ ثانية لكل وحدة.',
       start: 'ابدأ اللعب',
       coverTitle: 'قدّيش عينك بتشوف؟',
-      rules: ['١٠ جولات — نسختين من نفس التصميم', 'الفرق بينهم مبدأ واحد بس', '١٥ ثانية لكل جولة'],
+      rules: ['١٠ جولات، نسختين من نفس التصميم', 'الفرق بينهم مبدأ واحد بس', '١٥ ثانية لكل جولة'],
       next: 'الجولة الجاية',
       again: 'العب من جديد',
       round: 'جولة',
@@ -54,7 +54,7 @@ const t = isAr
       brief: 'خلّينا نشتغل على علامتك',
       seeApplied: 'شوف المبادئ مطبّقة على مشروع حقيقي',
       scores: [
-        'عينك لسا عم تتدرّب — وهاد طبيعي، هاي القواعد بتتعلّم مش بتنولد.',
+        'عينك لسا عم تتدرّب. وهاد طبيعي، هاي القواعد بتتعلّم مش بتنولد.',
         'عينك بتشوف نص القصة. المبادئ اللي فاتتك هي غالباً اللي بتفرّق بالنتيجة.',
         'عينك مضبوطة. بتعرف تميّز الشغل المبني عن الشغل الحلو بس.',
         'عين محترف. هاي بالضبط الأسئلة اللي ببدأ فيها أي هوية.',
@@ -67,10 +67,10 @@ const t = isAr
       title: 'The Brand Eye',
       lede: 'Ten rounds, different every time. Each shows the same design twice and one principle is all that separates them. You get 15 seconds to pick the stronger one.',
       compactLede:
-        'Ten rounds on why one design works and another does not — new questions every time. Fifteen seconds each.',
+        'Ten rounds on why one design works and another does not: new questions every time. Fifteen seconds each.',
       start: 'Start',
       coverTitle: 'How good is your eye?',
-      rules: ['10 rounds — the same design twice', 'One principle separates them', '15 seconds each'],
+      rules: ['10 rounds. The same design twice', 'One principle separates them', '15 seconds each'],
       next: 'Next round',
       again: 'Play again',
       round: 'Round',
@@ -82,7 +82,7 @@ const t = isAr
       brief: 'Let us work on your brand',
       seeApplied: 'See these principles on a real project',
       scores: [
-        'Your eye is still training — and that is fine. These rules are learned, not born.',
+        'Your eye is still training, and that is fine. These rules are learned, not born.',
         'Your eye catches half the story. The ones you missed are usually what decides the result.',
         'Your eye is calibrated. You can tell built work from merely pretty work.',
         'A professional eye. These are exactly the questions I open every identity with.',
@@ -95,13 +95,13 @@ const mock = isAr
   ? {
       eyebrow: 'عناية بالبشرة',
       title: 'روتين التفتيح',
-      body: 'فيتامين سي ونياسيناميد وبانثينول — ثلاث خطوات بتشتغل مع بعض، مش منتج واحد بيوعد بكل إشي.',
+      body: 'فيتامين سي ونياسيناميد وبانثينول، ثلاث خطوات بتشتغل مع بعض، مش منتج واحد بيوعد بكل إشي.',
       ctas: ['اطلبيها الآن', 'شوف المكوّنات', 'تواصل معنا'],
     }
   : {
       eyebrow: 'Skincare',
       title: 'Brighten routine',
-      body: 'Vitamin C, niacinamide and panthenol — three steps that work together, not one product promising everything.',
+      body: 'Vitamin C, niacinamide and panthenol. Three steps that work together, not one product promising everything.',
       ctas: ['Shop now', 'See ingredients', 'Talk to us'],
     };
 ---
@@ -119,7 +119,7 @@ const mock = isAr
            شاشة البداية
            ⚠️ اللعبة ما بتشتغل لحالها أول ما توصلها بالسكرول.
               أول نسخة كانت تبلّش بمجرد ما تظهر، فالزائر بيوصل
-              وقد يكون الوقت خلص وهو ما لعب أصلاً — وكمان الضغطة
+              وقد يكون الوقت خلص وهو ما لعب أصلاً، وكمان الضغطة
               نفسها هي اللي بتخلّيه داخل باللعبة.
            ═══════════════════════════════════════════════════════ -->
       <div class="bx-cover" data-bx-cover>
@@ -774,9 +774,9 @@ const mock = isAr
   }
 
   /* ═══════════════════════════════════════════════════════
-     النموذج المصغّر — كل إشي فيه مربوط بمتغيّر
+     النموذج المصغّر. كل إشي فيه مربوط بمتغيّر
      ⚠️ النسختين نفس الكود بالضبط. الفرق الوحيد قيمة متغيّر
-        أو اثنين — وهاد هو المبدأ اللي عم نعلّمه.
+        أو اثنين. وهاد هو المبدأ اللي عم نعلّمه.
      ═══════════════════════════════════════════════════════ */
   .bx-mock {
     position: relative;

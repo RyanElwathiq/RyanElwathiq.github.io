@@ -36,47 +36,47 @@ const isAr = lang === 'ar';
 const t = isAr
   ? {
       kicker: 'التجارب',
-      heading: 'شغل ما بحطّه بالواجهة — وما بخبّيه.',
-      lede: 'أي حدا بيقدر يعرض أحسن ٥ أعمال إله ويبيّن ممتاز. اللي بيفرق فعلاً هو المسافة: من وين بلّشت، ووين صرت. هاي البدايات وهاي التجارب اللي بعملها لحالي اليوم — بدون عميل، بدون بريف، وبدون سبب غير إني بحب أجرّب.',
+      heading: 'شغل ما بحطّه بالواجهة. وما بخبّيه.',
+      lede: 'أي حدا بيقدر يعرض أحسن ٥ أعمال إله ويبيّن ممتاز. اللي بيفرق فعلاً هو المسافة: من وين بلّشت، ووين صرت. هاي البدايات وهاي التجارب اللي بعملها لحالي اليوم، بدون عميل، بدون بريف، وبدون سبب غير إني بحب أجرّب.',
       tracks: [
         {
           key: 'start',
           name: 'البدايات',
-          note: 'مشاريع حقيقية بنطاق صغير: محل تلفونات، فساتين أعراس، سبا. شغل تصميم بحت — بدون استراتيجية ولا أرقام ولا رأي بالمحتوى. هيك بلّشت وهيك بتبلّش.',
+          note: 'مشاريع حقيقية بنطاق صغير: محل تلفونات، فساتين أعراس، سبا. شغل تصميم بحت، بدون استراتيجية ولا أرقام ولا رأي بالمحتوى. هيك بلّشت وهيك بتبلّش.',
         },
         {
           key: 'lab',
           name: 'المختبر',
-          note: 'تجارب بعملها اليوم لحالي: علامات وهمية، أساليب جديدة، ودمج الذكاء الاصطناعي بسير التصميم. ما إلها عميل وما إلها موعد تسليم — إلها هدف واحد إني ما أقف بمكاني.',
+          note: 'تجارب بعملها اليوم لحالي: علامات وهمية، أساليب جديدة، ودمج الذكاء الاصطناعي بسير التصميم. ما إلها عميل وما إلها موعد تسليم، إلها هدف واحد إني ما أقف بمكاني.',
         },
       ],
       distance: 'المسافة',
       distanceNote:
-        'نفس الشخص. الفرق مش بالبرامج — الفرق إني صرت أسأل «شو المشكلة» قبل ما أفتح فوتوشوب.',
-      approx: 'المراحل تقريبية — الشغل بين ٢٠١٧ و٢٠٢٠، ومرتّب حسب تطوّر التصاميم نفسها.',
+        'نفس الشخص. الفرق مش بالبرامج. الفرق إني صرت أسأل «شو المشكلة» قبل ما أفتح فوتوشوب.',
+      approx: 'المراحل تقريبية. الشغل بين ٢٠١٧ و٢٠٢٠، ومرتّب حسب تطوّر التصاميم نفسها.',
       cta: 'وهاد أحدث شغل',
       ctaHref: '#growth',
     }
   : {
       kicker: 'The lab',
-      heading: 'Work I do not lead with — and do not hide.',
-      lede: 'Anyone can show their best five pieces and look excellent. What actually tells you something is the distance: where it started and where it is now. These are the beginnings, and the experiments I still run on my own — no client, no brief, no reason beyond wanting to try something.',
+      heading: 'Work I do not lead with, and do not hide.',
+      lede: 'Anyone can show their best five pieces and look excellent. What actually tells you something is the distance: where it started and where it is now. These are the beginnings, and the experiments I still run on my own. No client, no brief, no reason beyond wanting to try something.',
       tracks: [
         {
           key: 'start',
           name: 'The beginnings',
-          note: 'Real projects with a small scope: a phone shop, wedding dresses, a spa. Pure design work — no strategy, no numbers, no say in the content. This is how it started, and how it starts for everyone.',
+          note: 'Real projects with a small scope: a phone shop, wedding dresses, a spa. Pure design work. No strategy, no numbers, no say in the content. This is how it started, and how it starts for everyone.',
         },
         {
           key: 'lab',
           name: 'The lab',
-          note: 'Experiments I run today on my own: fictional brands, new techniques, and folding AI into the design pipeline. No client and no deadline — one purpose, which is not standing still.',
+          note: 'Experiments I run today on my own: fictional brands, new techniques, and folding AI into the design pipeline. No client and no deadline. One purpose, which is not standing still.',
         },
       ],
       distance: 'The distance',
       distanceNote:
-        'Same person. The difference is not the software — it is that I now ask what the problem is before I open Photoshop.',
-      approx: 'Phases are approximate — the work spans 2017 to 2020, ordered by how the design itself developed.',
+        'Same person. The difference is not the software. It is that I now ask what the problem is before I open Photoshop.',
+      approx: 'Phases are approximate. The work spans 2017 to 2020, ordered by how the design itself developed.',
       cta: 'And here is the current work',
       ctaHref: '#growth',
     };
@@ -122,7 +122,7 @@ const tracks = t.tracks.map((tr) => ({
                     <figure class="frame">
                       <img
                         src={src}
-                        alt={`${g.label} — ${i + 1}`}
+                        alt={`${g.label}: ${i + 1}`}
                         loading="lazy"
                         decoding="async"
                         width="600"
@@ -267,7 +267,7 @@ const tracks = t.tracks.map((tr) => ({
 
   /* ═══════════════════════════════════════════════════════
      ⚠️ البدايات مطفية شوي وبتضوّي لما تمرّ عليها.
-        مش عشان نخبّيها — عشان العين تعرف شو الأساسي وشو
+        مش عشان نخبّيها، عشان العين تعرف شو الأساسي وشو
         السياق. المختبر بيبيّن بكامل وضوحه من أول لحظة.
      ═══════════════════════════════════════════════════════ */
   .track-start .shots img {

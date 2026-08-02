@@ -50,10 +50,10 @@ export const DEFAULTS = {
 
 // 🤖 عقد البيانات للذكاء الاصطناعي — لا تغيّره بدون ما تحدّث المحرّك
 export const SCHEMA = {
-  principle: 'string — اسم المبدأ بلغة الصفحة',
-  q: 'string — سؤال قصير: أي نسخة أقوى ولماذا يهم',
-  why: 'string — شرح من ٢ لـ ٣ جمل، بصوت تسويقي مش أكاديمي',
-  bad: 'object — متغيّر أو اثنين بالكثير من DEFAULTS بقيم مكسورة',
+  principle: 'string، اسم المبدأ بلغة الصفحة',
+  q: 'string، سؤال قصير: أي نسخة أقوى ولماذا يهم',
+  why: 'string، شرح من ٢ لـ ٣ جمل، بصوت تسويقي مش أكاديمي',
+  bad: 'object، متغيّر أو اثنين بالكثير من DEFAULTS بقيم مكسورة',
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -63,7 +63,7 @@ const AR = [
   {
     principle: 'التباين',
     q: 'أي وحدة بتقدر تقراها بسرعة؟',
-    why: 'التباين مش ذوق — هو وصول. النص الباهت بيبيّن «راقي» على شاشة المصمّم، وبيختفي على شاشة الزبون بالشمس. أول سؤال بأي هوية: بينقرا ولا لأ؟',
+    why: 'التباين مش ذوق، هو وصول. النص الباهت بيبيّن «راقي» على شاشة المصمّم، وبيختفي على شاشة الزبون بالشمس. أول سؤال بأي هوية: بينقرا ولا لأ؟',
     bad: { bodyOpacity: 0.18 },
   },
   {
@@ -81,7 +81,7 @@ const AR = [
   {
     principle: 'التسلسل',
     q: 'أي وحدة العنوان فيها عنوان فعلاً؟',
-    why: 'الفرق بين العنوان والوصف لازم يبيّن من بعيد. فرق حجم بسيط ما بيكفي — العين بتحتاج قفزة واضحة عشان تعرف الترتيب.',
+    why: 'الفرق بين العنوان والوصف لازم يبيّن من بعيد. فرق حجم بسيط ما بيكفي، العين بتحتاج قفزة واضحة عشان تعرف الترتيب.',
     bad: { titleSize: 15 },
   },
   {
@@ -93,13 +93,13 @@ const AR = [
   {
     principle: 'الانضباط اللوني',
     q: 'أي وحدة لونها بيخدم المعنى؟',
-    why: 'لون الهوية سلاح — لما تستخدمه على كل إشي بيفقد قوّته. خلّيه على الفعل المطلوب بس، والباقي رمادي.',
+    why: 'لون الهوية سلاح، لما تستخدمه على كل إشي بيفقد قوّته. خلّيه على الفعل المطلوب بس، والباقي رمادي.',
     bad: { eyebrowColor: 'accent', titleColor: 'accent', bodyColor: 'accent' },
   },
   {
     principle: 'المساحة',
     q: 'أي وحدة بتحسّها أغلى؟',
-    why: 'المساحة الفاضية مش ضياع — هي اللي بتقول «هذا العنصر يستاهل مساحته». التزاحم بيوحي بالرخص حتى لو المحتوى نفسه.',
+    why: 'المساحة الفاضية مش ضياع، هي اللي بتقول «هذا العنصر يستاهل مساحته». التزاحم بيوحي بالرخص حتى لو المحتوى نفسه.',
     bad: { pad: 8, gap: 2 },
   },
   {
@@ -129,7 +129,7 @@ const AR = [
   {
     principle: 'التركيز',
     q: 'أي وحدة ما بتخلّيك تفكّر؟',
-    why: 'كل خيار إضافي بتحطّه بيأخّر القرار. لما يكون في فعل واحد واضح، نسبة التحويل بتطلع — مش لأن التصميم أحلى، لأن ما في تردّد.',
+    why: 'كل خيار إضافي بتحطّه بيأخّر القرار. لما يكون في فعل واحد واضح، نسبة التحويل بتطلع. مش لأن التصميم أحلى، لأن ما في تردّد.',
     bad: { ctas: 2 },
   },
   {
@@ -141,7 +141,7 @@ const AR = [
   {
     principle: 'الثقل',
     q: 'أي وحدة الثقيل فيها ثقيل فعلاً؟',
-    why: 'لما كل الكلام غامق، ما في كلام غامق. الثقل زي رفع الصوت — بينفع لكلمة، وبيصير صراخ لو استخدمته للجملة كلها.',
+    why: 'لما كل الكلام غامق، ما في كلام غامق. الثقل زي رفع الصوت، بينفع لكلمة، وبيصير صراخ لو استخدمته للجملة كلها.',
     bad: { bodyWeight: 700 },
   },
   {
@@ -153,7 +153,7 @@ const AR = [
   {
     principle: 'طول السطر',
     q: 'أي وحدة بتقرا سطرها لآخره؟',
-    why: 'السطر الطويل بيضيّع العين وهي راجعة لبداية السطر اللي بعده. من ٤٥ لـ ٧٥ حرف — هاي المنطقة اللي بتنقرا بدون تعب.',
+    why: 'السطر الطويل بيضيّع العين وهي راجعة لبداية السطر اللي بعده. من ٤٥ لـ ٧٥ حرف. هاي المنطقة اللي بتنقرا بدون تعب.',
     bad: { maxWidth: 90 },
   },
   {
@@ -192,7 +192,7 @@ const EN = [
   {
     principle: 'Hierarchy',
     q: 'Which one actually has a headline?',
-    why: 'The gap between headline and body must be visible from across the room. A small size difference is not a hierarchy — the eye needs a clear jump to read the order.',
+    why: 'The gap between headline and body must be visible from across the room. A small size difference is not a hierarchy. The eye needs a clear jump to read the order.',
     bad: { titleSize: 15 },
   },
   {
@@ -204,13 +204,13 @@ const EN = [
   {
     principle: 'Colour discipline',
     q: 'Which one uses colour to mean something?',
-    why: 'Your brand colour is a weapon — spend it on everything and it stops cutting. Keep it for the action you want, and let the rest go grey.',
+    why: 'Your brand colour is a weapon. Spend it on everything and it stops cutting. Keep it for the action you want, and let the rest go grey.',
     bad: { eyebrowColor: 'accent', titleColor: 'accent', bodyColor: 'accent' },
   },
   {
     principle: 'Space',
     q: 'Which one feels more expensive?',
-    why: 'Whitespace is not waste — it is what says this element deserves its room. Crowding reads as cheap even when the content is identical.',
+    why: 'Whitespace is not waste. It is what says this element deserves its room. Crowding reads as cheap even when the content is identical.',
     bad: { pad: 8, gap: 2 },
   },
   {
@@ -240,7 +240,7 @@ const EN = [
   {
     principle: 'Focus',
     q: 'Which one does not make you think?',
-    why: 'Every extra option delays the decision. One clear action lifts conversion — not because it is prettier, but because there is nothing to weigh.',
+    why: 'Every extra option delays the decision. One clear action lifts conversion. Not because it is prettier, but because there is nothing to weigh.',
     bad: { ctas: 2 },
   },
   {
@@ -252,7 +252,7 @@ const EN = [
   {
     principle: 'Weight',
     q: 'Which one has real emphasis?',
-    why: 'When all the copy is bold, none of it is. Weight is like raising your voice — it works for a word and becomes shouting across a paragraph.',
+    why: 'When all the copy is bold, none of it is. Weight is like raising your voice. It works for a word and becomes shouting across a paragraph.',
     bad: { bodyWeight: 700 },
   },
   {

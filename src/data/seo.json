@@ -1,8 +1,8 @@
 {
   "_readme": [
-    "طبقات السيو — من الشكل اللي بيعرفه الكل، لتحت.",
+    "طبقات السيو، من الشكل اللي بيعرفه الكل، لتحت.",
     "كل طبقة: الاعتقاد الشائع، الواقع، والأدوات.",
-    "⚠️ الأدوات مكتوبة بأسماءها الحقيقية. شيل أي أداة ما بتستخدمها فعلاً —",
+    "⚠️ الأدوات مكتوبة بأسماءها الحقيقية. شيل أي أداة ما بتستخدمها فعلاً، ",
     "   ادّعاء أداة ما بتعرفها بينكشف بأول سؤال تقني بمقابلة أو اجتماع."
   ],
   "layers": [
@@ -40,8 +40,8 @@
       "nameEn": "Architecture",
       "myth": "«اعمل صفحة لكل كلمة مفتاحية»",
       "mythEn": "\"Make a page for every keyword\"",
-      "real": "الموقع شبكة روابط مش قائمة صفحات. عشر صفحات بتتنافس على نفس النية بتضعف بعضها بدل ما تقوّي — وهاي أكثر مشكلة بلاقيها بمواقع جاهزة. البنية الصح: صفحة أساسية لكل موضوع، وحواليها صفحات فرعية بتربط عليها.",
-      "realEn": "A site is a link graph, not a list of pages. Ten pages competing for the same intent weaken each other instead of adding up — the single most common problem I find in existing sites. The right structure is one page per topic with supporting pages linking into it.",
+      "real": "الموقع شبكة روابط مش قائمة صفحات. عشر صفحات بتتنافس على نفس النية بتضعف بعضها بدل ما تقوّي. وهاي أكثر مشكلة بلاقيها بمواقع جاهزة. البنية الصح: صفحة أساسية لكل موضوع، وحواليها صفحات فرعية بتربط عليها.",
+      "realEn": "A site is a link graph, not a list of pages. Ten pages competing for the same intent weaken each other instead of adding up. The single most common problem I find in existing sites. The right structure is one page per topic with supporting pages linking into it.",
       "items": [
         "تنافس الصفحات على نفس النية (cannibalisation)",
         "الروابط الداخلية كشبكة توزّع القوة",
@@ -66,8 +66,8 @@
       "nameEn": "Search intent",
       "myth": "«الكلمة إلها ١٠ آلاف بحث شهري، يلا نستهدفها»",
       "mythEn": "\"This keyword gets 10K searches, let us target it\"",
-      "real": "حجم البحث ما بيقول شو بده الباحث. نفس الكلمة ممكن يكون وراها حدا بده يتعلّم، وحدا بده يشتري، وحدا بده يقارن — وكل نية بدها صفحة مختلفة. وقبل ما تكتب: شوف مين راكب بالصفحة الأولى فعلاً، لأن جوجل عم يقلّك بالضبط شو بيعتبره الجواب.",
-      "realEn": "Search volume does not tell you what the searcher wants. The same phrase can hide someone learning, someone buying and someone comparing — and each needs a different page. Before writing, look at who actually ranks: Google is telling you exactly what it considers the answer.",
+      "real": "حجم البحث ما بيقول شو بده الباحث. نفس الكلمة ممكن يكون وراها حدا بده يتعلّم، وحدا بده يشتري، وحدا بده يقارن، وكل نية بدها صفحة مختلفة. وقبل ما تكتب: شوف مين راكب بالصفحة الأولى فعلاً، لأن جوجل عم يقلّك بالضبط شو بيعتبره الجواب.",
+      "realEn": "Search volume does not tell you what the searcher wants. The same phrase can hide someone learning, someone buying and someone comparing, and each needs a different page. Before writing, look at who actually ranks: Google is telling you exactly what it considers the answer.",
       "items": [
         "تصنيف النية: تعلّم · مقارنة · شراء · وصول",
         "قراءة الصفحة الأولى قبل الكتابة",
@@ -92,8 +92,8 @@
       "nameEn": "Content",
       "myth": "«اكتب ١٥٠٠ كلمة وحط الكلمة ٨ مرات»",
       "mythEn": "\"Write 1,500 words and repeat the keyword eight times\"",
-      "real": "الصفحة اللي بتربح هي اللي بتجاوب على السؤال أسرع وأوضح من غيرها، وبتضيف إشي مش موجود بالصفحة الأولى أصلاً. والمحتوى بيذبل: صفحة كانت أولى قبل سنة بتنزل لأن غيرها تحدّث. فالشغل مش نشر — الشغل دورة تحديث.",
-      "realEn": "The page that wins answers the question faster and clearer than the rest, and adds something page one does not already contain. Content also decays: a page that ranked first a year ago slips because others updated. So the job is not publishing — it is a refresh cycle.",
+      "real": "الصفحة اللي بتربح هي اللي بتجاوب على السؤال أسرع وأوضح من غيرها، وبتضيف إشي مش موجود بالصفحة الأولى أصلاً. والمحتوى بيذبل: صفحة كانت أولى قبل سنة بتنزل لأن غيرها تحدّث. فالشغل مش نشر. الشغل دورة تحديث.",
+      "realEn": "The page that wins answers the question faster and clearer than the rest, and adds something page one does not already contain. Content also decays: a page that ranked first a year ago slips because others updated. So the job is not publishing. It is a refresh cycle.",
       "items": [
         "الجواب أول، مش بعد ٦٠٠ كلمة تمهيد",
         "معلومة إضافية مش موجودة بالصفحة الأولى",
@@ -116,8 +116,8 @@
       "nameEn": "Authority",
       "myth": "«اشتري ١٠٠ باكلينك بـ ٥٠ دينار»",
       "mythEn": "\"Buy 100 backlinks for 50 dinars\"",
-      "real": "الروابط المشتراة إما ما بتعمل إشي أو بتأذي. الرابط اللي بينفع هو اللي حدا حطّه لأنه محتاج يستشهد فيك. يعني الشغل مش شراء روابط — الشغل تبني إشي يستاهل الاستشهاد: بحث، أداة، رقم من السوق ما حدا نشره.",
-      "realEn": "Bought links either do nothing or do damage. The link that works is one someone placed because they needed to cite you. So the work is not buying links — it is building something worth citing: research, a tool, a number from your market nobody has published.",
+      "real": "الروابط المشتراة إما ما بتعمل إشي أو بتأذي. الرابط اللي بينفع هو اللي حدا حطّه لأنه محتاج يستشهد فيك. يعني الشغل مش شراء روابط. الشغل تبني إشي يستاهل الاستشهاد: بحث، أداة، رقم من السوق ما حدا نشره.",
+      "realEn": "Bought links either do nothing or do damage. The link that works is one someone placed because they needed to cite you. So the work is not buying links. It is building something worth citing: research, a tool, a number from your market nobody has published.",
       "items": [
         "أصول تستاهل الاستشهاد بدل شراء روابط",
         "علاقات إعلامية وذكر العلامة بدون رابط",
@@ -140,8 +140,8 @@
       "nameEn": "Measurement",
       "myth": "«صرنا أول واحد بجوجل»",
       "mythEn": "\"We are number one on Google\"",
-      "real": "الترتيب لحاله ما بيدفع فواتير. الرقم اللي بيهم: كم واحد ضغط، وكم واحد منهم صار عميل، وكم كلّفت الزيارة مقارنة بالإعلان. وواجهة Search Console بتعطيك ألف صف بس — البيانات الكاملة بتطلع من الـ API، وهون بيبدأ الشغل الحقيقي.",
-      "realEn": "A ranking alone pays nothing. The numbers that matter: how many clicked, how many became customers, and what a visit costs compared to advertising. And the Search Console interface caps at 1,000 rows — the full data comes out of the API, and that is where the real work starts.",
+      "real": "الترتيب لحاله ما بيدفع فواتير. الرقم اللي بيهم: كم واحد ضغط، وكم واحد منهم صار عميل، وكم كلّفت الزيارة مقارنة بالإعلان. وواجهة Search Console بتعطيك ألف صف بس، البيانات الكاملة بتطلع من الـ API، وهون بيبدأ الشغل الحقيقي.",
+      "realEn": "A ranking alone pays nothing. The numbers that matter: how many clicked, how many became customers, and what a visit costs compared to advertising. And the Search Console interface caps at 1,000 rows. The full data comes out of the API, and that is where the real work starts.",
       "items": [
         "نقرات وظهور ونسبة نقر لكل عنقود كلمات",
         "سحب البيانات الكاملة من واجهة برمجة Search Console",

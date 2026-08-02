@@ -1,5 +1,5 @@
 {
-  "_note": "═══ الخدمات — المصدر الوحيد لصفحات /services وقائمة الناف بار ═══\n\n✏️ بدك تضيف خدمة؟ ضيف عنصر بالمصفوفة وخلص — الصفحة والقائمة\n   وخريطة الموقع كلهم بينبنوا لحالهم.\n\n⚠️ قواعد مهمة:\n   • slug: بينحط بالرابط /services/<slug>/ — إنجليزي دايماً بلغتين\n     (الروابط العربية بتظل لاتينية عشان تنشارك بواتساب بلا تكسير)\n   • briefValue: لازم يطابق **حرفياً** نص الخدمة بمصفوفة services\n     بملف Brief.jsx — لأنه بينبعت بالرابط وبيختار الخدمة تلقائياً\n     بالفورم. لو ما تطابق، الاختيار المسبق بيوقف بصمت.\n   • proof: رابط معرض الشغل اللي بيثبت هالخدمة (بلا /ar — بينضاف لحاله)\n   • seoDesc: وصف الميتا — مختلف عن intro عمداً، هاد بيطلع بجوجل\n   • ما بنحط أرقام أسعار (نفس قاعدة Pricing.astro)",
+  "_note": "═══ الخدمات، المصدر الوحيد لصفحات /services وقائمة الناف بار ═══\n\n✏️ بدك تضيف خدمة؟ ضيف عنصر بالمصفوفة وخلص، الصفحة والقائمة\n   وخريطة الموقع كلهم بينبنوا لحالهم.\n\n⚠️ قواعد مهمة:\n   • slug: بينحط بالرابط /services/<slug>/، إنجليزي دايماً بلغتين\n     (الروابط العربية بتظل لاتينية عشان تنشارك بواتساب بلا تكسير)\n   • briefValue: لازم يطابق **حرفياً** نص الخدمة بمصفوفة services\n     بملف Brief.jsx، لأنه بينبعت بالرابط وبيختار الخدمة تلقائياً\n     بالفورم. لو ما تطابق، الاختيار المسبق بيوقف بصمت.\n   • proof: رابط معرض الشغل اللي بيثبت هالخدمة (بلا /ar، بينضاف لحاله)\n   • seoDesc: وصف الميتا، مختلف عن intro عمداً، هاد بيطلع بجوجل\n   • ما بنحط أرقام أسعار (نفس قاعدة Pricing.astro)",
 
   "services": [
     {
@@ -12,10 +12,10 @@
         "name": "موقع إلكتروني",
         "menuDesc": "موقع بيشتغل، مش بس بيبيّن حلو",
         "h1": "موقعك لازم يجيبلك شغل، مش بس يكون موجود",
-        "seoDesc": "تصميم وبرمجة مواقع إلكترونية بالأردن — متاجر، مواقع شركات، وصفحات هبوط سريعة ومهيأة لمحركات البحث. من عمّان لعملاء بالأردن وبرا.",
+        "seoDesc": "تصميم وبرمجة مواقع إلكترونية بالأردن، متاجر، مواقع شركات، وصفحات هبوط سريعة ومهيأة لمحركات البحث. من عمّان لعملاء بالأردن وبرا.",
         "intro": "أغلب المواقع بالأردن بتنعمل مرة وبتتنسى. بتفتح بطيئة، ما بتطلع بجوجل، وما حدا بيعرف إذا جابت زبون ولا لأ. أنا ببني الموقع كأداة بيع: سريع، بيطلع بالبحث، وكل زر فيه إله سبب.",
         "pain": [
-          "موقعك بياخد أكثر من ٣ ثواني عشان يفتح — ونص الزوار بيسكّروا قبل ما يشوفوه",
+          "موقعك بياخد أكثر من ٣ ثواني عشان يفتح، ونص الزوار بيسكّروا قبل ما يشوفوه",
           "ما بتعرف كم زائر إجاك ولا من وين ولا شو عملوا",
           "بتدفع اشتراك شهري لمنصة والموقع مش ملكك فعلياً",
           "بتحكي لصاحب الموقع تعدّل كلمة وبتستنى أسبوع"
@@ -26,16 +26,16 @@
           "لوحة تحكم بتقدر تعدّل منها بنفسك بدون ما تحكيني",
           "تتبع كامل: بتعرف مين إجا ومن وين وشو عمل",
           "نسخة عربي وإنجليزي إذا بتحتاج",
-          "الملكية إلك بالكامل — الكود والدومين والاستضافة"
+          "الملكية إلك بالكامل، الكود والدومين والاستضافة"
         ],
         "faq": [
           {
             "q": "قديش بياخد وقت؟",
-            "a": "صفحة هبوط وحدة: من أسبوع لأسبوعين. موقع شركة كامل: من ٣ لـ ٦ أسابيع. متجر إلكتروني: من ٦ لـ ١٠ أسابيع. الفرق بيرجع لعدد الصفحات وجاهزية المحتوى عندك — والمحتوى بالعادة هو اللي بيأخّر مش البرمجة."
+            "a": "صفحة هبوط وحدة: من أسبوع لأسبوعين. موقع شركة كامل: من ٣ لـ ٦ أسابيع. متجر إلكتروني: من ٦ لـ ١٠ أسابيع. الفرق بيرجع لعدد الصفحات وجاهزية المحتوى عندك، والمحتوى بالعادة هو اللي بيأخّر مش البرمجة."
           },
           {
             "q": "بتشتغل على ووردبريس ولا كود؟",
-            "a": "الاثنين، وبختار حسب حالتك مش حسب اللي بريحني. ووردبريس لما تحتاج تعدّل محتوى كثير بنفسك أو تبيع منتجات. كود مخصص لما تكون السرعة والتفرّد أهم — زي هذا الموقع اللي انت فيه هلق."
+            "a": "الاثنين، وبختار حسب حالتك مش حسب اللي بريحني. ووردبريس لما تحتاج تعدّل محتوى كثير بنفسك أو تبيع منتجات. كود مخصص لما تكون السرعة والتفرّد أهم، زي هذا الموقع اللي انت فيه هلق."
           },
           {
             "q": "شو بصير بعد التسليم؟",
@@ -43,7 +43,7 @@
           },
           {
             "q": "الاستضافة والدومين علي ولا عليك؟",
-            "a": "بتنشرا باسمك انت وبحسابك انت — عشان تضل مالكها. بساعدك بالاختيار والإعداد بلا رسوم إضافية، وبفهّمك شو بتدفع ولمين وليش."
+            "a": "بتنشرا باسمك انت وبحسابك انت، عشان تضل مالكها. بساعدك بالاختيار والإعداد بلا رسوم إضافية، وبفهّمك شو بتدفع ولمين وليش."
           }
         ]
       },
@@ -51,10 +51,10 @@
         "name": "Website",
         "menuDesc": "A site that works, not just one that looks good",
         "h1": "Your website should bring you work, not just exist",
-        "seoDesc": "Web design and development in Jordan — online stores, company sites, and fast landing pages built for search. From Amman, for clients in Jordan and abroad.",
+        "seoDesc": "Web design and development in Jordan. Online stores, company sites, and fast landing pages built for search. From Amman, for clients in Jordan and abroad.",
         "intro": "Most sites here get built once and forgotten. They load slowly, never rank, and nobody can tell whether they brought in a single customer. I build the site as a sales tool: fast, findable, and every button there for a reason.",
         "pain": [
-          "Your site takes over 3 seconds to load — half your visitors leave before seeing it",
+          "Your site takes over 3 seconds to load: half your visitors leave before seeing it",
           "You have no idea how many visitors came, where from, or what they did",
           "You pay a monthly platform fee and don't actually own your site",
           "You ask your developer to change one word and wait a week"
@@ -65,16 +65,16 @@
           "A dashboard you can edit yourself without calling me",
           "Full tracking: who came, from where, and what they did",
           "Arabic and English versions if you need them",
-          "Full ownership — code, domain, and hosting are yours"
+          "Full ownership: code, domain, and hosting are yours"
         ],
         "faq": [
           {
             "q": "How long does it take?",
-            "a": "A single landing page: one to two weeks. A full company site: three to six weeks. An online store: six to ten weeks. The range depends on page count and how ready your content is — and content is usually what delays things, not the build."
+            "a": "A single landing page: one to two weeks. A full company site: three to six weeks. An online store: six to ten weeks. The range depends on page count and how ready your content is, and content is usually what delays things, not the build."
           },
           {
             "q": "WordPress or custom code?",
-            "a": "Both, chosen for your case rather than my convenience. WordPress when you need to edit a lot of content yourself or sell products. Custom code when speed and distinctiveness matter more — like the site you're reading right now."
+            "a": "Both, chosen for your case rather than my convenience. WordPress when you need to edit a lot of content yourself or sell products. Custom code when speed and distinctiveness matter more. Like the site you're reading right now."
           },
           {
             "q": "What happens after delivery?",
@@ -96,18 +96,18 @@
       "proof": "/marketing",
       "ar": {
         "name": "إعلانات مدفوعة",
-        "menuDesc": "ميتا وجوجل — بميزانية بتعرف وين راحت",
+        "menuDesc": "ميتا وجوجل، بميزانية بتعرف وين راحت",
         "h1": "توقّف تدفع لميتا وانت مش عارف شو رجعلك",
-        "seoDesc": "إدارة إعلانات ممولة على فيسبوك وانستغرام وجوجل بالأردن — إعداد البكسل، تقسيم الجمهور، اختبارات A/B، وتقارير ROAS و CPL واضحة.",
-        "intro": "«صرفنا على فيسبوك وما إجا ولا زبون» — بسمعها كثير. المشكلة نادراً بتكون بالميزانية، بالعادة بتكون إنه الإعلان بيوصل لناس غلط، أو بيوصل لناس صح برسالة غلط، أو إنه ما في تتبع أصلاً فما حدا بيعرف شو صار.",
+        "seoDesc": "إدارة إعلانات ممولة على فيسبوك وانستغرام وجوجل بالأردن، إعداد البكسل، تقسيم الجمهور، اختبارات A/B، وتقارير ROAS و CPL واضحة.",
+        "intro": "«صرفنا على فيسبوك وما إجا ولا زبون»، بسمعها كثير. المشكلة نادراً بتكون بالميزانية، بالعادة بتكون إنه الإعلان بيوصل لناس غلط، أو بيوصل لناس صح برسالة غلط، أو إنه ما في تتبع أصلاً فما حدا بيعرف شو صار.",
         "pain": [
           "بتدفع كل شهر وما بتعرف كل دينار رجّعلك قديش",
           "الإعلان بيجيب لايكات ورسايل «كم السعر؟» وما حدا بيشتري",
-          "البكسل مش مركّب أو مركّب غلط — يعني ميتا بتتعلّم من لا اشي",
+          "البكسل مش مركّب أو مركّب غلط. يعني ميتا بتتعلّم من لا اشي",
           "جرّبت تشتغل مع حدا وصرفلك الميزانية بأسبوع بلا نتيجة"
         ],
         "deliver": [
-          "إعداد البكسل والأحداث صح — أساس أي حملة بتشتغل",
+          "إعداد البكسل والأحداث صح، أساس أي حملة بتشتغل",
           "بناء الجماهير: مشابهة، إعادة استهداف، واستبعاد اللي اشترى",
           "٣ إلى ٥ نسخ إعلانية مختلفة للاختبار مش نسخة وحدة",
           "تقرير شهري بلغة مفهومة: صرفت كذا، إجاك كذا عميل، كلفة العميل كذا",
@@ -116,7 +116,7 @@
         "faq": [
           {
             "q": "قديش أقل ميزانية إعلانية تنفع؟",
-            "a": "عملياً بالأردن، أقل من ٥ دنانير باليوم ما بتعطي ميتا بيانات كافية تتعلم منها، فبتصرف بلا نتيجة. الرقم اللي بنصح فيه للبداية بين ١٠ و١٥ دينار باليوم لمدة شهر على الأقل — عشان تطلع بقرار مبني على أرقام حقيقية."
+            "a": "عملياً بالأردن، أقل من ٥ دنانير باليوم ما بتعطي ميتا بيانات كافية تتعلم منها، فبتصرف بلا نتيجة. الرقم اللي بنصح فيه للبداية بين ١٠ و١٥ دينار باليوم لمدة شهر على الأقل، عشان تطلع بقرار مبني على أرقام حقيقية."
           },
           {
             "q": "الميزانية الإعلانية داخلة بسعرك؟",
@@ -124,28 +124,28 @@
           },
           {
             "q": "بعد قديش بتبين النتيجة؟",
-            "a": "أول أسبوعين تعلّم وجمع بيانات — لا تحكم فيهم. من الأسبوع الثالث بتبدأ تشوف اتجاه واضح. القرار الحقيقي بيتاخد بعد شهر كامل، ومن جد ما تسحب قبل هيك لأنك بتخسر التعلّم كله."
+            "a": "أول أسبوعين تعلّم وجمع بيانات، لا تحكم فيهم. من الأسبوع الثالث بتبدأ تشوف اتجاه واضح. القرار الحقيقي بيتاخد بعد شهر كامل، ومن جد ما تسحب قبل هيك لأنك بتخسر التعلّم كله."
           },
           {
             "q": "بتضمنلي مبيعات؟",
-            "a": "لأ، وأي حدا بيضمنلك مبيعات إما بيكذب أو ما بيفهم. اللي بضمنه: إعداد صح، اختبار منهجي، وأرقام شفافة كل شهر. النتيجة بتعتمد كمان على سعرك ومنتجك وسرعة ردّك على العميل — وهدول مش بإيدي."
+            "a": "لأ، وأي حدا بيضمنلك مبيعات إما بيكذب أو ما بيفهم. اللي بضمنه: إعداد صح، اختبار منهجي، وأرقام شفافة كل شهر. النتيجة بتعتمد كمان على سعرك ومنتجك وسرعة ردّك على العميل. وهدول مش بإيدي."
           }
         ]
       },
       "en": {
         "name": "Paid ads",
-        "menuDesc": "Meta and Google — a budget you can actually trace",
+        "menuDesc": "Meta and Google. A budget you can actually trace",
         "h1": "Stop paying Meta without knowing what came back",
-        "seoDesc": "Facebook, Instagram, and Google ads management in Jordan — pixel setup, audience segmentation, A/B testing, and clear ROAS and CPL reporting.",
-        "intro": "\"We boosted a post and nobody came\" — I hear it constantly. The problem is rarely the budget. It's usually that the ad reaches the wrong people, or the right people with the wrong message, or that nothing is tracked so nobody knows what happened.",
+        "seoDesc": "Facebook, Instagram, and Google ads management in Jordan. Pixel setup, audience segmentation, A/B testing, and clear ROAS and CPL reporting.",
+        "intro": "\"We boosted a post and nobody came\". I hear it constantly. The problem is rarely the budget. It's usually that the ad reaches the wrong people, or the right people with the wrong message, or that nothing is tracked so nobody knows what happened.",
         "pain": [
           "You spend every month with no idea what each dinar returned",
           "Ads bring likes and \"how much?\" messages, and nobody buys",
-          "The pixel isn't installed, or is installed wrong — so Meta is learning from nothing",
+          "The pixel isn't installed, or is installed wrong, so Meta is learning from nothing",
           "You tried an agency that burned the budget in a week with nothing to show"
         ],
         "deliver": [
-          "Correct pixel and event setup — the foundation any working campaign sits on",
+          "Correct pixel and event setup: the foundation any working campaign sits on",
           "Audience build-out: lookalikes, retargeting, and excluding existing buyers",
           "Three to five ad variations to test, not one",
           "A monthly report in plain language: spent this, got this many leads, cost per lead was this",
@@ -154,7 +154,7 @@
         "faq": [
           {
             "q": "What's the minimum ad budget that works?",
-            "a": "In Jordan, under 5 JOD a day doesn't give Meta enough data to learn from, so it spends without producing. I recommend starting between 10 and 15 JOD a day for at least a month — enough to make a decision on real numbers."
+            "a": "In Jordan, under 5 JOD a day doesn't give Meta enough data to learn from, so it spends without producing. I recommend starting between 10 and 15 JOD a day for at least a month. Enough to make a decision on real numbers."
           },
           {
             "q": "Is the ad budget included in your fee?",
@@ -162,11 +162,11 @@
           },
           {
             "q": "How long before I see results?",
-            "a": "The first two weeks are learning and data collection — don't judge them. From week three a clear trend appears. The real decision comes after a full month, and genuinely don't pull out before that or you lose all the learning."
+            "a": "The first two weeks are learning and data collection. Don't judge them. From week three a clear trend appears. The real decision comes after a full month, and genuinely don't pull out before that or you lose all the learning."
           },
           {
             "q": "Can you guarantee sales?",
-            "a": "No, and anyone who guarantees sales is either lying or doesn't understand the work. What I guarantee: correct setup, systematic testing, and transparent numbers every month. Results also depend on your pricing, your product, and how fast you reply to leads — none of which are in my hands."
+            "a": "No, and anyone who guarantees sales is either lying or doesn't understand the work. What I guarantee: correct setup, systematic testing, and transparent numbers every month. Results also depend on your pricing, your product, and how fast you reply to leads. None of which are in my hands."
           }
         ]
       }
@@ -181,9 +181,9 @@
       "ar": {
         "name": "تحسين محركات البحث",
         "menuDesc": "تطلع لما حدا يدوّر عن شغلك",
-        "h1": "الناس عم تدوّر عن خدمتك هلق — بس مش لاقيينك",
+        "h1": "الناس عم تدوّر عن خدمتك هلق. بس مش لاقيينك",
         "seoDesc": "خدمات SEO بالأردن: بحث كلمات مفتاحية، تحسين تقني، بناء محتوى، وتهيئة للظهور بإجابات الذكاء الاصطناعي زي ChatGPT وجوجل.",
-        "intro": "الإعلان بيوقف لما توقف تدفع. البحث بيضل يجيبلك ناس وانت نايم. بس السيو مش «كلمات مفتاحية بالنص» — هو بنية تقنية ومحتوى بيجاوب على سؤال حقيقي، وهاد بياخد وقت وبيستاهل.",
+        "intro": "الإعلان بيوقف لما توقف تدفع. البحث بيضل يجيبلك ناس وانت نايم. بس السيو مش «كلمات مفتاحية بالنص»، هو بنية تقنية ومحتوى بيجاوب على سؤال حقيقي، وهاد بياخد وقت وبيستاهل.",
         "pain": [
           "بتكتب اسم خدمتك بجوجل وبتلاقي منافسينك وانت مش موجود",
           "عندك موقع من سنين وما جابلك ولا عميل واحد من البحث",
@@ -192,7 +192,7 @@
         ],
         "deliver": [
           "فحص تقني كامل: سرعة، فهرسة، روابط مكسورة، ومشاكل الموبايل",
-          "بحث كلمات مفتاحية حقيقي بالسوق الأردني — شو الناس بتكتب فعلاً",
+          "بحث كلمات مفتاحية حقيقي بالسوق الأردني، شو الناس بتكتب فعلاً",
           "خطة محتوى: أي صفحة تستهدف أي كلمة وليش",
           "بيانات منظّمة (Schema) عشان تطلع بشكل مميز بنتائج البحث",
           "تهيئة للـ AI: عشان ChatGPT وبيربليكستي يذكروك لما حدا يسأل",
@@ -205,7 +205,7 @@
           },
           {
             "q": "بتضمن الصفحة الأولى بجوجل؟",
-            "a": "لأ. جوجل ما بيبيع مراكز وما حدا بيقدر يضمنها — وهاي سياستهم المعلنة. اللي بضمنه إنه موقعك بيصير مفهوم لجوجل، سريع، وبيجاوب على السؤال أحسن من غيرك. وهاد اللي بيرفع الترتيب فعلياً."
+            "a": "لأ. جوجل ما بيبيع مراكز وما حدا بيقدر يضمنها. وهاي سياستهم المعلنة. اللي بضمنه إنه موقعك بيصير مفهوم لجوجل، سريع، وبيجاوب على السؤال أحسن من غيرك. وهاد اللي بيرفع الترتيب فعلياً."
           },
           {
             "q": "شو الفرق بين السيو وتهيئة الـ AI؟",
@@ -213,16 +213,16 @@
           },
           {
             "q": "بتشتغل سيو لموقع مش انت عاملهُ؟",
-            "a": "أيوه. بس أول اشي بعمله فحص، وإذا طلع الموقع مبني بشكل بيمنع الترتيب أساساً بقولك بصراحة إنه إعادة البناء أرخص من محاولة إصلاحه — حتى لو هاد يعني إني ما آخد الشغلة."
+            "a": "أيوه. بس أول اشي بعمله فحص، وإذا طلع الموقع مبني بشكل بيمنع الترتيب أساساً بقولك بصراحة إنه إعادة البناء أرخص من محاولة إصلاحه، حتى لو هاد يعني إني ما آخد الشغلة."
           }
         ]
       },
       "en": {
         "name": "SEO",
         "menuDesc": "Show up when someone searches for what you do",
-        "h1": "People are searching for your service right now — and not finding you",
+        "h1": "People are searching for your service right now, and not finding you",
         "seoDesc": "SEO services in Jordan: keyword research, technical fixes, content built to rank, and optimization for AI answers in ChatGPT and Google.",
-        "intro": "Ads stop the moment you stop paying. Search keeps bringing people while you sleep. But SEO isn't \"keywords in the text\" — it's technical structure plus content that answers a real question. That takes time, and it's worth it.",
+        "intro": "Ads stop the moment you stop paying. Search keeps bringing people while you sleep. But SEO isn't \"keywords in the text\". It's technical structure plus content that answers a real question. That takes time, and it's worth it.",
         "pain": [
           "You search your own service and find competitors, not yourself",
           "You've had a site for years and it has never produced a single lead from search",
@@ -231,7 +231,7 @@
         ],
         "deliver": [
           "A full technical audit: speed, indexing, broken links, mobile issues",
-          "Real keyword research for the Jordanian market — what people actually type",
+          "Real keyword research for the Jordanian market: what people actually type",
           "A content plan: which page targets which term, and why",
           "Structured data so you appear richly in search results",
           "AI-readiness so ChatGPT and Perplexity can cite you when asked",
@@ -244,7 +244,7 @@
           },
           {
             "q": "Do you guarantee first page on Google?",
-            "a": "No. Google doesn't sell positions and nobody can guarantee them — that's their stated policy. What I guarantee is that your site becomes legible to Google, fast, and answers the question better than the alternatives. That's what actually moves rankings."
+            "a": "No. Google doesn't sell positions and nobody can guarantee them. That's their stated policy. What I guarantee is that your site becomes legible to Google, fast, and answers the question better than the alternatives. That's what actually moves rankings."
           },
           {
             "q": "What's the difference between SEO and AI optimization?",
@@ -252,7 +252,7 @@
           },
           {
             "q": "Will you do SEO on a site you didn't build?",
-            "a": "Yes. But I audit first, and if the site is built in a way that structurally blocks ranking I'll tell you plainly that rebuilding is cheaper than patching — even when that means I don't get the job."
+            "a": "Yes. But I audit first, and if the site is built in a way that structurally blocks ranking I'll tell you plainly that rebuilding is cheaper than patching. Even when that means I don't get the job."
           }
         ]
       }
@@ -267,7 +267,7 @@
       "ar": {
         "name": "هوية بصرية",
         "menuDesc": "لوجو ونظام كامل بتقدر تشتغل فيه",
-        "h1": "الهوية مش لوجو — الهوية إنه حدا يعرفك قبل ما يقرا اسمك",
+        "h1": "الهوية مش لوجو، الهوية إنه حدا يعرفك قبل ما يقرا اسمك",
         "seoDesc": "تصميم هوية بصرية للشركات بالأردن: لوجو، نظام ألوان وخطوط، تطبيقات مطبوعة ورقمية، ودليل استخدام كامل.",
         "intro": "أغلب اللي بيصير: بتاخد ملف لوجو وبتنتهي القصة. بعد شهرين بتلاقي كل بوست بلون مختلف وخط مختلف، وما حدا بيعرف يميّزك. الهوية الصح نظام: قواعد بتخلي أي حدا يشتغل معك يطلع شغل شبه شغلك.",
         "pain": [
@@ -280,9 +280,9 @@
           "لوجو أساسي ونسخ بديلة تنفع بكل مكان وحجم",
           "نظام ألوان وخطوط بأكواد جاهزة للطباعة والشاشة",
           "قوالب سوشال ميديا بتقدر تعبّيها بنفسك",
-          "تطبيقات: كرت، ترويسة، تغليف، لافتة — حسب شغلك",
+          "تطبيقات: كرت، ترويسة، تغليف، لافتة، حسب شغلك",
           "دليل الهوية: ملف بيشرح شو بينفع وشو ما بينفع",
-          "كل الملفات المفتوحة إلك — مش بس صور نهائية"
+          "كل الملفات المفتوحة إلك. مش بس صور نهائية"
         ],
         "faq": [
           {
@@ -291,20 +291,20 @@
           },
           {
             "q": "الملفات المفتوحة بتعطيني ياها؟",
-            "a": "أيوه، كلها. ملفات Illustrator و Photoshop الأصلية بالإضافة لكل الصيغ الجاهزة. وهاد مش تنازل مني — هاي حقك ودفعت مقابلها."
+            "a": "أيوه، كلها. ملفات Illustrator و Photoshop الأصلية بالإضافة لكل الصيغ الجاهزة. وهاد مش تنازل مني. هاي حقك ودفعت مقابلها."
           },
           {
             "q": "بتعمل هوية لمشروع لسا ما بلش؟",
-            "a": "أيوه، وأحياناً بتكون أسهل لأنه ما في شغل قديم لازم نراعيه. بس بنحتاج نتفق أول على مين جمهورك وشو موقعك بالسوق — الهوية بلا هالجوابين بتصير تخمين شكلي."
+            "a": "أيوه، وأحياناً بتكون أسهل لأنه ما في شغل قديم لازم نراعيه. بس بنحتاج نتفق أول على مين جمهورك وشو موقعك بالسوق، الهوية بلا هالجوابين بتصير تخمين شكلي."
           }
         ]
       },
       "en": {
         "name": "Brand identity",
         "menuDesc": "A logo plus the system to actually use it",
-        "h1": "Identity isn't a logo — it's being recognised before your name is read",
+        "h1": "Identity isn't a logo. It's being recognised before your name is read",
         "seoDesc": "Brand identity design for companies in Jordan: logo, colour and type system, print and digital applications, and a full usage guide.",
-        "intro": "What usually happens: you get a logo file and that's the end of it. Two months later every post is a different colour and a different font, and nobody can tell you apart. Real identity is a system — rules that let anyone working with you produce work that looks like yours.",
+        "intro": "What usually happens: you get a logo file and that's the end of it. Two months later every post is a different colour and a different font, and nobody can tell you apart. Real identity is a system. Rules that let anyone working with you produce work that looks like yours.",
         "pain": [
           "You have a logo but every design comes out looking different",
           "Your posts next to a competitor's are indistinguishable",
@@ -315,7 +315,7 @@
           "A primary logo plus alternates that work at any size and placement",
           "A colour and type system with codes ready for print and screen",
           "Social templates you can fill in yourself",
-          "Applications: card, letterhead, packaging, signage — whatever your business needs",
+          "Applications: card, letterhead, packaging, signage. Whatever your business needs",
           "A brand guide covering what works and what doesn't",
           "All source files are yours, not just flattened exports"
         ],
@@ -326,11 +326,11 @@
           },
           {
             "q": "Do I get the source files?",
-            "a": "Yes, all of them. The original Illustrator and Photoshop files plus every export format. That isn't a concession — you paid for them, they're yours."
+            "a": "Yes, all of them. The original Illustrator and Photoshop files plus every export format. That isn't a concession. You paid for them, they're yours."
           },
           {
             "q": "Will you brand a business that hasn't launched yet?",
-            "a": "Yes, and sometimes it's easier because there's no legacy work to accommodate. But we need to agree first on who your audience is and where you sit in the market — without those answers, identity becomes decoration guessed at."
+            "a": "Yes, and sometimes it's easier because there's no legacy work to accommodate. But we need to agree first on who your audience is and where you sit in the market. Without those answers, identity becomes decoration guessed at."
           }
         ]
       }
@@ -347,7 +347,7 @@
         "menuDesc": "حساب بيبني جمهور، مش بيعبّي فراغ",
         "h1": "النشر كل يوم مش استراتيجية",
         "seoDesc": "إدارة حسابات سوشال ميديا بالأردن: خطة محتوى شهرية، تصميم ومونتاج، جدولة، ورد على العملاء وتقارير أداء.",
-        "intro": "٢٣٩٥ متابع عضوي بـ ٣٠ يوم و٢٩٠ ألف مشاهدة على بوست واحد — بدون ولا دينار إعلانات. مش لأني نشرت أكثر، لأني نشرت اللي الناس بدها تشوفه. الفرق بين حساب بيكبر وحساب بيتعب هو الخطة مش الكمية.",
+        "intro": "٢٣٩٥ متابع عضوي بـ ٣٠ يوم و٢٩٠ ألف مشاهدة على بوست واحد، بدون ولا دينار إعلانات. مش لأني نشرت أكثر، لأني نشرت اللي الناس بدها تشوفه. الفرق بين حساب بيكبر وحساب بيتعب هو الخطة مش الكمية.",
         "pain": [
           "بتنشر يومي والمتابعين ما بيزيدوا",
           "كل شهر بتقعد تفكر «شو أنشر بكرا؟» من الصفر",
@@ -357,14 +357,14 @@
         "deliver": [
           "خطة محتوى شهرية مبنية على ركائز واضحة مش عشوائية",
           "تصاميم وريلز جاهزة للنشر بهويتك",
-          "جدولة كاملة — بتعرف شو رح ينزل قبلها بأسبوعين",
+          "جدولة كاملة، بتعرف شو رح ينزل قبلها بأسبوعين",
           "رد على التعليقات والرسايل بنبرتك",
           "تقرير شهري: شو زبط، شو ما زبط، وشو بنغيّر"
         ],
         "faq": [
           {
             "q": "كم بوست بالشهر؟",
-            "a": "بيعتمد على المنصة وهدفك، بس بالعادة بين ١٢ و٢٠ منشور شهرياً بالإضافة للستوريز. وبفضّل ١٢ منشور قوي على ٣٠ منشور حشو — الخوارزمية بتعاقب المحتوى الضعيف وبتأثر على اللي بعده."
+            "a": "بيعتمد على المنصة وهدفك، بس بالعادة بين ١٢ و٢٠ منشور شهرياً بالإضافة للستوريز. وبفضّل ١٢ منشور قوي على ٣٠ منشور حشو، الخوارزمية بتعاقب المحتوى الضعيف وبتأثر على اللي بعده."
           },
           {
             "q": "بتصوّر كمان ولا بس بتصمّم؟",
@@ -381,7 +381,7 @@
         "menuDesc": "An account that builds an audience, not fills a gap",
         "h1": "Posting every day is not a strategy",
         "seoDesc": "Social media management in Jordan: monthly content planning, design and editing, scheduling, community replies, and performance reporting.",
-        "intro": "2,395 organic followers in 30 days and 290,000 views on a single post — with zero ad spend. Not because I posted more, but because I posted what people wanted to see. The difference between an account that grows and one that grinds is the plan, not the volume.",
+        "intro": "2,395 organic followers in 30 days and 290,000 views on a single post. With zero ad spend. Not because I posted more, but because I posted what people wanted to see. The difference between an account that grows and one that grinds is the plan, not the volume.",
         "pain": [
           "You post daily and the follower count doesn't move",
           "Every month you start from zero wondering what to post tomorrow",
@@ -391,14 +391,14 @@
         "deliver": [
           "A monthly content plan built on clear pillars, not improvisation",
           "Designs and reels ready to publish in your brand",
-          "Full scheduling — you know what's going out two weeks ahead",
+          "Full scheduling. You know what's going out two weeks ahead",
           "Comment and message replies in your voice",
           "A monthly report: what worked, what didn't, what changes"
         ],
         "faq": [
           {
             "q": "How many posts per month?",
-            "a": "It depends on the platform and your goal, but typically 12 to 20 posts plus stories. I'd rather do 12 strong posts than 30 filler ones — the algorithm penalises weak content and it drags down what comes next."
+            "a": "It depends on the platform and your goal, but typically 12 to 20 posts plus stories. I'd rather do 12 strong posts than 30 filler ones. The algorithm penalises weak content and it drags down what comes next."
           },
           {
             "q": "Do you shoot as well, or only design?",
@@ -406,7 +406,7 @@
           },
           {
             "q": "Do you guarantee follower growth?",
-            "a": "Not to a specific number — it depends on your field, the competition, and how distinctive your content can be. What I guarantee is a plan built on analysis rather than guesswork, and an honest report every month even when the numbers aren't flattering."
+            "a": "Not to a specific number. It depends on your field, the competition, and how distinctive your content can be. What I guarantee is a plan built on analysis rather than guesswork, and an honest report every month even when the numbers aren't flattering."
           }
         ]
       }
@@ -423,7 +423,7 @@
         "menuDesc": "ريلز وإعلانات بتوقّف الإصبع",
         "h1": "أول ثانيتين بيقرروا إذا حدا رح يكمّل",
         "seoDesc": "مونتاج فيديو وريلز بالأردن: إعلانات سوشال ميديا، فيديوهات منتجات، موشن جرافيك، وترجمة وتوقيت النصوص.",
-        "intro": "الفيديو الحلو اللي ما حدا بيكمّله ما إله قيمة. المونتاج مش قص ولصق — هو ترتيب الأحداث بحيث المشاهد ما يلاقي لحظة يطلع فيها. الإيقاع والصوت والنص كلهم أدوات بيع.",
+        "intro": "الفيديو الحلو اللي ما حدا بيكمّله ما إله قيمة. المونتاج مش قص ولصق، هو ترتيب الأحداث بحيث المشاهد ما يلاقي لحظة يطلع فيها. الإيقاع والصوت والنص كلهم أدوات بيع.",
         "pain": [
           "الفيديو حلو بس نسبة المشاهدة بتنزل بعد ثانيتين",
           "بتاخد أسبوع مونتاج والنتيجة ما بتشبه اللي بمخيلتك",
@@ -432,10 +432,10 @@
         ],
         "deliver": [
           "مونتاج كامل بإيقاع مبني على نقطة التوقف مش على الذوق",
-          "نصوص متحركة وترجمة موقّتة — أغلب الناس بتشاهد بلا صوت",
+          "نصوص متحركة وترجمة موقّتة، أغلب الناس بتشاهد بلا صوت",
           "تدرّج ألوان بيطابق هويتك",
           "نسخ بمقاسات مختلفة: عمودي وأفقي ومربع",
-          "موسيقى ومؤثرات بحقوق نظيفة — بلا مشاكل حقوق نشر"
+          "موسيقى ومؤثرات بحقوق نظيفة، بلا مشاكل حقوق نشر"
         ],
         "faq": [
           {
@@ -457,7 +457,7 @@
         "menuDesc": "Reels and ads that stop the thumb",
         "h1": "The first two seconds decide whether anyone stays",
         "seoDesc": "Video and reels editing in Jordan: social ads, product videos, motion graphics, and timed subtitles.",
-        "intro": "A beautiful video nobody finishes is worthless. Editing isn't cutting and pasting — it's ordering events so the viewer never finds a moment to leave. Pace, sound, and text are all selling tools.",
+        "intro": "A beautiful video nobody finishes is worthless. Editing isn't cutting and pasting. It's ordering events so the viewer never finds a moment to leave. Pace, sound, and text are all selling tools.",
         "pain": [
           "The video looks good but retention collapses after two seconds",
           "Editing takes a week and the result doesn't match what was in your head",
@@ -466,10 +466,10 @@
         ],
         "deliver": [
           "A full edit paced around drop-off points, not taste",
-          "Motion text and timed captions — most people watch on mute",
+          "Motion text and timed captions: most people watch on mute",
           "Colour grading matched to your brand",
           "Versions in every ratio: vertical, horizontal, square",
-          "Cleanly licensed music and effects — no copyright trouble"
+          "Cleanly licensed music and effects. No copyright trouble"
         ],
         "faq": [
           {
@@ -499,7 +499,7 @@
         "menuDesc": "خطة مكتوبة بتعرف تنفّذها",
         "h1": "قبل ما تصرف دينار، لازم تعرف على مين وليش",
         "seoDesc": "بناء استراتيجية تسويق للشركات بالأردن: تحليل السوق والمنافسين، تحديد الجمهور، بناء العرض، وخطة قنوات وتنفيذ بالأرقام.",
-        "intro": "أكثر سبب بضيّع ميزانيات التسويق: البدء بالتنفيذ قبل الإجابة على سؤالين — لمين بنبيع، وليش يشتري منّا هو مش من غيرنا. الاستراتيجية هي الجواب المكتوب على هالسؤالين، وكل اشي بعدها بينبني عليها.",
+        "intro": "أكثر سبب بضيّع ميزانيات التسويق: البدء بالتنفيذ قبل الإجابة على سؤالين، لمين بنبيع، وليش يشتري منّا هو مش من غيرنا. الاستراتيجية هي الجواب المكتوب على هالسؤالين، وكل اشي بعدها بينبني عليها.",
         "pain": [
           "بتجرّب كل قناة تسويق وما في وحدة اشتغلت صح",
           "ما بتعرف مين عميلك المثالي بالضبط",
@@ -507,7 +507,7 @@
           "كل شهر خطة جديدة لأنه ما في خطة أصلاً"
         ],
         "deliver": [
-          "تحليل سوق ومنافسين حقيقي — مين بيعمل شو وشو الثغرة",
+          "تحليل سوق ومنافسين حقيقي، مين بيعمل شو وشو الثغرة",
           "تحديد الجمهور بدقة: مين، وين، شو بيوجعه، وشو بيوقفه عن الشراء",
           "بناء العرض والرسائل: ليش انت مش غيرك بجملة يفهمها العميل",
           "خريطة رحلة العميل من أول ما يسمع فيك لحد ما يدفع",
@@ -517,7 +517,7 @@
         "faq": [
           {
             "q": "شو الفرق بين الاستراتيجية وخطة المحتوى؟",
-            "a": "الاستراتيجية بتجاوب «لمين وليش وبأي رسالة». خطة المحتوى بتجاوب «شو ننشر ومتى». الثانية بتنبني على الأولى — ولما الناس تبدأ بخطة محتوى بلا استراتيجية، بينشروا كثير وما بيبيعوا."
+            "a": "الاستراتيجية بتجاوب «لمين وليش وبأي رسالة». خطة المحتوى بتجاوب «شو ننشر ومتى». الثانية بتنبني على الأولى، ولما الناس تبدأ بخطة محتوى بلا استراتيجية، بينشروا كثير وما بيبيعوا."
           },
           {
             "q": "بتنفّذ الاستراتيجية ولا بس بتكتبها؟",
@@ -525,7 +525,7 @@
           },
           {
             "q": "قديش بتاخد؟",
-            "a": "من أسبوعين لأربعة، وأغلب الوقت بيروح على البحث والمقابلات مش الكتابة. بحتاج منك وصول لأرقامك الحقيقية وجلسة أو جلستين معك — بدونهم بيصير الملف عام وما إله قيمة."
+            "a": "من أسبوعين لأربعة، وأغلب الوقت بيروح على البحث والمقابلات مش الكتابة. بحتاج منك وصول لأرقامك الحقيقية وجلسة أو جلستين معك، بدونهم بيصير الملف عام وما إله قيمة."
           }
         ]
       },
@@ -534,7 +534,7 @@
         "menuDesc": "A written plan you can actually execute",
         "h1": "Before you spend a dinar, know who for and why",
         "seoDesc": "Marketing strategy for companies in Jordan: market and competitor analysis, audience definition, offer building, and a channel plan with real numbers.",
-        "intro": "The biggest waster of marketing budgets: starting execution before answering two questions — who are we selling to, and why would they buy from us rather than anyone else. Strategy is the written answer to those two, and everything after it is built on top.",
+        "intro": "The biggest waster of marketing budgets: starting execution before answering two questions. Who are we selling to, and why would they buy from us rather than anyone else. Strategy is the written answer to those two, and everything after it is built on top.",
         "pain": [
           "You've tried every channel and none of them worked properly",
           "You can't say precisely who your ideal customer is",
@@ -542,7 +542,7 @@
           "Every month brings a new plan, because there was never a plan"
         ],
         "deliver": [
-          "Real market and competitor analysis — who does what, and where the gap is",
+          "Real market and competitor analysis: who does what, and where the gap is",
           "Precise audience definition: who, where, what hurts, what stops them buying",
           "Offer and messaging: why you and not them, in a sentence a customer understands",
           "A customer journey map from first hearing about you to paying",
@@ -552,7 +552,7 @@
         "faq": [
           {
             "q": "What's the difference between strategy and a content plan?",
-            "a": "Strategy answers who, why, and with what message. A content plan answers what to post and when. The second is built on the first — and when people start with a content plan and no strategy, they post a lot and sell nothing."
+            "a": "Strategy answers who, why, and with what message. A content plan answers what to post and when. The second is built on the first, and when people start with a content plan and no strategy, they post a lot and sell nothing."
           },
           {
             "q": "Do you execute the strategy or only write it?",
@@ -560,7 +560,7 @@
           },
           {
             "q": "How long does it take?",
-            "a": "Two to four weeks, most of it spent on research and interviews rather than writing. I need access to your real numbers and one or two sessions with you — without those the document turns generic and useless."
+            "a": "Two to four weeks, most of it spent on research and interviews rather than writing. I need access to your real numbers and one or two sessions with you. Without those the document turns generic and useless."
           }
         ]
       }
@@ -575,7 +575,7 @@
       "ar": {
         "name": "استشارة أو تدريب",
         "menuDesc": "تتعلّمها بنفسك بدل ما تدفع كل شهر",
-        "h1": "أحياناً ما بتحتاج توظّف حدا — بتحتاج حدا يفهّمك",
+        "h1": "أحياناً ما بتحتاج توظّف حدا، بتحتاج حدا يفهّمك",
         "seoDesc": "استشارات وتدريب تسويق رقمي بالأردن: جلسات فردية أو لفريقك على إعلانات ميتا، أنظمة المحتوى، والتحليل والقياس.",
         "intro": "في حالات كثير بيكون أرخص وأذكى إنك تتعلّم بدل ما تدفع شهرياً لحدا. خصوصاً لو عندك فريق شاطر بس ناقصه اتجاه. بالاستشارة انت بتدفع مقابل المعرفة وبتضل معك، والتنفيذ بيصير عندك.",
         "pain": [
@@ -594,7 +594,7 @@
         "faq": [
           {
             "q": "الجلسة قديش مدتها وكيف بتصير؟",
-            "a": "بالعادة ٩٠ دقيقة أونلاين، وبقدر أشارك شاشتي وأشتغل على حسابك مباشرة. بفضّل جلسة وحدة مركّزة على ثلاث جلسات متفرّقة — التركيز بيضيع بينهم."
+            "a": "بالعادة ٩٠ دقيقة أونلاين، وبقدر أشارك شاشتي وأشتغل على حسابك مباشرة. بفضّل جلسة وحدة مركّزة على ثلاث جلسات متفرّقة، التركيز بيضيع بينهم."
           },
           {
             "q": "بتدرّب فرق كاملة؟",
@@ -602,14 +602,14 @@
           },
           {
             "q": "إذا حبيت بعدها أشتغل معك بمشروع كامل؟",
-            "a": "عادي جداً وبيصير كثير. وبحسبلك قيمة الاستشارة من سعر المشروع إذا اتفقنا خلال شهر — عشان ما تحس إنك دفعت مرتين."
+            "a": "عادي جداً وبيصير كثير. وبحسبلك قيمة الاستشارة من سعر المشروع إذا اتفقنا خلال شهر، عشان ما تحس إنك دفعت مرتين."
           }
         ]
       },
       "en": {
         "name": "Consulting or training",
         "menuDesc": "Learn it yourself instead of paying monthly",
-        "h1": "Sometimes you don't need to hire someone — you need someone to explain it",
+        "h1": "Sometimes you don't need to hire someone. You need someone to explain it",
         "seoDesc": "Digital marketing consulting and training in Jordan: one-to-one or team sessions on Meta ads, content systems, and analytics.",
         "intro": "In plenty of cases it's cheaper and smarter to learn than to pay someone monthly. Especially if you have a capable team that's just missing direction. With consulting you pay for knowledge, you keep it, and execution stays in-house.",
         "pain": [
@@ -628,7 +628,7 @@
         "faq": [
           {
             "q": "How long is a session and how does it work?",
-            "a": "Usually 90 minutes online, and I can share my screen and work directly in your account. I prefer one focused session over three scattered ones — focus leaks away between them."
+            "a": "Usually 90 minutes online, and I can share my screen and work directly in your account. I prefer one focused session over three scattered ones. Focus leaks away between them."
           },
           {
             "q": "Do you train whole teams?",
@@ -636,7 +636,7 @@
           },
           {
             "q": "What if I want to hire you for a full project afterwards?",
-            "a": "That happens often. I credit the consulting fee against the project price if we agree within a month — so you never feel you paid twice."
+            "a": "That happens often. I credit the consulting fee against the project price if we agree within a month, so you never feel you paid twice."
           }
         ]
       }

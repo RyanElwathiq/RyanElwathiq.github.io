@@ -20,7 +20,7 @@ const COPY = {
   ar: {
     kicker: 'حاسبة',
     title: 'قديش عم تخسر كل شهر بدون موقع؟',
-    sub: 'مش قديش رح يكلفك الموقع — قديش عم يكلفك إنك بدونه. عبّي أربع خانات وشوف الرقم.',
+    sub: 'مش قديش رح يكلفك الموقع، قديش عم يكلفك إنك بدونه. عبّي أربع خانات وشوف الرقم.',
     qIndustry: 'مجال مشروعك',
     qSite: 'وضعك الحالي أونلاين',
     qProfit: 'متوسط ربحك من العميل الواحد',
@@ -35,17 +35,17 @@ const COPY = {
     whereTitle: 'من وين بتيجي الخسارة',
     paybackTitle: 'وبالمقابل',
     paybackBody: (m, cost) =>
-      `موقع بـ ${cost.toLocaleString('en-US')} دينار بيرجّع تكلفته خلال ${m} تقريباً — وبعدها بيضل يشتغل.`,
+      `موقع بـ ${cost.toLocaleString('en-US')} دينار بيرجّع تكلفته خلال ${m} تقريباً، وبعدها بيضل يشتغل.`,
     months: (n) => (n < 1 ? 'أقل من شهر' : n < 2 ? 'شهر' : n < 11 ? `${n.toFixed(1)} شهور` : `${(n / 12).toFixed(1)} سنة`),
     cta: 'احكيلي عن مشروعك',
     ctaNote: 'بنحسبها سوا على أرقامك إنت، مش على متوسطات.',
     disclaimer:
-      'الأرقام تقديرية ومبنية على متوسطات محافظة للسوق الأردني — قصدنا نقلّلها مش نضخّمها. النتيجة الحقيقية بتعتمد على مجالك ومنافسيك وجودة التنفيذ. الحاسبة بتوريك حجم المشكلة، مش وعد بربح.',
+      'الأرقام تقديرية ومبنية على متوسطات محافظة للسوق الأردني، قصدنا نقلّلها مش نضخّمها. النتيجة الحقيقية بتعتمد على مجالك ومنافسيك وجودة التنفيذ. الحاسبة بتوريك حجم المشكلة، مش وعد بربح.',
   },
   en: {
     kicker: 'Calculator',
     title: 'How much are you losing every month without a website?',
-    sub: 'Not what a website costs you — what not having one costs you. Fill four fields and see the number.',
+    sub: 'Not what a website costs you. What not having one costs you. Fill four fields and see the number.',
     qIndustry: 'Your industry',
     qSite: 'Your situation online',
     qProfit: 'Average profit per customer',
@@ -60,12 +60,12 @@ const COPY = {
     whereTitle: 'Where the loss comes from',
     paybackTitle: 'And on the other side',
     paybackBody: (m, cost) =>
-      `A ${cost.toLocaleString('en-US')} JD website pays for itself in about ${m} — and then keeps working.`,
+      `A ${cost.toLocaleString('en-US')} JD website pays for itself in about ${m}, and then keeps working.`,
     months: (n) => (n < 1 ? 'under a month' : n < 2 ? 'a month' : n < 11 ? `${n.toFixed(1)} months` : `${(n / 12).toFixed(1)} years`),
     cta: 'Tell me about your project',
     ctaNote: 'We work it out on your numbers, not on averages.',
     disclaimer:
-      'These are estimates based on deliberately conservative Jordanian market averages — we aimed low, not high. Real results depend on your industry, competitors, and execution. This shows the size of the problem, it is not a promise of profit.',
+      'These are estimates based on deliberately conservative Jordanian market averages. We aimed low, not high. Real results depend on your industry, competitors, and execution. This shows the size of the problem, it is not a promise of profit.',
   },
 };
 
@@ -253,7 +253,7 @@ export default function LossCalc({ lang = 'ar', briefHref = '/brief/', asH1 = fa
 
       {/* ─── من وين بتيجي الخسارة ─── */}
       {/* ⚠️ نفس منطق asH1: لما الحاسبة تكون هي عنوان الصفحة (h1)،
-          هذا العنوان لازم يصير h2 — مش h3 — عشان ما نقفز درجة */}
+          هذا العنوان لازم يصير h2. مش h3، عشان ما نقفز درجة */}
       {asH1 ? (
         <h2 className="loss-block-title">{t.whereTitle}</h2>
       ) : (

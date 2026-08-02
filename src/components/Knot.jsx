@@ -102,7 +102,7 @@ export default function Knot({ lang = 'ar' }) {
         kicker: 'تحدّي',
         title: 'اقفل الإشارة.',
         sub: 'على العقدة نقطة ضوء، وقدّامها حلقة. لفّ العقدة لحد ما النقطة تدخل جوّا الحلقة. كل ما قرّبت، قوّة الإشارة بترتفع.',
-        why: 'الشعار تبعي عقدة — وهون صارت مجسّم حقيقي بثلاثة أبعاد، مبني بـ React Three Fiber. مش صورة ولا فيديو.',
+        why: 'الشعار تبعي عقدة، وهون صارت مجسّم حقيقي بثلاثة أبعاد، مبني بـ React Three Fiber. مش صورة ولا فيديو.',
         strength: 'قوّة الإشارة',
         hint: 'اسحب لتلفّها',
         hintTouch: 'المس واسحب لتلفّها',
@@ -111,7 +111,7 @@ export default function Knot({ lang = 'ar' }) {
         bestLabel: (s) => `أحسن وقت إلك: ${s.toFixed(1)} ثانية`,
         again: 'جرّب مرة ثانية',
         play: 'شغّل التجربة',
-        playNote: 'مجسّم حقيقي ثلاثي الأبعاد — بينزّل لما تضغط بس',
+        playNote: 'مجسّم حقيقي ثلاثي الأبعاد، بينزّل لما تضغط بس',
         loading: 'جاري التحميل…',
         fallback: 'جهازك ما بيدعم الرسم ثلاثي الأبعاد، فهذا الشعار بصورة عادية.',
       }
@@ -119,7 +119,7 @@ export default function Knot({ lang = 'ar' }) {
         kicker: 'Challenge',
         title: 'Lock the signal.',
         sub: 'There is a light node on the knot, and a ring in front of it. Spin the knot until the node passes through the ring. The closer you get, the higher the signal strength.',
-        why: 'My logo is a knot — here it is as a real 3D object built with React Three Fiber. Not an image, not a video.',
+        why: 'My logo is a knot. Here it is as a real 3D object built with React Three Fiber. Not an image, not a video.',
         strength: 'Signal strength',
         hint: 'Drag to spin',
         hintTouch: 'Touch and drag to spin',
@@ -128,7 +128,7 @@ export default function Knot({ lang = 'ar' }) {
         bestLabel: (s) => `Your best: ${s.toFixed(1)}s`,
         again: 'Try again',
         play: 'Start the experience',
-        playNote: 'A real 3D object — only loads when you ask for it',
+        playNote: 'A real 3D object. Only loads when you ask for it',
         loading: 'Loading…',
         fallback: 'Your device does not support 3D rendering, so here is the logo as an image.',
       };
@@ -227,7 +227,7 @@ export default function Knot({ lang = 'ar' }) {
         onPointerCancel={started ? onUp : undefined}
         onPointerLeave={started ? onUp : undefined}
       >
-        {/* ⚠️ المسرح ما بينزّل إلا لما يضغط الزائر — شوف الشرح فوق */}
+        {/* ⚠️ المسرح ما بينزّل إلا لما يضغط الزائر، شوف الشرح فوق */}
         {started ? (
           <Suspense fallback={<div className="knot3d-loading">{t.loading}</div>}>
             <KnotStage
