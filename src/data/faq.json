@@ -4,7 +4,7 @@
       "tag": "Working together",
       "tagAr": "طريقة الشغل",
       "q": "How does a project usually start?",
-      "qAr": "كيف بيبدأ المشروع عادةً؟",
+      "qAr": "كيف بيبدأ المشروع بالعادة؟",
       "a": "With a conversation, not a quote. I need to understand what you sell, who buys it, and what has already been tried before I can say what is worth doing. After that you get a written scope with deliverables, a timeline, and a fixed price, so nothing moves later.",
       "aAr": "بمكالمة، مش بعرض سعر. لازم أفهم شو بتبيع، ومين بيشتري منك، وشو اللي جرّبته قبل، قبل ما أقدر أحكي شو الأولوية. بعدها بتاخد نطاق شغل مكتوب فيه التسليمات والجدول الزمني والسعر الثابت، فما بيتغيّر إشي بعدين.",
       "open": true
@@ -23,7 +23,7 @@
       "q": "Do you work with clients outside Jordan?",
       "qAr": "بتشتغل مع عملاء برا الأردن؟",
       "a": "Yes. Everything I do runs remotely, and I already work across time zones. The only thing that changes is the meeting window, which we agree on once and keep.",
-      "aAr": "آه. كل شغلي بيمشي عن بعد، وأصلاً بشتغل مع فروقات توقيت. الشي الوحيد اللي بيتغيّر هو وقت الاجتماعات، وبنتفق عليه مرة وبنمشي عليه."
+      "aAr": "آه. كل شغلي بيمشي عن بعد، وأصلاً بشتغل مع فروقات توقيت. الإشي الوحيد اللي بيتغيّر هو وقت الاجتماعات، وبنتفق عليه مرة وبنمشي عليه."
     },
     {
       "tag": "Working together",
@@ -55,7 +55,7 @@
       "q": "Who owns the files at the end?",
       "qAr": "مين بيملك الملفات بالنهاية؟",
       "a": "You do, fully. Source files, project files, accounts, and passwords are handed over on delivery. I do not hold anything hostage to keep you on a retainer.",
-      "aAr": "إنت، بالكامل. الملفات المصدرية وملفات المشاريع والحسابات وكلمات المرور بتنسلّم مع التسليم. ما بحتجز إشي عشان أضمن بقاءك على اشتراك.",
+      "aAr": "إنت، بالكامل. الملفات المصدرية وملفات المشاريع والحسابات وكلمات السر بتنسلّم مع التسليم. ما بحتجز إشي عشان أضمن إنك تضل على اشتراك.",
       "open": false
     },
     {
@@ -152,7 +152,7 @@
       "q": "Why is there no price list on the site?",
       "qAr": "ليش ما في قائمة أسعار بالموقع؟",
       "a": "Because the same deliverable is not the same amount of work for every business. A brand identity for a new shop and one for a company with five branches share a name and nothing else. A fixed list would either overcharge the small project or undersell the big one. Tell me the scope and you get a real number, usually within a day.",
-      "aAr": "لأن نفس التسليم مش نفس الشغل لكل مشروع. هوية لمحل جديد وهوية لشركة عندها خمس فروع بيشتركوا بالاسم وبس. القائمة الثابتة إما بتظلم المشروع الصغير أو بتبخس الكبير. احكيلي النطاق وبتاخد رقم حقيقي، عادةً خلال يوم.",
+      "aAr": "لأن نفس التسليم مش نفس الشغل لكل مشروع. هوية لمحل جديد وهوية لشركة عندها خمس فروع بيشتركوا بالاسم وبس. القائمة الثابتة إما بتظلم المشروع الصغير أو بتبخس الكبير. احكيلي النطاق وبتاخد رقم حقيقي، بالعادة خلال يوم.",
       "open": false
     },
     {
@@ -169,7 +169,7 @@
       "q": "How does payment work?",
       "qAr": "كيف بتمشي الدفعات؟",
       "a": "Split across milestones, not all at the start and not all at the end. Typically a first payment to book the time, one at an agreed midpoint, and the last on handover. You always know what has been delivered before the next payment is due.",
-      "aAr": "مقسّمة على مراحل، لا كلها بالبداية ولا كلها بالآخر. عادةً دفعة أولى بتحجز الوقت، وحدة بمنتصف متّفق عليه، والأخيرة عند التسليم. دايماً بتكون عارف شو انسلّم قبل ما تستحق الدفعة اللي بعدها."
+      "aAr": "مقسّمة على مراحل، لا كلها بالبداية ولا كلها بالآخر. بالعادة دفعة أولى بتحجز الوقت، وحدة بمنتصف متّفق عليه، والأخيرة عند التسليم. دايماً بتكون عارف شو انسلّم قبل ما تستحق الدفعة اللي بعدها."
     },
     {
       "tag": "Pricing",
@@ -250,7 +250,7 @@
       "q": "We tried an agency before and it went badly. Why is this different?",
       "qAr": "جرّبنا وكالة قبل وكانت تجربة سيئة. ليش هاي غير؟",
       "a": "Usually what went badly was not the work, it was the visibility: you did not know what was being done, you did not own the accounts, and you could not tell whether the money worked. So the fix is not \"trust me more\". It is that everything is in your name, the plan is written down, and the numbers you get are the ones your business actually runs on. If those three are true, a bad month is a bad month and not a mystery.",
-      "aAr": "عادةً اللي كان سيّئ مش الشغل نفسه، هو الرؤية: ما كنت عارف شو عم بينعمل، ولا كنت مالك الحسابات، ولا قادر تعرف إذا المصاري اشتغلت. فالحل مش «ثق فيني أكثر»، الحل إنه كل إشي باسمك، والخطة مكتوبة، والأرقام اللي بتوصلك هي اللي شغلك ماشي عليها فعلاً. لو الثلاثة صحّوا، الشهر الضعيف بيصير شهر ضعيف مش لغز."
+      "aAr": "بالعادة اللي كان سيّئ مش الشغل نفسه، هو الرؤية: ما كنت عارف شو عم بينعمل، ولا كنت مالك الحسابات، ولا قادر تعرف إذا المصاري اشتغلت. فالحل مش «ثق فيني أكثر»، الحل إنه كل إشي باسمك، والخطة مكتوبة، والأرقام اللي بتوصلك هي اللي شغلك ماشي عليها فعلاً. لو الثلاثة صحّوا، الشهر الضعيف بيصير شهر ضعيف مش لغز."
     },
     {
       "tag": "Working together",
