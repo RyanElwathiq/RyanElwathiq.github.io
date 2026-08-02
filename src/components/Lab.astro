@@ -89,6 +89,10 @@ const tracks = t.tracks.map((tr) => ({
     label: isAr ? g.labelAr : g.label,
     phase: isAr ? g.phaseAr : g.phase,
     line: isAr ? g.lineAr : g.line,
+    // ✏️ اختياري بـlab.json: `credit` / `creditAr`
+    //    لما يكون الشغل بالتعاون مع حدا ثاني. ذكره بيقوّي الثقة
+    //    مش بيضعّفها — بس بشرط تكون الصياغة واضحة مين عمل شو.
+    credit: isAr ? g.creditAr : g.credit,
   })),
 }));
 ---
@@ -116,6 +120,7 @@ const tracks = t.tracks.map((tr) => ({
                   <h4>{g.label}</h4>
                   {g.phase && <span class="year">{g.phase}</span>}
                   <p>{g.line}</p>
+                  {g.credit && <p class="credit">{g.credit}</p>}
                 </div>
                 <div class="shots">
                   {g.shots.map((src: string, i: number) => (
@@ -257,6 +262,22 @@ const tracks = t.tracks.map((tr) => ({
     color: var(--muted);
     font-size: 14.5px;
     line-height: 1.75;
+  }
+
+  /* ═══════════════════════════════════════════════════════
+     كريدت التعاون
+
+     ⚠️ مقصود إنه يبيّن، مش يتخبّى. ذكر إنه في متعاون بيقوّي
+        الثقة — بس بحجم أصغر ولون أهدى، عشان يقرا كمعلومة
+        عن الشغل مش كتنازل عنه.
+     ═══════════════════════════════════════════════════════ */
+  .credit {
+    margin-top: 12px !important;
+    padding-inline-start: 11px;
+    border-inline-start: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    opacity: 0.9;
   }
 
   /* ═══════════════════════════════════════════════════════
