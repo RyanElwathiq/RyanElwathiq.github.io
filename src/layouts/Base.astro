@@ -250,6 +250,21 @@ const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
             });
           }
 
+          // ⚠️⚠️ تنظيف الجولة السابقة (انصلح 2026-08-03) ⚠️⚠️
+          //  start() بتنعاد مع كل انتقال صفحة، وكانت كل مرة تسجّل
+          //  مستمعي scroll جدد بلا ما تشيل القدام — فبعد عشرين
+          //  انتقال صار في عشرين مستمع، كل واحد بيلف على قائمة
+          //  عناصر صفحة محذوفة مع كل حركة سكرول. تراكم صامت
+          //  بيثقّل السكرول مع طول التصفح.
+          if (window.__revealNet) {
+            removeEventListener('scroll', window.__revealNet);
+            removeEventListener('visibilitychange', window.__revealNet);
+            removeEventListener('load', window.__revealNet);
+          }
+          if (window.__revealIO) window.__revealIO.disconnect();
+          window.__revealNet = safetyNet;
+          window.__revealIO = io;
+
           addEventListener('scroll', safetyNet, { passive: true });
           addEventListener('visibilitychange', safetyNet);
           addEventListener('load', safetyNet);

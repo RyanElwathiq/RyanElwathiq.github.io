@@ -227,6 +227,24 @@ async function setupOne(section, priority) {
   // هل العنصر بأعلى الصفحة؟ (بيغيّر نطاق الرحلة — شوف تحت)
   const atPageTop = section.getBoundingClientRect().top + window.scrollY < window.innerHeight * 0.5;
 
+  // ═══════════════════════════════════════════════════════════════
+  //  ⚠️⚠️ اللفافة الثابتة — علاج رمشة نص الهيرو من جذرها ⚠️⚠️
+  //
+  //  GSAP لما يثبّت عنصر بيلفّه بـ pin-spacer بيصنعه بنفسه، ونقل
+  //  عنصر بالصفحة بيعيد تشغيل كل أنيميشن CSS جوّاه من الصفر. ومع
+  //  إعادات الحساب وقت التحميل كان نص الهيرو يدخل وينقطع ويرجع —
+  //  قسناها بـ _check/flicker.mjs: ١٤ رمشة بالريفرش الواحد.
+  //
+  //  الحل: اللفافة موجودة بالـ HTML سلفاً (div[data-pin-spacer]
+  //  حوالين العنصر المثبّت)، ومنمرّرها لـ GSAP بخاصية pinSpacer —
+  //  فبيستعملها بدل ما يصنع وحدة، وما بينقل ولا عنصر أبداً.
+  // ═══════════════════════════════════════════════════════════════
+  const pinned = shouldPin ? sticky || section : null;
+  const spacer =
+    pinned && pinned.parentElement?.hasAttribute('data-pin-spacer')
+      ? pinned.parentElement
+      : undefined;
+
   ScrollTrigger.create({
     trigger: section,
     // ─── مثبّت: الرحلة تبدأ لما يوصل أعلى الشاشة وتاخد المسافة المحددة
@@ -240,7 +258,8 @@ async function setupOne(section, priority) {
     end: shouldPin
       ? () => `+=${window.innerHeight * scrollLength}`
       : section.dataset.seqEnd || (atPageTop ? 'bottom top' : 'bottom bottom'),
-    pin: shouldPin ? sticky || section : false,
+    pin: pinned || false,
+    pinSpacer: spacer,
     anticipatePin: shouldPin ? 1 : 0,
     scrub: 0.5,
     invalidateOnRefresh: true,

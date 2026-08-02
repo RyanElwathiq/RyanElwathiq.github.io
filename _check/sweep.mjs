@@ -12,12 +12,27 @@ const pages = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) =>
   m[1].replace('https://ryanalali.me', '')
 );
 
-const report = { pages: pages.length, errors: [], broken: [], overflow: [], obstructed: [] };
+const report = { pages: pages.length, errors: [], broken: [], overflow: [], obstructed: [], noise: [] };
 const linkCache = new Map();
 
 for (const p of pages) {
   const errs = [];
-  const onErr = (e) => errs.push(`${p} :: ${e.message || e.text()}`);
+  // ⚠️ pageerror بيلتقط كمان استثناءات **إطارات** الصفحة — ومشغّل
+  //    يوتيوب برمي أخطاء داخلية مصغّرة (زي «I`null») لما شبكته
+  //    تتعثّر. منفحص الـ stack: لو بيشاور على يوتيوب فهو ضجيجهم،
+  //    ولو رسالة مصغّرة بلا أي stack من ملفاتنا فمش منّا.
+  const onErr = (e) => {
+    const stack = String(e.stack || '');
+    if (/youtube|ytimg|googlevideo/.test(stack)) {
+      report.noise.push(`${p} :: [يوتيوب] ${String(e.message).slice(0, 60)}`);
+      return;
+    }
+    if (!stack.includes(base) && /^[A-Za-z$_]{1,3}`/.test(String(e.message || ''))) {
+      report.noise.push(`${p} :: [مصغّر خارجي] ${String(e.message).slice(0, 60)}`);
+      return;
+    }
+    errs.push(`${p} :: ${e.message || e.text()}`);
+  };
   page.on('pageerror', onErr);
   // ⚠️ منتجاهل رسائل الأخطاء الجاية من إطارات خارجية (يوتيوب).
   //    مشغّل يوتيوب بيسجّل أخطاءه الداخلية بكونسول الصفحة الأم،
@@ -27,6 +42,16 @@ for (const p of pages) {
     if (m.type() !== 'error') return;
     const from = m.location()?.url || '';
     if (/youtube|ytimg|googlevideo|doubleclick/.test(from)) return;
+    // ⚠️ منحسب علينا بس الأخطاء اللي مصدرها ملفاتنا نفسها.
+    //    مشغّل يوتيوب أحياناً بيسجّل أخطاءه **بدون عنوان مصدر**
+    //    (طلع مرة «I`null» — كود مصغّر تبعه، وأكّدنا بالبحث إنه
+    //    مش موجود بولا ملف من ملفاتنا) فكان بيمرق من فلتر العناوين
+    //    وبيطلع إنذار كاذب. الأعطال الحقيقية بكودنا بتيجي دايماً
+    //    بمصدر واضح، أو من pageerror اللي بيضل محسوب دايماً.
+    if (!from.startsWith(base)) {
+      report.noise.push(`${p} :: [${from || 'بلا مصدر'}] ${m.text().slice(0, 80)}`);
+      return;
+    }
     errs.push(`${p} :: ${m.text()}`);
   });
 
@@ -69,6 +94,11 @@ for (const p of pages) {
       window.__lenis ? window.__lenis.scrollTo(y, { immediate: true }) : scrollTo(0, y);
       await new Promise((r) => setTimeout(r, 350));
       for (const el of document.querySelectorAll('a[href], button')) {
+        // ⚠️ عناصر جوّا <details> مسكّرة مش «محجوبة» — هي مخفية عن
+        //    قصد لحد ما تنفتح القائمة. كانت روابط قائمة الخدمات
+        //    المنسدلة تطلع إنذار كاذب بكل صفحة من صفحات الموقع.
+        const dd = el.closest('details');
+        if (dd && !dd.open) continue;
         const b = el.getBoundingClientRect();
         if (b.width < 8 || b.height < 8 || b.top < NAV || b.bottom > innerHeight) continue;
         const cs = getComputedStyle(el);
@@ -92,5 +122,9 @@ report.errors.slice(0, 6).forEach((e) => console.log('   !', e.slice(0, 150)));
 console.log('روابط مكسورة    :', report.broken.length, report.broken.slice(0, 5));
 console.log('تمرير أفقي      :', report.overflow.length, report.overflow.slice(0, 5));
 console.log('عناصر محجوبة    :', report.obstructed.length, report.obstructed.slice(0, 5));
+if (report.noise.length) {
+  console.log('ضجيج خارجي (للعلم، مش محسوب):', report.noise.length);
+  report.noise.slice(0, 3).forEach((e) => console.log('   ~', e.slice(0, 120)));
+}
 
 await browser.close();

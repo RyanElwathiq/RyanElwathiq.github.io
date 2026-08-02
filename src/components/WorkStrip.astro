@@ -37,6 +37,10 @@ const {
 const showMoreCard = showAll || pan;
 ---
 
+{/* ⚠️ اللفافة الثابتة: بالسحب الأفقي GSAP بيثبّت القسم كله، ولو
+    لفّه بنفسه بينقله بالصفحة وبيعيد تشغيل أنيميشن CSS جوّاه —
+    نفس رمشة الهيرو (شوف Hero.astro). لا ستايل عليها. */}
+<div data-pin-spacer={pan ? '' : undefined}>
 <section class="strip" id={id} data-hpan={pan ? '' : undefined}>
   <div class="head container">
     <h2 data-reveal>{heading}</h2>
@@ -69,6 +73,7 @@ const showMoreCard = showAll || pan;
     }
   </div>
 </section>
+</div><!-- /data-pin-spacer -->
 
 <style>
   /* 🎛️ لوحة التحكم */

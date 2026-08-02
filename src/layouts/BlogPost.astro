@@ -121,6 +121,9 @@ const articleSchema = [
                 فالفيديو كان يطلع ثابت عالموبايل. وهاي الصفحة فيها
                 فيديو واحد بس، فما في خطر تداخل تثبيتات. -->
         <header class="film" data-seq data-seq-pin-always data-seq-length="1.2" data-seq-desktop={film} data-seq-mobile={film + "mobile/"}>
+          {/* ⚠️ اللفافة الثابتة: بدونها GSAP بينقل العنصر المثبّت
+              وبيعيد تشغيل أنيميشن CSS جوّاه — شوف Hero.astro */}
+          <div data-pin-spacer>
           <div class="film-sticky" data-seq-sticky>
             <canvas aria-hidden="true"></canvas>
             <div class="film-veil" aria-hidden="true" />
@@ -136,6 +139,7 @@ const articleSchema = [
               <p class="lede">{description}</p>
             </div>
           </div>
+          </div><!-- /data-pin-spacer -->
         </header>
       ) : (
         <header class="plain container">

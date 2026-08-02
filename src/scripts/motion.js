@@ -373,6 +373,13 @@ function setupHorizontalPan() {
         //    عادي بينزل مع السكرول، أحسن من قسم مثبّت واقف.
         if (measurePan(wrap, track) < MIN_PAN) return;
 
+        // ⚠️ اللفافة الثابتة (data-pin-spacer حوالين القسم): بدونها
+        //    GSAP بينقل القسم بالصفحة وبيعيد تشغيل أنيميشن CSS
+        //    جوّاه — نفس رمشة الهيرو. شوف الشرح بـ sequence.js
+        const spacer = wrap.parentElement?.hasAttribute('data-pin-spacer')
+          ? wrap.parentElement
+          : undefined;
+
         gsap.to(track, {
           x: () => (isRtl ? measurePan(wrap, track) : -measurePan(wrap, track)),
           ease: 'none',
@@ -381,6 +388,7 @@ function setupHorizontalPan() {
             start: 'top top',
             end: () => `+=${measurePan(wrap, track)}`,
             pin: true,
+            pinSpacer: spacer,
             anticipatePin: 1,
             scrub: 1,
             invalidateOnRefresh: true,
