@@ -105,7 +105,8 @@
         "approach": "We built the brand from scratch: guidelines, visual identity, an editing system, and hook writing. The key decision was in the content itself. We built it around what patients actually ask and worry about, not around what is medically interesting. Carousels were designed in threes so they read as one piece on the profile grid, so a visitor lands in something organised rather than a random feed.",
         "result": "From zero to 2,395 organic followers in 30 days, and 290K views on a single post. With zero ad spend. One of the largest projects I have run end to end: writing, direction, supervising the shoot, and editing."
       },
-      "seoDesc": "Built a doctor's Instagram presence from zero to 2,395 organic followers in 30 days. Brand guidelines, visual identity, and a full editing workflow."
+      "seoDesc": "Built a doctor's Instagram presence from zero to 2,395 organic followers in 30 days. Brand guidelines, visual identity, and a full editing workflow.",
+      "motif": "dots"
     },
     {
       "id": "luvit",
@@ -138,7 +139,8 @@
         "approach": "بنيت العلامة لهالسوق من المحتوى لفوق. بدل ما ننزّل عبوات، الصفحة صارت تعلّم روتين: كل خطوة شو بتعمل، لأي نوع بشرة، وليش هي ثلاث منتجات مش واحد. والهوية انكتبت بصوت عربي على كل مقاس، أغلفة الهايلايت، أطقم الستوري، وشبكة مصمّمة بحيث البوستات تنزل جنب بعض كأنها صورة وحدة متواصلة. ونظام تصميم مدعوم بالذكاء الاصطناعي خلّى شخص واحد ينتج بسرعة وكالة.",
         "result": "١١٧ قطعة جاهزة بلغة بصرية وحدة، ونظام محتوى بيبدأ من الروتين وبيجاوب على اعتراضات حقيقية بدل ما يعلن عروض، وإنتاج أسرع ٤٠٪ من البريف للتصميم المنشور."
       },
-      "seoDesc": "Digital brand development for a Turkish skincare label entering Jordan: visual identity, content strategy, and phased organic growth planning."
+      "seoDesc": "Digital brand development for a Turkish skincare label entering Jordan: visual identity, content strategy, and phased organic growth planning.",
+      "motif": "waves"
     },
     {
       "id": "arkan",
@@ -174,7 +176,8 @@
         "challenge": "Real-estate marketing all looks the same: a drone shot, a floor area, a price, a phone number. The result is that buyers cannot tell one project from another, so they decide on price alone, which is the worst ground to compete on.",
         "approach": "We started from the story before anyone picked up a camera: what feeling are we after, who is telling it, and why should they care. Then creative direction and editing, alongside consulting, light ad work, and a limited number of shoots.",
         "result": "A set of films that tell the story of a place instead of listing its square metres, and the difference shows in the first ten seconds."
-      }
+      },
+      "motif": "grid"
     },
     {
       "id": "tango",
@@ -269,7 +272,8 @@
         "challenge": "A solar company operating since 2015. Installations in homes, wins in government tenders, but a visual identity that made them look like a small workshop. Worse: the market was full of misconceptions about solar that killed deals before they started. People were not rejecting the price. They were rejecting an idea they had not understood.",
         "approach": "Two tracks at once. First, we rebuilt the identity from the logo up into a system that holds across every format and platform. Not a coloured logo and done. Second, and more important: instead of posting product shots, we collected the real questions and objections reaching the company from the market, and built an educational campaign that answered them one by one. \"what do I gain in winter?\", \"the bill versus the system cost\", \"does it actually save me anything?\".",
         "result": "32 pieces in a single visual language, sequenced so that when they sit side by side on the profile they read as one continuous image. And the content stopped announcing. It started arguing. That is the difference between a page that posts and a page that sells."
-      }
+      },
+      "motif": "grid"
     },
     {
       "id": "asimah",
@@ -319,7 +323,8 @@
         "approach": "بنيت طبقة توكنز تصميم واحدة ونظام حركة مشترك، وبعدين ربطتهم بماركب الإضافات بطبقة توافق. والهيرو بيستخدم سكرول-سيكوينس بأسلوب أبل بنسختين فريمات: وحدة للموبايل ووحدة للديسكتوب.",
         "result": "متجر بيقرأ كعلامة تجارية مش كقالب، بهيرو بيمسك انتباه الزائر، ومكتبة مكوّنات بتخلي كل قسم جديد متناسق مع اللي قبله."
       },
-      "_ملاحظة": "⚠️ plasmajo.com حالياً بيعرض صفحة Coming Soon تبع Hostinger. رجّع status لـ live أول ما المتجر ينزل فعلاً."
+      "_ملاحظة": "⚠️ plasmajo.com حالياً بيعرض صفحة Coming Soon تبع Hostinger. رجّع status لـ live أول ما المتجر ينزل فعلاً.",
+      "motif": "waves"
     },
     {
       "id": "portfolio",
@@ -425,7 +430,8 @@
         "challenge": "A new salon whose owner was still exploring: no clear character, no clear way to present services, no clear difference from the place next door.",
         "approach": "We built a set of pieces that define the vision: palette, art direction, and a way of showing services symbolically instead of as a price list.",
         "result": "A clear visual identity for the social pages, and a base to build on instead of starting over every time."
-      }
+      },
+      "motif": "arcs"
     },
     {
       "id": "anfasak-oud",
@@ -496,7 +502,8 @@
         "result": "An identity that keeps working after handover, not only on the day of it."
       },
       "seoDesc": "Logo, brand identity, and a social design system for Stylomation. Built to stay consistent as the brand grows, not just to look good in a deck.",
-      "seoDescAr": "لوجو وهوية بصرية ونظام تصميم سوشال لـ Stylomation، مبني ليضل متناسق مع نمو العلامة، مش بس ليبيّن حلو بالعرض التقديمي."
+      "seoDescAr": "لوجو وهوية بصرية ونظام تصميم سوشال لـ Stylomation، مبني ليضل متناسق مع نمو العلامة، مش بس ليبيّن حلو بالعرض التقديمي.",
+      "motif": "arcs"
     },
     {
       "id": "the-place",
@@ -590,7 +597,13 @@
         "b9vHzrtzllQ"
       ],
       "seoDesc": "Motion graphics for Al-Mofakron Aluminium. A short brand introduction piece: concept, design, and animation by Rayan Elwathiq.",
-      "seoDescAr": "موشن جرافيك للمفكرون للألمنيوم، مقطع قصير بيعرّف بالعلامة: الفكرة والتصميم والتحريك من شغل ريّان الواثق."
+      "seoDescAr": "موشن جرافيك للمفكرون للألمنيوم، مقطع قصير بيعرّف بالعلامة: الفكرة والتصميم والتحريك من شغل ريّان الواثق.",
+      "brand": [
+        "#1B2A5E",
+        "#26356E",
+        "#0F1838"
+      ],
+      "motif": "grid"
     },
     {
       "id": "al-razi",
@@ -761,7 +774,8 @@
         "/assets/work/clinics/clinics-02.webp",
         "/assets/work/clinics/clinics-03.webp"
       ],
-      "videos": []
+      "videos": [],
+      "motif": "dots"
     },
     {
       "id": "tampa",
