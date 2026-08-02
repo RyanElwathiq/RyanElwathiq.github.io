@@ -58,13 +58,15 @@
         "labelAr": "هويات وشغل متفرّق",
         "phase": "2020",
         "phaseAr": "٢٠٢٠",
-        "line": "A proposed identity, a tourism brand, a campaign visual. By here the work is making decisions, not decorating.",
-        "lineAr": "هوية مقترحة، وعلامة سياحية، وتصميم حملة. لهون صار الشغل بياخد قرارات، مش بيزخرف.",
+        "line": "A proposed identity, a tourism brand, and campaign designs for different labels. By here the work is making decisions, not decorating.",
+        "lineAr": "هوية مقترحة، وعلامة سياحية، وتصاميم حملات لعلامات مختلفة. لهون صار الشغل بياخد قرارات، مش بيزخرف.",
         "shots": [
           "/assets/work/misc/misc-01.webp",
           "/assets/work/misc/misc-02.webp",
           "/assets/work/misc/misc-03.webp",
-          "/assets/work/misc/misc-extra-01.webp"
+          "/assets/work/misc/misc-extra-01.webp",
+          "/assets/work/lab/lab-13.webp",
+          "/assets/work/lab/lab-15.webp"
         ]
       }
     ],

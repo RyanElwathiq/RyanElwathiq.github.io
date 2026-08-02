@@ -1,17 +1,129 @@
 ---
 // ═══════════════════════════════════════════════════════════════
-//  الفوتر
+//  الفوتر + خريطة الموقع (مهمة #57)
+//
+//  ليش خريطة ظاهرة؟ طلب ريّان: «زي الشركات الكبيرة». وفوق الشكل،
+//  إلها فايدتين حقيقيتين:
+//   • روابط داخلية من كل صفحة لكل صفحة — جوجل بيمشي عليها
+//     وبتوزّع قوة الصفحات على بعضها
+//   • الزائر اللي وصل آخر أي صفحة بيلاقي كل الموقع قدامه
+//     بدل ما يرجع يدوّر بالقوائم
+//
+//  ✏️ الأعمدة بتتبنى من البيانات مش بالإيد:
+//     الخدمات من services.json — خدمة جديدة بتظهر هون لحالها.
+//     المقالات من مجموعة المحتوى — مقالة جديدة بتظهر لحالها.
 // ═══════════════════════════════════════════════════════════════
+import { getCollection } from 'astro:content';
+import servicesData from '../data/services.json';
+
 interface Props {
   lang: 'en' | 'ar';
 }
 
 const { lang } = Astro.props;
 const isAr = lang === 'ar';
+const p = isAr ? '/ar' : '';
 const year = new Date().getFullYear();
+const L = isAr ? 'ar' : 'en';
+
+// الخدمات بترتيبها — مع علامة «قريباً» للي لسا ما فتحت
+const services = [...servicesData.services]
+  .sort((a, b) => a.order - b.order)
+  .map((s) => ({
+    label: s[L].name,
+    href: `${p}/services/${s.slug}/`,
+    soon: s.soon === true,
+  }));
+
+// مقالات اللغة الحالية من مجموعة المحتوى
+const posts = (await getCollection('blog'))
+  .filter((e) => e.id.startsWith(isAr ? 'ar-' : 'en-'))
+  .map((e) => ({ label: e.data.title, href: `${p}/signals/${e.id}/` }));
+
+// ─── الأعمدة ───
+const cols = isAr
+  ? [
+      {
+        head: 'الأعمال',
+        links: [
+          { label: 'التصاميم', href: '/ar/designs/' },
+          { label: 'الفيديو', href: '/ar/videos/' },
+          { label: 'المواقع', href: '/ar/websites/' },
+          { label: 'التسويق', href: '/ar/marketing/' },
+          { label: 'LUV IT — دراسة حالة', href: '/ar/work/luvit/' },
+          { label: 'التجارب', href: '/ar/#lab-work' },
+        ],
+      },
+      { head: 'الخدمات', links: services },
+      {
+        head: 'إشارات',
+        links: [{ label: 'كل الإشارات', href: '/ar/signals/' }, ...posts],
+      },
+      {
+        head: 'أدوات وتواصل',
+        links: [
+          { label: 'اطلب مشروع', href: '/ar/brief/' },
+          { label: 'لعبة الميزانية', href: '/ar/budget/' },
+          { label: 'حاسبة الخسارة', href: '/ar/loss/' },
+          { label: 'مختبر الأفكار', href: '/ar/#lab' },
+          { label: 'الأسئلة الشائعة', href: '/ar/#faq' },
+          { label: 'كيف بشتغل', href: '/ar/#data' },
+        ],
+      },
+    ]
+  : [
+      {
+        head: 'Work',
+        links: [
+          { label: 'Designs', href: '/designs/' },
+          { label: 'Video', href: '/videos/' },
+          { label: 'Websites', href: '/websites/' },
+          { label: 'Marketing', href: '/marketing/' },
+          { label: 'LUV IT — case study', href: '/work/luvit/' },
+          { label: 'The lab', href: '/#lab-work' },
+        ],
+      },
+      { head: 'Services', links: services },
+      {
+        head: 'Signals',
+        links: [{ label: 'All signals', href: '/signals/' }, ...posts],
+      },
+      {
+        head: 'Tools & contact',
+        links: [
+          { label: 'Start a brief', href: '/brief/' },
+          { label: 'Budget game', href: '/budget/' },
+          { label: 'Loss calculator', href: '/loss/' },
+          { label: 'Idea lab', href: '/#lab' },
+          { label: 'FAQ', href: '/#faq' },
+          { label: 'How I work', href: '/#data' },
+        ],
+      },
+    ];
 ---
 
 <footer class="footer">
+  <!-- ═══ خريطة الموقع ═══ -->
+  <nav class="map container" aria-label={isAr ? 'خريطة الموقع' : 'Sitemap'}>
+    {
+      cols.map((col) => (
+        <div class="col">
+          <p class="head">{col.head}</p>
+          <ul>
+            {col.links.map((l) => (
+              <li>
+                <a href={l.href}>
+                  {l.label}
+                  {(l as any).soon && <em class="soon">{isAr ? 'قريباً' : 'soon'}</em>}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </nav>
+
   <div class="container inner">
     <div class="brand">
       <img src="/assets/logo-white.png" alt="" width="26" height="26" loading="lazy" />
@@ -24,16 +136,73 @@ const year = new Date().getFullYear();
 <style>
   .footer {
     border-top: 1px solid var(--line);
-    padding-block: 28px;
     margin-top: var(--section-gap);
   }
 
+  /* ─── الخريطة ─── */
+  .map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: clamp(24px, 4vw, 48px);
+    padding-block: clamp(32px, 5vh, 52px);
+  }
+
+  .head {
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  html[lang='ar'] .head {
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 13.5px;
+  }
+
+  .col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 9px;
+  }
+
+  .col a {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    transition: color 0.25s var(--ease-out);
+  }
+
+  .col a:hover {
+    color: var(--text);
+  }
+
+  .soon {
+    display: inline-block;
+    margin-inline-start: 6px;
+    padding: 0 6px;
+    border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 700;
+    vertical-align: middle;
+  }
+
+  /* ─── السطر السفلي ─── */
   .inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
     flex-wrap: wrap;
+    padding-block: 22px;
+    border-top: 1px solid var(--line);
   }
 
   .brand {
@@ -53,5 +222,13 @@ const year = new Date().getFullYear();
 
   .top:hover {
     color: var(--accent);
+  }
+
+  /* موبايل: عمودين مرتاحين بدل أربعة مكبوسين */
+  @media (max-width: 640px) {
+    .map {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px 20px;
+    }
   }
 </style>
