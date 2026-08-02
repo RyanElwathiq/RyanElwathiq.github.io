@@ -22,7 +22,13 @@ const isAr = lang === 'ar';
     </div>
 
     <a class="feature" href={p.url} target="_blank" rel="noreferrer" data-reveal>
-      <img src={p.cover} alt={isAr ? p.titleAr : p.title} loading="lazy" width="1200" height="700" />
+      <img
+        src={p.coverWide || p.cover}
+        alt={isAr ? p.titleAr : p.title}
+        loading="lazy"
+        width="1200"
+        height="700"
+      />
       <div class="overlay">
         <div>
           <p class="role">{isAr ? p.roleAr : p.role}</p>

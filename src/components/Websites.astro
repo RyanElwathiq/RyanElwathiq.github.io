@@ -76,8 +76,9 @@ const t = isAr
                 <span class="chrome" aria-hidden="true">
                   <i /> <i /> <i />
                 </span>
+                {/* إطار متصفح = صندوق عريض ← الغلاف العريض */}
                 <img
-                  src={p.cover}
+                  src={p.coverWide || p.cover}
                   alt={isAr ? p.titleAr : p.title}
                   loading="lazy"
                   width="720"
@@ -124,7 +125,9 @@ const t = isAr
     --heading-size: clamp(28px, 4vw, 52px); /* حجم العنوان فوق الفيديو */
     --card-gap: clamp(24px, 3vw, 44px); /* المسافة بين بطاقات المواقع */
     --name-size: clamp(21px, 2.4vw, 30px); /* حجم اسم الموقع */
-    --shot-ratio: 16 / 10; /* نسبة صورة البريفيو */
+    /* نسبة صورة البريفيو — 16/9 عشان تطابق الغلاف العريض بالضبط،
+       وإلا `object-fit:cover` بيقصّ من الجوانب واسم العميل بينقص */
+    --shot-ratio: 16 / 9;
     /* ⬛ التعتيم العام فوق الفيديو كله (0 = الفيديو بكامل وضوحه) */
     --film-scrim: 0;
     /* ⬛ تعتيم موضعي خلف النص فقط (ضروري لقراءة العنوان) */

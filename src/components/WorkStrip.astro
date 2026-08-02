@@ -44,7 +44,8 @@ const showMoreCard = showAll || pan;
   </div>
 
   <div class="track container" data-hpan-track={pan ? '' : undefined} data-stagger>
-    {projects.map((p) => <WorkCard project={p} lang={lang} />)}
+    {/* wide: الشريط بيعرض الغلاف 16:11 مش مربّع — شوف الشرح بـWorkCard */}
+    {projects.map((p) => <WorkCard project={p} lang={lang} wide />)}
 
     <!-- بطاقة «شوف الكل» — دايماً ظاهرة بالشريط المسحوب (شوف الشرح فوق) -->
     {
@@ -164,8 +165,9 @@ const showMoreCard = showAll || pan;
   /* ─── موبايل: سحب طبيعي بالإصبع، وبطاقات أقصر ─── */
   @media (max-width: 767px) {
     .strip {
-      /* صورة البطاقة بتصير عريضة بدل مربعة عشان ما تاخد الشاشة كلها */
-      --card-cover-ratio: 16 / 11;
+      /* صورة البطاقة بتصير عريضة بدل مربعة عشان ما تاخد الشاشة كلها.
+         16/9 بالضبط = نسبة الغلاف العريض، فما بينقص منه ولا اسم */
+      --card-cover-ratio: 16 / 9;
     }
 
     .track {

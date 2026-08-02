@@ -168,8 +168,39 @@ async function dominantColors(page, url) {
   }, url);
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  المقاسات — نسختين لكل مشروع
+//
+//  ⚠️ ليش نسختين؟ الموقع بيعرض الغلاف بخمس أماكن، وأربعة منهم
+//     **عريضين** (رأس صفحة المشروع 1400×800، شريط الرئيسية 16:11،
+//     صفوف الحالات 4:3، قسم المواقع). لو حطينا المربّع فيهم،
+//     `object-fit:cover` بيقصّ من فوق وتحت — **واسم العميل قاعد
+//     تحت، فبينقص**. جرّبناها حسابياً: بالمربّع على 1400×800
+//     بيبين بس من y=231 لـ848 من أصل 1080، والاسم بـ~900.
+//
+//  فالحل: نفس التصميم بالحرف، بس منرسمه مرتين بمقاسين، والنص
+//  بينحسب موقعه صح بالاثنين.
+//
+//    <id>.webp        1080×1080   ← الشبكة المربّعة (WorkCard)
+//    <id>-wide.webp   1600×900    ← كل الأماكن العريضة + og:image
+// ═══════════════════════════════════════════════════════════════
+const SIZES = [
+  { w: 1080, h: 1080, suffix: '' },
+  { w: 1600, h: 900, suffix: '-wide' },
+];
+
 // ─── قالب الغلاف ───
-function html(p, colors, layout) {
+function html(p, colors, layout, W, H) {
+  // ═══ معامل القياس ═══
+  //  كل قيمة بالتصميم انكتبت أصلاً لقماشة 1080×1080. عشان النسخة
+  //  العريضة تطلع بنفس النِسَب مش مطّاطة، منضرب كل قيمة بمعامل:
+  //  الأفقية بـkx والعمودية بـky. هيك الخط والهوامش بتتنفّس صح
+  //  بالمقاسين بدل ما نكتب تصميم ثاني من الصفر.
+  const kx = W / 1080;
+  const ky = H / 1080;
+  const X = (v) => Math.round(v * kx) + 'px'; // أفقي
+  const Y = (v) => Math.round(v * ky) + 'px'; // عمودي وأحجام الخط
+
   // ✏️ حقل `brand` بـ work.json بيتغلّب على الاستخراج — لازم لما
   //    تكون صورة المشروع بلا ألوان (لوجو أبيض مثلاً)
   const manual = Array.isArray(p.brand) ? p.brand : null;
@@ -185,7 +216,7 @@ function html(p, colors, layout) {
   const motifUrl =
     'data:image/svg+xml;utf8,' +
     encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080"><defs>${motifSvg}</defs><rect width="1080" height="1080" fill="url(%23m)"/></svg>`,
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><defs>${motifSvg}</defs><rect width="${W}" height="${H}" fill="url(%23m)"/></svg>`,
     ).replace(/%2523/g, '%23');
 
   return `<!doctype html><html dir="rtl"><head><meta charset="utf-8">
@@ -197,10 +228,10 @@ function html(p, colors, layout) {
 </style>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:1080px;height:1080px;overflow:hidden}
+  html,body{width:${W}px;height:${H}px;overflow:hidden}
 
   .cover{
-    position:relative;width:1080px;height:1080px;overflow:hidden;
+    position:relative;width:${W}px;height:${H}px;overflow:hidden;
     /* ═══ ألوان براند العميل ═══ مستخرجة من صوره هو */
     background:
       radial-gradient(120% 90% at 18% 12%, ${c1} 0%, transparent 62%),
@@ -217,20 +248,23 @@ function html(p, colors, layout) {
         بدائرة، مطموسة، ومدموجة بلون البراند بوضع soft-light.
         النتيجة نسيج بيحكي عن المشروع بدون ما يكون لقطة منه.
      ⚠️ ولو الصورة ما انقرأت، الغلاف بيضل شغّال بالتدرّجات لحالها. */
+     ⚠️ حجم الدائرتين بينحسب من **أصغر ضلع** مش من العرض — لأنه
+        بالنسخة العريضة ٨٦٪ من العرض بتطلع دايرة أكبر من القماشة
+        كلها وبتغرق الغلاف. */
   .shot{
     position:absolute;top:-6%;inset-inline-start:-10%;
-    width:86%;aspect-ratio:1;border-radius:50%;
+    width:${Math.round(0.86 * Math.min(W, H))}px;aspect-ratio:1;border-radius:50%;
     background-image:url('${p.__shot || ''}');
     background-size:cover;background-position:center;
-    filter:blur(46px) saturate(1.5);
+    filter:blur(${Y(46)}) saturate(1.5);
     opacity:.5;mix-blend-mode:soft-light;
   }
   .shot2{
     position:absolute;bottom:-14%;inset-inline-end:-12%;
-    width:64%;aspect-ratio:1;border-radius:50%;
+    width:${Math.round(0.64 * Math.min(W, H))}px;aspect-ratio:1;border-radius:50%;
     background-image:url('${p.__shot || ''}');
     background-size:cover;background-position:30% 70%;
-    filter:blur(58px) saturate(1.4);
+    filter:blur(${Y(58)}) saturate(1.4);
     opacity:.34;mix-blend-mode:soft-light;
   }
 
@@ -246,19 +280,19 @@ function html(p, colors, layout) {
     background:linear-gradient(to top, ${BRAND.ink}f2 0%, ${BRAND.ink}66 34%, transparent 62%);
   }
   .edge{
-    position:absolute;inset:26px;border-radius:24px;
+    position:absolute;inset:${Y(26)} ${X(26)};border-radius:${Y(24)};
     border:1.5px solid ${BRAND.accent}2e;
   }
 
   /* الشريط الليموني — العنصر الوحيد المشبع من هوية ريّان */
   .bar{
-    position:absolute;top:26px;inset-inline-start:26px;
-    height:6px;width:132px;border-radius:99px;background:${BRAND.accent};
+    position:absolute;top:${Y(26)};inset-inline-start:${X(26)};
+    height:${Y(6)};width:${X(132)};border-radius:99px;background:${BRAND.accent};
   }
 
   .kicker{
-    position:absolute;top:52px;inset-inline-end:56px;
-    font-size:21px;font-weight:600;letter-spacing:.02em;
+    position:absolute;top:${Y(52)};inset-inline-end:${X(56)};
+    font-size:${Y(21)};font-weight:600;letter-spacing:.02em;
     color:${BRAND.accent};opacity:.92;
   }
 
@@ -274,35 +308,35 @@ function html(p, colors, layout) {
   }
 
   /* ═══ ثلاث تخطيطات ═══ */
-  .foot{position:absolute;inset-inline:64px}
+  .foot{position:absolute;inset-inline:${X(64)}}
 
   /* corner: النص أسفل، الافتراضي */
-  .l-corner .foot{bottom:70px}
+  .l-corner .foot{bottom:${Y(70)}}
 
   /* stack: النص بالنص، متمركز عمودياً وبمحاذاة البداية */
   .l-band .foot{top:50%;transform:translateY(-50%)}
-  .l-band h1{font-size:${title.length > 22 ? 68 : 84}px}
+  .l-band h1{font-size:${Y(title.length > 22 ? 68 : 84)}}
 
   /* band: النص أسفل بس بشريط معتم خلفه */
   .l-stack .foot{
-    bottom:0;inset-inline:0;padding:56px 64px 66px;
+    bottom:0;inset-inline:0;padding:${Y(56)} ${X(64)} ${Y(66)};
     background:linear-gradient(to top, ${BRAND.ink}fa, ${BRAND.ink}d0 62%, transparent);
   }
 
   h1{
-    font-size:${title.length > 22 ? 62 : title.length > 14 ? 76 : 92}px;
+    font-size:${Y(title.length > 22 ? 62 : title.length > 14 ? 76 : 92)};
     font-weight:800;line-height:1.12;letter-spacing:-.01em;
-    margin-bottom:16px;text-wrap:balance;
+    margin-bottom:${Y(16)};text-wrap:balance;
   }
-  .role{font-size:26px;font-weight:500;color:${BRAND.text};opacity:.7;line-height:1.45}
+  .role{font-size:${Y(26)};font-weight:500;color:${BRAND.text};opacity:.7;line-height:1.45}
 
   .mark{
-    position:absolute;bottom:64px;inset-inline-end:64px;
-    display:flex;align-items:center;gap:11px;
+    position:absolute;bottom:${Y(64)};inset-inline-end:${X(64)};
+    display:flex;align-items:center;gap:${X(11)};
     font-family:'Space Grotesk Variable',sans-serif;
-    font-size:19px;font-weight:600;color:${BRAND.text};opacity:.5;
+    font-size:${Y(19)};font-weight:600;color:${BRAND.text};opacity:.5;
   }
-  .dot{width:9px;height:9px;border-radius:99px;background:${BRAND.accent}}
+  .dot{width:${Y(9)};height:${Y(9)};border-radius:99px;background:${BRAND.accent}}
 </style></head><body>
 <div class="cover l-${layout}">
   ${p.__shot ? '<div class="shot"></div><div class="shot2"></div>' : ''}
@@ -404,10 +438,14 @@ for (const p of targets) {
   const sameCat = work.projects.filter((x) => x.category === p.category);
   const layout = LAYOUTS[sameCat.indexOf(p) % LAYOUTS.length];
 
-  pageHtml = html(p, colors, layout);
-  await page.goto('http://covers.local/', { waitUntil: 'networkidle' });
-  await page.evaluate(() => document.fonts.ready);
-  await page.screenshot({ path: join(OUT, `${p.id}.png`), type: 'png' });
+  // نسختين: مربّعة للشبكة، وعريضة لكل مكان ثاني بالموقع
+  for (const { w, h, suffix } of SIZES) {
+    await page.setViewportSize({ width: w, height: h });
+    pageHtml = html(p, colors, layout, w, h);
+    await page.goto('http://covers.local/', { waitUntil: 'networkidle' });
+    await page.evaluate(() => document.fonts.ready);
+    await page.screenshot({ path: join(OUT, `${p.id}${suffix}.png`), type: 'png' });
+  }
 }
 
 await browser.close();

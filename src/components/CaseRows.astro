@@ -30,7 +30,15 @@ const shown = projects.slice(0, 2);
       shown.map((p, i) => (
         <article class={`row ${i % 2 === 1 ? 'flip' : ''}`} data-reveal>
           <div class="media">
-            <img src={p.cover} alt={isAr ? p.titleAr : p.title} loading="lazy" width="800" height="800" />
+            {/* الصندوق هون 4:3 (و16:10 عالموبايل) — فالغلاف العريض
+                هو الصح، المربّع بينقص منه اسم العميل من تحت */}
+            <img
+              src={p.coverWide || p.cover}
+              alt={isAr ? p.titleAr : p.title}
+              loading="lazy"
+              width="800"
+              height="600"
+            />
           </div>
           <div class="copy">
             <p class="role">{isAr ? p.roleAr : p.role}</p>
@@ -163,7 +171,8 @@ const shown = projects.slice(0, 2);
 
   .media img {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    /* 16/9 = نفس نسبة الغلاف العريض بالضبط ← ولا بكسل بينقص منه */
+    aspect-ratio: 16 / 9;
     object-fit: cover;
     transition: transform 0.8s var(--ease-out);
   }
@@ -237,7 +246,7 @@ const shown = projects.slice(0, 2);
     }
 
     .media img {
-      aspect-ratio: 16 / 10;
+      aspect-ratio: 16 / 9;
     }
 
     .desc {

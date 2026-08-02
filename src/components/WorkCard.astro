@@ -12,11 +12,21 @@ interface Props {
   //    (لأنه فوقها عنوان الصفحة h1 مباشرة — والقفز h1→h3 بيكسر
   //    التسلسل، وقارئات الشاشة بتقول «في عنوان ناقص»).
   level?: 2 | 3;
+  // ⚠️ الغلاف المولّد اسم العميل قاعد **أسفل الصورة**، فلازم شكل
+  //    الصورة يطابق شكل الصندوق وإلا `object-fit:cover` بيقصّه.
+  //    والشريط الأفقي (WorkStrip) بيبدّل شكل صندوقه حسب الشاشة:
+  //    مربّع عالديسكتوب و16:11 عالموبايل (`--card-cover-ratio`).
+  //    فمنمرّر `wide` هناك، وبتحت منخدم كل شاشة بصورتها بـ<picture>.
+  wide?: boolean;
 }
 
-const { project: p, lang, level = 3 } = Astro.props;
+const { project: p, lang, level = 3, wide = false } = Astro.props;
 const isAr = lang === 'ar';
 const H = `h${level}` as 'h2' | 'h3';
+
+// النسخة العريضة للموبايل بس، ولو المشروع لسا بلا غلاف مولّد
+// بيرجع للمربّع بدل ما تنكسر الصورة
+const coverWide = wide ? p.coverWide || p.cover : null;
 
 const title = isAr ? p.titleAr : p.title;
 const role = isAr ? p.roleAr : p.role;
@@ -29,7 +39,12 @@ const more = isAr ? 'تفاصيل المشروع ←' : 'Project details →';
 
 <article class="card">
   <a class="cover" href={href} aria-label={title}>
-    <img src={p.cover} alt={title} loading="lazy" width="640" height="640" />
+    <picture>
+      {/* عالموبايل الصندوق بيصير 16:11 ← الغلاف العريض.
+          نفس نقطة الكسر اللي بـWorkStrip بالضبط (767px) */}
+      {coverWide && <source media="(max-width: 767px)" srcset={coverWide} />}
+      <img src={p.cover} alt={title} loading="lazy" width="640" height="640" />
+    </picture>
   </a>
 
   {
@@ -90,6 +105,11 @@ const more = isAr ? 'تفاصيل المشروع ←' : 'Project details →';
     overflow: hidden;
     margin-bottom: var(--gap-cover-text);
     background: var(--surface);
+  }
+
+  /* <picture> عنصر inline بالافتراضي، فبيخلّي فراغ تحت الصورة */
+  .cover picture {
+    display: block;
   }
 
   .cover img {
