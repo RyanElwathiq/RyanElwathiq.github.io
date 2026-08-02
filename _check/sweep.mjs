@@ -62,12 +62,18 @@ for (const p of pages) {
   // ⚠️ ما منقارن scrollWidth بعرض الشاشة — هذا بيعطي إنذار كاذب.
   //    شريط المهارات المتحرّك أعرض من الشاشة عمداً، بس مقصوص
   //    فالزائر ما بيقدر يمرّر. الفحص الصح: نجرّب نمرّر فعلاً.
+  // ⚠️ بالاتجاهين: بصفحات RTL التجاوز بيمتد **يساراً بإحداثيات
+  //    سالبة** — الفحص القديم كان يجرّب يمين بس، وفاتته حالة
+  //    «الفيديو بطل يغطي الشاشة» لأن الفراغ كان عاليسار.
   const of = await page.evaluate(async () => {
     const before = window.scrollX;
     window.scrollTo(400, window.scrollY);
-    await new Promise((r) => setTimeout(r, 200));
-    const moved = window.scrollX !== before;
-    window.scrollTo(0, window.scrollY);
+    await new Promise((r) => setTimeout(r, 150));
+    let moved = window.scrollX !== before;
+    window.scrollTo(-400, window.scrollY);
+    await new Promise((r) => setTimeout(r, 150));
+    moved = moved || window.scrollX !== before;
+    window.scrollTo(before, window.scrollY);
     return moved;
   });
   if (of) report.overflow.push(p);
