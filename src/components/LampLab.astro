@@ -940,6 +940,17 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 
         const d = await r.json();
         if (run !== aiRun) return; // الزائر ضغط «فكرة ثانية» بالأثناء
+
+        // ═══ خلص حد اليوم (#52) ═══
+        //  ⚠️ هاي الحالة الوحيدة اللي منحكي فيها مع الزائر بدل ما
+        //     نخبّي البلوك: هو ضغط عن قصد وبيستنى — الاختفاء الصامت
+        //     بيبيّن عطل، بينما الرسالة بتشرح وبتوجّهه عالفورم.
+        if (r.status === 429 && d?.message) {
+          aiLoad.hidden = true;
+          aiText.textContent = d.message;
+          return;
+        }
+
         if (!r.ok || !d?.idea) throw new Error('no-idea');
 
         aiLoad.hidden = true;
