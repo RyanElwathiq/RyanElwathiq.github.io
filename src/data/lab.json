@@ -63,7 +63,8 @@
         "shots": [
           "/assets/work/misc/misc-01.webp",
           "/assets/work/misc/misc-02.webp",
-          "/assets/work/misc/misc-03.webp"
+          "/assets/work/misc/misc-03.webp",
+          "/assets/work/misc/misc-extra-01.webp"
         ]
       }
     ],
@@ -73,9 +74,12 @@
         "labelAr": "معالجة الصور",
         "phase": "Older reps",
         "phaseAr": "تمارين أقدم",
-        "line": "Ten techniques, each solved on its own: a neon grade, a portrait built out of type, dispersion, a painted double exposure. No client and no brief — these are the reps behind everything that came after.",
-        "lineAr": "عشر تقنيات، كل وحدة محلولة لحالها: تدرّج نيون، وبورتريه مبني من حروف، وتفتيت، وتعريض مزدوج مرسوم. بلا عميل وبلا بريف — هاي التمارين اللي وراها كل اللي إجا بعدين.",
+        "line": "Thirteen techniques, each solved on its own: a creature composited into a moonlit sky, fruit rebuilt as a bottle, a portrait built out of type, dispersion, a painted double exposure. No client and no brief — these are the reps behind everything that came after.",
+        "lineAr": "تلاث عشرة تقنية، كل وحدة محلولة لحالها: مخلوق مركّب بسما مقمرة، وفاكهة معاد بناؤها كعبوة، وبورتريه مبني من حروف، وتفتيت، وتعريض مزدوج مرسوم. بلا عميل وبلا بريف — هاي التمارين اللي وراها كل اللي إجا بعدين.",
         "shots": [
+          "/assets/work/lab/manip-hi-01.webp",
+          "/assets/work/lab/manip-hi-02.webp",
+          "/assets/work/lab/manip-hi-03.webp",
           "/assets/work/lab/manip-01.webp",
           "/assets/work/lab/manip-02.webp",
           "/assets/work/lab/manip-03.webp",

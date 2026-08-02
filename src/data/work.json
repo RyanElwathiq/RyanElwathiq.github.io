@@ -198,24 +198,6 @@
       "motif": "grid"
     },
     {
-      "id": "tango",
-      "title": "Tango Production",
-      "titleAr": "تانغو برودكشن",
-      "role": "Short-form Video Editing",
-      "roleAr": "مونتاج فيديوهات قصيرة",
-      "category": "video",
-      "featured": false,
-      "order": 5,
-      "youtube": "",
-      "preview": "",
-      "cover": "/assets/work/covers/tango.webp",
-      "coverWide": "/assets/work/covers/tango-wide.webp",
-      "coverOld": "/assets/project-tango.png",
-      "desc": "Edited short-form promotional videos for social distribution: caption overlays, brand sequencing, and platform-native formatting.",
-      "descAr": "مونتاج فيديوهات ترويجية قصيرة للسوشال ميديا: تراكيب نصية، تسلسل العلامة، وتهيئة لكل منصة بصيغتها.",
-      "stats": []
-    },
-    {
       "id": "ucmas",
       "title": "UCMAS Kindergarten",
       "titleAr": "روضة UCMAS",
@@ -650,12 +632,22 @@
       ],
       "seoDesc": "Motion graphics for Al-Mofakron Aluminium. A short brand introduction piece: concept, design, and animation by Rayan Elwathiq.",
       "seoDescAr": "موشن جرافيك للمفكرون للألمنيوم، مقطع قصير بيعرّف بالعلامة: الفكرة والتصميم والتحريك من شغل ريّان الواثق.",
-      "brand": [
-        "#1B2A5E",
-        "#26356E",
-        "#0F1838"
-      ],
-      "motif": "grid"
+      "motif": "grid",
+      "gallery": [
+        "/assets/work/al-mofakron/al-mofakron-01.webp",
+        "/assets/work/al-mofakron/al-mofakron-02.webp",
+        "/assets/work/al-mofakron/al-mofakron-03.webp",
+        "/assets/work/al-mofakron/al-mofakron-04.webp",
+        "/assets/work/al-mofakron/al-mofakron-05.webp",
+        "/assets/work/al-mofakron/al-mofakron-06.webp",
+        "/assets/work/al-mofakron/al-mofakron-07.webp",
+        "/assets/work/al-mofakron/al-mofakron-08.webp",
+        "/assets/work/al-mofakron/al-mofakron-09.webp",
+        "/assets/work/al-mofakron/al-mofakron-10.webp",
+        "/assets/work/al-mofakron/al-mofakron-11.webp",
+        "/assets/work/al-mofakron/al-mofakron-12.webp",
+        "/assets/work/al-mofakron/al-mofakron-13.webp"
+      ]
     },
     {
       "id": "al-razi",
@@ -752,7 +744,21 @@
         "/assets/work/knockout/knockout-51.webp",
         "/assets/work/knockout/knockout-52.webp",
         "/assets/work/knockout/knockout-53.webp",
-        "/assets/work/knockout/knockout-54.webp"
+        "/assets/work/knockout/knockout-54.webp",
+        "/assets/work/knockout/knockout-55.webp",
+        "/assets/work/knockout/knockout-56.webp",
+        "/assets/work/knockout/knockout-57.webp",
+        "/assets/work/knockout/knockout-58.webp",
+        "/assets/work/knockout/knockout-59.webp",
+        "/assets/work/knockout/knockout-60.webp",
+        "/assets/work/knockout/knockout-61.webp",
+        "/assets/work/knockout/knockout-62.webp",
+        "/assets/work/knockout/knockout-63.webp",
+        "/assets/work/knockout/knockout-64.webp",
+        "/assets/work/knockout/knockout-65.webp",
+        "/assets/work/knockout/knockout-66.webp",
+        "/assets/work/knockout/knockout-67.webp",
+        "/assets/work/knockout/knockout-68.webp"
       ],
       "videos": [
         "XcHGVmU2s0Q",

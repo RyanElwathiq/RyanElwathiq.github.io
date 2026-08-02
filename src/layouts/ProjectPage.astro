@@ -443,15 +443,24 @@ const projectSchema = [
     display: block;
   }
 
-  /* ═══════════════ معرض التصاميم ═══════════════ */
+  /* ═══════════════ معرض التصاميم ═══════════════
+     أعمدة مش شبكة — نفس قاعدة صفحة LUV IT وقسم التجارب.
+
+     ⚠️ بشبكة CSS البطاقة بتتمدّد لارتفاع أطول بطاقة بالصف بس
+        الصورة بتضل بنسبتها، فبيبين فراغ أسود تحتها. القياس على
+        صفحة أورينت كان **٢١٨px، يعني ٤٤٪ من البطاقة**.
+        بالأعمدة كل صورة بتاخد ارتفاعها الحقيقي بدون قص ولا فراغ.
+     ═══════════════════════════════════════════════════════ */
   .shots-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: clamp(14px, 1.6vw, 22px);
+    columns: 260px;
+    column-gap: clamp(14px, 1.6vw, 22px);
   }
 
   .shot {
     margin: 0;
+    /* ⚠️ ضرورية: بدونها الصورة بتنقسم بين عمودين */
+    break-inside: avoid;
+    margin-bottom: clamp(14px, 1.6vw, 22px);
     border-radius: var(--r-card);
     overflow: hidden;
     border: 1px solid var(--line);
@@ -474,8 +483,12 @@ const projectSchema = [
 
   @media (max-width: 700px) {
     .shots-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      columns: 2;
+      column-gap: 10px;
+    }
+
+    .shot {
+      margin-bottom: 10px;
     }
   }
 </style>
