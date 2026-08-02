@@ -17,6 +17,7 @@ import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Particles from '../components/Particles.astro';
+import BriefSection from '../components/BriefSection.astro';
 import servicesData from '../data/services.json';
 import work from '../data/work.json';
 
@@ -82,7 +83,11 @@ const stats = isAr
       { n: '40%', l: 'less production time' },
     ];
 
-const briefHref = `${p}/brief/?s=${service.id}`;
+// ⚠️ الزر بينزّل الزائر على الفورم اللي بنفس الصفحة (#brief)
+//    مش لصفحة تانية. الرابط الكامل بيضل مستخدم بالبيانات
+//    المنظّمة تحت (availableChannel) لأنها بدها رابط مطلق.
+const briefHref = `#brief`;
+const briefUrl = `${p}/brief/?s=${service.id}`;
 const site = Astro.site ?? new URL('https://ryanalali.me');
 
 // ⚠️ الرقم بينقرا من work.json زي BriefSection بالضبط — ممنوع
@@ -109,7 +114,7 @@ const schema = [
     ],
     availableChannel: {
       '@type': 'ServiceChannel',
-      serviceUrl: new URL(briefHref, site).href,
+      serviceUrl: new URL(briefUrl, site).href,
     },
   },
   {
@@ -204,17 +209,19 @@ const schema = [
       </div>
     </section>
 
-    <!-- ═══ ٦. الطلب ═══ -->
-    <section class="band cta-band">
+    <!-- ═══════════════════════════════════════════════════════════
+         ٦. الطلب — الفورم نفسه، مش زر بيودّي لصفحة تانية
+
+         ⚠️ كان هون زر «ابدأ الطلب» بيروح لـ /brief/. رصدها ريّان:
+            بعد ما الزائر قرأ الصفحة كاملة واقتنع، بنطلب منه ضغطة
+            إضافية وانتقال صفحة — وكل خطوة زيادة بتخسّر ناس بالضبط
+            عند اللحظة اللي اقتنعوا فيها.
+         ⚠️ preselect بيخلّي الخدمة مختارة سلفاً، فبيفتح على الخطوة
+            الأولى وخدمته محدّدة — ما بيقعد يدوّر عليها بقائمة.
+         ═══════════════════════════════════════════════════════════ -->
+    <section class="band" id="brief">
       <div class="container">
-        <div class="cta">
-          <h2 data-reveal>{t.ctaTitle}</h2>
-          <p data-reveal>{t.ctaBody}</p>
-          <div class="hero-cta" data-reveal>
-            <a class="btn primary" href={briefHref}>{t.ctaBtn}</a>
-            <a class="btn ghost" href={whatsapp} target="_blank" rel="noopener">{t.ctaAlt}</a>
-          </div>
-        </div>
+        <BriefSection lang={lang} bare preselect={service.id} />
       </div>
     </section>
 

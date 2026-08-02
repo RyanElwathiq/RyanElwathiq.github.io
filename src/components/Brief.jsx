@@ -180,7 +180,10 @@ const COPY = {
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
 
-export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = false }) {
+// ⚠️ preselect: معرّف خدمة (أو رابطها) بتنختار تلقائياً.
+//    بتستخدمها صفحات الخدمات لما الفورم يكون مركّب جوّاها —
+//    وقتها ما في ?s= بالرابط، فلازم تجي كخاصية.
+export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = false, preselect = '' }) {
   const isAr = lang === 'ar';
   const t = COPY[isAr ? 'ar' : 'en'];
 
@@ -228,12 +231,15 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
   //     ?s=paid-ads طبيعي. لو قبلنا واحد بس، بيفشل بصمت.
   // ═══════════════════════════════════════════════════════════
   useEffect(() => {
-    const id = new URLSearchParams(window.location.search).get('s');
+    // الخاصية أول، وإلا الرابط. صفحات الخدمات بتمرّر الخاصية
+    // لأنه الفورم مركّب جوّاها فما في ?s=، وصفحة /brief/ بتاخد
+    // من الرابط لما ييجي الزائر من زر «ابدأ الطلب».
+    const id = preselect || new URLSearchParams(window.location.search).get('s');
     if (!id) return;
     const svc = servicesData.services.find((x) => x.id === id || x.slug === id);
     const label = svc?.briefValue?.[isAr ? 'ar' : 'en'];
     if (label && t.services.includes(label)) setServices([label]);
-  }, [isAr, t.services]);
+  }, [isAr, t.services, preselect]);
 
   // ═══════════════════════════════════════════════════════════
   //  دمج الأسئلة الثلاثة بحقل details واحد
