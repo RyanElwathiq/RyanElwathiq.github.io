@@ -144,7 +144,7 @@
       "q": "What about my customers’ data?",
       "qAr": "وشو عن بيانات زبايني؟",
       "a": "It stays inside your accounts and your tools, not mine. I do not export customer lists to my own devices, and any analytics or tracking I set up goes on your properties under your ownership. If we set up a CRM or a form, the data lands with you from day one.",
-      "aAr": "بتضل جوّا حساباتك وأدواتك، مش عندي. ما ببعّت قوائم زباين لأجهزتي، وأي تتبّع أو تحليلات بركّبها بتنحط على ملكيّاتك إنت. ولو ركّبنا CRM أو نموذج، البيانات بتنزل عندك من أول يوم."
+      "aAr": "بتضل جوّا حساباتك وأدواتك، مش عندي. ما ببعّت قوائم زباين لأجهزتي، وأي تتبّع أو تحليلات بركّبها بتنحط على حساباتك إنت. ولو ركّبنا CRM أو نموذج، البيانات بتنزل عندك من أول يوم."
     },
     {
       "tag": "Pricing",
