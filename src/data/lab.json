@@ -69,6 +69,26 @@
     ],
     "lab": [
       {
+        "label": "Photo manipulation",
+        "labelAr": "معالجة الصور",
+        "phase": "Older reps",
+        "phaseAr": "تمارين أقدم",
+        "line": "Ten techniques, each solved on its own: a neon grade, a portrait built out of type, dispersion, a painted double exposure. No client and no brief — these are the reps behind everything that came after.",
+        "lineAr": "عشر تقنيات، كل وحدة محلولة لحالها: تدرّج نيون، وبورتريه مبني من حروف، وتفتيت، وتعريض مزدوج مرسوم. بلا عميل وبلا بريف — هاي التمارين اللي وراها كل اللي إجا بعدين.",
+        "shots": [
+          "/assets/work/lab/manip-01.webp",
+          "/assets/work/lab/manip-02.webp",
+          "/assets/work/lab/manip-03.webp",
+          "/assets/work/lab/manip-04.webp",
+          "/assets/work/lab/manip-05.webp",
+          "/assets/work/lab/manip-06.webp",
+          "/assets/work/lab/manip-07.webp",
+          "/assets/work/lab/manip-08.webp",
+          "/assets/work/lab/manip-09.webp",
+          "/assets/work/lab/manip-10.webp"
+        ]
+      },
+      {
         "label": "WE Telecom. Fictional",
         "labelAr": "وي للاتصالات، وهمي",
         "phase": "Today",

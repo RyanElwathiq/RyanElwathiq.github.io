@@ -118,6 +118,16 @@ const LAYOUTS = ['corner', 'stack', 'band'];
 //  ⚠️ منتجاهل الألوان القريبة جداً من الأبيض أو الأسود، لأنها
 //     بالعادة خلفية أو نص مش لون البراند. ومنتجاهل الرمادي
 //     (تشبّع منخفض) لنفس السبب — بدنا اللون اللي بيميّز العلامة.
+//
+//  ⚠️⚠️ الترتيب بالتكرار لحاله ما زبط (تصحيح 2026-08-02):
+//     أربع أغلفة طلعت باهتة — لوفيت رمادي، وأورينت وتامبا وندى
+//     فياض فاتحين. السبب إنه بالتصاميم الفاتحة **الخلفية هي
+//     الأكثر تكراراً**، فكانت تفوز على لون العلامة الحقيقي حتى
+//     لو كان واضح ومشبّع.
+//     الحل: منرتّب بـ«وزن» = تكرار × تشبّع، مش بالتكرار لحاله.
+//     يعني لون مشبّع ظاهر بربع الصورة بيتغلّب على بيج باهت
+//     مغطّي نصها. وكمان نزّلنا سقف الإضاءة من .93 لـ.86 لأنه
+//     اللي فوقها بيطلع خلفية مش براند.
 // ═══════════════════════════════════════════════════════════════
 async function dominantColors(page, url) {
   return page.evaluate(async (src) => {
@@ -148,21 +158,34 @@ async function dominantColors(page, url) {
       const sat = max === min ? 0 : (max - min) / (light > 0.5 ? 510 - max - min : max + min);
 
       // بره النطاق المفيد: قريب من الأبيض/الأسود، أو رمادي
-      if (light < 0.12 || light > 0.93 || sat < 0.14) continue;
+      if (light < 0.12 || light > 0.86 || sat < 0.14) continue;
 
       const k = `${r >> 4},${g >> 4},${b >> 4}`;
-      const e = bucket.get(k) || { n: 0, r: 0, g: 0, b: 0 };
-      e.n++; e.r += r; e.g += g; e.b += b;
+      const e = bucket.get(k) || { n: 0, r: 0, g: 0, b: 0, s: 0 };
+      e.n++; e.r += r; e.g += g; e.b += b; e.s += sat;
       bucket.set(k, e);
     }
 
     const list = [...bucket.values()]
-      .sort((a, b) => b.n - a.n)
-      .slice(0, 5)
       .map((e) => {
         const to = (v) => Math.round(v / e.n).toString(16).padStart(2, '0');
-        return { hex: '#' + to(e.r) + to(e.g) + to(e.b), n: e.n };
-      });
+        const sat = e.s / e.n;
+        return {
+          hex: '#' + to(e.r) + to(e.g) + to(e.b),
+          n: e.n,
+          sat: +sat.toFixed(2),
+          // الوزن: مساحة اللون × معامل تشبّع **تربيعي**.
+          //  ليش تربيعي مش خطّي؟ جرّبنا الخطّي على أورينت (طاقة
+          //  شمسية): سما فاتحة تشبّعها ٠٫٥٢ غطّت مساحة أكبر من
+          //  البرتقالي تشبّعه ٠٫٩٢، وفازت — والبرتقالي هو لون
+          //  العلامة. بالتربيع الفرق بيصير ٢٫٤ ضعف بدل ١٫٥،
+          //  فلون العلامة بيتصدّر إلا إذا كان نادر فعلاً.
+          //  و٠٫١٥ أرضية عشان لون هادي مسيطر ما ينشال نهائياً.
+          w: e.n * (0.15 + sat * sat),
+        };
+      })
+      .sort((a, b) => b.w - a.w)
+      .slice(0, 5);
 
     return list;
   }, url);
@@ -412,19 +435,38 @@ if (!DRY) mkdirSync(OUT, { recursive: true });
 const targets = work.projects.filter((p) => !only.length || only.includes(p.id));
 console.log(`المشاريع: ${targets.length}\n`);
 
+// ⚠️⚠️ حلقة مفرغة — انتبه لهاي
+//  من لما ربطنا الأغلفة بـwork.json، صار حقل `cover` بيشاور على
+//  **ناتج المولّد نفسه**. فلو أخذنا منه الألوان، المولّد بيقرأ من
+//  إنتاجه هو، وكل تشغيلة بتبهّت اللون أكثر لحد ما يضيع لون العميل.
+//  لهيك أي مسار جوّا مجلد covers بينرفض كمصدر.
+const isGenerated = (s) => typeof s === 'string' && s.includes('/assets/work/covers/');
+
+// ترتيب مصدر الألوان، الأقوى أولاً:
+//   coverSource  ← تحديد يدوي بـwork.json (وإذا "" يعني بلا صورة عن قصد)
+//   gallery[0]   ← أول صورة من شغل العميل
+//   coverOld     ← الغلاف اللي كان قبل المولّد
+//   cover        ← احتياط أخير (لمشروع جديد لسا ما انولّد إله غلاف)
+function colorSource(p) {
+  if (typeof p.coverSource === 'string') return p.coverSource; // بما فيها ""
+  const chain = [p.gallery && p.gallery[0], p.coverOld, p.cover];
+  return chain.find((s) => s && !isGenerated(s)) || '';
+}
+
 for (const p of targets) {
-  // مصدر الألوان: أول صورة بالمعرض، وإلا الغلاف الحالي
-  const src = (p.gallery && p.gallery[0]) || p.cover;
+  const src = colorSource(p);
   let colors = [];
-  try {
-    pageHtml = '<!doctype html><html><body></body></html>';
-    await page.goto('http://covers.local/', { waitUntil: 'domcontentloaded' });
-    colors = await dominantColors(page, src);
-  } catch (e) {
-    console.log(`  ⚠️ ${p.id}: ما قدرت أقرأ ${src} — ${String(e.message).slice(0, 70)}`);
+  if (src) {
+    try {
+      pageHtml = '<!doctype html><html><body></body></html>';
+      await page.goto('http://covers.local/', { waitUntil: 'domcontentloaded' });
+      colors = await dominantColors(page, src);
+    } catch (e) {
+      console.log(`  ⚠️ ${p.id}: ما قدرت أقرأ ${src} — ${String(e.message).slice(0, 70)}`);
+    }
   }
 
-  const hexes = colors.map((c) => c.hex).join(' ') || '(بلا ألوان — رح يستخدم الافتراضي)';
+  const hexes = colors.map((c) => c.hex).join(' ') || (p.brand ? '(ألوان يدوية من brand)' : '(بلا ألوان — رح يستخدم الافتراضي)');
   console.log(`${p.id.padEnd(16)} ${hexes}`);
 
   if (DRY) continue;
