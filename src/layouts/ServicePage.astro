@@ -36,6 +36,12 @@ if (!service) throw new Error(`Service "${id}" مش موجودة بـ services.j
 
 const c = service[L];
 
+// ⚠️ خدمة «قريباً»: لسا ما فتحت. بتاخد صفحتها كاملة بالضبط —
+//    الشرح والوجع والتسليمات والأسئلة — بس بدل نموذج الطلب
+//    بيكون في نموذج تسجيل بقائمة الانتظار. ريّان: «حطها انه
+//    حاليا مش متاحه ولكن قريبا حتكون متاحه».
+const soon = service.soon === true;
+
 // باقي الخدمات — للروابط الداخلية آخر الصفحة
 const others = servicesData.services
   .filter((s) => s.id !== id)
@@ -55,6 +61,19 @@ const t = isAr
       ctaBtn: 'ابدأ الطلب',
       ctaAlt: 'أو احكيني واتساب مباشرة',
       othersTitle: 'خدمات ثانية',
+      soonBadge: 'قريباً',
+      whyTitle: 'ليش هاي الخدمة أصلاً',
+      soonTitle: 'لسا ما فتحت. بس بتقدر تكون أول واحد',
+      soonBody:
+        'عم أبني الأساس هلق، وما بحب أبيع إشي قبل ما يكون جاهز وقابل للتكرار. سجّل إيميلك وبوصلك خبر أول ما تفتح — وبتاخد أول شهر بسعر التأسيس.',
+      soonName: 'اسمك',
+      soonMail: 'إيميلك',
+      soonPhone: 'واتساب (اختياري)',
+      soonBtn: 'سجّلني لما تنزل',
+      soonSending: 'عم أسجّلك…',
+      soonDone: 'تمام، انسجّلت. رح أحكيك أول ما تفتح.',
+      soonErr: 'صار خلل. جرّب كمان مرة أو احكيني واتساب.',
+      soonAlt: 'أو احكيني واتساب مباشرة',
     }
   : {
       back: '← All services',
@@ -68,6 +87,19 @@ const t = isAr
       ctaBtn: 'Start the brief',
       ctaAlt: 'Or message me on WhatsApp',
       othersTitle: 'Other services',
+      soonBadge: 'Coming soon',
+      whyTitle: 'Why this service exists',
+      soonTitle: 'Not open yet. You can be first in line',
+      soonBody:
+        'I am building the foundation now, and I do not sell anything before it is ready and repeatable. Leave your email and you will hear the moment it opens, with founding pricing on the first month.',
+      soonName: 'Your name',
+      soonMail: 'Your email',
+      soonPhone: 'WhatsApp (optional)',
+      soonBtn: 'Tell me when it launches',
+      soonSending: 'Adding you…',
+      soonDone: 'Done, you are on the list. I will reach out the moment it opens.',
+      soonErr: 'Something broke. Try again or message me on WhatsApp.',
+      soonAlt: 'Or message me on WhatsApp',
     };
 
 // أرقام حقيقية — نفس أرقام قسم «ليش أنا» بالصفحة الرئيسية
@@ -141,15 +173,44 @@ const schema = [
       <a class="back" href={`${p}/services/`}>{t.back}</a>
 
       <!-- ═══ ١. العنوان بالمشكلة ═══ -->
-      <p class="kicker" data-reveal>{c.name}</p>
+      <div class="kickers" data-reveal>
+        <p class="kicker">{c.name}</p>
+        {soon && <p class="kicker soon-badge">{t.soonBadge}</p>}
+      </div>
       <h1 data-reveal>{c.h1}</h1>
       <p class="intro" data-reveal>{c.intro}</p>
 
       <div class="hero-cta" data-reveal>
-        <a class="btn primary" href={briefHref}>{t.ctaBtn}</a>
+        <a class="btn primary" href={soon ? '#notify' : briefHref}>
+          {soon ? t.soonBtn : t.ctaBtn}
+        </a>
         <a class="btn ghost" href={`${p}${service.proof}/`}>{t.proofLink}</a>
       </div>
     </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ١·٥ ليش هاي الخدمة أصلاً
+
+         ✏️ اختياري بـservices.json: `why` مصفوفة فقرات.
+         ⚠️ مش تكرار للمقدمة. المقدمة بتقول شو الخدمة، وهاي بتقول
+            ليش موجودة أصلاً وشو القصة وراها. طلبها ريّان صراحةً
+            للخدمات الجديدة: «ليش بدنا نضيف هيك خدمه والالم
+            والاهميه والقصص».
+         ═══════════════════════════════════════════════════════════ -->
+    {
+      c.why?.length > 0 && (
+        <section class="band">
+          <div class="container">
+            <h2 data-reveal>{t.whyTitle}</h2>
+            <div class="why" data-stagger>
+              {c.why.map((x: string) => (
+                <p>{x}</p>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
 
     <!-- ═══ ٢. الوجع ═══ -->
     <section class="band">
@@ -219,11 +280,64 @@ const schema = [
          ⚠️ preselect بيخلّي الخدمة مختارة سلفاً، فبيفتح على الخطوة
             الأولى وخدمته محدّدة. ما بيقعد يدوّر عليها بقائمة.
          ═══════════════════════════════════════════════════════════ -->
-    <section class="band" id="brief">
-      <div class="container">
-        <BriefSection lang={lang} bare preselect={service.id} />
-      </div>
-    </section>
+    {
+      soon ? (
+        /* ═══════════════════════════════════════════════════════
+           قائمة انتظار — مش نموذج طلب
+
+           ⚠️ بيبعت على نفس مسار `/brief` بالـWorker، فما احتجنا
+              نلمس البنية الشغّالة ولا ننشر Worker جديد. التسجيل
+              بيوصل ريّان إيميل وتيليجرام زي أي طلب — يعني هو
+              **عميل محتمل حقيقي** مش سطر بقاعدة بيانات ميتة.
+           ⚠️ حقل `website` مخفي — فخّ سبام. الـWorker بيرجّع «تمام»
+              لو انتعبّى، فالروبوت ما بيعرف إنه انكشف.
+           ═══════════════════════════════════════════════════════ */
+        <section class="band" id="notify">
+          <div class="container">
+            <div class="cta notify">
+              <h2 data-reveal>{t.soonTitle}</h2>
+              <p data-reveal>{t.soonBody}</p>
+
+              <form class="nform" data-notify data-service={c.name} data-lang={lang} novalidate>
+                <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+                <div class="nrow">
+                  <label>
+                    <span>{t.soonName}</span>
+                    <input name="name" required autocomplete="name" />
+                  </label>
+                  <label>
+                    <span>{t.soonMail}</span>
+                    <input name="mail" type="email" required autocomplete="email" inputmode="email" />
+                  </label>
+                  <label>
+                    <span>{t.soonPhone}</span>
+                    <input name="phone" autocomplete="tel" inputmode="tel" />
+                  </label>
+                </div>
+
+                <div class="nactions">
+                  <button class="btn primary" type="submit" data-label={t.soonBtn} data-sending={t.soonSending}>
+                    {t.soonBtn}
+                  </button>
+                  <a class="btn ghost" href={whatsapp} target="_blank" rel="noreferrer">
+                    {t.soonAlt}
+                  </a>
+                </div>
+
+                <p class="nmsg" data-msg data-done={t.soonDone} data-err={t.soonErr} role="status" />
+              </form>
+            </div>
+          </div>
+        </section>
+      ) : (
+        <section class="band" id="brief">
+          <div class="container">
+            <BriefSection lang={lang} bare preselect={service.id} />
+          </div>
+        </section>
+      )
+    }
 
     <!-- ═══ ٧. باقي الخدمات ═══ -->
     <section class="band">
@@ -244,6 +358,82 @@ const schema = [
   </main>
 
   <Footer lang={lang} />
+
+  <script is:inline>
+    // ═══════════════════════════════════════════════════════════
+    //  إرسال قائمة الانتظار
+    //  بينزّل على نفس مسار /brief — الخدمة بتنبعت كـservice
+    //  عشان يعرف ريّان أي خدمة انسجّل عليها.
+    //  ⚠️ ClientRouter بيعيد بناء الصفحة، فمنربط على astro:page-load
+    //     مش DOMContentLoaded (شوف الشرح بـmotion.js).
+    // ═══════════════════════════════════════════════════════════
+    (function () {
+      var API = 'https://ryanalali-api.ryanalali-api.workers.dev';
+
+      function wire() {
+        var f = document.querySelector('form[data-notify]');
+        if (!f || f.dataset.wired) return;
+        f.dataset.wired = '1';
+
+        var msg = f.querySelector('[data-msg]');
+        var btn = f.querySelector('button[type="submit"]');
+
+        f.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          var d = new FormData(f);
+          var name = (d.get('name') || '').toString().trim();
+          var mail = (d.get('mail') || '').toString().trim();
+
+          if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) {
+            msg.textContent = msg.dataset.err;
+            msg.className = 'nmsg is-err';
+            return;
+          }
+
+          btn.disabled = true;
+          btn.textContent = btn.dataset.sending;
+          msg.textContent = '';
+          msg.className = 'nmsg';
+
+          var svc = f.dataset.service;
+          var lang = f.dataset.lang;
+          var note =
+            lang === 'ar'
+              ? 'تسجيل بقائمة انتظار خدمة «' + svc + '» — لسا ما فتحت.'
+              : 'Waitlist signup for "' + svc + '" — not open yet.';
+
+          try {
+            var r = await fetch(API + '/brief', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({
+                name: name,
+                mail: mail,
+                phone: (d.get('phone') || '').toString().trim(),
+                website: (d.get('website') || '').toString(),
+                services: [svc],
+                details: note,
+                lang: lang,
+              }),
+            });
+            if (!r.ok) throw new Error(String(r.status));
+            msg.textContent = msg.dataset.done;
+            msg.className = 'nmsg is-done';
+            f.querySelector('.nrow').hidden = true;
+            btn.hidden = true;
+          } catch (err) {
+            msg.textContent = msg.dataset.err;
+            msg.className = 'nmsg is-err';
+            btn.disabled = false;
+            btn.textContent = btn.dataset.label;
+          }
+        });
+      }
+
+      wire();
+      document.addEventListener('astro:page-load', wire);
+    })();
+  </script>
 </Base>
 
 <style>
@@ -279,6 +469,53 @@ const schema = [
     margin-bottom: 20px;
   }
   html[lang='ar'] .kicker { letter-spacing: 0; text-transform: none; }
+
+  .kickers {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* ─── بادج «قريباً» ───
+     معبّى مش مفرّغ، عشان يقرا كحالة مش كتصنيف. ونبضة هادية
+     بتقول «هاد إشي جاي» بلا ما تشدّ الانتباه عن العنوان. */
+  .soon-badge {
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    animation: soon-pulse 3.4s var(--ease-out) infinite;
+  }
+
+  @keyframes soon-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 26%, transparent); }
+    55% { box-shadow: 0 0 0 7px transparent; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .soon-badge { animation: none; }
+  }
+
+  /* ─── كتلة «ليش هاي الخدمة» ───
+     فقرات مقروءة بعرض محدود. أول فقرة أكبر شوي لأنها بتحمل
+     الفكرة كلها واللي بيقرا سطر واحد بس لازم يمسكها. */
+  .why {
+    display: grid;
+    gap: 18px;
+    max-width: 66ch;
+  }
+
+  .why p {
+    color: var(--dim);
+    font-size: clamp(15px, 1.6vw, 17.5px);
+    line-height: 1.85;
+  }
+
+  .why p:first-child {
+    color: var(--text);
+    font-size: clamp(16px, 1.8vw, 20px);
+    padding-inline-start: 16px;
+    border-inline-start: 2px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  }
 
   h1 {
     font-size: var(--title);
@@ -460,6 +697,77 @@ const schema = [
   .cta h2 { margin-bottom: 14px; }
   .cta p { color: var(--muted); max-width: 56ch; line-height: 1.75; margin-bottom: 26px; }
 
+  /* ═══════════════ نموذج قائمة الانتظار ═══════════════ */
+  .notify h2 { max-width: 20ch; }
+
+  .nform { margin-top: 26px; }
+
+  /* حقل فخّ السبام — مخفي عن العين وعن قارئ الشاشة سوا */
+  .nform input[name='website'] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .nrow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .nrow label {
+    display: grid;
+    gap: 7px;
+  }
+
+  .nrow span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .nrow input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 13px 18px;
+    color: var(--text);
+    font: inherit;
+    font-size: 15px;
+    transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out);
+  }
+
+  .nrow input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--surface-2);
+  }
+
+  .nactions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .nform button { border: 0; cursor: pointer; font-family: inherit; }
+  .nform button:disabled { opacity: 0.6; cursor: wait; }
+
+  .nmsg:empty { display: none; }
+
+  .nmsg {
+    margin-top: 16px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
+  .nmsg.is-done { color: var(--accent); }
+  .nmsg.is-err { color: var(--danger); }
+
   /* ─── باقي الخدمات ─── */
   .others {
     display: grid;
@@ -488,6 +796,7 @@ const schema = [
   @media (max-width: 860px) {
     .deliver, .others { grid-template-columns: 1fr; }
     .stats { grid-template-columns: 1fr; }
+    .nrow { grid-template-columns: 1fr; }
     h1 { max-width: none; }
   }
 </style>

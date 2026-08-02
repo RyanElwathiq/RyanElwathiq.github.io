@@ -87,6 +87,9 @@ const services = [...servicesData.services]
     name: s[svcLang].name,
     desc: s[svcLang].menuDesc,
     href: `${isAr ? '/ar' : ''}/services/${s.slug}/`,
+    // خدمة لسا ما فتحت — بتبيّن بالقائمة بس بعلامة واضحة، عشان
+    // ما حدا يفتح صفحتها متوقّع إنها متاحة
+    soon: s.soon === true,
   }));
 const servicesHref = `${isAr ? '/ar' : ''}/services/`;
 
@@ -193,7 +196,10 @@ const switchLabel = isAr ? 'EN' : 'عربي';
           <div class="dd-grid">
             {services.map((s) => (
               <a class="dd-item" href={s.href}>
-                <span class="dd-name">{s.name}</span>
+                <span class="dd-name">
+                  {s.name}
+                  {s.soon && <em class="dd-soon">{isAr ? 'قريباً' : 'soon'}</em>}
+                </span>
                 <span class="dd-desc">{s.desc}</span>
               </a>
             ))}
@@ -420,6 +426,22 @@ const switchLabel = isAr ? 'EN' : 'عربي';
     transition: color 0.25s var(--ease-out);
   }
   .dd-item:hover .dd-name { color: var(--accent); }
+
+  /* علامة «قريباً» بالقائمة — صغيرة عشان ما تسرق الاسم،
+     بس واضحة عشان ما حدا يفتح متوقّع إنها متاحة */
+  .dd-soon {
+    display: inline-block;
+    margin-inline-start: 7px;
+    padding: 1px 7px;
+    border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--accent);
+    font-size: 10.5px;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    vertical-align: middle;
+  }
 
   .dd-desc {
     display: block;
