@@ -1,0 +1,17 @@
+---
+// صفحات الخدمات (عربي) — نفس الروابط اللاتينية بالضبط عشان
+// hreflang يقترن صح: /services/seo/ ↔ /ar/services/seo/
+import ServicePage from '../../../layouts/ServicePage.astro';
+import servicesData from '../../../data/services.json';
+
+export function getStaticPaths() {
+  return servicesData.services.map((s) => ({
+    params: { slug: s.slug },
+    props: { id: s.id },
+  }));
+}
+
+const { id } = Astro.props;
+---
+
+<ServicePage lang="ar" id={id} />

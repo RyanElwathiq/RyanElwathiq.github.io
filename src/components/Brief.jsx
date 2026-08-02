@@ -16,8 +16,9 @@
 //
 //  ✏️ كل النصوص والخيارات بمتغيّر COPY تحت
 // ═══════════════════════════════════════════════════════════════
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Select from './Select.jsx';
+import servicesData from '../data/services.json';
 import '../styles/brief.css';
 
 const COPY = {
@@ -161,6 +162,31 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
 
   const toggleService = (s) =>
     setServices((prev) => (prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]));
+
+  // ═══════════════════════════════════════════════════════════
+  //  اختيار الخدمة تلقائياً من الرابط  (?s=seo مثلاً)
+  //
+  //  ليش؟ لما الزائر ييجي من صفحة خدمة معيّنة، إنه يقعد يدوّر
+  //  على نفس الخدمة بالقائمة من جديد خطوة ضايعة بتخسّرنا ناس.
+  //
+  //  ⚠️ بينقرا بـ useEffect مش بقيمة أولية، لأن الصفحة بتنبني
+  //     عالسيرفر (ما في window هناك) — والقراءة الأولية بتسبب
+  //     اختلاف بين HTML السيرفر والمتصفح.
+  //  ⚠️ الاسم بيجي من services.json نفسه، فلو تغيّر نص الخدمة
+  //     بمكان واحد ما بينكسر الاختيار بصمت. وإذا الاسم مش
+  //     موجود بالقائمة، ما بيصير اشي — بلا أخطاء.
+  //  ⚠️ منقبل المعرّف (id) أو الرابط (slug) لأنهم بيختلفوا
+  //     بخمس خدمات: ads ↔ paid-ads، social ↔ social-media...
+  //     ومين ما شاف الرابط /services/paid-ads/ رح يكتب
+  //     ?s=paid-ads طبيعي. لو قبلنا واحد بس، بيفشل بصمت.
+  // ═══════════════════════════════════════════════════════════
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('s');
+    if (!id) return;
+    const svc = servicesData.services.find((x) => x.id === id || x.slug === id);
+    const label = svc?.briefValue?.[isAr ? 'ar' : 'en'];
+    if (label && t.services.includes(label)) setServices([label]);
+  }, [isAr, t.services]);
 
   // ─── نص الطلب النهائي ───
   const briefText = useMemo(() => {

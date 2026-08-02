@@ -1,0 +1,247 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  فهرس الخدمات — /services/ و /ar/services/
+//
+//  هاي الصفحة مهمة للسيو: هي اللي بتستهدف البحث العام
+//  («خدمات تسويق رقمي الأردن») وبتوزّع قوّتها على الصفحات
+//  الداخلية عبر الروابط.
+//
+//  ✏️ ما في نص خدمات هون — كله من services.json
+// ═══════════════════════════════════════════════════════════════
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Particles from '../components/Particles.astro';
+import servicesData from '../data/services.json';
+
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+const L = isAr ? 'ar' : 'en';
+const p = isAr ? '/ar' : '';
+
+const services = [...servicesData.services].sort((a, b) => a.order - b.order);
+
+const t = isAr
+  ? {
+      back: '→ الرئيسية',
+      title: 'خدماتي',
+      h1: 'شو بقدر أعملك',
+      seoDesc:
+        'خدمات تسويق رقمي وتصميم من عمّان: مواقع إلكترونية، إعلانات ممولة، سيو، هوية بصرية، سوشال ميديا، مونتاج فيديو، استراتيجية، واستشارات.',
+      intro:
+        'ثمان خدمات، بس المنطق واحد: نفهم المشكلة الحقيقية أول، وبعدين نختار الأداة. اضغط على أي وحدة تشوف شو بتاخد بالضبط وكيف بتصير.',
+      ctaTitle: 'مش متأكد شو بتحتاج؟',
+      ctaBody: 'عبّي الطلب واحكيلي وضعك، وأنا برجعلك برأي صريح — حتى لو كان الجواب إنك مش محتاج تصرف عندي.',
+      ctaBtn: 'احكيلي عن مشروعك',
+      more: 'اقرأ التفاصيل ←',
+    }
+  : {
+      back: '← Home',
+      title: 'Services',
+      h1: 'What I can do for you',
+      seoDesc:
+        'Digital marketing and design services from Amman: websites, paid ads, SEO, brand identity, social media, video editing, strategy, and consulting.',
+      intro:
+        'Eight services, one logic: understand the real problem first, then pick the tool. Open any of them to see exactly what you get and how it works.',
+      ctaTitle: 'Not sure what you need?',
+      ctaBody: 'Send me a brief describing your situation and I will come back with a straight opinion — even if the answer is that you should not spend anything with me.',
+      ctaBtn: 'Tell me about your project',
+      more: 'Read the details →',
+    };
+
+const site = Astro.site ?? new URL('https://ryanalali.me');
+
+// ItemList — بتقول لجوجل «هاي قائمة خدمات مرتبة» وبتساعده
+// يفهم العلاقة بين هالصفحة والصفحات الداخلية
+const schema = [
+  {
+    '@type': 'ItemList',
+    name: t.h1,
+    itemListElement: services.map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: s[L].name,
+      url: new URL(`${p}/services/${s.slug}/`, site).href,
+    })),
+  },
+];
+---
+
+<Base
+  title={`${t.title} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`}
+  description={t.seoDesc}
+  lang={lang}
+  schema={schema}
+>
+  <Nav lang={lang} />
+
+  <main id="top" class="sx">
+    <div class="container">
+      <a class="back" href={`${p}/`}>{t.back}</a>
+      <h1 data-reveal>{t.h1}</h1>
+      <p class="intro" data-reveal>{t.intro}</p>
+
+      <div class="grid" data-stagger>
+        {services.map((s, i) => (
+          <a class="card" href={`${p}/services/${s.slug}/`}>
+            <span class="num">{String(i + 1).padStart(2, '0')}</span>
+            <h2>{s[L].name}</h2>
+            <p class="desc">{s[L].menuDesc}</p>
+            <p class="hook">{s[L].h1}</p>
+            <span class="more">{t.more}</span>
+          </a>
+        ))}
+      </div>
+
+      <section class="cta" data-reveal>
+        <h2>{t.ctaTitle}</h2>
+        <p>{t.ctaBody}</p>
+        <a class="btn" href={`${p}/brief/`}>{t.ctaBtn}</a>
+      </section>
+    </div>
+
+    <Particles src="/assets/logo-white.png" size="small" />
+  </main>
+
+  <Footer lang={lang} />
+</Base>
+
+<style>
+  /* 🎛️ لوحة التحكم */
+  .sx {
+    --title: clamp(38px, 6vw, 76px);
+    padding-top: calc(108px + clamp(30px, 5vh, 60px));
+    min-height: 100dvh;
+  }
+
+  .back {
+    display: inline-block;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 26px;
+    transition: color 0.3s var(--ease-out);
+  }
+  .back:hover { color: var(--accent); }
+
+  h1 {
+    font-size: var(--title);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 16px;
+  }
+  html[lang='ar'] h1 { font-weight: 800; letter-spacing: 0; }
+
+  .intro {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 18px);
+    line-height: 1.75;
+    max-width: 58ch;
+    margin-bottom: clamp(40px, 6vh, 64px);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .card {
+    display: block;
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: clamp(24px, 3vw, 34px);
+    overflow: hidden;
+    transition: transform 0.35s var(--ease-out), border-color 0.35s var(--ease-out), background 0.35s var(--ease-out);
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+    background: var(--surface-2);
+  }
+
+  /* الرقم الشبح بالخلفية — نفس لغة الأرقام بباقي الموقع */
+  .num {
+    position: absolute;
+    top: 14px;
+    inset-inline-end: 20px;
+    font-family: var(--font-en);
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text);
+    opacity: 0.05;
+    transition: opacity 0.35s var(--ease-out), color 0.35s var(--ease-out);
+  }
+  .card:hover .num { opacity: 0.16; color: var(--accent); }
+
+  .card h2 {
+    font-size: clamp(19px, 2.2vw, 24px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  html[lang='ar'] .card h2 { font-weight: 800; letter-spacing: 0; }
+
+  .desc { color: var(--accent); font-size: 13.5px; font-weight: 600; margin-bottom: 14px; }
+
+  .hook {
+    color: var(--muted);
+    font-size: clamp(14px, 1.5vw, 15.5px);
+    line-height: 1.65;
+    max-width: 34ch;
+    margin-bottom: 18px;
+  }
+
+  .more {
+    display: inline-block;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+    transition: color 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  }
+  .card:hover .more { color: var(--accent); }
+
+  /* ─── شريط الطلب ─── */
+  .cta {
+    margin-top: clamp(56px, 8vh, 96px);
+    background: var(--surface);
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    border-radius: calc(var(--r-card) * 1.6);
+    padding: clamp(30px, 5vw, 56px);
+  }
+
+  .cta h2 {
+    font-size: clamp(23px, 3vw, 34px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  html[lang='ar'] .cta h2 { font-weight: 800; letter-spacing: 0; }
+
+  .cta p { color: var(--muted); max-width: 56ch; line-height: 1.75; margin-bottom: 24px; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: var(--r-pill);
+    padding: 13px 26px;
+    transition: transform 0.3s var(--ease-out), background 0.3s var(--ease-out);
+  }
+  .btn:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--accent) 85%, #fff); }
+
+  @media (max-width: 780px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>

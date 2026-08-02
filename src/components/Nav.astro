@@ -4,6 +4,8 @@
 //  • ديسكتوب: كبسولة بالنص فوق، ما بتاخد عرض الصفحة كله
 //  • موبايل: لوجو + زر هامبرجر بيفتح قائمة كاملة
 // ═══════════════════════════════════════════════════════════════
+import servicesData from '../data/services.json';
+
 interface Props {
   lang: 'en' | 'ar';
   // رابط بديل لتبديل اللغة (بتستخدمه صفحات المقالات لأن اسم
@@ -48,6 +50,8 @@ const t = isAr
       contact: 'تواصل',
       menu: 'القائمة',
       close: 'إغلاق',
+      services: 'خدماتي',
+      allServices: 'كل الخدمات ←',
     }
   : {
       work: 'Work',
@@ -68,7 +72,23 @@ const t = isAr
       contact: 'Contact',
       menu: 'Menu',
       close: 'Close',
+      services: 'Services',
+      allServices: 'All services →',
     };
+
+// ═══════════════════════════════════════════════════════════════
+//  الخدمات — بتتقرا من services.json فما في مكانين ينفصلوا
+//  ✏️ ضفت خدمة بالملف؟ بتظهر بالقائمة لحالها، ما بدها تعديل هون
+// ═══════════════════════════════════════════════════════════════
+const svcLang = isAr ? 'ar' : 'en';
+const services = [...servicesData.services]
+  .sort((a, b) => a.order - b.order)
+  .map((s) => ({
+    name: s[svcLang].name,
+    desc: s[svcLang].menuDesc,
+    href: `${isAr ? '/ar' : ''}/services/${s.slug}/`,
+  }));
+const servicesHref = `${isAr ? '/ar' : ''}/services/`;
 
 // ✏️ روابط الكبسولة عالديسكتوب — مختصرة عشان تضل الكبسولة أنيقة
 //    (باقي الأقسام موجودة كعلامات على شريط الإشارة فوق)
@@ -92,6 +112,14 @@ const links = [
 //     وبأيقونات SignalBar.
 // ═══════════════════════════════════════════════════════════════
 const sheetGroups = [
+  // الخدمات أول مجموعة بقائمة الموبايل — هاي اللي بتجيب شغل
+  {
+    title: t.services,
+    links: [
+      ...services.map((s) => ({ label: s.name, href: s.href })),
+      { label: t.allServices, href: servicesHref },
+    ],
+  },
   {
     title: t.gProblem,
     links: [
@@ -144,6 +172,36 @@ const switchLabel = isAr ? 'EN' : 'عربي';
     </a>
 
     <nav class="links" aria-label={isAr ? 'التنقل الرئيسي' : 'Main navigation'}>
+      {/* ═══════════════════════════════════════════════════════
+          قائمة الخدمات المنسدلة
+
+          ⚠️ مبنية على <details> مش على hover لحاله. ليش؟
+             • بتشتغل بالضغط عالموبايل واللمس (الـ hover ما بيوجد)
+             • بتنفتح بالكيبورد (Enter/Space) لحالها بلا كود
+             • قارئ الشاشة بيعرف إنها مطوية ولا مفتوحة لحاله
+             والـ hover مضاف فوقها للماوس بس — أحسن الاثنين.
+          ═══════════════════════════════════════════════════════ */}
+      <details class="dd" data-dd>
+        <summary>
+          {t.services}
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+            <path d="M5 9l7 7 7-7" />
+          </svg>
+        </summary>
+
+        <div class="dd-panel">
+          <div class="dd-grid">
+            {services.map((s) => (
+              <a class="dd-item" href={s.href}>
+                <span class="dd-name">{s.name}</span>
+                <span class="dd-desc">{s.desc}</span>
+              </a>
+            ))}
+          </div>
+          <a class="dd-all" href={servicesHref}>{t.allServices}</a>
+        </div>
+      </details>
+
       {links.map((l) => <a href={l.href}>{l.label}</a>)}
     </nav>
 
@@ -265,6 +323,127 @@ const switchLabel = isAr ? 'EN' : 'عربي';
     display: flex;
     align-items: center;
     gap: var(--pill-gap);
+  }
+
+  /* ╔═══════════ قائمة الخدمات المنسدلة ═══════════╗ */
+  .dd {
+    position: relative;
+  }
+
+  .dd > summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--link-size);
+    color: var(--muted);
+    white-space: nowrap;
+    cursor: pointer;
+    list-style: none;
+    transition: color 0.3s var(--ease-out);
+  }
+  .dd > summary::-webkit-details-marker { display: none; }
+  .dd > summary:hover,
+  .dd[open] > summary { color: var(--text); }
+
+  .dd > summary svg {
+    transition: transform 0.35s var(--ease-out);
+    opacity: 0.75;
+  }
+  .dd[open] > summary svg { transform: rotate(180deg); }
+
+  /* اللوحة — بتنزل من تحت الكبسولة */
+  .dd-panel {
+    position: absolute;
+    top: calc(100% + 18px);
+    inset-inline-start: 50%;
+    transform: translateX(var(--dd-x, -50%)) translateY(-6px);
+    width: min(560px, 78vw);
+    padding: 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(242, 243, 238, 0.12);
+    background: linear-gradient(to bottom, rgba(33, 36, 42, 0.94), rgba(18, 20, 25, 0.96));
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 18px 48px rgba(0, 0, 0, 0.58);
+    opacity: 0;
+    animation: dd-in 0.28s var(--ease-out) forwards;
+  }
+  html[dir='rtl'] .dd-panel { --dd-x: 50%; }
+
+  @keyframes dd-in {
+    to { opacity: 1; transform: translateX(var(--dd-x, -50%)) translateY(0); }
+  }
+
+  /* جسر شفاف بين الرابط واللوحة — بدونه الماوس بيمرق بالفراغ
+     واللوحة بتسكّر قبل ما توصلها */
+  .dd-panel::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: -20px;
+    height: 20px;
+  }
+
+  .dd-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+  }
+
+  .dd-item {
+    display: block;
+    padding: 11px 13px;
+    border-radius: 12px;
+    transition: background 0.25s var(--ease-out);
+  }
+  .dd-item:hover { background: rgba(242, 243, 238, 0.06); }
+
+  .dd-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+    transition: color 0.25s var(--ease-out);
+  }
+  .dd-item:hover .dd-name { color: var(--accent); }
+
+  .dd-desc {
+    display: block;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--muted);
+  }
+
+  .dd-all {
+    display: block;
+    margin-top: 6px;
+    padding: 11px 13px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    transition: opacity 0.25s var(--ease-out);
+  }
+  .dd-all:hover { opacity: 0.75; }
+
+  /* لو المتصفح ما بيدعم الضبابية */
+  @supports not (backdrop-filter: blur(4px)) {
+    .dd-panel { background: var(--surface-2); }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .dd-panel {
+      background: var(--surface-2);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dd-panel { animation: none; opacity: 1; transform: translateX(var(--dd-x, -50%)); }
   }
 
   .links a {
@@ -579,4 +758,67 @@ const switchLabel = isAr ? 'EN' : 'عربي';
 
   initMenu();
   document.addEventListener('astro:page-load', initMenu);
+
+  // ═══════════════════════════════════════════════════════════════
+  //  قائمة الخدمات المنسدلة
+  //
+  //  الأساس <details> — يعني بتشتغل بالضغط وبالكيبورد بلا أي كود.
+  //  هذا السكربت بيضيف تلاتة فوقها بس:
+  //   ١. الفتح بمرور الماوس (للأجهزة اللي إلها مؤشر حقيقي فقط —
+  //      على التلفون الـ hover بيعلق مفتوح وبيصير مزعج)
+  //   ٢. السكّر لما تضغط برّا
+  //   ٣. السكّر بزر Escape ورجوع التركيز عالرابط
+  //
+  //  ⚠️ نفس علاج قائمة الموبايل: العناصر بتتبدّل مع كل انتقال
+  //     صفحة، فمنعيد الربط عند astro:page-load مع حارس ضد التكرار.
+  // ═══════════════════════════════════════════════════════════════
+  let ddDocBound = false;
+
+  function initDropdown() {
+    const dd = document.querySelector('[data-dd]') as HTMLDetailsElement | null;
+    if (!dd || dd.dataset.bound) return;
+    dd.dataset.bound = '1';
+
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    if (canHover) {
+      let closeTimer: number | undefined;
+
+      dd.addEventListener('mouseenter', () => {
+        clearTimeout(closeTimer);
+        dd.open = true;
+      });
+
+      // تأخير بسيط قبل السكّر: لو الماوس مرق برّا للحظة وهو رايح
+      // عاللوحة، ما بدنا القائمة تختفي بوجهه
+      dd.addEventListener('mouseleave', () => {
+        closeTimer = window.setTimeout(() => (dd.open = false), 160);
+      });
+    }
+
+    // الضغط على أي خدمة بيسكّر القائمة
+    dd.querySelectorAll('a').forEach((a) =>
+      a.addEventListener('click', () => (dd.open = false)),
+    );
+
+    if (!ddDocBound) {
+      ddDocBound = true;
+
+      document.addEventListener('click', (e) => {
+        const d = document.querySelector('[data-dd]') as HTMLDetailsElement | null;
+        if (d?.open && !d.contains(e.target as Node)) d.open = false;
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const d = document.querySelector('[data-dd]') as HTMLDetailsElement | null;
+        if (!d?.open) return;
+        d.open = false;
+        (d.querySelector('summary') as HTMLElement | null)?.focus();
+      });
+    }
+  }
+
+  initDropdown();
+  document.addEventListener('astro:page-load', initDropdown);
 </script>

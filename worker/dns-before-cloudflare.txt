@@ -1,0 +1,42 @@
+# صورة DNS لـ ryanalali.me — قبل النقل لـ Cloudflare
+# التاريخ: 2026-07-30T23:02:30.516Z
+# ⚠️ هاي مرجع للاسترجاع. لو ضاع أي سجل بعد النقل، رجّعه من هون.
+
+## NS  ryanalali.me
+   ryanalali.me	nameserver = dns2.registrar-servers.com
+   ryanalali.me	nameserver = dns1.registrar-servers.com
+
+## A  ryanalali.me
+   Addresses:  185.199.109.153
+
+## AAAA  ryanalali.me
+   (ما في)
+
+## CNAME  www.ryanalali.me
+   www.ryanalali.me	canonical name = ryanalali.me
+
+## MX  ryanalali.me
+   ryanalali.me	MX preference = 10, mail exchanger = eforward3.registrar-servers.com
+   ryanalali.me	MX preference = 10, mail exchanger = eforward2.registrar-servers.com
+   ryanalali.me	MX preference = 20, mail exchanger = eforward5.registrar-servers.com
+   ryanalali.me	MX preference = 15, mail exchanger = eforward4.registrar-servers.com
+   ryanalali.me	MX preference = 10, mail exchanger = eforward1.registrar-servers.com
+
+## TXT  ryanalali.me
+   ryanalali.me	text =
+
+## ═══ ملاحظات تحقّقنا منها قبل النقل (٣١ تموز ٢٠٢٦) ═══
+
+⚠️ سجلات الـ MX (eforward1-5.registrar-servers.com) موجودة **افتراضياً**
+   من Namecheap — بس تحويل الإيميل **ما انستخدم ولا مرة**.
+   انتحقّق من: Namecheap → Domain List → MANAGE → Redirect Email
+   الشاشة قالت: "You haven't defined any Email Redirect yet"
+
+   يعني ما في ولا تحويل شغّال، وضياع هالسجلات وقت النقل ما بيكسر إشي.
+   وبعد النقل بننصب Cloudflare Email Routing (مجاني) لو بدنا
+   عناوين زي hello@ryanalali.me.
+
+✓ اللي لازم يشتغل بعد النقل:
+   - ryanalali.me      → GitHub Pages (185.199.108-111.153)
+   - www.ryanalali.me  → ryanalali.me
+   وهدول الاثنين بس. ما في إشي تاني معتمد على الـ DNS.
