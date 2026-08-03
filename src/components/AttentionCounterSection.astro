@@ -1,0 +1,608 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «عداد الانتباه» — مليون واقفين قدام بابك، شو أول جملة؟
+//
+//  ٤ جولات اختيار (مطعم، عيادة، متجر، نادي) وبعدهم جولة حرة:
+//  بتكتب جملتك ومصنّف قواعد محلي بيقيّمها (بلا أي شبكة ولا ذكاء
+//  اصطناعي — القواعد بملف البيانات وشفافة).
+//
+//  ⚠️ الحشد المرئي (النقاط) والعداد بينبنوا بالجافاسكربت —
+//     ستايلاتهم بـ :global. شوف فخ مترجم الباكجات.
+//  ⚠️ خيارات كل جولة بتنخلط عشوائياً عشان «الجواب الثالث دايماً»
+//     ما يصير استراتيجية.
+//  ✏️ الجولات والقواعد والأحكام بـ src/data/attention-counter.js
+//  ✏️ الاستخدام جوّا مقال:  <AttentionCounterSection lang="ar" />
+// ═══════════════════════════════════════════════════════════════
+import { ROUNDS, CLASSIFIER, VERDICTS } from '../data/attention-counter.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'attention-counter' } = Astro.props;
+const isAr = lang === 'ar';
+const L = lang;
+
+const briefHref = isAr ? '/ar/brief/' : '/brief/';
+
+const t = isAr
+  ? {
+      eyebrow: 'لعبة قصيرة',
+      title: 'عداد الانتباه',
+      lede: 'مليون شخص واقفين قدام باب شركتك، مستعدين يسمعوا جملة وحدة. كل جملة غلط بتمشّي قسم منهم. شو رح تقلهم؟',
+      coverTitle: 'مليون واقفين. احكي.',
+      rules: ['٤ مواقف، بكل واحد بتختار جملة', 'العداد بيفرجيك مين ضل واقف', 'وبالآخر بتكتب جملتك إنت'],
+      start: 'اطلع عالباب',
+      standing: 'لسا واقفين',
+      free: 'هلأ إنت: اكتب أول جملة لجمهورك إنت',
+      freePh: 'اكتب جملتك هون...',
+      freeBtn: 'قلها للجمهور',
+      honesty: 'الأرقام توضيحية لشكل العلاقة، مش قياس. بس الاتجاه حقيقي: الحكي عن حالك بيمشّي الناس، والحكي عن مشكلتهم بيوقفهم.',
+      next: 'الموقف الجاي',
+      toFree: 'جولة الجملة الحرة',
+      finishBtn: 'شوف النتيجة',
+      again: 'عيدها',
+      cta: 'احجز جلسة تشخيص',
+      left: 'ضلوا معك حتى النهاية',
+    }
+  : {
+      eyebrow: 'Short game',
+      title: 'The Attention Counter',
+      lede: 'A million people are standing at your company door, ready to hear one sentence. Every wrong line walks a chunk of them away. What will you tell them?',
+      coverTitle: 'A million are standing. Speak.',
+      rules: ['4 situations, pick a line in each', 'The counter shows who stayed', 'At the end you write your own line'],
+      start: 'Step out the door',
+      standing: 'still standing',
+      free: 'Your turn: write the first line for your own audience',
+      freePh: 'Write your line here...',
+      freeBtn: 'Say it to the crowd',
+      honesty: 'Numbers are illustrative of the relationship, not a measurement. But the direction is real: talking about yourself walks people away, talking about their problem stops them.',
+      next: 'Next situation',
+      toFree: 'The free-line round',
+      finishBtn: 'See the result',
+      again: 'Replay',
+      cta: 'Book a diagnosis session',
+      left: 'stayed with you to the end',
+    };
+
+const rounds = ROUNDS.map((r) => r[L]);
+const rules = CLASSIFIER[L];
+const fallback = CLASSIFIER.fallback[L];
+const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
+---
+
+<section class="ac" id={id}>
+  <div class="ac-head" data-reveal>
+    <p class="ac-eyebrow">{t.eyebrow}</p>
+    <h2>{t.title}</h2>
+    <p class="ac-lede">{t.lede}</p>
+  </div>
+
+  <div class="ac-board frame frame-on" data-reveal data-attention>
+    <!-- شاشة البداية -->
+    <div class="ac-cover" data-ac-cover>
+      <p class="ac-cover-kicker">{t.eyebrow}</p>
+      <p class="ac-cover-title">{t.coverTitle}</p>
+      <ul class="ac-rules">
+        {t.rules.map((r) => <li>{r}</li>)}
+      </ul>
+      <button type="button" class="btn btn-primary" data-ac-start>{t.start}</button>
+    </div>
+
+    <!-- العداد + الحشد -->
+    <div class="ac-stage" data-ac-stage hidden>
+      <div class="ac-meter">
+        <p class="ac-count"><b data-ac-count>١٬٠٠٠٬٠٠٠</b> <span>{t.standing}</span></p>
+        <div class="ac-crowd" data-ac-crowd aria-hidden="true"></div>
+      </div>
+
+      <!-- الجولة الحالية -->
+      <div class="ac-round" data-ac-round>
+        <p class="ac-scene" data-ac-scene></p>
+        <div class="ac-options" data-ac-options></div>
+        <div class="ac-result" data-ac-result hidden>
+          <span class="ac-tag" data-ac-tag></span>
+          <p class="ac-why" data-ac-why></p>
+          <button type="button" class="btn btn-primary" data-ac-next></button>
+        </div>
+      </div>
+
+      <!-- الجولة الحرة -->
+      <div class="ac-free" data-ac-free hidden>
+        <p class="ac-scene">{t.free}</p>
+        <textarea rows="2" data-ac-input placeholder={t.freePh}></textarea>
+        <button type="button" class="btn btn-primary" data-ac-say>{t.freeBtn}</button>
+      </div>
+
+      <!-- النهاية -->
+      <div class="ac-end" data-ac-end hidden>
+        <p class="ac-final"><b data-ac-final></b> {t.left}</p>
+        <p class="ac-stamp" data-ac-stamp></p>
+        <p class="ac-vtext" data-ac-vtext></p>
+        <p class="ac-honesty">{t.honesty}</p>
+        <div class="ac-actions">
+          <button type="button" class="btn btn-ghost" data-ac-again>{t.again}</button>
+          <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    rounds,
+    rules,
+    fallback,
+    verdicts,
+    labels: { next: t.next, toFree: t.toFree, finishBtn: t.finishBtn, locale: isAr ? 'ar-EG' : 'en-US' },
+  }}
+>
+  // ═══════════════════════════════════════════════════════════
+  //  محرّك العداد
+  // ═══════════════════════════════════════════════════════════
+  (function () {
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var DOTS = 180; // نقاط الحشد المرئي
+
+    function boot() {
+      document.querySelectorAll('[data-attention]').forEach(setup);
+    }
+
+    function setup(board) {
+      if (board.dataset.ready === '1') return;
+      board.dataset.ready = '1';
+
+      var cover = board.querySelector('[data-ac-cover]');
+      var stage = board.querySelector('[data-ac-stage]');
+      var countEl = board.querySelector('[data-ac-count]');
+      var crowdEl = board.querySelector('[data-ac-crowd]');
+      var roundBox = board.querySelector('[data-ac-round]');
+      var sceneEl = board.querySelector('[data-ac-scene]');
+      var optsEl = board.querySelector('[data-ac-options]');
+      var resultEl = board.querySelector('[data-ac-result]');
+      var tagEl = board.querySelector('[data-ac-tag]');
+      var whyEl = board.querySelector('[data-ac-why]');
+      var nextBtn = board.querySelector('[data-ac-next]');
+      var freeBox = board.querySelector('[data-ac-free]');
+      var input = board.querySelector('[data-ac-input]');
+      var endBox = board.querySelector('[data-ac-end]');
+
+      var crowd = 1000000;
+      var i = 0;
+      var raf = 0;
+
+      var n = function (v) {
+        return Math.round(v).toLocaleString(labels.locale);
+      };
+
+      // نقاط الحشد — بتنبنى مرة وحدة
+      for (var d = 0; d < DOTS; d++) {
+        var dot = document.createElement('i');
+        crowdEl.appendChild(dot);
+      }
+      var dots = crowdEl.children;
+
+      function paintCrowd(value) {
+        countEl.textContent = n(value);
+        // كم نقطة «حية»؟ مقياس لوغاريتمي عشان الفرق يبين حتى بالأرقام
+        // الصغيرة (مليون → ١٠٠٠ خطي كان بيطفي كل شي فوراً)
+        var frac = value <= 1 ? 0 : Math.log10(value) / 6; // مليون = 10^6
+        var alive = Math.round(DOTS * Math.max(0, Math.min(1, frac)));
+        for (var k = 0; k < DOTS; k++) dots[k].className = k < alive ? 'on' : '';
+      }
+
+      function tweenCrowd(to) {
+        cancelAnimationFrame(raf);
+        if (reduced) return paintCrowd(to);
+        var from = crowd;
+        var t0 = performance.now();
+        var DUR = 900;
+        function step(now) {
+          var p = Math.min(1, (now - t0) / DUR);
+          var eased = 1 - Math.pow(1 - p, 3);
+          paintCrowd(from + (to - from) * eased);
+          if (p < 1) raf = requestAnimationFrame(step);
+        }
+        raf = requestAnimationFrame(step);
+      }
+
+      function shuffle(a) {
+        for (var x = a.length - 1; x > 0; x--) {
+          var j = Math.floor(Math.random() * (x + 1));
+          var tmp = a[x];
+          a[x] = a[j];
+          a[j] = tmp;
+        }
+        return a;
+      }
+
+      function playRound() {
+        var r = rounds[i];
+        sceneEl.textContent = r.scene;
+        optsEl.textContent = '';
+        resultEl.hidden = true;
+        shuffle(r.options.slice()).forEach(function (o) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'ac-opt';
+          b.textContent = o.text;
+          b.addEventListener('click', function () {
+            pick(o, b);
+          });
+          optsEl.appendChild(b);
+        });
+      }
+
+      function pick(o, btn) {
+        optsEl.querySelectorAll('button').forEach(function (b) {
+          b.disabled = true;
+          if (b !== btn) b.classList.add('dim');
+        });
+        btn.classList.add('picked');
+        var to = crowd * o.keep;
+        tweenCrowd(to);
+        crowd = to;
+        tagEl.textContent = o.tag;
+        whyEl.textContent = o.why;
+        nextBtn.textContent = i + 1 >= rounds.length ? labels.toFree : labels.next;
+        resultEl.hidden = false;
+      }
+
+      function next() {
+        i++;
+        if (i >= rounds.length) {
+          roundBox.hidden = true;
+          freeBox.hidden = false;
+          input.focus();
+          return;
+        }
+        playRound();
+      }
+
+      function classify(text) {
+        for (var k = 0; k < rules.length; k++) {
+          try {
+            if (new RegExp(rules[k].re, 'i').test(text)) return rules[k];
+          } catch (e) {
+            /* قاعدة مكسورة ما بتوقف اللعبة */
+          }
+        }
+        return fallback;
+      }
+
+      function sayFree() {
+        var text = (input.value || '').trim();
+        if (!text) return input.focus();
+        var c = classify(text);
+        var to = crowd * c.keep;
+        tweenCrowd(to);
+        crowd = to;
+        freeBox.hidden = true;
+        // منستعمل صندوق النتيجة نفسه لعرض تصنيف جملته
+        roundBox.hidden = false;
+        sceneEl.textContent = '«' + text.slice(0, 120) + '»';
+        optsEl.textContent = '';
+        tagEl.textContent = c.tag;
+        whyEl.textContent = c.why;
+        nextBtn.textContent = labels.finishBtn;
+        resultEl.hidden = false;
+        i = rounds.length; // العلامة إنه الجاي هو النهاية
+        nextBtn.onclick = null;
+        nextBtn.removeEventListener('click', next);
+        nextBtn.addEventListener('click', finish, { once: true });
+      }
+
+      function finish() {
+        roundBox.hidden = true;
+        endBox.hidden = false;
+        board.querySelector('[data-ac-final]').textContent = n(crowd);
+        var v = verdicts[0];
+        for (var k = 0; k < verdicts.length; k++) if (crowd >= verdicts[k].min) v = verdicts[k];
+        board.querySelector('[data-ac-stamp]').textContent = v.stamp;
+        board.querySelector('[data-ac-vtext]').textContent = v.text;
+      }
+
+      function start() {
+        cancelAnimationFrame(raf);
+        cover.hidden = true;
+        stage.hidden = false;
+        endBox.hidden = true;
+        freeBox.hidden = true;
+        roundBox.hidden = false;
+        input.value = '';
+        crowd = 1000000;
+        i = 0;
+        paintCrowd(crowd);
+        // إعادة ربط زر «كمّل» بعد لعبة سابقة
+        nextBtn.removeEventListener('click', finish);
+        nextBtn.addEventListener('click', next);
+        playRound();
+      }
+
+      board.querySelector('[data-ac-start]').addEventListener('click', start);
+      board.querySelector('[data-ac-again]').addEventListener('click', start);
+      board.querySelector('[data-ac-say]').addEventListener('click', sayFree);
+      nextBtn.addEventListener('click', next);
+
+      document.addEventListener(
+        'astro:before-swap',
+        function () {
+          cancelAnimationFrame(raf);
+        },
+        { once: true },
+      );
+    }
+
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .ac {
+    margin-block: clamp(38px, 5vh, 60px);
+  }
+
+  .ac-head {
+    margin-bottom: 22px;
+  }
+
+  .ac-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .ac-head h2 {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .ac-lede {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 58ch;
+  }
+
+  .ac-board {
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-card);
+  }
+
+  /* ─── شاشة البداية ─── */
+  .ac-cover {
+    text-align: center;
+    padding-block: clamp(18px, 3vh, 34px);
+  }
+
+  .ac-cover-kicker {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .ac-cover-title {
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .ac-rules {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* ─── العداد والحشد ─── */
+  .ac-meter {
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .ac-count {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .ac-count b {
+    font-family: var(--font-en);
+    font-size: clamp(30px, 3.6vw, 44px);
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ac-count span {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .ac-crowd {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .ac-crowd :global(i) {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--r-pill);
+    background: var(--line);
+    transition:
+      background 0.5s var(--ease-out),
+      box-shadow 0.5s var(--ease-out);
+  }
+
+  .ac-crowd :global(i.on) {
+    background: var(--accent);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  /* ─── الجولة ─── */
+  .ac-scene {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.7;
+  }
+
+  .ac-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ac-options :global(.ac-opt) {
+    text-align: start;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 13px 17px;
+    cursor: pointer;
+    transition:
+      border-color 0.25s var(--ease-out),
+      opacity 0.25s var(--ease-out),
+      transform 0.15s var(--ease-out);
+  }
+
+  .ac-options :global(.ac-opt:hover:not(:disabled)) {
+    border-color: var(--accent);
+  }
+
+  .ac-options :global(.ac-opt:active) {
+    transform: scale(0.99);
+  }
+
+  .ac-options :global(.ac-opt.picked) {
+    border-color: var(--accent);
+  }
+
+  .ac-options :global(.ac-opt.dim) {
+    opacity: 0.35;
+  }
+
+  /* نتيجة الجولة */
+  .ac-result {
+    margin-top: 16px;
+  }
+
+  .ac-tag {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: var(--r-pill);
+    padding: 4px 12px;
+    margin-bottom: 10px;
+  }
+
+  .ac-why {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 60ch;
+    margin-bottom: 14px;
+  }
+
+  /* ─── الجولة الحرة ─── */
+  .ac-free textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 14.5px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    resize: vertical;
+  }
+
+  .ac-free textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  /* ─── النهاية ─── */
+  .ac-final {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .ac-final b {
+    font-family: var(--font-en);
+    font-size: clamp(26px, 3vw, 36px);
+    font-weight: 800;
+    color: var(--accent);
+    margin-inline-end: 6px;
+  }
+
+  .ac-stamp {
+    display: inline-block;
+    font-size: clamp(16px, 1.9vw, 20px);
+    font-weight: 800;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 7px 16px;
+    margin-bottom: 12px;
+    transform: rotate(2deg);
+  }
+
+  html[dir='ltr'] .ac-stamp {
+    transform: rotate(-2deg);
+  }
+
+  .ac-vtext {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 60ch;
+    margin-bottom: 12px;
+  }
+
+  .ac-honesty {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 62ch;
+    margin-bottom: 16px;
+  }
+
+  .ac-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ac-crowd :global(i) {
+      transition: none;
+    }
+  }
+</style>
