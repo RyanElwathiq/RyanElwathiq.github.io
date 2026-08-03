@@ -353,6 +353,35 @@ const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
     </script>
 
     <!-- ═══════════════════════════════════════════════════════
+         Microsoft Clarity (2026-08-04) — الطبقة الثالثة بالقياس:
+         GA بيقول «شو صار» بالأرقام، وClarity بيفرجيك «كيف وليش»:
+         تسجيلات جلسات حقيقية + خرائط حرارية — وين بيكبسوا، لوين
+         بيسكرلوا، وهل بيلعبوا الألعاب فعلاً. مجاني بلا حدود،
+         وبيخفي نصوص الحقول تلقائياً (خصوصية الزوار).
+         ⚠️ نفس حارس GA: الدومين الحي بس — فحوصات Playwright
+            والبناء المحلي ما بيسجلوا جلسات وهمية.
+         ⚠️ بيتتبع تنقلات ClientRouter لحاله (بيراقب الـ history).
+         ✏️ الكود مش سر (بيظهر بكود الصفحة لأي زائر).
+         ═══════════════════════════════════════════════════════ -->
+    <script is:inline>
+      (function () {
+        if (!/(^|\.)ryanalali\.me$/.test(location.hostname)) return;
+        (function (c, l, a, r, i, t, y) {
+          c[a] =
+            c[a] ||
+            function () {
+              (c[a].q = c[a].q || []).push(arguments);
+            };
+          t = l.createElement(r);
+          t.async = 1;
+          t.src = 'https://www.clarity.ms/tag/' + i;
+          y = l.getElementsByTagName(r)[0];
+          y.parentNode.insertBefore(t, y);
+        })(window, document, 'clarity', 'script', 'xwoo5ekfsm');
+      })();
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════
          Cloudflare Web Analytics: **ما في سكربت هون عن قصد.**
          طلع كلاودفلير مفعّلها تلقائياً (Automatic setup) من نقلة
          الـ DNS بـ 2026-08-02 — بيحقن سكربت القياس من السيرفر
