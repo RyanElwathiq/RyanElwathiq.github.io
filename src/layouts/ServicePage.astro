@@ -54,6 +54,35 @@ const deliverParts = (c.deliver || []).map((x: string) => {
 // «قصص تحت الغطا» — اختيارية بالبيانات (موجودة للسيو حالياً)
 const stories = c.stories || [];
 
+// ═══ #60: شبكة الترابط ═══
+//  ريّان: «التسويق شبكة مترابطة، كل عنصر أهم من اللي قبله» —
+//  بكل صفحة خدمة منقول بصراحة إنها لحالها مش بالضرورة بتحل
+//  البيع، ومنورجي مين بيكمّلها وليش. الصراحة هاي بتبيع أكثر
+//  من أي وعد، وهي نفس فلسفة «لا وعود جاهزة».
+const pairs = (service.pairsWith || []).map((x: any) => {
+  const other = servicesData.services.find((s) => s.id === x.id);
+  return other
+    ? {
+        name: other[L].name,
+        href: `${p}/services/${other.slug}/`,
+        why: isAr ? x.whyAr : x.whyEn,
+        soon: other.soon === true,
+      }
+    : null;
+}).filter(Boolean);
+
+const netT = isAr
+  ? {
+      title: 'وشو ما بتحلّه لحالها؟',
+      body: `للصراحة: ${c.name} لحالها مش بالضرورة بتحل مشكلة البيع. التسويق شبكة مترابطة، وكل حلقة بتقوّي اللي بعدها. هاي الحلقات اللي بتشتغل مع هاي الخدمة، وليش:`,
+      soonTag: 'قريباً',
+    }
+  : {
+      title: 'And what does it not solve alone?',
+      body: `Honestly: ${c.name} on its own does not necessarily fix sales. Marketing is an interconnected network, and every link strengthens the next. These are the links that work with this service, and why:`,
+      soonTag: 'soon',
+    };
+
 // باقي الخدمات — للروابط الداخلية آخر الصفحة
 const others = servicesData.services
   .filter((s) => s.id !== id)
@@ -296,6 +325,34 @@ const schema = [
                     <span>{s.b}</span>
                   </span>
                 </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ٣ج. شبكة الترابط (#60) — الصراحة اللي بتبيع
+         «هاي الخدمة لحالها مش بالضرورة بتحل البيع» + مين بيكمّلها
+         وليش. كل بطاقة رابط داخلي لخدمتها — صراحة للزائر وقوة
+         روابط لجوجل بنفس الوقت.
+         ═══════════════════════════════════════════════════════════ -->
+    {
+      pairs.length > 0 && (
+        <section class="band">
+          <div class="container">
+            <h2 data-reveal>{netT.title}</h2>
+            <p class="net-body" data-reveal>{netT.body}</p>
+            <div class="net" data-stagger>
+              {pairs.map((x: any) => (
+                <a class="net-card" href={x.href}>
+                  <span class="net-name">
+                    {x.name}
+                    {x.soon && <em class="net-soon">{netT.soonTag}</em>}
+                  </span>
+                  <span class="net-why">{x.why}</span>
+                </a>
               ))}
             </div>
           </div>
@@ -934,6 +991,81 @@ const schema = [
   .tile[aria-expanded='true'] .tile-body { grid-template-rows: 1fr; }
 
   .tile[aria-expanded='true'] .tile-body > span { padding-top: 12px; }
+
+  /* ═══════════════ شبكة الترابط (#60) ═══════════════
+     بطاقات-روابط: اسم الخدمة المكمّلة + ليش بتكمّل هاي.
+     وصلة ليمونية ببداية كل بطاقة — نفس لغة المنظومة فوق. */
+  .net-body {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 17px);
+    line-height: 1.75;
+    max-width: 60ch;
+    margin-bottom: 26px;
+  }
+
+  .net {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+    max-width: 960px;
+  }
+
+  .net-card {
+    position: relative;
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 20px 22px;
+    padding-inline-start: 26px;
+    transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  }
+
+  .net-card::before {
+    content: '';
+    position: absolute;
+    inset-block: 20px;
+    inset-inline-start: 0;
+    width: 3px;
+    border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+    transition: background 0.3s var(--ease-out);
+  }
+
+  .net-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: var(--surface-2);
+    transform: translateY(-2px);
+  }
+
+  .net-card:hover::before { background: var(--accent); }
+
+  .net-name {
+    display: block;
+    font-weight: 700;
+    font-size: clamp(15px, 1.7vw, 17px);
+    margin-bottom: 8px;
+  }
+
+  .net-soon {
+    display: inline-block;
+    margin-inline-start: 7px;
+    padding: 1px 8px;
+    border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+    font-size: 10.5px;
+    font-style: normal;
+    font-weight: 700;
+    vertical-align: middle;
+  }
+
+  .net-why {
+    display: block;
+    color: var(--muted);
+    font-size: clamp(13.5px, 1.4vw, 15px);
+    line-height: 1.7;
+  }
 
   /* ─── الأرقام ─── */
   .stats {

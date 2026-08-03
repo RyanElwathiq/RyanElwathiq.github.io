@@ -33,7 +33,9 @@ for (const [path, lang] of pages) {
       badge: !!el('.soon-badge'),
       why: document.querySelectorAll('.why p').length,
       pain: document.querySelectorAll('.pain li').length,
-      deliver: document.querySelectorAll('.deliver li').length,
+      // ⚠️ التسليمات صارت «منظومة» (.sys-item) بعد إعادة تصميم #59
+      deliver: document.querySelectorAll('.sys-item').length,
+      net: document.querySelectorAll('.net-card').length,
       faq: document.querySelectorAll('details').length,
       form: !!f,
       wired: f?.dataset.wired === '1',
@@ -46,7 +48,7 @@ for (const [path, lang] of pages) {
   console.log(
     `${ok ? '✅' : '❌'} ${path.padEnd(38)} ` +
       `${info.badge ? 'قريباً' : 'متاحة'} · ليش ${info.why} · وجع ${info.pain} · ` +
-      `تسليم ${info.deliver} · أسئلة ${info.faq} · ` +
+      `تسليم ${info.deliver} · ترابط ${info.net} · أسئلة ${info.faq} · ` +
       (info.badge ? `نموذج ${info.wired ? 'مربوط' : 'مش مربوط ⚠️'} [${info.fields}]` : 'طلب مشروع'),
   );
 }

@@ -25,6 +25,9 @@ const p = isAr ? '/ar' : '';
 
 const services = [...servicesData.services].sort((a, b) => a.order - b.order);
 
+// البكجات (#60) — من services.json حسب اللغة
+const packages = (servicesData as any).packages?.[L];
+
 const t = isAr
   ? {
       back: '→ الرئيسية',
@@ -33,7 +36,7 @@ const t = isAr
       seoDesc:
         'خدمات تسويق رقمي وتصميم من عمّان: مواقع إلكترونية، إعلانات ممولة، سيو، هوية بصرية، سوشال ميديا، مونتاج فيديو، استراتيجية، واستشارات.',
       intro:
-        'ثمان خدمات، بس المنطق واحد: نفهم المشكلة الحقيقية أول، وبعدين نختار الأداة. اضغط على أي وحدة تشوف شو بتاخد بالضبط وكيف بتصير.',
+        'عشر خدمات، بس المنطق واحد: نفهم المشكلة الحقيقية أول، وبعدين نختار الأداة. اضغط على أي وحدة تشوف شو بتاخد بالضبط وكيف بتصير.',
       ctaTitle: 'مش متأكد شو بتحتاج؟',
       ctaBody: 'عبّي الطلب واحكيلي وضعك، وأنا برجعلك برأي صريح، حتى لو كان الجواب إنك مش محتاج تصرف عندي.',
       ctaBtn: 'احكيلي عن مشروعك',
@@ -46,7 +49,7 @@ const t = isAr
       seoDesc:
         'Digital marketing and design services from Amman: websites, paid ads, SEO, brand identity, social media, video editing, strategy, and consulting.',
       intro:
-        'Eight services, one logic: understand the real problem first, then pick the tool. Open any of them to see exactly what you get and how it works.',
+        'Ten services, one logic: understand the real problem first, then pick the tool. Open any of them to see exactly what you get and how it works.',
       ctaTitle: 'Not sure what you need?',
       ctaBody: 'Send me a brief describing your situation and I will come back with a straight opinion. Even if the answer is that you should not spend anything with me.',
       ctaBtn: 'Tell me about your project',
@@ -96,6 +99,44 @@ const schema = [
           </a>
         ))}
       </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           البكجات (#60) — تركيبات بتشتغل مع بعض
+           ⚠️ بلا أسعار مخترعة عن قصد: السعر بيطلع من تشخيص
+              المشروع — نفس مبدأ «لا وعود جاهزة». وملاحظة الصراحة
+              (ما في بكج بيضمن مبيعات) جزء من البيع مش ضده.
+           ═══════════════════════════════════════════════════════ -->
+      {
+        packages && (
+          <section class="packs">
+            <h2 data-reveal>{packages.title}</h2>
+            <p class="packs-intro" data-reveal>{packages.intro}</p>
+
+            <div class="packs-grid" data-stagger>
+              {packages.items.map((pk: any) => (
+                <article class="pack">
+                  <h3>{pk.name}</h3>
+                  <p class="pack-who">{pk.who}</p>
+                  <ul class="pack-has">
+                    {pk.has.map((sid: string) => {
+                      const sv = services.find((s) => s.id === sid);
+                      return sv ? (
+                        <li>
+                          <a href={`${p}/services/${sv.slug}/`}>{sv[L].name}</a>
+                        </li>
+                      ) : null;
+                    })}
+                  </ul>
+                  <p class="pack-line">{pk.line}</p>
+                  <a class="btn pack-btn" href={`${p}/brief/`}>{packages.cta}</a>
+                </article>
+              ))}
+            </div>
+
+            <p class="packs-note" data-reveal>{packages.note}</p>
+          </section>
+        )
+      }
 
       <section class="cta" data-reveal>
         <h2>{t.ctaTitle}</h2>
@@ -209,6 +250,117 @@ const schema = [
   }
   .card:hover .more { color: var(--accent); }
 
+  /* ═══════════════ البكجات (#60) ═══════════════ */
+  .packs {
+    margin-top: clamp(64px, 9vh, 110px);
+  }
+
+  .packs h2 {
+    font-size: clamp(26px, 3.4vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+  html[lang='ar'] .packs h2 { font-weight: 800; letter-spacing: 0; }
+
+  .packs-intro {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 17px);
+    line-height: 1.75;
+    max-width: 60ch;
+    margin-bottom: 28px;
+  }
+
+  .packs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .pack {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: calc(var(--r-card) * 1.3);
+    padding: clamp(22px, 2.6vw, 30px);
+    transition: border-color 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  }
+
+  .pack:hover {
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    transform: translateY(-3px);
+  }
+
+  /* البكج الأوسط (النمو الشهري) هو الأشيع — بياخد إبراز خفيف */
+  .pack:nth-child(2) {
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+
+  .pack h3 {
+    font-size: clamp(19px, 2.2vw, 24px);
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .pack-who {
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .pack-has {
+    list-style: none;
+    margin: 0 0 16px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pack-has a {
+    display: inline-block;
+    padding: 6px 13px;
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+    border-radius: var(--r-pill);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    transition: border-color 0.25s var(--ease-out), color 0.25s var(--ease-out);
+  }
+
+  .pack-has a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .pack-line {
+    color: var(--dim);
+    font-size: clamp(13.5px, 1.4vw, 15px);
+    line-height: 1.75;
+    margin-bottom: 20px;
+    flex-grow: 1;
+  }
+
+  .pack-btn { align-self: start; }
+
+  /* ملاحظة الصراحة — ظاهرة ومقروءة، هي جزء من البيع مش هامش */
+  .packs-note {
+    margin-top: 22px;
+    padding: 16px 20px;
+    padding-inline-start: 24px;
+    border-inline-start: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+    color: var(--dim);
+    font-size: clamp(14px, 1.5vw, 15.5px);
+    line-height: 1.75;
+    max-width: 74ch;
+  }
+
   /* ─── شريط الطلب ─── */
   .cta {
     margin-top: clamp(56px, 8vh, 96px);
@@ -243,5 +395,11 @@ const schema = [
 
   @media (max-width: 780px) {
     .grid { grid-template-columns: 1fr; }
+    .packs-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (min-width: 781px) and (max-width: 1080px) {
+    .packs-grid { grid-template-columns: 1fr 1fr; }
+    .pack:nth-child(3) { grid-column: 1 / -1; }
   }
 </style>

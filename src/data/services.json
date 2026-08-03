@@ -87,7 +87,24 @@
             "a": "They're bought in your name, on your account, so you stay the owner. I help you choose and set them up at no extra charge, and explain what you're paying, to whom, and why."
           }
         ]
-      }
+      },
+      "pairsWith": [
+        {
+          "id": "seo",
+          "whyAr": "موقع بلا ظهور بالبحث محل فخم بشارع مسكّر. السيو هو اللي بيفتح الشارع.",
+          "whyEn": "A site nobody finds is a nice shop on a closed street. SEO opens the street."
+        },
+        {
+          "id": "ads",
+          "whyAr": "الإعلان بيشتري الزيارة، وصفحة الموقع هي اللي بتحوّلها لطلب. الاثنين بيربحوا مع بعض.",
+          "whyEn": "Ads buy the visit. The page turns it into an order. They win together."
+        },
+        {
+          "id": "branding",
+          "whyAr": "الموقع أول مكان هويتك بتنختبر فيه جدياً. بلا نظام هوية بيطلع قالب زي أي قالب.",
+          "whyEn": "Your site is where the identity gets tested first. Without a system it reads as a template."
+        }
+      ]
     },
     {
       "id": "ads",
@@ -173,7 +190,24 @@
             "a": "No, and anyone who guarantees sales is either lying or doesn't understand the work. What I guarantee: correct setup, systematic testing, and transparent numbers every month. Results also depend on your pricing, your product, and how fast you reply to leads. None of which are in my hands."
           }
         ]
-      }
+      },
+      "pairsWith": [
+        {
+          "id": "websites",
+          "whyAr": "أغلب الإعلانات «الفاشلة» بتكون شغّالة، بس بتوصّل لصفحة ما بتبيع.",
+          "whyEn": "Most failed ads actually work. They just land on a page that does not sell."
+        },
+        {
+          "id": "data",
+          "whyAr": "بلا قياس، الميزانية بتنحرق على الإحساس. الأرقام بتقلك وقّف شو وزيد شو.",
+          "whyEn": "Without measurement the budget burns on instinct. Numbers say what to stop and what to scale."
+        },
+        {
+          "id": "branding",
+          "whyAr": "الإعلان بيوقف العين، والهوية هي اللي بتخلي الناس تتذكر مين وقّفها.",
+          "whyEn": "The ad stops the eye. The identity is what makes people remember who stopped it."
+        }
+      ]
     },
     {
       "id": "seo",
@@ -319,7 +353,24 @@
             "b": "People now ask ChatGPT instead of searching. Those engines quote content that answers one specific question clearly in a clean structure. Preparing for that is different work from classic SEO, and I do both."
           }
         ]
-      }
+      },
+      "pairsWith": [
+        {
+          "id": "websites",
+          "whyAr": "الترتيب بيبدأ من بنية الموقع نفسها: سرعة، وضوح، وصفحات مفهومة لجوجل.",
+          "whyEn": "Ranking starts inside the site itself: speed, clarity, pages Google can parse."
+        },
+        {
+          "id": "strategy",
+          "whyAr": "الكلمة اللي بترتب عليها لازم تكون كلمة جمهورك الحقيقي، وهاد قرار استراتيجية مش تقنية.",
+          "whyEn": "The keyword you rank for must be your real audience's word. That is strategy, not tech."
+        },
+        {
+          "id": "data",
+          "whyAr": "الأرقام بتفرق بين كلمة جابت زوار وكلمة جابت زباين.",
+          "whyEn": "Data separates keywords that bring visitors from keywords that bring buyers."
+        }
+      ]
     },
     {
       "id": "branding",
@@ -399,7 +450,24 @@
             "a": "Yes, and sometimes it's easier because there's no legacy work to accommodate. But we need to agree first on who your audience is and where you sit in the market. Without those answers, identity becomes decoration guessed at."
           }
         ]
-      }
+      },
+      "pairsWith": [
+        {
+          "id": "social",
+          "whyAr": "الهوية بتعيش بالمحتوى اليومي. دليل بدرج ومحتوى فوضوي يعني بلا هوية.",
+          "whyEn": "Identity lives in daily content. A guideline in a drawer plus chaotic posts equals no identity."
+        },
+        {
+          "id": "websites",
+          "whyAr": "الموقع هو معرض الهوية الدائم، مش البوست اللي بيختفي بعد يوم.",
+          "whyEn": "The website is the identity's permanent gallery, not a post that vanishes in a day."
+        },
+        {
+          "id": "video",
+          "whyAr": "الموشن هو الهوية وهي بتتحرك: نفس الألوان والإيقاع، بس حية.",
+          "whyEn": "Motion is the identity in movement: same colors and rhythm, alive."
+        }
+      ]
     },
     {
       "id": "social",
@@ -477,7 +545,24 @@
             "a": "Not to a specific number. It depends on your field, the competition, and how distinctive your content can be. What I guarantee is a plan built on analysis rather than guesswork, and an honest report every month even when the numbers aren't flattering."
           }
         ]
-      }
+      },
+      "pairsWith": [
+        {
+          "id": "branding",
+          "whyAr": "بلا نظام هوية، كل بوست بشكل، والصفحة بتبين لعشر شركات مش لوحدة.",
+          "whyEn": "Without an identity system every post looks different, and the page reads as ten companies."
+        },
+        {
+          "id": "video",
+          "whyAr": "الريلز هي وقود الوصول اليوم. حساب بلا فيديو حساب ماشي عالفرامل.",
+          "whyEn": "Reels are today's reach fuel. An account without video drives with the brakes on."
+        },
+        {
+          "id": "ads",
+          "whyAr": "التعزيز الذكي بياخد أحسن محتواك وبيحطه قدام ناس جداد، بدل ما يضل لنفس المتابعين.",
+          "whyEn": "Smart boosting puts your best content in front of new people instead of the same followers."
+        }
+      ]
     },
     {
       "id": "video",
@@ -555,7 +640,24 @@
             "a": "Editing and motion are the core of what I do. Filming I coordinate with a shooter when needed. Plenty of projects I build entirely from footage you already have or cleanly licensed stock."
           }
         ]
-      }
+      },
+      "pairsWith": [
+        {
+          "id": "social",
+          "whyAr": "الفيديو بلا توزيع ملف بجهازك. السوشال هي اللي بتوصله لجمهورك.",
+          "whyEn": "A video without distribution is a file on your device. Social is what carries it to your audience."
+        },
+        {
+          "id": "ads",
+          "whyAr": "أقوى فورمات الإعلان اليوم فيديو، والمونتاج الصح هو الفرق بين تمرير ووقفة.",
+          "whyEn": "The strongest ad format today is video, and the edit is the difference between a scroll and a stop."
+        },
+        {
+          "id": "strategy",
+          "whyAr": "الخطاف بأول ثانيتين قرار رسالة قبل ما يكون قرار مونتاج.",
+          "whyEn": "The first-two-seconds hook is a message decision before it is an editing decision."
+        }
+      ]
     },
     {
       "id": "strategy",
@@ -635,7 +737,24 @@
             "a": "Two to four weeks, most of it spent on research and interviews rather than writing. I need access to your real numbers and one or two sessions with you. Without those the document turns generic and useless."
           }
         ]
-      }
+      },
+      "pairsWith": [
+        {
+          "id": "data",
+          "whyAr": "الخطة اللي ما بتتعدّل بالأرقام رأي مكتوب حلو. القياس هو اللي بيخليها تتحسّن.",
+          "whyEn": "A plan that numbers never adjust is a nicely written opinion. Measurement makes it improve."
+        },
+        {
+          "id": "social",
+          "whyAr": "الاستراتيجية بتقرر شو بنحكي ولمين، والسوشال هي وين بنحكيه كل يوم.",
+          "whyEn": "Strategy decides what we say and to whom. Social is where we say it daily."
+        },
+        {
+          "id": "consulting",
+          "whyAr": "إذا بتحب تنفّذ بإيدك، الاستشارة بتحوّل الخطة لمهارة عندك مش فاتورة شهرية.",
+          "whyEn": "If you like executing yourself, consulting turns the plan into your skill, not a monthly invoice."
+        }
+      ]
     },
     {
       "id": "consulting",
@@ -713,7 +832,19 @@
             "a": "That happens often. I credit the consulting fee against the project price if we agree within a month, so you never feel you paid twice."
           }
         ]
-      }
+      },
+      "pairsWith": [
+        {
+          "id": "strategy",
+          "whyAr": "الاستشارة بتصلّح قرارات اليوم، والاستراتيجية بترسم طريق السنة.",
+          "whyEn": "Consulting fixes today's decisions. Strategy draws the year's road."
+        },
+        {
+          "id": "data",
+          "whyAr": "أقوى جلسة استشارة هي اللي بتيجي عليها ومعك أرقامك، مش انطباعاتك.",
+          "whyEn": "The strongest consulting session is the one you enter with your numbers, not your impressions."
+        }
+      ]
     },
     {
       "id": "data",
@@ -812,7 +943,24 @@
             "a": "Because I do not sell something before the system behind it is repeatable. The foundation is being built now. Leave your email and you will be the first to know when it opens, with founding pricing on the first month."
           }
         ]
-      }
+      },
+      "pairsWith": [
+        {
+          "id": "ads",
+          "whyAr": "أول شي بيوفّرلك القياس: توقف تدفع على الإعلان اللي بيخسر.",
+          "whyEn": "The first thing measurement saves you: paying for the ad that loses."
+        },
+        {
+          "id": "seo",
+          "whyAr": "بيقلك أي كلمة وأي صفحة جابت الزبون، فبتشتغل على اللي بيرجع فلوس.",
+          "whyEn": "It tells you which keyword and page brought the customer, so you work on what returns money."
+        },
+        {
+          "id": "strategy",
+          "whyAr": "الأرقام بلا خطة فضول. والخطة بلا أرقام تمنّي. مع بعض بيصيروا قرارات.",
+          "whyEn": "Numbers without a plan are curiosity. A plan without numbers is wishing. Together they become decisions."
+        }
+      ]
     },
     {
       "id": "ai-automation",
@@ -911,7 +1059,110 @@
             "a": "Because I am building the version that installs into any business in days rather than months. The foundation already runs on this site. Leave your email and you will be first to know when it opens."
           }
         ]
-      }
+      },
+      "pairsWith": [
+        {
+          "id": "data",
+          "whyAr": "الوكيل بيصير أذكى لما يقرأ من بياناتك المرتبة، مش من فراغ.",
+          "whyEn": "The agent gets smarter reading your organized data, not a vacuum."
+        },
+        {
+          "id": "websites",
+          "whyAr": "الرد الآلي والفورم والموقع منظومة استقبال وحدة، مش ثلاث جزر.",
+          "whyEn": "Auto-replies, forms and the site are one reception system, not three islands."
+        },
+        {
+          "id": "social",
+          "whyAr": "أكثر مكان بيغرق رسائل هو السوشال، وهون الأتمتة بتوفّر ساعات يومياً.",
+          "whyEn": "Social is where messages flood most, and that is where automation saves hours daily."
+        }
+      ]
     }
-  ]
+  ],
+  "packages": {
+    "ar": {
+      "title": "بكجات بتشتغل مع بعض",
+      "intro": "الخدمة الوحدة بتحل مشكلة وحدة. هاي تركيبات مجرّبة بتحل قصة كاملة، والسعر النهائي بيطلع من تشخيص مشروعك، مش من قائمة جاهزة.",
+      "note": "ملاحظة صريحة: ما في بكج بيضمن مبيعات. البكج بيضمن إنه كل قطعة بتشتغل مع أختها، بدل ما تدفع على قطع متفرقة ما بتحكي مع بعض.",
+      "items": [
+        {
+          "id": "launch",
+          "name": "البداية الصح",
+          "who": "لمشروع جديد، أو مشروع شغّال بس حاسس إنه مش مترتب",
+          "has": [
+            "strategy",
+            "branding",
+            "websites"
+          ],
+          "line": "بنبني الأساس بالترتيب الصح: نفهم السوق، نبني الهوية، ونطلّع موقع بيحكي عنك صح. أغلب اللي بيبلشوا بالإعلان قبل هالثلاثة بيدفعوا مرتين."
+        },
+        {
+          "id": "growth",
+          "name": "النمو الشهري",
+          "who": "لمشروع أساسه جاهز وبده حركة ونتائج مستمرة",
+          "has": [
+            "social",
+            "video",
+            "ads"
+          ],
+          "line": "محتوى بيبني ثقة، فيديو بيوقّف الإصبع، وإعلانات بتوسّع الوصول، بإيقاع شهري واحد وقياس واحد."
+        },
+        {
+          "id": "system",
+          "name": "المنظومة الكاملة",
+          "who": "لمشروع بده شريك نمو مش منفّذ مهام",
+          "has": [
+            "strategy",
+            "seo",
+            "ads",
+            "social"
+          ],
+          "line": "تشخيص، تنفيذ، قياس، وتحسين. دورة كاملة بتتكرر كل شهر، والتركيبة الدقيقة بتطلع من التشخيص الأول."
+        }
+      ],
+      "cta": "احجز جلسة تشخيص"
+    },
+    "en": {
+      "title": "Packages that work as one",
+      "intro": "One service solves one problem. These are proven combinations that solve a whole story. The final price comes from diagnosing your project, not from a fixed menu.",
+      "note": "A straight note: no package guarantees sales. What a package guarantees is that every piece works with its siblings, instead of paying for scattered parts that never talk to each other.",
+      "items": [
+        {
+          "id": "launch",
+          "name": "The Right Start",
+          "who": "For a new project, or a running one that feels unstructured",
+          "has": [
+            "strategy",
+            "branding",
+            "websites"
+          ],
+          "line": "We build the base in the right order: understand the market, build the identity, ship a site that represents you properly. Most people who run ads before these three pay twice."
+        },
+        {
+          "id": "growth",
+          "name": "Monthly Growth",
+          "who": "For a project with its base ready that wants steady motion and results",
+          "has": [
+            "social",
+            "video",
+            "ads"
+          ],
+          "line": "Content that builds trust, video that stops the thumb, and ads that widen reach, on one monthly rhythm with one measurement."
+        },
+        {
+          "id": "system",
+          "name": "The Full System",
+          "who": "For a project that wants a growth partner, not a task executor",
+          "has": [
+            "strategy",
+            "seo",
+            "ads",
+            "social"
+          ],
+          "line": "Diagnose, execute, measure, improve. A full loop repeating monthly. The exact mix comes out of the first diagnosis."
+        }
+      ],
+      "cta": "Book a diagnosis session"
+    }
+  }
 }
