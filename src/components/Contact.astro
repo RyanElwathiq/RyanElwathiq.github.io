@@ -1,8 +1,16 @@
 ---
 // ═══════════════════════════════════════════════════════════════
-//  تواصل معي — الختام: خلفية من مشهد العقدة المكتملة + كل الروابط
-//  ⚠️ روابط CV / Drive / Notion / Behance بتيجي من work.json (links)
-//     ممنوع حذفها — عدّلها من هناك إذا تغيّرت
+//  تواصل معي — الختام: خلفية من مشهد العقدة المكتملة + طرق الإقناع
+//
+//  ⚠️ إعادة تصميم 2026-08-03 بطلب ريّان (التوجه الجديد: موقع
+//     أعمال مش بورتفوليو):
+//     • زر «اتصل بي» انشال — رقمه ما بيظهر عالموقع.
+//     • بطاقات CV / Drive / Notion انشالت نهائياً.
+//     • البطاقات الجداد بتخدم البيع: الزائر اللي مش جاهز يتواصل
+//       بياخد ثلاث طرق يتقنع فيها ويرجع (بكجات، مقالات، مختبر)
+//       + Behance كدليل شغل.
+//  ⚠️ external: true = بيفتح بتبويب جديد. الروابط الداخلية لأ —
+//     التنقل الداخلي بيمرق من ClientRouter بدون إعادة تحميل.
 // ═══════════════════════════════════════════════════════════════
 import work from '../data/work.json';
 
@@ -13,32 +21,31 @@ interface Props {
 const { lang } = Astro.props;
 const isAr = lang === 'ar';
 const links = work.links;
+const p = isAr ? '/ar' : '';
 
 const t = isAr
   ? {
       heading: 'خلينا نبني إشي بيكبر.',
-      sub: 'متاح لفرص عن بعد وهجينة، تدريب أو توظيف: تسويق رقمي، نمو، محتوى، هوية، وإنتاج إبداعي.',
+      sub: 'بشتغل مع مشاريع بدها تكبر صح: تشخيص قبل التنفيذ، وقرارات بالأرقام مش بالإحساس.',
       brief: 'احكيلي عن مشروعك',
       email: 'راسلني',
-      call: 'اتصل بي',
       resources: [
-        { k: 'CV', label: 'حمّل سيرتي الذاتية', href: links.cv },
-        { k: 'Drive', label: 'أرشيف ملفات المشاريع', href: links.driveArchive },
-        { k: 'Notion', label: 'أرشيف نوشن', href: links.notion },
-        { k: 'Behance', label: 'شغلي الإبداعي', href: links.behance },
+        { k: 'Packages', label: 'بكجات بتشتغل مع بعض', href: `${p}/services/#packs`, external: false },
+        { k: 'Signals', label: 'مقالات بألعاب جوّاها', href: `${p}/signals/`, external: false },
+        { k: 'Free', label: 'مختبر الأفكار: فكرة لمشروعك ببلاش', href: `${p}/#lab`, external: false },
+        { k: 'Behance', label: 'شغلي الإبداعي', href: links.behance, external: true },
       ],
     }
   : {
       heading: "Let's build something that grows.",
-      sub: 'Open to remote, hybrid, internship, and job opportunities: digital marketing, growth, content, branding, and creative production.',
+      sub: 'I work with projects that want to grow properly: diagnosis before execution, and decisions by numbers, not feelings.',
       brief: 'Tell me about your project',
       email: 'Email me',
-      call: 'Call me',
       resources: [
-        { k: 'CV', label: 'Download my CV', href: links.cv },
-        { k: 'Drive', label: 'Project files archive', href: links.driveArchive },
-        { k: 'Notion', label: 'Notion archive', href: links.notion },
-        { k: 'Behance', label: 'Creative work', href: links.behance },
+        { k: 'Packages', label: 'Packages that work as one', href: `${p}/services/#packs`, external: false },
+        { k: 'Signals', label: 'Articles with games inside', href: `${p}/signals/`, external: false },
+        { k: 'Free', label: 'The idea lab: a free idea for your project', href: `${p}/#lab`, external: false },
+        { k: 'Behance', label: 'Creative work', href: links.behance, external: true },
       ],
     };
 ---
@@ -58,24 +65,29 @@ const t = isAr
     <h2 data-reveal>{t.heading}</h2>
     <p class="sub" data-reveal>{t.sub}</p>
 
-    <!-- ⚠️ الزر الأول بيودي على نموذج الطلب المفصّل، وباقي الطرق
-         (إيميل، اتصال، لينكدإن) ضلّت زي ما هي، النموذج **إضافة**
-         مش بديل، لأن في ناس بتفضّل تحكي مباشرة. -->
+    <!-- ⚠️ الزر الأول بيودي على نموذج الطلب المفصّل. زر الاتصال
+         انشال بطلب ريّان (2026-08-03): رقمه ما بيظهر عالموقع. -->
     <div class="actions" data-reveal>
       <a class="btn btn-primary" href={isAr ? '/ar/brief/' : '/brief/'}>{t.brief}</a>
       <a class="btn btn-ghost" href={`mailto:${links.email}`}>{t.email}</a>
-      <a class="btn btn-ghost" href={`tel:${links.phone}`}>{t.call}</a>
       <a class="btn btn-ghost" href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
     </div>
 
     <div class="resources" data-stagger>
       {
-        t.resources.map((r) => (
-          <a class="res" href={r.href} target="_blank" rel="noreferrer">
-            <span class="k">{r.k}</span>
-            <strong>{r.label}</strong>
-          </a>
-        ))
+        t.resources.map((r) =>
+          r.external ? (
+            <a class="res" href={r.href} target="_blank" rel="noreferrer">
+              <span class="k">{r.k}</span>
+              <strong>{r.label}</strong>
+            </a>
+          ) : (
+            <a class="res" href={r.href}>
+              <span class="k">{r.k}</span>
+              <strong>{r.label}</strong>
+            </a>
+          ),
+        )
       }
     </div>
   </div>
