@@ -1,0 +1,549 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «معادلة البيع» — الإعلان ممتاز ومقفول، والبيع بينهار من غيره
+//
+//  الزائر بيحرّك خمس عوامل (عرض، سعر، ثقة، صفحة، رد) وبيشوف قمع
+//  المبيعات بيتحدث فوراً: ١٠٠٠ كبسة ثابتة من إعلان ممتاز، وكم
+//  بيع بيطلع منهم. الرسالة الوحيدة: الإعلان لحاله ما بيبيع.
+//
+//  ⚠️ المعادلة **ضرب مش جمع** عن قصد — عامل واحد ميت بيقتل
+//     النتيجة كلها حتى لو الباقي ممتاز. هاي هي العبرة نفسها.
+//  ⚠️ جافاسكربت عادي بلا React — نفس قرار باقي الألعاب.
+//  ✏️ النصوص والعوامل بـ src/data/sales-equation.js
+//  ✏️ الاستخدام جوّا مقال:  <SalesEquationSection lang="ar" />
+// ═══════════════════════════════════════════════════════════════
+import { FACTORS, SCENARIOS, STAGES, BANDS, BOTTLENECK } from '../data/sales-equation.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'sales-equation' } = Astro.props;
+const isAr = lang === 'ar';
+const L = lang;
+
+const briefHref = isAr ? '/ar/brief/' : '/brief/';
+
+const t = isAr
+  ? {
+      eyebrow: 'لعبة قصيرة',
+      title: 'معادلة البيع',
+      lede: 'الإعلان عنا ممتاز ومقفول: ألف كبسة مضمونة. حرّك باقي العوامل وشوف مين اللي بيقرر كم بيع بيطلع من نفس الألف.',
+      adLabel: 'الإعلان',
+      adState: 'ممتاز · مقفول عن قصد',
+      adWhy: 'مثبّت على أحسن حالاته عشان تشوف إنه المشكلة نادراً ما بتكون هون',
+      funnelTitle: 'شو بيصير بالألف كبسة؟',
+      salesWord: 'بيع',
+      honesty: 'الأرقام توضيحية لتشوف شكل العلاقة (ضرب مش جمع)، مش توقع لمشروعك. توقع مشروعك بيطلع من تشخيصه.',
+      cta: 'احجز جلسة تشخيص',
+    }
+  : {
+      eyebrow: 'Short game',
+      title: 'The Sales Equation',
+      lede: 'Our ad is excellent and locked: a guaranteed thousand clicks. Move the other factors and watch who actually decides how many sales come out of the same thousand.',
+      adLabel: 'The ad',
+      adState: 'Excellent · locked on purpose',
+      adWhy: 'Pinned at its best so you can see the problem is rarely here',
+      funnelTitle: 'What happens to the thousand clicks?',
+      salesWord: 'sales',
+      honesty: 'Numbers are illustrative to show the shape of the relationship (multiplication, not addition), not a forecast for your project. That comes out of a diagnosis.',
+      cta: 'Book a diagnosis session',
+    };
+
+const factors = FACTORS.map((f) => ({ id: f.id, start: f.start, name: f[L].name, q: f[L].q }));
+const stages = STAGES.map((s) => ({ id: s.id, name: s[L] }));
+const bands = BANDS.map((b) => ({ max: b.max === Infinity ? 999999 : b.max, ...b[L] }));
+const bottleneck = Object.fromEntries(Object.entries(BOTTLENECK).map(([k, v]) => [k, v[L]]));
+---
+
+<section class="sq" id={id}>
+  <div class="sq-head" data-reveal>
+    <p class="sq-eyebrow">{t.eyebrow}</p>
+    <h2>{t.title}</h2>
+    <p class="sq-lede">{t.lede}</p>
+  </div>
+
+  <div class="sq-board frame frame-on" data-reveal data-sales-eq>
+    <!-- ═══ الإعلان المقفول ═══ -->
+    <div class="sq-ad">
+      <span class="sq-lock" aria-hidden="true">🔒</span>
+      <div>
+        <p class="sq-ad-name">{t.adLabel} <b>{t.adState}</b></p>
+        <p class="sq-ad-why">{t.adWhy}</p>
+      </div>
+      <span class="sq-ad-val">100٪</span>
+    </div>
+
+    <!-- ═══ وضعيات جاهزة ═══ -->
+    <div class="sq-scenarios">
+      {
+        SCENARIOS.map((s) => (
+          <button type="button" class="sq-scenario" data-sq-scenario={JSON.stringify(s.values)}>
+            {s[L].label}
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- ═══ العوامل الخمسة ═══ -->
+    <div class="sq-factors">
+      {
+        factors.map((f) => (
+          <label class="sq-factor" data-sq-factor={f.id}>
+            <span class="sq-f-head">
+              <span class="sq-f-name">{f.name}</span>
+              <span class="sq-f-val" data-sq-val>{f.start}٪</span>
+            </span>
+            <input type="range" min="0" max="100" value={f.start} data-sq-range={f.id} aria-label={f.name} />
+            <span class="sq-f-q">{f.q}</span>
+          </label>
+        ))
+      }
+    </div>
+
+    <!-- ═══ القمع ═══ -->
+    <p class="sq-sub">{t.funnelTitle}</p>
+    <div class="sq-funnel" aria-live="polite">
+      {
+        stages.map((s, i) => (
+          <div class="sq-stage" data-sq-stage={s.id}>
+            <span class="sq-s-name">{s.name}</span>
+            <span class="sq-s-bar"><i data-sq-bar style={`width:${i === 0 ? 100 : 8}%`} /></span>
+            <span class="sq-s-num" data-sq-num>{i === 0 ? '١٠٠٠' : ''}</span>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- ═══ النتيجة والحكم ═══ -->
+    <div class="sq-verdict">
+      <p class="sq-sales"><b data-sq-sales>0</b> <span>{t.salesWord}</span></p>
+      <p class="sq-stamp" data-sq-stamp></p>
+      <p class="sq-vtext" data-sq-vtext></p>
+      <p class="sq-weak" data-sq-weak></p>
+    </div>
+
+    <p class="sq-honesty">{t.honesty}</p>
+
+    <div class="sq-actions">
+      <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ factors, bands, bottleneck, locale: isAr ? 'ar-EG' : 'en-US' }}>
+  // ═══════════════════════════════════════════════════════════
+  //  محرّك المعادلة — بيتحدث مع كل حركة سلايدر
+  // ═══════════════════════════════════════════════════════════
+  (function () {
+    function boot() {
+      document.querySelectorAll('[data-sales-eq]').forEach(setup);
+    }
+
+    function setup(board) {
+      if (board.dataset.ready === '1') return;
+      board.dataset.ready = '1';
+
+      var ranges = {};
+      board.querySelectorAll('[data-sq-range]').forEach(function (r) {
+        ranges[r.getAttribute('data-sq-range')] = r;
+      });
+
+      var n = function (v) {
+        return Math.round(v).toLocaleString(locale);
+      };
+
+      // ─── المعادلة ───
+      // كل عامل بينضغط لمجال (أرضية صغيرة عشان صفر ما يساوي
+      // «مستحيل رياضياً» — بس عملياً بيقتل النتيجة، وهاي العبرة)
+      function model(v) {
+        var f = function (x, floor) {
+          return floor + (1 - floor) * (x / 100);
+        };
+        var clicks = 1000; // الإعلان الممتاز المقفول
+        var stayed = clicks * f(v.page, 0.08);
+        var asked = stayed * 0.25 * f(v.offer, 0.05) * f(v.price, 0.15) * f(v.trust, 0.1);
+        var bought = asked * 0.3 * f(v.reply, 0.08);
+        return { clicks: clicks, stayed: stayed, asked: asked, bought: bought };
+      }
+
+      function values() {
+        var v = {};
+        for (var id in ranges) v[id] = Number(ranges[id].value);
+        return v;
+      }
+
+      function update() {
+        var v = values();
+        var m = model(v);
+
+        // نسب السلايدرز
+        board.querySelectorAll('[data-sq-factor]').forEach(function (el) {
+          var id = el.getAttribute('data-sq-factor');
+          el.querySelector('[data-sq-val]').textContent = n(v[id]) + '٪';
+        });
+
+        // القمع — العرض نسبة من الكبسات
+        var nums = { clicks: m.clicks, stayed: m.stayed, asked: m.asked, bought: m.bought };
+        board.querySelectorAll('[data-sq-stage]').forEach(function (el) {
+          var id = el.getAttribute('data-sq-stage');
+          var val = nums[id];
+          el.querySelector('[data-sq-bar]').style.width = Math.max(0.8, (val / m.clicks) * 100) + '%';
+          el.querySelector('[data-sq-num]').textContent = n(val);
+        });
+
+        // المبيعات + الحكم
+        var sales = Math.round(m.bought);
+        board.querySelector('[data-sq-sales]').textContent = n(sales);
+        var band = null;
+        for (var i = 0; i < bands.length; i++) {
+          if (sales <= bands[i].max) {
+            band = bands[i];
+            break;
+          }
+        }
+        board.querySelector('[data-sq-stamp]').textContent = band.stamp;
+        board.querySelector('[data-sq-vtext]').textContent = band.text;
+        board.dataset.band = String(bands.indexOf(band));
+
+        // أضعف حلقة — بس لما تكون فعلاً واطية ومش الكل عالي
+        var weakEl = board.querySelector('[data-sq-weak]');
+        var minId = null;
+        var minVal = 101;
+        for (var id2 in v) {
+          if (v[id2] < minVal) {
+            minVal = v[id2];
+            minId = id2;
+          }
+        }
+        if (minVal <= 55 && bottleneck[minId]) {
+          weakEl.textContent = bottleneck[minId];
+          weakEl.hidden = false;
+        } else {
+          weakEl.hidden = true;
+        }
+      }
+
+      for (var id in ranges) ranges[id].addEventListener('input', update);
+
+      board.querySelectorAll('[data-sq-scenario]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var v = JSON.parse(btn.getAttribute('data-sq-scenario') || '{}');
+          for (var id in v) if (ranges[id]) ranges[id].value = v[id];
+          update();
+        });
+      });
+
+      update();
+    }
+
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .sq {
+    margin-block: clamp(38px, 5vh, 60px);
+  }
+
+  .sq-head {
+    margin-bottom: 22px;
+  }
+
+  .sq-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .sq-head h2 {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .sq-lede {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 58ch;
+  }
+
+  .sq-board {
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-card);
+  }
+
+  /* ─── الإعلان المقفول ─── */
+  .sq-ad {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 14px;
+    align-items: center;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: var(--r-card);
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
+  }
+
+  .sq-lock {
+    font-size: 20px;
+  }
+
+  .sq-ad-name {
+    font-size: 14.5px;
+    color: var(--muted);
+  }
+
+  .sq-ad-name b {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .sq-ad-why {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .sq-ad-val {
+    font-family: var(--font-en);
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  /* ─── الوضعيات ─── */
+  .sq-scenarios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .sq-scenario {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: none;
+    border: 1px dashed var(--line);
+    border-radius: var(--r-pill);
+    padding: 7px 14px;
+    cursor: pointer;
+    transition:
+      color 0.25s var(--ease-out),
+      border-color 0.25s var(--ease-out);
+  }
+
+  .sq-scenario:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  /* ─── العوامل ─── */
+  .sq-factors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px 22px;
+    margin-bottom: 26px;
+  }
+
+  .sq-factor {
+    display: block;
+  }
+
+  .sq-f-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+
+  .sq-f-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .sq-f-val {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .sq-f-q {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+
+  /* السلايدر بلون الهوية */
+  .sq-factor input[type='range'] {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  /* ─── القمع ─── */
+  .sq-sub {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .sq-funnel {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-bottom: 24px;
+  }
+
+  .sq-stage {
+    display: grid;
+    grid-template-columns: 130px 1fr 64px;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .sq-s-name {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .sq-s-bar {
+    display: block;
+    height: 18px;
+    border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--text) 6%, transparent);
+    overflow: hidden;
+  }
+
+  /* ⚠️ بلا اتجاهات منطقية بالتدرجات (to inline-end) — المتصفحات
+     بترميها كقيمة غلط والتعبئة بتختفي كلياً. لون صريح أسلم،
+     والكتلة الداخلية أصلاً بتلتصق بجهة البداية بالاتجاهين. */
+  .sq-s-bar i {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+    opacity: 0.85;
+    transition: width 0.45s var(--ease-out);
+  }
+
+  .sq-s-num {
+    font-family: var(--font-en);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: end;
+  }
+
+  /* ─── النتيجة ─── */
+  .sq-verdict {
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+  }
+
+  .sq-sales {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .sq-sales b {
+    font-family: var(--font-en);
+    font-size: clamp(34px, 4vw, 48px);
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .sq-sales span {
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  .sq-stamp {
+    display: inline-block;
+    font-size: clamp(15px, 1.8vw, 18px);
+    font-weight: 800;
+    color: var(--text);
+    border: 2px solid var(--text);
+    border-radius: 10px;
+    padding: 6px 14px;
+    margin-bottom: 12px;
+    transform: rotate(2deg);
+  }
+
+  html[dir='ltr'] .sq-stamp {
+    transform: rotate(-2deg);
+  }
+
+  /* «منظومة بتبيع» بس بلون الهوية */
+  [data-band='3'] .sq-stamp {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .sq-vtext {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 60ch;
+    margin-bottom: 10px;
+  }
+
+  .sq-weak {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    padding: 10px 14px;
+    border-inline-start: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+    max-width: 60ch;
+  }
+
+  .sq-honesty {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 18px;
+    max-width: 62ch;
+    line-height: 1.7;
+  }
+
+  .sq-actions {
+    margin-top: 18px;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 640px) {
+    .sq-stage {
+      grid-template-columns: 96px 1fr 52px;
+      gap: 8px;
+    }
+
+    .sq-s-name {
+      font-size: 12px;
+    }
+
+    .sq-ad {
+      grid-template-columns: auto 1fr;
+    }
+
+    .sq-ad-val {
+      grid-column: 2;
+      justify-self: end;
+    }
+  }
+</style>
