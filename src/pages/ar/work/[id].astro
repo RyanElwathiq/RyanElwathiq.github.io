@@ -11,7 +11,7 @@ export function getStaticPaths() {
   // نفس الاستثناء اللي بالنسخة الإنجليزية — شوف الشرح هناك
   // ⚠️ لازم يكون **جوّا** الدالة: أسترو بيرفع getStaticPaths لبرّا
   //    الصفحة، فأي متغيّر مكتوب فوق ما بيشوفه (BESPOKE is not defined)
-  const BESPOKE = ['luvit'];
+  const BESPOKE = ['luvit', 'portfolio'];
 
   return work.projects
     .filter((p) => !BESPOKE.includes(p.id))

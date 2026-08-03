@@ -1,0 +1,946 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  صفحة «هذا البورتفوليو» — التحفة الفنية
+//
+//  ثاني صفحة مخصصة بالموقع (بعد لوفيت). الفكرة الحاكمة: الزائر
+//  **واقف جوّا المشروع نفسه** — فبدل السكرينشوتات، كل ميزة معها
+//  رابط «جرّبها حية» بيوديه عالمكان الفعلي. الصفحة معرض حي.
+//
+//  البنية: هيرو ميتا ← أرقام بعدادات متحركة ← الجولة (٩ مميزات
+//  بالتفصيل) ← «كيف تستفيد منه» (مسار بيتعلّم عليه) ← الخارطة
+//  المستقبلية ← CTA.
+//
+//  ⚠️ الأرقام الديناميكية (مقالات، خدمات) بتنسحب من مصادرها —
+//     بتتحدث لحالها. الثابتة (صفحات، أدوات) مكتوبة بتعليق جنبها.
+//  ⚠️ العدادات بتشتغل مرة عند الظهور (IO) وبتحترم reduced-motion.
+// ═══════════════════════════════════════════════════════════════
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+import servicesData from '../data/services.json';
+import work from '../data/work.json';
+
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+const p = isAr ? '/ar' : '';
+
+const project = (work as any).projects.find((x: any) => x.id === 'portfolio');
+
+// ─── الأرقام الحية ───
+const articlesCount = (await getCollection('blog')).filter((x) => x.data.lang === lang && !x.data.draft).length;
+const servicesCount = (servicesData as any).services.length;
+// ⚠️ ثوابت بتتحدث بالإيد لما يكبر الموقع:
+const PAGES_COUNT = 100; // «+١٠٠ صفحة» — البناء الحالي ١٠٤
+const TOOLS_COUNT = 10; // ٧ ألعاب مقالات + عين البراند + الميزانية + اللمبة
+
+const t = isAr
+  ? {
+      seoTitle: 'هذا البورتفوليو: موقع حي بيشرح نفسه',
+      seoDesc: 'جولة مفصلة بالموقع اللي إنت فيه: لغتان بالكامل، عشر أدوات تفاعلية، مجسمات ثلاثية الأبعاد، ومختبر أفكار — وكل ميزة بتجربها حية بمكانها.',
+      back: 'كل الأعمال',
+      role: 'تصميم وبناء واجهة',
+      title: 'هذا البورتفوليو',
+      lede: 'أغرب صفحة أعمال رح تشوفها: إنت واقف جوّا المشروع نفسه هلأ. فبدل ما نفرجيك صور، كل ميزة تحت معها زر بيوديك عليها تجرّبها بإيدك. الموقع هو المعرض.',
+      liveBadge: 'حي، وبيكبر باستمرار',
+      statsTitle: 'بالأرقام',
+      stats: [
+        { n: PAGES_COUNT, suffix: '+', label: 'صفحة مبنية' },
+        { n: 2, suffix: '', label: 'لغتان كاملتان، مش ترجمة آلية' },
+        { n: TOOLS_COUNT, suffix: '', label: 'أدوات ولعبات تفاعلية' },
+        { n: articlesCount, suffix: '', label: 'مقالات من شغل حقيقي' },
+        { n: servicesCount, suffix: '', label: 'خدمات بمجسمات ثلاثية الأبعاد' },
+        { n: 0, suffix: '', label: 'أخطاء بفحص السيو التقني' },
+      ],
+      tourTitle: 'الجولة: شو جوّاه',
+      tourSub: 'كل ميزة هون بتقدر تجربها حية — الزر بيوديك عليها مباشرة.',
+      features: [
+        {
+          k: '01',
+          t: 'فيلم بيتحرك بسكرولك',
+          d: 'أول ما تفتح الرئيسية، الفيديو ما بيلعب لحاله — إنت اللي بتحركه: كل سنتيمتر سكرول بيقدّم الفيلم كادر كادر، بنسخة عريضة للشاشات الكبيرة وعمودية للموبايل. نفس المحرك بيشتغل بمقاطع متعددة عبر الموقع بدون ما يتعارضوا.',
+          href: `${p}/#top`,
+          cta: 'جرّبه بالرئيسية',
+        },
+        {
+          k: '02',
+          t: 'العربي أولاً، مش ترجمة',
+          d: 'الموقع مبني من أول سطر ليكون عربي RTL بالكامل: الاتجاهات، الحركات، وحتى الأغلفة المولّدة للمشاريع بتتبدل حسب لغة الصفحة. زر اللغة بينقلك لنفس الصفحة بالضبط باللغة الثانية، مش للرئيسية.',
+          href: null,
+          cta: null,
+        },
+        {
+          k: '03',
+          t: 'سبع ألعاب جوّا المقالات',
+          d: 'كل مقالة بقسم «إشارات» فيها لعبة بتخليك تجرب الفكرة بدل ما تقرأها: بتترجم عروض شركات التسويق بند بند، بتحرك معادلة البيع بإيدك، بتحاور شركة وهمية وبتصطاد أعلامها الحمراء، بتخاطب مليون شخص وبتشوف مين بيوقف، بتصلّح رحلة شراء مسرّبة، بترسم عميلك المثالي، وبتفرز تقرير حملة كامل.',
+          href: `${p}/signals/`,
+          cta: 'افتح الإشارات',
+        },
+        {
+          k: '04',
+          t: 'لعبة بتتجدد كل يوم',
+          d: '«عين البراند»: عشر جولات بتدرب فيها عينك تفرق بين تصميم بيبيع وتصميم بس حلو. أسئلتها بتتجدد يومياً، وعندها ذاكرة: بتحفظ رقمك القياسي وبتتحداك تكسره، وبآخر كل جولة بتقلك بالضبط شو المبادئ اللي فاتتك.',
+          href: `${p}/signals/${isAr ? 'ar-3ain-al-brand' : 'en-the-brand-eye'}/`,
+          cta: 'دَرِّب عينك',
+        },
+        {
+          k: '05',
+          t: 'مختبر أفكار بحبل حقيقي',
+          d: 'لمبة بتنسحب بحبل بيتأرجح ويرتد زي الحقيقي، وبس تضوي بيصحى المختبر: بتحكيله عن مشروعك بكلماتك، وبيرد عليك بفكرة تسويقية مخصصة إلك تقدر تنفذها هالأسبوع. وإذا حبيت تتواصل، كل سياقك بيوصلني معك — ما بتعيد الشرح.',
+          href: `${p}/#lab`,
+          cta: 'اسحب الحبل',
+        },
+        {
+          k: '06',
+          t: 'مجسم ثلاثي الأبعاد لكل خدمة',
+          d: 'كل خدمة من العشرة إلها جسم سلكي ثلاثي الأبعاد خاص فيها: تضاريس بترتفع للسيو، لوحة دارات للمواقع، أعمدة شعاعية للإعلانات... مرسومة بالكود مباشرة بمحرك حجمه أقل من ٥ كيلوبايت — بتلف مع الماوس وبتنبض بالكبسة، وما بتاكل من سرعة الصفحة شي.',
+          href: `${p}/services/seo/`,
+          cta: 'شوف مجسم السيو',
+        },
+        {
+          k: '07',
+          t: 'بكجات بلا وعود',
+          d: 'صفحة الخدمات فيها تركيبات مجربة بتشتغل مع بعض، ومكتوب تحتها بالحرف: ما في بكج بيضمن مبيعات. السعر بيطلع من تشخيص مشروعك مش من قائمة، وكل صفحة خدمة بتقلك بصراحة شو اللي الخدمة لحالها ما بتحله.',
+          href: `${p}/services/#packs`,
+          cta: 'شوف البكجات',
+        },
+        {
+          k: '08',
+          t: 'تشخيص برد أولي مدروس',
+          d: 'نموذج طلب المشروع مش فورم بيروح عالفراغ: طلبك بيوصلني فوراً بأكثر من قناة، وبيرجعلك رد أولي مدروس خلال دقايق بيقرأ وضعك وبيعطيك خطوة تقدر تعملها اليوم — وبعده ردي الشخصي خلال ٢٤ ساعة.',
+          href: `${p}/brief/`,
+          cta: 'جرّب النموذج',
+        },
+        {
+          k: '09',
+          t: 'تحت الغطا',
+          d: 'الصفحات بتفتح بسرعة لأنه ما في مكتبات ثقيلة بتنحمل عالزائر إلا وين ما إلها داعي فعلي. فحص السيو التقني بيطلع صفر ملاحظات: بيانات منظمة بكل صفحة، خرائط موقع، وصف ثنائي اللغة لكل رابط، وفحوصات آلية بتلعب كل لعبة وبتكبس كل زر قبل أي تحديث بينزل.',
+          href: null,
+          cta: null,
+        },
+      ],
+      guideTitle: 'كيف تستفيد منه أحسن استفادة؟',
+      guideSub: 'مسار من خمس خطوات — علّم على اللي خلصته:',
+      guide: [
+        { t: 'العب «كشف الشركة»', d: 'سبع ردود من شركة تسويق وهمية، وإنت بتحكم: طبيعي ولا علم أحمر؟ رح تطلع منها بعين ثانية.', href: `${p}/signals/${isAr ? 'ar-dikor-raqami' : 'en-digital-decor'}/` },
+        { t: 'اقرأ «معادلة البيع»', d: 'ليش الإعلان الممتاز لحاله بيطلّع بيع واحد من ألف كبسة؟ حرّك السلايدرز وشوف بعينك.', href: `${p}/signals/${isAr ? 'ar-daman-almabi3at' : 'en-sales-guarantee'}/` },
+        { t: 'اسحب حبل المختبر', d: 'احكيله عن مشروعك بجملة، وخد فكرة تنفذها هالأسبوع ببلاش.', href: `${p}/#lab` },
+        { t: 'قارن البكجات', d: 'شوف كيف بتبين البكجات لما تنبني عالصراحة بدل الوعود.', href: `${p}/services/#packs` },
+        { t: 'احجز جلسة تشخيص', d: 'إذا وصلت لهون والموضوع جدي: احكيلي عن مشروعك وخلينا نعرف وين الخلل بالضبط.', href: `${p}/brief/` },
+      ],
+      guideDone: 'مسارك',
+      roadTitle: 'لوين رايح؟',
+      roadSub: 'الموقع بيكبر باستمرار — هاي الخارطة الجاية، بلا مواعيد وهمية:',
+      road: [
+        { t: 'مقالات وألعاب جديدة', d: 'قسم إشارات بيكبر باستمرار: مواضيع جديدة، وكل وحدة بلعبتها.', now: true },
+        { t: 'خدمتان قيد التجهيز', d: 'تحليل البيانات وأنظمة الذكاء والأتمتة — صفحاتهم جاهزة وبتقدر تحجز مكانك بقائمة الانتظار من هلأ.', now: true },
+        { t: 'حساب شخصي للعملاء', d: 'تسجيل دخول بيخلي كل عميل يتابع مشروعه: وين وصل الشغل، وشو الجاي.', now: false },
+        { t: 'لوحة متابعة حية', d: 'أرقام مشروعك (حملات، زيارات، نتائج) بلوحة وحدة بتفتحها بأي وقت — بدل تقارير الشهر اللي بتضيع.', now: false },
+        { t: 'أدوات أذكى بالمختبر', d: 'أدوات تفاعلية أكثر بتحلل وبتقترح، مبنية على نفس فلسفة «جرب قبل ما تقرر».', now: false },
+      ],
+      nowTag: 'شغال هلأ',
+      soonTag: 'بالخارطة',
+      ctaTitle: 'الموقع نفسه هو نموذج الشغل.',
+      ctaBody: 'كل اللي شفته بهالصفحة أنا صممته وبنيته. إذا بدك مستوى زي هيك لمشروعك — موقع، هوية، أو منظومة تسويق كاملة — خلينا نبلش بالتشخيص.',
+      ctaBtn: 'احكيلي عن مشروعك',
+      ctaGhost: 'شوف خدمة المواقع',
+      visit: null,
+    }
+  : {
+      seoTitle: 'A portfolio that explains itself',
+      seoDesc: 'A detailed tour of the site you are inside: fully bilingual, ten interactive tools, 3D wireframes per service, and an idea lab — every feature tried live in place.',
+      back: 'All work',
+      role: 'Design & Front-end Build',
+      title: 'This Portfolio',
+      lede: 'The strangest case study you will see: you are standing inside the project right now. So instead of screenshots, every feature below has a button that takes you to try it yourself. The site is the gallery.',
+      liveBadge: 'Live, and growing',
+      statsTitle: 'In numbers',
+      stats: [
+        { n: PAGES_COUNT, suffix: '+', label: 'pages built' },
+        { n: 2, suffix: '', label: 'full languages, not machine translation' },
+        { n: TOOLS_COUNT, suffix: '', label: 'interactive tools and games' },
+        { n: articlesCount, suffix: '', label: 'articles from real work' },
+        { n: servicesCount, suffix: '', label: 'services with 3D wireframes' },
+        { n: 0, suffix: '', label: 'issues in the technical SEO audit' },
+      ],
+      tourTitle: 'The tour: what is inside',
+      tourSub: 'Every feature here can be tried live — the button takes you straight to it.',
+      features: [
+        {
+          k: '01',
+          t: 'A film driven by your scroll',
+          d: 'Open the homepage and the video does not play itself — you drive it: every centimeter of scroll advances the film frame by frame, with a wide cut for desktops and a portrait one for phones. The same engine runs multiple sequences across the site without conflicts.',
+          href: `${p}/#top`,
+          cta: 'Try it on the homepage',
+        },
+        {
+          k: '02',
+          t: 'Arabic-first, not translated',
+          d: 'Built RTL-first from the very first line: directions, motion, and even the generated project covers switch with the page language. The language button takes you to the exact same page in the other language, never back to the homepage.',
+          href: null,
+          cta: null,
+        },
+        {
+          k: '03',
+          t: 'Seven games inside the articles',
+          d: 'Every article in Signals has a game that lets you try the idea instead of reading it: translate marketing packages item by item, move the sales equation with your hands, interrogate a fictional agency and catch its red flags, address a million people and see who stays, repair a leaking purchase journey, draw your ideal customer, and sort a full campaign report.',
+          href: `${p}/signals/`,
+          cta: 'Open Signals',
+        },
+        {
+          k: '04',
+          t: 'A game that refreshes daily',
+          d: 'The Brand Eye: ten rounds training your eye to tell selling design from merely pretty design. Its questions refresh every day, and it has memory: it keeps your record, dares you to break it, and tells you exactly which principles you missed.',
+          href: `${p}/signals/${isAr ? 'ar-3ain-al-brand' : 'en-the-brand-eye'}/`,
+          cta: 'Train your eye',
+        },
+        {
+          k: '05',
+          t: 'An idea lab with a real cord',
+          d: 'A lamp you pull by a cord that swings and springs back like a real one. Once lit, the lab wakes up: tell it about your business in your own words and it answers with a marketing idea tailored to you, executable this week. And if you decide to get in touch, your full context travels with you — no repeating yourself.',
+          href: `${p}/#lab`,
+          cta: 'Pull the cord',
+        },
+        {
+          k: '06',
+          t: 'A 3D wireframe per service',
+          d: 'Each of the ten services has its own 3D wire body: rising terrain for SEO, a circuit board for websites, radial bars for ads... drawn directly in code by an engine under 5 kilobytes — it tilts with your mouse, pulses on click, and costs the page nothing.',
+          href: `${p}/services/seo/`,
+          cta: 'See the SEO wireframe',
+        },
+        {
+          k: '07',
+          t: 'Packages without promises',
+          d: 'The services page has proven combinations that work as one, with plain words underneath: no package guarantees sales. The price comes from diagnosing your project, not a menu, and every service page tells you honestly what that service alone cannot fix.',
+          href: `${p}/services/#packs`,
+          cta: 'See the packages',
+        },
+        {
+          k: '08',
+          t: 'A brief with a considered first reply',
+          d: 'The project brief is not a form into the void: your brief reaches me instantly through more than one channel, and a considered first reply comes back within minutes — reading your situation and giving you a step you can take today — followed by my personal reply within 24 hours.',
+          href: `${p}/brief/`,
+          cta: 'Try the brief',
+        },
+        {
+          k: '09',
+          t: 'Under the hood',
+          d: 'Pages open fast because no heavy libraries ship to the visitor except where genuinely needed. The technical SEO audit reads zero issues: structured data on every page, sitemaps, bilingual descriptions per URL, and automated checks that play every game and click every button before any update ships.',
+          href: null,
+          cta: null,
+        },
+      ],
+      guideTitle: 'How to get the most out of it',
+      guideSub: 'A five-step path — tick what you finish:',
+      guide: [
+        { t: 'Play The Company Detector', d: 'Seven replies from a fictional agency, and you judge: normal or red flag? You leave with a second pair of eyes.', href: `${p}/signals/${isAr ? 'ar-dikor-raqami' : 'en-digital-decor'}/` },
+        { t: 'Read The Sales Equation', d: 'Why does a perfect ad alone produce one sale from a thousand clicks? Move the sliders and see.', href: `${p}/signals/${isAr ? 'ar-daman-almabi3at' : 'en-sales-guarantee'}/` },
+        { t: 'Pull the lab cord', d: 'One sentence about your business, one free idea you can execute this week.', href: `${p}/#lab` },
+        { t: 'Compare the packages', d: 'See what packages look like when they are built on honesty instead of promises.', href: `${p}/services/#packs` },
+        { t: 'Book a diagnosis session', d: 'If you got this far and it is serious: tell me about your project and let us find exactly where it leaks.', href: `${p}/brief/` },
+      ],
+      guideDone: 'Your path',
+      roadTitle: 'Where is it going?',
+      roadSub: 'The site keeps growing — this is the road ahead, with no fake dates:',
+      road: [
+        { t: 'New articles and games', d: 'Signals keeps expanding: new topics, each with its own game.', now: true },
+        { t: 'Two services in the making', d: 'Data analysis and AI systems and automation — their pages are ready and you can join the waitlist today.', now: true },
+        { t: 'Client accounts', d: 'A login that lets every client follow their project: where the work stands, and what is next.', now: false },
+        { t: 'A live dashboard', d: 'Your project numbers (campaigns, visits, results) in one board you open anytime — instead of monthly reports that get lost.', now: false },
+        { t: 'Smarter lab tools', d: 'More interactive tools that analyse and suggest, built on the same try-before-you-decide philosophy.', now: false },
+      ],
+      nowTag: 'Live now',
+      soonTag: 'On the map',
+      ctaTitle: 'The site itself is the work sample.',
+      ctaBody: 'Everything you saw on this page, I designed and built. If you want this level for your project — a website, an identity, or a full marketing system — let us start with a diagnosis.',
+      ctaBtn: 'Tell me about your project',
+      ctaGhost: 'See the websites service',
+      visit: null,
+    };
+
+const workHref = `${p}/#work`;
+const cover = isAr ? project.coverWide || project.cover : project.coverEnWide || project.coverWide || project.cover;
+---
+
+<Base title={`${t.seoTitle} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`} description={t.seoDesc} lang={lang} image={cover}>
+  <Nav lang={lang} switchTo={isAr ? '/work/portfolio/' : '/ar/work/portfolio/'} />
+
+  <main id="top" class="pf" data-pf>
+    <!-- ═══ الهيرو الميتا ═══ -->
+    <header class="hero container">
+      <a class="back" href={workHref}>{isAr ? '→' : '←'} {t.back}</a>
+      <p class="role" data-reveal>{t.role}</p>
+      <h1 data-reveal>{t.title}</h1>
+      <p class="lede" data-reveal>{t.lede}</p>
+      <p class="live" data-reveal><span class="dot" aria-hidden="true"></span>{t.liveBadge}</p>
+    </header>
+
+    <!-- ═══ الأرقام — عدادات بتتحرك عند الظهور ═══ -->
+    <section class="stats container">
+      <h2 class="sec-title" data-reveal>{t.statsTitle}</h2>
+      <div class="stats-grid" data-stagger>
+        {
+          t.stats.map((s) => (
+            <div class="stat">
+              <b><span data-count={s.n}>0</span>{s.suffix}</b>
+              <span class="stat-label">{s.label}</span>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ═══ الجولة ═══ -->
+    <section class="tour container">
+      <h2 class="sec-title" data-reveal>{t.tourTitle}</h2>
+      <p class="sec-sub" data-reveal>{t.tourSub}</p>
+      <div class="feats">
+        {
+          t.features.map((f, i) => (
+            <article class={`feat ${i % 2 ? 'is-alt' : ''}`} data-reveal>
+              <span class="feat-k" aria-hidden="true">{f.k}</span>
+              <div class="feat-body">
+                <h3>{f.t}</h3>
+                <p>{f.d}</p>
+                {f.href && (
+                  <a class="feat-cta" href={f.href}>
+                    {f.cta} <span aria-hidden="true">{isAr ? '←' : '→'}</span>
+                  </a>
+                )}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- ═══ مسار الاستفادة — بينعلّم عليه ═══ -->
+    <section class="guide container">
+      <h2 class="sec-title" data-reveal>{t.guideTitle}</h2>
+      <p class="sec-sub" data-reveal>{t.guideSub}</p>
+      <div class="guide-bar" data-reveal>
+        <span class="guide-label">{t.guideDone}</span>
+        <span class="guide-track"><i data-guide-fill></i></span>
+        <span class="guide-pct" data-guide-pct>٠٪</span>
+      </div>
+      <ol class="steps" data-stagger>
+        {
+          t.guide.map((g, i) => (
+            <li class="step" data-step={i}>
+              <button type="button" class="step-check" data-step-check aria-label={g.t} aria-pressed="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+              <div class="step-body">
+                <a href={g.href}><h3>{g.t}</h3></a>
+                <p>{g.d}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <!-- ═══ الخارطة ═══ -->
+    <section class="road container">
+      <h2 class="sec-title" data-reveal>{t.roadTitle}</h2>
+      <p class="sec-sub" data-reveal>{t.roadSub}</p>
+      <ol class="road-list" data-stagger>
+        {
+          t.road.map((r) => (
+            <li class={`road-item ${r.now ? 'is-now' : ''}`}>
+              <span class="road-dot" aria-hidden="true" />
+              <div>
+                <span class="road-top">
+                  <h3>{r.t}</h3>
+                  <span class="road-tag">{r.now ? t.nowTag : t.soonTag}</span>
+                </span>
+                <p>{r.d}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <!-- ═══ الخاتمة ═══ -->
+    <section class="cta container" data-reveal>
+      <h2>{t.ctaTitle}</h2>
+      <p>{t.ctaBody}</p>
+      <div class="cta-actions">
+        <a class="btn btn-primary" href={`${p}/brief/`}>{t.ctaBtn}</a>
+        <a class="btn btn-ghost" href={`${p}/services/websites/`}>{t.ctaGhost}</a>
+      </div>
+    </section>
+  </main>
+
+  <Footer lang={lang} />
+</Base>
+
+<script>
+  // ═══════════════════════════════════════════════════════════
+  //  ١) العدادات: بتعد من صفر للرقم لما تظهر بالشاشة
+  //  ٢) مسار الاستفادة: علامات بتنحفظ بالمتصفح + شريط تقدم
+  // ═══════════════════════════════════════════════════════════
+  function initPortfolio() {
+    const root = document.querySelector('[data-pf]') as HTMLElement | null;
+    if (!root || root.dataset.ready === '1') return;
+    root.dataset.ready = '1';
+
+    const isAr = document.documentElement.lang === 'ar';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fmt = (v: number) => Math.round(v).toLocaleString(isAr ? 'ar-EG' : 'en-US');
+
+    // ─── العدادات ───
+    const counters = [...root.querySelectorAll('[data-count]')] as HTMLElement[];
+    const runCount = (el: HTMLElement) => {
+      const target = Number(el.dataset.count || 0);
+      if (reduce || target === 0) {
+        el.textContent = fmt(target);
+        return;
+      }
+      const t0 = performance.now();
+      const DUR = 1100;
+      const step = (now: number) => {
+        const p = Math.min(1, (now - t0) / DUR);
+        el.textContent = fmt(target * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) =>
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            io.unobserve(e.target);
+            runCount(e.target as HTMLElement);
+          }),
+        { threshold: 0.6 },
+      );
+      counters.forEach((el) => io.observe(el));
+    } else {
+      counters.forEach(runCount);
+    }
+
+    // ─── مسار الاستفادة ───
+    // ⚠️ التخزين بالمتصفح بس (زي سجل عين البراند) — وضع خاص بيرمي
+    //    استثناء عالكتابة، فكل وصول جوّا try
+    const KEY = 'pf-guide';
+    const load = () => {
+      try {
+        return JSON.parse(localStorage.getItem(KEY) || '[]');
+      } catch {
+        return [];
+      }
+    };
+    const save = (arr: number[]) => {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(arr));
+      } catch {}
+    };
+
+    const checks = [...root.querySelectorAll('[data-step-check]')] as HTMLButtonElement[];
+    const fill = root.querySelector('[data-guide-fill]') as HTMLElement | null;
+    const pct = root.querySelector('[data-guide-pct]') as HTMLElement | null;
+
+    const render = () => {
+      const done = load();
+      checks.forEach((btn, i) => {
+        const on = done.includes(i);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.closest('.step')?.classList.toggle('is-done', on);
+      });
+      const ratio = checks.length ? done.length / checks.length : 0;
+      if (fill) fill.style.width = ratio * 100 + '%';
+      if (pct) pct.textContent = fmt(Math.round(ratio * 100)) + '٪';
+    };
+
+    checks.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        const done = load();
+        const at = done.indexOf(i);
+        if (at === -1) done.push(i);
+        else done.splice(at, 1);
+        save(done);
+        render();
+      });
+    });
+
+    render();
+  }
+
+  initPortfolio();
+  document.addEventListener('astro:page-load', initPortfolio);
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .pf {
+    --title-size: clamp(38px, 6vw, 78px);
+    --gap: clamp(56px, 9vh, 110px); /* بين الأقسام */
+    padding-top: calc(108px + clamp(28px, 5vh, 56px));
+  }
+
+  .sec-title {
+    font-size: clamp(24px, 3vw, 38px);
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+
+  .sec-sub {
+    color: var(--muted);
+    font-size: clamp(14.5px, 1.6vw, 17px);
+    line-height: 1.75;
+    max-width: 58ch;
+    margin-bottom: clamp(26px, 4vh, 42px);
+  }
+
+  /* ─── الهيرو ─── */
+  .hero {
+    margin-bottom: var(--gap);
+  }
+
+  .back {
+    display: inline-block;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 26px;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .back:hover {
+    color: var(--accent);
+  }
+
+  .role {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: var(--title-size);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+
+  html[lang='ar'] h1 {
+    letter-spacing: 0;
+    line-height: 1.3;
+  }
+
+  .lede {
+    color: var(--muted);
+    font-size: clamp(16px, 1.9vw, 21px);
+    line-height: 1.8;
+    max-width: 62ch;
+    margin-bottom: 20px;
+  }
+
+  /* شارة «حي» بنبضة */
+  .live {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: var(--r-pill);
+    padding: 8px 18px;
+  }
+
+  .live .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--r-pill);
+    background: var(--accent);
+    animation: pf-pulse 2s infinite;
+  }
+
+  @keyframes pf-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent);
+    }
+    55% {
+      box-shadow: 0 0 0 9px transparent;
+    }
+  }
+
+  /* ─── الأرقام ─── */
+  .stats {
+    margin-bottom: var(--gap);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    overflow: hidden;
+  }
+
+  .stat {
+    background: var(--bg);
+    padding: clamp(20px, 2.6vw, 32px);
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    transition: background 0.3s var(--ease-out);
+  }
+
+  .stat:hover {
+    background: var(--surface);
+  }
+
+  .stat b {
+    font-family: var(--font-en);
+    font-size: clamp(34px, 4vw, 52px);
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-label {
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  /* ─── الجولة ─── */
+  .tour {
+    margin-bottom: var(--gap);
+  }
+
+  .feats {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 2vh, 22px);
+  }
+
+  .feat {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(16px, 2.5vw, 34px);
+    align-items: start;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: clamp(20px, 2.8vw, 34px);
+    max-width: 900px;
+    transition:
+      border-color 0.35s var(--ease-out),
+      transform 0.35s var(--ease-out);
+  }
+
+  /* تناوب يمين/شمال — كسر الرتابة العمودية */
+  .feat.is-alt {
+    margin-inline-start: auto;
+  }
+
+  .feat:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    transform: translateY(-3px);
+  }
+
+  .feat-k {
+    font-family: var(--font-en);
+    font-size: clamp(26px, 3vw, 40px);
+    font-weight: 800;
+    color: color-mix(in srgb, var(--accent) 55%, transparent);
+    line-height: 1;
+  }
+
+  .feat h3 {
+    font-size: clamp(18px, 2.1vw, 24px);
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .feat p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.85;
+    max-width: 66ch;
+  }
+
+  .feat-cta {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .feat-cta:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* ─── مسار الاستفادة ─── */
+  .guide {
+    margin-bottom: var(--gap);
+  }
+
+  .guide-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+    max-width: 520px;
+  }
+
+  .guide-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .guide-track {
+    flex: 1;
+    height: 8px;
+    border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--text) 7%, transparent);
+    overflow: hidden;
+  }
+
+  .guide-track i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--accent);
+    border-radius: inherit;
+    transition: width 0.5s var(--ease-out);
+  }
+
+  .guide-pct {
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    min-width: 38px;
+  }
+
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+    padding-block: clamp(16px, 2.2vh, 24px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .step:last-child {
+    border-bottom: 0;
+  }
+
+  .step-check {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: transparent;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition:
+      border-color 0.3s var(--ease-out),
+      color 0.3s var(--ease-out),
+      transform 0.15s var(--ease-out);
+  }
+
+  .step-check svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .step-check:hover {
+    border-color: var(--accent);
+  }
+
+  .step-check:active {
+    transform: scale(0.92);
+  }
+
+  .step.is-done .step-check {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .step h3 {
+    font-size: clamp(16px, 1.9vw, 20px);
+    font-weight: 800;
+    margin-bottom: 6px;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .step a:hover h3 {
+    color: var(--accent);
+  }
+
+  .step.is-done h3 {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  .step p {
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.7;
+    max-width: 60ch;
+  }
+
+  /* ─── الخارطة ─── */
+  .road {
+    margin-bottom: var(--gap);
+  }
+
+  .road-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 3vh, 30px);
+  }
+
+  /* خط الزمن العمودي */
+  .road-list::before {
+    content: '';
+    position: absolute;
+    inset-block: 6px;
+    inset-inline-start: 7px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--line) 55%);
+  }
+
+  .road-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+
+  .road-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--r-pill);
+    border: 2px solid var(--line);
+    background: var(--bg);
+    margin-top: 4px;
+    z-index: 1;
+  }
+
+  .road-item.is-now .road-dot {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 25%, var(--bg));
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .road-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+
+  .road-item h3 {
+    font-size: clamp(16px, 1.9vw, 20px);
+    font-weight: 800;
+  }
+
+  .road-tag {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 3px 10px;
+  }
+
+  .road-item.is-now .road-tag {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .road-item p {
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.75;
+    max-width: 62ch;
+  }
+
+  /* ─── الخاتمة ─── */
+  .cta {
+    margin-bottom: var(--gap);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: var(--surface);
+    padding: clamp(28px, 4vw, 52px);
+  }
+
+  .cta h2 {
+    font-size: clamp(22px, 2.8vw, 34px);
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+
+  .cta p {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.8;
+    max-width: 58ch;
+    margin-bottom: 22px;
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 720px) {
+    .feat,
+    .feat.is-alt {
+      max-width: 100%;
+      margin-inline: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .live .dot {
+      animation: none;
+    }
+
+    .feat:hover {
+      transform: none;
+    }
+  }
+</style>
