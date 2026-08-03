@@ -212,8 +212,20 @@ const SIZES = [
   { w: 1600, h: 900, suffix: '-wide' },
 ];
 
+// ═══════════════════════════════════════════════════════════════
+//  اللغتان — ملاحظة ريّان 2026-08-03: الغلاف كان بيطلع عربي حتى
+//  بالنسخة الإنجليزية من الموقع. صار لكل غلاف نسختين:
+//    <id>.webp / <id>-wide.webp          ← عربي (الأسماء القديمة)
+//    <id>-en.webp / <id>-en-wide.webp    ← إنجليزي
+//  والمكوّنات بتختار حسب لغة الصفحة.
+// ═══════════════════════════════════════════════════════════════
+const LANGS = [
+  { code: 'ar', suffix: '' },
+  { code: 'en', suffix: '-en' },
+];
+
 // ─── قالب الغلاف ───
-function html(p, colors, layout, W, H) {
+function html(p, colors, layout, W, H, lang = 'ar') {
   // ═══ معامل القياس ═══
   //  كل قيمة بالتصميم انكتبت أصلاً لقماشة 1080×1080. عشان النسخة
   //  العريضة تطلع بنفس النِسَب مش مطّاطة، منضرب كل قيمة بمعامل:
@@ -231,8 +243,9 @@ function html(p, colors, layout, W, H) {
   const c2 = manual?.[1] || colors[1]?.hex || c1;
   const c3 = manual?.[2] || colors[2]?.hex || c2;
 
-  const title = p.titleAr || p.title;
-  const role = p.roleAr || p.role || '';
+  const isAr = lang === 'ar';
+  const title = isAr ? p.titleAr || p.title : p.title || p.titleAr;
+  const role = (isAr ? p.roleAr || p.role : p.role || p.roleAr) || '';
 
   const motifKey = p.motif || CAT_MOTIF[p.category] || 'grid';
   const motifSvg = (MOTIF[motifKey] || MOTIF.grid)(BRAND.accent);
@@ -242,7 +255,7 @@ function html(p, colors, layout, W, H) {
       `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><defs>${motifSvg}</defs><rect width="${W}" height="${H}" fill="url(%23m)"/></svg>`,
     ).replace(/%2523/g, '%23');
 
-  return `<!doctype html><html dir="rtl"><head><meta charset="utf-8">
+  return `<!doctype html><html dir="${isAr ? 'rtl' : 'ltr'}"><head><meta charset="utf-8">
 <style>
   /* الخطوط من node_modules مباشرة — بتنخدم عبر معترض الشبكة تحت */
   @font-face{font-family:'Alexandria Variable';src:url('/__f/alexandria-arabic.woff2') format('woff2');font-weight:100 900;font-display:block}
@@ -368,7 +381,7 @@ function html(p, colors, layout, W, H) {
   <div class="veil"></div>
   <div class="edge"></div>
   <div class="bar"></div>
-  <div class="kicker">${escapeHtml(catLabel(p.category))}</div>
+  <div class="kicker">${escapeHtml(catLabel(p.category, isAr))}</div>
   <div class="foot">
     <h1>${escapeHtml(title)}</h1>
     ${role ? `<div class="role">${escapeHtml(role)}</div>` : ''}
@@ -379,12 +392,10 @@ function html(p, colors, layout, W, H) {
 }
 
 const CAT = {
-  video: 'فيديو',
-  design: 'تصميم',
-  website: 'موقع',
-  marketing: 'تسويق',
+  ar: { video: 'فيديو', design: 'تصميم', website: 'موقع', marketing: 'تسويق' },
+  en: { video: 'Video', design: 'Design', website: 'Website', marketing: 'Marketing' },
 };
-const catLabel = (c) => CAT[c] || 'شغل';
+const catLabel = (c, isAr) => CAT[isAr ? 'ar' : 'en'][c] || (isAr ? 'شغل' : 'Work');
 const escapeHtml = (s) =>
   String(s).replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
 
@@ -480,13 +491,15 @@ for (const p of targets) {
   const sameCat = work.projects.filter((x) => x.category === p.category);
   const layout = LAYOUTS[sameCat.indexOf(p) % LAYOUTS.length];
 
-  // نسختين: مربّعة للشبكة، وعريضة لكل مكان ثاني بالموقع
-  for (const { w, h, suffix } of SIZES) {
-    await page.setViewportSize({ width: w, height: h });
-    pageHtml = html(p, colors, layout, w, h);
-    await page.goto('http://covers.local/', { waitUntil: 'networkidle' });
-    await page.evaluate(() => document.fonts.ready);
-    await page.screenshot({ path: join(OUT, `${p.id}${suffix}.png`), type: 'png' });
+  // أربع نسخ لكل مشروع: (مربّع + عريض) × (عربي + إنجليزي)
+  for (const { code, suffix: langSuffix } of LANGS) {
+    for (const { w, h, suffix } of SIZES) {
+      await page.setViewportSize({ width: w, height: h });
+      pageHtml = html(p, colors, layout, w, h, code);
+      await page.goto('http://covers.local/', { waitUntil: 'networkidle' });
+      await page.evaluate(() => document.fonts.ready);
+      await page.screenshot({ path: join(OUT, `${p.id}${langSuffix}${suffix}.png`), type: 'png' });
+    }
   }
 }
 

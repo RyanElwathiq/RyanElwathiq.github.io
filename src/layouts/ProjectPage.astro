@@ -68,7 +68,8 @@ const emptyNote = isAr
 //     وتحت واسم العميل (القاعد أسفل الغلاف) بينقص. وكمان هي الأنسب
 //     كصورة مشاركة على واتساب وفيسبوك — نسبتها قريبة من 1.91:1.
 //  الاحتياط `|| p.cover` لأي مشروع لسا بلا غلاف مولّد.
-const cover = p.coverWide || p.cover;
+//  وبالإنجليزي بياخد النسخة الإنجليزية (بما فيها صورة المشاركة).
+const cover = (isAr ? p.coverWide : p.coverEnWide || p.coverWide) || p.cover;
 
 const credit = isAr ? p.creditAr : p.credit;
 

@@ -81,9 +81,9 @@ const t = isAr
                 <span class="chrome" aria-hidden="true">
                   <i /> <i /> <i />
                 </span>
-                {/* إطار متصفح = صندوق عريض ← الغلاف العريض */}
+                {/* إطار متصفح = صندوق عريض ← الغلاف العريض بلغة الصفحة */}
                 <img
-                  src={p.coverWide || p.cover}
+                  src={(isAr ? p.coverWide : p.coverEnWide || p.coverWide) || p.cover}
                   alt={isAr ? p.titleAr : p.title}
                   loading="lazy"
                   width="720"

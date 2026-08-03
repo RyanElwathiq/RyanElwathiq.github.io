@@ -33,7 +33,7 @@ const shown = projects.slice(0, 2);
             {/* الصندوق هون 4:3 (و16:10 عالموبايل) — فالغلاف العريض
                 هو الصح، المربّع بينقص منه اسم العميل من تحت */}
             <img
-              src={p.coverWide || p.cover}
+              src={(isAr ? p.coverWide : p.coverEnWide || p.coverWide) || p.cover}
               alt={isAr ? p.titleAr : p.title}
               loading="lazy"
               width="800"

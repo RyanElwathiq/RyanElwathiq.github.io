@@ -24,9 +24,14 @@ const { project: p, lang, level = 3, wide = false } = Astro.props;
 const isAr = lang === 'ar';
 const H = `h${level}` as 'h2' | 'h3';
 
+// ⚠️ الغلاف حسب لغة الصفحة (ملاحظة ريّان: كان بيطلع عربي حتى
+//    بالإنجليزي). لو ما في نسخة إنجليزية بيرجع للعربية بدل كسر.
+const coverSq = isAr ? p.cover : p.coverEn || p.cover;
 // النسخة العريضة للموبايل بس، ولو المشروع لسا بلا غلاف مولّد
 // بيرجع للمربّع بدل ما تنكسر الصورة
-const coverWide = wide ? p.coverWide || p.cover : null;
+const coverWide = wide
+  ? (isAr ? p.coverWide : p.coverEnWide || p.coverWide) || coverSq
+  : null;
 
 const title = isAr ? p.titleAr : p.title;
 const role = isAr ? p.roleAr : p.role;
@@ -43,7 +48,7 @@ const more = isAr ? 'تفاصيل المشروع ←' : 'Project details →';
       {/* عالموبايل الصندوق بيصير 16:11 ← الغلاف العريض.
           نفس نقطة الكسر اللي بـWorkStrip بالضبط (767px) */}
       {coverWide && <source media="(max-width: 767px)" srcset={coverWide} />}
-      <img src={p.cover} alt={title} loading="lazy" width="640" height="640" />
+      <img src={coverSq} alt={title} loading="lazy" width="640" height="640" />
     </picture>
   </a>
 

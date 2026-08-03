@@ -23,7 +23,7 @@ const isAr = lang === 'ar';
 
     <a class="feature" href={p.url} target="_blank" rel="noreferrer" data-reveal>
       <img
-        src={p.coverWide || p.cover}
+        src={(isAr ? p.coverWide : p.coverEnWide || p.coverWide) || p.cover}
         alt={isAr ? p.titleAr : p.title}
         loading="lazy"
         width="1200"
