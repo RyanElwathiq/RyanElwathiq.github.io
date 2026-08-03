@@ -1,0 +1,573 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «ارسم عميلك» — من «جمهوري كل الناس» لشخص بتعرف تحكي معه
+//
+//  جزئين: الفخ (استهداف عمر وجنس ومكان → بيطلع وصف بلا معلومة
+//  بتبيع) والبناء (خمس أسئلة عن المشكلة والخوف والاعتراض، وبطاقة
+//  البيرسونا بتترسم قدامك جواب جواب وبتنقرا بالآخر كوصف شخص حي).
+//
+//  ⚠️ خيارات الأسئلة بتنبنى بالجافاسكربت — ستايلاتها بـ :global.
+//  ✏️ الأسئلة والقوالب بـ src/data/persona-builder.js
+//  ✏️ الاستخدام جوّا مقال:  <PersonaBuilderSection lang="ar" />
+// ═══════════════════════════════════════════════════════════════
+import { DEMO, QUESTIONS, TEMPLATE, TEXTS } from '../data/persona-builder.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'persona-builder' } = Astro.props;
+const isAr = lang === 'ar';
+const L = lang;
+
+const briefHref = isAr ? '/ar/brief/' : '/brief/';
+
+const t = isAr
+  ? {
+      eyebrow: 'لعبة قصيرة',
+      title: 'ارسم عميلك',
+      lede: 'جاوب زي ما بتجاوب أي شركة: مين جمهورك؟ وبعدين خلينا نرسم عميلك الحقيقي سؤال سؤال، وشوف الفرق بين شريحة إعلانية وشخص بتعرف شو تقله.',
+      start: 'ابدأ الرسم',
+      demoNext: 'اعتمد هالاستهداف',
+      buildTitle: 'هلأ خلينا نرسمه صح',
+      again: 'ارسم من جديد',
+      cta: 'احجز جلسة تشخيص',
+    }
+  : {
+      eyebrow: 'Short game',
+      title: 'Draw Your Customer',
+      lede: 'Answer the way every company answers: who is your audience? Then let us draw your real customer question by question, and see the difference between an ad segment and a person you know what to tell.',
+      start: 'Start drawing',
+      demoNext: 'Use this targeting',
+      buildTitle: 'Now let us draw them properly',
+      again: 'Draw again',
+      cta: 'Book a diagnosis session',
+    };
+
+const demo = DEMO[L];
+const questions = QUESTIONS.map((q) => q[L]);
+const template = TEMPLATE[L];
+const texts = TEXTS[L];
+---
+
+<section class="pb" id={id}>
+  <div class="pb-head" data-reveal>
+    <p class="pb-eyebrow">{t.eyebrow}</p>
+    <h2>{t.title}</h2>
+    <p class="pb-lede">{t.lede}</p>
+  </div>
+
+  <div class="pb-board frame frame-on" data-reveal data-persona>
+    <!-- ═══ الجزء الأول: الفخ ═══ -->
+    <div class="pb-demo" data-pb-demo>
+      <p class="pb-intro">{demo.intro}</p>
+      {
+        [demo.age, demo.gender, demo.place].map((group, gi) => (
+          <div class="pb-group">
+            <span class="pb-g-label">{group.label}</span>
+            <div class="pb-g-opts" data-pb-group={gi}>
+              {group.options.map((o, oi) => (
+                <button type="button" class="pb-pill" data-pb-pill aria-pressed={oi === 0 ? 'true' : 'false'}>
+                  {o}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+      <button type="button" class="btn btn-primary" data-pb-adopt>{t.demoNext}</button>
+      <p class="pb-trap" data-pb-trap hidden>{demo.trap}</p>
+      <button type="button" class="btn btn-primary" data-pb-tobuild hidden>{t.buildTitle}</button>
+    </div>
+
+    <!-- ═══ الجزء الثاني: البناء ═══ -->
+    <div class="pb-build" data-pb-build hidden>
+      <div class="pb-cols">
+        <div class="pb-qcol">
+          <p class="pb-q" data-pb-q></p>
+          <div class="pb-opts" data-pb-opts></div>
+        </div>
+
+        <!-- البطاقة بتترسم مع كل جواب -->
+        <aside class="pb-card" data-pb-card>
+          <p class="pb-card-title">{texts.personaCard}</p>
+          <div class="pb-avatar" aria-hidden="true">
+            <span></span><span></span>
+          </div>
+          <ul class="pb-fields" data-pb-fields></ul>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ═══ النهاية: المقارنة ═══ -->
+    <div class="pb-end" data-pb-end hidden>
+      <p class="pb-vtitle">{texts.verdictTitle}</p>
+      <div class="pb-compare">
+        <div class="pb-side pb-side-old">
+          <p class="pb-side-title">{texts.demoCard}</p>
+          <p class="pb-side-body" data-pb-oldtext></p>
+        </div>
+        <div class="pb-side pb-side-new">
+          <p class="pb-side-title">{texts.personaCard}</p>
+          <p class="pb-side-body" data-pb-newtext></p>
+        </div>
+      </div>
+      <p class="pb-verdict">{texts.verdict}</p>
+      <p class="pb-note">{texts.note}</p>
+      <div class="pb-actions">
+        <button type="button" class="btn btn-ghost" data-pb-again>{t.again}</button>
+        <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ questions, template, doneLabel: isAr ? 'شوف الفرق' : 'See the difference' }}>
+  // ═══════════════════════════════════════════════════════════
+  //  محرّك الرسم
+  // ═══════════════════════════════════════════════════════════
+  (function () {
+    function boot() {
+      document.querySelectorAll('[data-persona]').forEach(setup);
+    }
+
+    function setup(board) {
+      if (board.dataset.ready === '1') return;
+      board.dataset.ready = '1';
+
+      var demoBox = board.querySelector('[data-pb-demo]');
+      var trapEl = board.querySelector('[data-pb-trap]');
+      var adoptBtn = board.querySelector('[data-pb-adopt]');
+      var toBuildBtn = board.querySelector('[data-pb-tobuild]');
+      var buildBox = board.querySelector('[data-pb-build]');
+      var qEl = board.querySelector('[data-pb-q]');
+      var optsEl = board.querySelector('[data-pb-opts]');
+      var fieldsEl = board.querySelector('[data-pb-fields]');
+      var endBox = board.querySelector('[data-pb-end]');
+
+      var i = 0;
+      var answers = []; // frag لكل سؤال
+
+      // ─── الجزء الأول: حبوب الاستهداف ───
+      board.querySelectorAll('[data-pb-group]').forEach(function (group) {
+        group.querySelectorAll('[data-pb-pill]').forEach(function (pill) {
+          pill.addEventListener('click', function () {
+            group.querySelectorAll('[data-pb-pill]').forEach(function (p) {
+              p.setAttribute('aria-pressed', 'false');
+            });
+            pill.setAttribute('aria-pressed', 'true');
+          });
+        });
+      });
+
+      function demoText() {
+        var parts = [];
+        board.querySelectorAll('[data-pb-group]').forEach(function (group) {
+          var on = group.querySelector('[aria-pressed="true"]');
+          if (on) parts.push(on.textContent.trim());
+        });
+        return parts.join(' · ');
+      }
+
+      adoptBtn.addEventListener('click', function () {
+        adoptBtn.hidden = true;
+        trapEl.hidden = false;
+        toBuildBtn.hidden = false;
+      });
+
+      toBuildBtn.addEventListener('click', function () {
+        demoBox.hidden = true;
+        buildBox.hidden = false;
+        playQuestion();
+      });
+
+      // ─── الجزء الثاني: الأسئلة والبطاقة ───
+      function playQuestion() {
+        var q = questions[i];
+        qEl.textContent = q.q;
+        optsEl.textContent = '';
+        q.options.forEach(function (o) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'pb-opt';
+          b.textContent = o.text;
+          b.addEventListener('click', function () {
+            pick(o);
+          });
+          optsEl.appendChild(b);
+        });
+      }
+
+      function pick(o) {
+        answers.push(o.frag);
+        // سطر جديد بالبطاقة بينرسم
+        var li = document.createElement('li');
+        li.textContent = o.frag;
+        fieldsEl.appendChild(li);
+        requestAnimationFrame(function () {
+          li.classList.add('in');
+        });
+
+        i++;
+        if (i >= questions.length) return setTimeout(finish, 650);
+        playQuestion();
+      }
+
+      function personaText() {
+        return template
+          .replace('{p}', answers[0] || '')
+          .replace('{t}', answers[1] || '')
+          .replace('{f}', answers[2] || '')
+          .replace('{o}', answers[3] || '')
+          .replace('{g}', answers[4] || '');
+      }
+
+      function finish() {
+        buildBox.hidden = true;
+        endBox.hidden = false;
+        board.querySelector('[data-pb-oldtext]').textContent = demoText();
+        board.querySelector('[data-pb-newtext]').textContent = personaText();
+      }
+
+      board.querySelector('[data-pb-again]').addEventListener('click', function () {
+        endBox.hidden = true;
+        demoBox.hidden = false;
+        adoptBtn.hidden = false;
+        trapEl.hidden = true;
+        toBuildBtn.hidden = true;
+        fieldsEl.textContent = '';
+        answers = [];
+        i = 0;
+      });
+    }
+
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .pb {
+    margin-block: clamp(38px, 5vh, 60px);
+  }
+
+  .pb-head {
+    margin-bottom: 22px;
+  }
+
+  .pb-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .pb-head h2 {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .pb-lede {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 58ch;
+  }
+
+  .pb-board {
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-card);
+  }
+
+  /* ─── الجزء الأول ─── */
+  .pb-intro {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .pb-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .pb-g-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    min-width: 52px;
+  }
+
+  .pb-g-opts {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .pb-pill {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 7px 15px;
+    cursor: pointer;
+    transition:
+      border-color 0.25s var(--ease-out),
+      background 0.25s var(--ease-out);
+  }
+
+  .pb-pill[aria-pressed='true'] {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  .pb-demo > .btn {
+    margin-top: 10px;
+  }
+
+  /* الفخ */
+  .pb-trap {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--text);
+    border-inline-start: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+    padding: 14px 18px;
+    margin-top: 16px;
+    margin-bottom: 14px;
+    max-width: 62ch;
+  }
+
+  /* ─── الجزء الثاني ─── */
+  .pb-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: clamp(16px, 2.5vw, 28px);
+    align-items: start;
+  }
+
+  .pb-q {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+
+  .pb-opts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pb-opts :global(.pb-opt) {
+    text-align: start;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 12px 16px;
+    cursor: pointer;
+    transition:
+      border-color 0.25s var(--ease-out),
+      transform 0.15s var(--ease-out);
+  }
+
+  .pb-opts :global(.pb-opt:hover) {
+    border-color: var(--accent);
+  }
+
+  .pb-opts :global(.pb-opt:active) {
+    transform: scale(0.99);
+  }
+
+  /* البطاقة */
+  .pb-card {
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: var(--r-card);
+    padding: 16px;
+    position: sticky;
+    top: 110px;
+  }
+
+  .pb-card-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .pb-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    position: relative;
+    margin-bottom: 12px;
+  }
+
+  .pb-avatar span:first-child {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: var(--r-pill);
+    background: var(--accent);
+    opacity: 0.75;
+  }
+
+  .pb-avatar span:last-child {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 11px;
+    border-radius: 11px 11px 0 0;
+    background: var(--accent);
+    opacity: 0.75;
+  }
+
+  .pb-fields {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pb-fields :global(li) {
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--muted);
+    border-bottom: 1px dashed var(--line);
+    padding-bottom: 8px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.4s var(--ease-out),
+      transform 0.4s var(--ease-out);
+  }
+
+  .pb-fields :global(li.in) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .pb-fields :global(li:last-child) {
+    border-bottom: 0;
+  }
+
+  /* ─── النهاية ─── */
+  .pb-vtitle {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+
+  .pb-compare {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .pb-side {
+    border-radius: var(--r-card);
+    padding: 14px 16px;
+  }
+
+  .pb-side-old {
+    border: 1px dashed var(--line);
+    opacity: 0.75;
+  }
+
+  .pb-side-new {
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  .pb-side-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .pb-side-old .pb-side-title {
+    color: var(--muted);
+  }
+
+  .pb-side-body {
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .pb-side-old .pb-side-body {
+    color: var(--muted);
+  }
+
+  .pb-verdict {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 64ch;
+    margin-bottom: 10px;
+  }
+
+  .pb-note {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 62ch;
+    margin-bottom: 16px;
+  }
+
+  .pb-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 720px) {
+    .pb-cols {
+      grid-template-columns: 1fr;
+    }
+
+    .pb-card {
+      position: static;
+      order: -1;
+    }
+
+    .pb-compare {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pb-fields :global(li) {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
