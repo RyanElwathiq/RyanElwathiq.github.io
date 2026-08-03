@@ -1,0 +1,479 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «فارز الأرقام» — Lead ولا Sale ولا ROAS ولا زينة؟
+//
+//  نتائج حملة وهمية بتطلع بطاقة بطاقة، والزائر بيفرز كل وحدة
+//  بصندوقها. بعد كل فرزة بيقرأ ليش، وبالآخر بيعرف إذا بيقرأ
+//  التقارير ولا بيتفرج عليها.
+//
+//  ⚠️ البطاقات بتنخلط كل لعبة. وفي بطاقتين «حدّية» عن قصد
+//     (ROAS خاسر، تعليقات فيها Lead متخفي) — هن اللي بيفرقوا
+//     الفارز المحترف.
+//  ✏️ البطاقات والأحكام بـ src/data/number-sorter.js
+//  ✏️ الاستخدام جوّا مقال:  <NumberSorterSection lang="ar" />
+// ═══════════════════════════════════════════════════════════════
+import { BUCKETS, CARDS, VERDICTS } from '../data/number-sorter.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'number-sorter' } = Astro.props;
+const isAr = lang === 'ar';
+const L = lang;
+
+const briefHref = isAr ? '/ar/brief/' : '/brief/';
+
+const t = isAr
+  ? {
+      eyebrow: 'لعبة قصيرة',
+      title: 'فارز الأرقام',
+      lede: 'وصلك تقرير حملة مليان أرقام. بعضها بيدفع رواتب وبعضها زينة. افرز كل رقم بمكانه الصح، وشوف إذا بتقرأ التقارير ولا بتتفرج عليها.',
+      coverTitle: 'التقرير وصل. افرزه.',
+      rules: ['٩ أرقام من حملة وهمية', 'افرز كل واحد: Lead، Sale، ROAS، أو زينة', 'بعد كل فرزة بتقرأ ليش'],
+      start: 'افتح التقرير',
+      counter: 'الرقم',
+      of: 'من',
+      right: 'فرزة صح',
+      wrong: 'مكانه الصح:',
+      next: 'الرقم الجاي',
+      finishBtn: 'شوف نتيجتك',
+      scoreLine: 'فرزت صح',
+      again: 'افرز من جديد',
+      cta: 'احجز جلسة تشخيص',
+    }
+  : {
+      eyebrow: 'Short game',
+      title: 'The Number Sorter',
+      lede: 'A campaign report arrived, full of numbers. Some pay salaries, some are decoration. Sort every number into its right place and find out whether you read reports or just look at them.',
+      coverTitle: 'The report is in. Sort it.',
+      rules: ['9 numbers from a fictional campaign', 'Sort each: Lead, Sale, ROAS, or Vanity', 'After every sort, you read why'],
+      start: 'Open the report',
+      counter: 'Number',
+      of: 'of',
+      right: 'Sorted right',
+      wrong: 'Its right place:',
+      next: 'Next number',
+      finishBtn: 'See your result',
+      scoreLine: 'You sorted correctly',
+      again: 'Sort again',
+      cta: 'Book a diagnosis session',
+    };
+
+const buckets = BUCKETS.map((b) => ({ id: b.id, name: b[L] }));
+const cards = CARDS.map((c) => ({ bucket: c.bucket, text: c[L].text, why: c[L].why }));
+const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
+---
+
+<section class="ns" id={id}>
+  <div class="ns-head" data-reveal>
+    <p class="ns-eyebrow">{t.eyebrow}</p>
+    <h2>{t.title}</h2>
+    <p class="ns-lede">{t.lede}</p>
+  </div>
+
+  <div class="ns-board frame frame-on" data-reveal data-sorter>
+    <!-- شاشة البداية -->
+    <div class="ns-cover" data-ns-cover>
+      <p class="ns-cover-kicker">{t.eyebrow}</p>
+      <p class="ns-cover-title">{t.coverTitle}</p>
+      <ul class="ns-rules">
+        {t.rules.map((r) => <li>{r}</li>)}
+      </ul>
+      <button type="button" class="btn btn-primary" data-ns-start>{t.start}</button>
+    </div>
+
+    <div class="ns-stage" data-ns-stage hidden>
+      <p class="ns-count" data-ns-count></p>
+
+      <!-- البطاقة الحالية -->
+      <div class="ns-card" data-ns-card></div>
+
+      <!-- صناديق الفرز -->
+      <div class="ns-buckets" data-ns-buckets>
+        {
+          buckets.map((b) => (
+            <button type="button" class="ns-bucket" data-ns-bucket={b.id}>
+              {b.name}
+            </button>
+          ))
+        }
+      </div>
+
+      <!-- النتيجة بعد الفرز -->
+      <div class="ns-result" data-ns-result hidden>
+        <p class="ns-verdict" data-ns-verdict></p>
+        <p class="ns-why" data-ns-why></p>
+        <button type="button" class="btn btn-primary" data-ns-next></button>
+      </div>
+
+      <!-- النهاية -->
+      <div class="ns-end" data-ns-end hidden>
+        <p class="ns-score" data-ns-score></p>
+        <p class="ns-stamp" data-ns-stamp></p>
+        <p class="ns-vtext" data-ns-vtext></p>
+        <div class="ns-actions">
+          <button type="button" class="btn btn-ghost" data-ns-again>{t.again}</button>
+          <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    cards,
+    verdicts,
+    bucketNames: Object.fromEntries(buckets.map((b) => [b.id, b.name])),
+    labels: {
+      counter: t.counter,
+      of: t.of,
+      right: t.right,
+      wrong: t.wrong,
+      next: t.next,
+      finishBtn: t.finishBtn,
+      scoreLine: t.scoreLine,
+      locale: isAr ? 'ar-EG' : 'en-US',
+    },
+  }}
+>
+  // ═══════════════════════════════════════════════════════════
+  //  محرّك الفرز
+  // ═══════════════════════════════════════════════════════════
+  (function () {
+    function boot() {
+      document.querySelectorAll('[data-sorter]').forEach(setup);
+    }
+
+    function setup(board) {
+      if (board.dataset.ready === '1') return;
+      board.dataset.ready = '1';
+
+      var cover = board.querySelector('[data-ns-cover]');
+      var stage = board.querySelector('[data-ns-stage]');
+      var countEl = board.querySelector('[data-ns-count]');
+      var cardEl = board.querySelector('[data-ns-card]');
+      var bucketsEl = board.querySelector('[data-ns-buckets]');
+      var resultEl = board.querySelector('[data-ns-result]');
+      var verdictEl = board.querySelector('[data-ns-verdict]');
+      var whyEl = board.querySelector('[data-ns-why]');
+      var nextBtn = board.querySelector('[data-ns-next]');
+      var endBox = board.querySelector('[data-ns-end]');
+
+      var deck = [];
+      var i = 0;
+      var score = 0;
+
+      var n = function (v) {
+        return v.toLocaleString(labels.locale);
+      };
+
+      function shuffle(a) {
+        for (var x = a.length - 1; x > 0; x--) {
+          var j = Math.floor(Math.random() * (x + 1));
+          var tmp = a[x];
+          a[x] = a[j];
+          a[j] = tmp;
+        }
+        return a;
+      }
+
+      function show() {
+        var c = deck[i];
+        countEl.textContent = labels.counter + ' ' + n(i + 1) + ' ' + labels.of + ' ' + n(deck.length);
+        cardEl.textContent = c.text;
+        cardEl.className = 'ns-card in';
+        resultEl.hidden = true;
+        bucketsEl.querySelectorAll('button').forEach(function (b) {
+          b.disabled = false;
+          b.classList.remove('good', 'bad');
+        });
+      }
+
+      function pick(bucketId, btn) {
+        var c = deck[i];
+        var ok = bucketId === c.bucket;
+        if (ok) score++;
+        bucketsEl.querySelectorAll('button').forEach(function (b) {
+          b.disabled = true;
+          if (b.getAttribute('data-ns-bucket') === c.bucket) b.classList.add('good');
+        });
+        if (!ok) btn.classList.add('bad');
+        verdictEl.textContent = ok ? '✓ ' + labels.right : labels.wrong + ' ' + bucketNames[c.bucket];
+        verdictEl.className = 'ns-verdict ' + (ok ? 'good' : 'bad');
+        whyEl.textContent = c.why;
+        nextBtn.textContent = i + 1 >= deck.length ? labels.finishBtn : labels.next;
+        resultEl.hidden = false;
+      }
+
+      function next() {
+        i++;
+        if (i >= deck.length) return finish();
+        show();
+      }
+
+      function finish() {
+        board.querySelector('[data-ns-count]').textContent = '';
+        cardEl.textContent = '';
+        cardEl.className = 'ns-card';
+        bucketsEl.hidden = true;
+        resultEl.hidden = true;
+        endBox.hidden = false;
+        board.querySelector('[data-ns-score]').textContent =
+          labels.scoreLine + ' ' + n(score) + '/' + n(deck.length);
+        var v = verdicts[0];
+        for (var k = 0; k < verdicts.length; k++) if (score >= verdicts[k].min) v = verdicts[k];
+        board.querySelector('[data-ns-stamp]').textContent = v.stamp;
+        board.querySelector('[data-ns-vtext]').textContent = v.text;
+      }
+
+      function start() {
+        cover.hidden = true;
+        stage.hidden = false;
+        endBox.hidden = true;
+        bucketsEl.hidden = false;
+        deck = shuffle(cards.slice());
+        i = 0;
+        score = 0;
+        show();
+      }
+
+      board.querySelector('[data-ns-start]').addEventListener('click', start);
+      board.querySelector('[data-ns-again]').addEventListener('click', start);
+      bucketsEl.querySelectorAll('[data-ns-bucket]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          pick(btn.getAttribute('data-ns-bucket'), btn);
+        });
+      });
+      nextBtn.addEventListener('click', next);
+    }
+
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .ns {
+    margin-block: clamp(38px, 5vh, 60px);
+  }
+
+  .ns-head {
+    margin-bottom: 22px;
+  }
+
+  .ns-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .ns-head h2 {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .ns-lede {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 58ch;
+  }
+
+  .ns-board {
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-card);
+  }
+
+  /* ─── شاشة البداية ─── */
+  .ns-cover {
+    text-align: center;
+    padding-block: clamp(18px, 3vh, 34px);
+  }
+
+  .ns-cover-kicker {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .ns-cover-title {
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .ns-rules {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* ─── البطاقة ─── */
+  .ns-count {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .ns-card {
+    font-size: clamp(16px, 2vw, 20px);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.7;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: var(--surface);
+    padding: clamp(18px, 2.6vw, 28px);
+    margin-bottom: 16px;
+    min-height: 84px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 0.4s var(--ease-out),
+      transform 0.4s var(--ease-out);
+  }
+
+  .ns-card.in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ─── الصناديق ─── */
+  .ns-buckets {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 9px;
+  }
+
+  .ns-bucket {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 12px 8px;
+    cursor: pointer;
+    transition:
+      border-color 0.25s var(--ease-out),
+      transform 0.15s var(--ease-out);
+  }
+
+  .ns-bucket:hover:not(:disabled) {
+    border-color: var(--accent);
+  }
+
+  .ns-bucket:active {
+    transform: scale(0.97);
+  }
+
+  .ns-bucket.good {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .ns-bucket.bad {
+    border-color: color-mix(in srgb, #ff6b6b 60%, transparent);
+    color: #ff8f8f;
+  }
+
+  /* ─── النتيجة ─── */
+  .ns-result {
+    margin-top: 16px;
+  }
+
+  .ns-verdict {
+    font-size: 14.5px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .ns-verdict.good {
+    color: var(--accent);
+  }
+
+  .ns-verdict.bad {
+    color: #ff8f8f;
+  }
+
+  .ns-why {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 60ch;
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    border-inline-start: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+  }
+
+  /* ─── النهاية ─── */
+  .ns-score {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .ns-stamp {
+    display: inline-block;
+    font-size: clamp(16px, 1.9vw, 20px);
+    font-weight: 800;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 7px 16px;
+    margin-bottom: 12px;
+    transform: rotate(2deg);
+  }
+
+  html[dir='ltr'] .ns-stamp {
+    transform: rotate(-2deg);
+  }
+
+  .ns-vtext {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 60ch;
+    margin-bottom: 16px;
+  }
+
+  .ns-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 640px) {
+    .ns-buckets {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ns-card {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
