@@ -720,6 +720,207 @@ If the business is real — the usual case — strict rules:
 }
 
 // ═══════════════════════════════════════════════════════════════
+//  ٢.٥) «ارسم عميلك» — بيرسونا حقيقية لمشروع الزائر
+//
+//  اللعبة بتعلّم بخيارات جاهزة، وهاي الميزة بتحوّل التعلم لفايدة:
+//  الزائر بيكتب سطر عن مشروعه هو، و«نبض» بيرسمله مسودة أولى
+//  لبيرسونا **زبونه هو** — بنفس شكل بطاقة اللعبة.
+//
+//  ليش مش قالب اللعبة الثابت؟ لأنه قالب اللعبة مبني على «صاحب
+//  مشروع» (زبون ريّان). زبون المطعم مش صاحب مشروع — فالموديل
+//  بيكتب البطاقة كاملة بنفسه والتحقق تحت بيضبط الشكل والحدود.
+//
+//  التكلفة: استدعاء لكل طلب — فنفس فلسفة مختبر الأفكار:
+//  حصة أضيق (٣ للزائر) لأنه الرد أطول وأغلى من فكرة.
+// ═══════════════════════════════════════════════════════════════
+const PERSONA_PER_VISITOR_DAY = 3;
+const PERSONA_GLOBAL_DAY = 60;
+
+// نفس جدول idea_quota — المفاتيح ما بتتصادم لأنه البصمة مبدوءة
+// بـ 'p' والصف الكلي '*persona' مش '*'
+async function personaKey(request) {
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('persona:' + ip));
+  return (
+    'p' +
+    [...new Uint8Array(buf)]
+      .slice(0, 8)
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+  );
+}
+
+async function reservePersonaQuota(env, request, isAr) {
+  await ensureQuotaTable(env);
+  const day = new Date().toISOString().slice(0, 10);
+  const who = await personaKey(request);
+
+  await env.LEADS.batch([
+    env.LEADS.prepare(
+      'INSERT INTO idea_quota (day, who, n) VALUES (?1, ?2, 1) ON CONFLICT(day, who) DO UPDATE SET n = n + 1',
+    ).bind(day, who),
+    env.LEADS.prepare(
+      "INSERT INTO idea_quota (day, who, n) VALUES (?1, '*persona', 1) ON CONFLICT(day, who) DO UPDATE SET n = n + 1",
+    ).bind(day),
+  ]);
+
+  const rows = await env.LEADS.prepare(
+    "SELECT who, n FROM idea_quota WHERE day = ?1 AND who IN (?2, '*persona')",
+  )
+    .bind(day, who)
+    .all();
+
+  let mine = 0;
+  let all = 0;
+  for (const r of rows.results || []) {
+    if (r.who === '*persona') all = r.n;
+    else mine = r.n;
+  }
+
+  if (mine > PERSONA_PER_VISITOR_DAY) {
+    await refundPersonaQuota(env, request);
+    return {
+      ok: false,
+      scope: 'visitor',
+      message: isAr
+        ? 'رسمتلك ثلاث بيرسونات اليوم — بتكفي تبلّش فيهم. ارجعلي بكرا، أو إذا الموضوع جدّي عبّي طلب مشروع وريّان بيبني البيرسونا من محادثات زباينك الحقيقيين.'
+        : 'That is your three personas for today — enough to start with. Come back tomorrow, or if this is serious, send a project brief and Rayan will build the persona from your real customer conversations.',
+    };
+  }
+
+  if (all > PERSONA_GLOBAL_DAY) {
+    await refundPersonaQuota(env, request);
+    return {
+      ok: false,
+      scope: 'day',
+      message: isAr
+        ? 'الرسّام أخد نصيبه اليوم وارتاح. ارجعلي بكرا الصبح — أو عبّي طلب مشروع وبتوصلك قراءة شخصية مش مولّدة.'
+        : 'The persona painter has done its share for today. Come back tomorrow morning — or send a project brief and you will get a personal read, not a generated one.',
+    };
+  }
+
+  return { ok: true };
+}
+
+async function refundPersonaQuota(env, request) {
+  try {
+    const day = new Date().toISOString().slice(0, 10);
+    const who = await personaKey(request);
+    await env.LEADS.batch([
+      env.LEADS.prepare('UPDATE idea_quota SET n = n - 1 WHERE day = ?1 AND who = ?2 AND n > 0').bind(day, who),
+      env.LEADS.prepare("UPDATE idea_quota SET n = n - 1 WHERE day = ?1 AND who = '*persona' AND n > 0").bind(day),
+    ]);
+  } catch (e) {
+    /* أسوأ حالة: محاولة محسوبة زيادة */
+  }
+}
+
+// ⚠️ التحقق بيقبل شكلين: بيرسونا كاملة، أو «مزحة» (سطرين خفاف
+//    لما المدخل هزار) — نفس فلترة الجدية بمختبر الأفكار.
+function validPersona(p) {
+  if (!p || typeof p !== 'object' || Array.isArray(p)) return false;
+  if (typeof p.joke === 'string') return !!p.joke.trim() && p.joke.length <= 400;
+  if (typeof p.who !== 'string' || !p.who.trim() || p.who.length > 180) return false;
+  if (!Array.isArray(p.fields) || p.fields.length < 4 || p.fields.length > 6) return false;
+  if (!p.fields.every((f) => typeof f === 'string' && f.trim() && f.length <= 240)) return false;
+  if (typeof p.text !== 'string' || !p.text.trim() || p.text.length > 950) return false;
+  return true;
+}
+
+async function handlePersona(request, env, origin) {
+  const body = await request.json().catch(() => null);
+  if (!body) return json({ error: 'bad-json' }, 400, origin);
+
+  const isAr = body.lang === 'ar';
+  const biz = clean(body.biz, 700);
+  if (!biz || biz.length < 8) return json({ error: 'empty' }, 422, origin);
+
+  // بلا مفتاح كلود ما منولّد — الرسم بدو جودة، مش شبكة الأمان
+  if (!env.ANTHROPIC_KEY) {
+    return json(
+      {
+        error: 'ai-off',
+        message: isAr ? 'الرسّام مش متوفر هلأ — جرب بعدين.' : 'The painter is unavailable right now — try again later.',
+      },
+      503,
+      origin,
+    );
+  }
+
+  let reserved = false;
+  try {
+    const q = await reservePersonaQuota(env, request, isAr);
+    if (!q.ok) return json({ error: 'quota', scope: q.scope, message: q.message }, 429, origin);
+    reserved = true;
+  } catch (e) {
+    // نظام الحد تعطّل — منكمّل، تعطيل الحماية ما بيبرّر تعطيل الخدمة
+  }
+
+  const sys = isAr
+    ? `أنت «نبض» — المساعد الذكي تبع ريّان الواثق، مسوّق أردني بيشتغل على السبب مش العَرَض. الزائر خلّص لعبة «ارسم عميلك» بالموقع وهلأ كتبلك سطر عن مشروعه هو، وبدك ترسمله مسودة أولى لبيرسونا **زبونه الأساسي** — مش بيرسونا الزائر نفسه.
+
+قبل أي إشي: هل هذا نشاط حقيقي؟
+- لو الكلام هزار واضح أو حروف عشوائية أو نشاط مستحيل أو ألفاظ خارجة عن الحياء — **ما ترسم**. رجّع {"joke":"سطرين بالعامية بيبيّنوا إنك فهمت المزحة بخفة دم بلا سخرية جارحة، ودعوة يرجع يكتب نشاطه الحقيقي"}. ولو الكلام بذيء: جملة وحدة جافة محترمة بلا ما تعيده.
+- ⚠️ كن عادل: نشاط صغير أو غريب أو مكتوب باختصار أو فيه أخطاء إملائية **مش هزار**. لو مترجّح، اعتبره جدّي وارسم.
+
+ولو النشاط حقيقي — وهاي الحالة الغالبة — رجّع JSON بهالشكل بالضبط:
+{"who":"...","fields":["...","...","...","...","..."],"text":"..."}
+
+- who: سطر واحد بيوصف الزبون الأساسي المرجّح وصف إنساني حي (مش «ذكور ٢٥-٣٥» — بل مين هو وشو وضعه لما بيدوّر على هيك خدمة). حد أقصى ١٥٠ حرف.
+- fields: خمس جمل قصيرة بهالترتيب: ١) المشكلة اللي بتخليه يدوّر أصلاً ٢) شو غالباً جرّب قبل ٣) أكثر إشي بيخوفه بالشراء ٤) السؤال اللي براسه قبل ما يدفع (بصيغة سؤال بين قوسين «») ٥) الجملة اللي لو سمعها من صاحب المشروع بيوقف ويقول «هدول فاهمينّي» (بين قوسين «»). كل جملة حد أقصى ٢٠٠ حرف.
+- text: فقرة وحدة ٦٠-١٠٠ كلمة بتجمع كل هاد بوصف شخص حقيقي بتعرف تحكي معه — بتنقرا كقصة قصيرة مش كقائمة.
+
+قواعد صارمة:
+- عامية أردنية محكية. لا فصحى ولا خليجي ولا مصري. وممنوع «هنّ» و«أنتنّ» — العامية بتستخدم «هم» للجميع.
+- ⚠️ ما شفت حسابه ولا زباينه — هاي مسودة ترجيحية من وصفه بس. استخدم صيغ الترجيح وين ما لزم: «غالباً»، «الأرجح»، «من نوع اللي». ممنوع اليقين المدّعي.
+- البيرسونا لازم تكون محدّدة لنشاطه هو: زبون مطعم غير زبون عيادة غير زبون متجر أواعي. ممنوع كلام بينطبق على أي مشروع.
+- ممنوع وعود وأرقام وأسعار، ممنوع إيموجي، ممنوع Markdown.
+- رجّع JSON فقط — بلا أي نص قبله أو بعده وبلا أسوار كود.`
+    : `You are Nabd — the AI assistant of Rayan Elwathiq, a Jordanian marketer who works on the cause, not the symptom. The visitor just finished the "Draw Your Customer" game on the site and wrote you a line about THEIR business. Draw them a first draft of THEIR primary customer's persona — not the visitor's own persona.
+
+Before anything: is this a real business?
+- If it is an obvious prank, random characters, an impossible business, or obscene language — do NOT draw. Return {"joke":"two light lines showing you got the joke, no sarcasm, inviting them to come back with their real business"}. If obscene: one dry respectful line without repeating it.
+- ⚠️ Be fair: a small, unusual, briefly-described, or misspelled business is NOT a prank. When torn, treat it as real and draw.
+
+If the business is real — the usual case — return JSON in exactly this shape:
+{"who":"...","fields":["...","...","...","...","..."],"text":"..."}
+
+- who: one line describing the likely primary customer as a living human (not "males 25-35" — who they are and what situation sends them looking). Max 150 chars.
+- fields: five short sentences in this order: 1) the problem that makes them search at all 2) what they most likely tried before 3) their biggest fear about buying 4) the question in their head before paying (phrased as a quoted question) 5) the line that would make them stop and say "these people get me" (quoted). Max 200 chars each.
+- text: one paragraph of 60-100 words weaving it all into a real person you would know how to talk to — reads like a short story, not a list.
+
+Strict rules:
+- ⚠️ You have not seen their account or customers — this is a likelihood draft from their description only. Hedge where needed: "most likely", "probably", "the kind who". No fake certainty.
+- The persona must be specific to THEIR business: a restaurant's customer differs from a clinic's differs from a clothing store's. Nothing that fits any business.
+- No promises, numbers or prices. No emoji. No Markdown.
+- Return JSON ONLY — no text before or after, no code fences.`;
+
+  const user = isAr ? `وصف المشروع بالحرف: ${biz}\n\nارسم البيرسونا.` : `The business, in their words: ${biz}\n\nDraw the persona.`;
+
+  let persona = null;
+  try {
+    // ⚠️ العربي بياخد توكنز أكثر — والسقف الافتراضي (١٢٠٠ حرف)
+    //    بيقص الـ JSON بنصه
+    const raw = await askClaude(env, sys, user, { maxTokens: 3000, maxLen: 6000 });
+    if (raw) {
+      const jsonText = raw.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
+      const parsed = JSON.parse(jsonText);
+      if (validPersona(parsed)) persona = parsed;
+    }
+  } catch (e) {
+    /* بيتعالج تحت — فشل الموديل أو JSON مكسور نفس الإشي */
+  }
+
+  if (!persona) {
+    if (reserved) await refundPersonaQuota(env, request);
+    return json({ error: 'ai-failed' }, 502, origin);
+  }
+
+  if (persona.joke) return json({ ok: true, joke: persona.joke }, 200, origin);
+  return json({ ok: true, persona: { who: persona.who, fields: persona.fields, text: persona.text } }, 200, origin);
+}
+
+// ═══════════════════════════════════════════════════════════════
 //  ٣) «عين البراند» — أسئلة جديدة كل يوم
 //
 //  الفكرة الاقتصادية: **مش استدعاء لكل زائر**. دفعة اليوم بتتولّد
@@ -740,8 +941,43 @@ const EYE_PER_DAY = 8; // كم سؤال جديد بدفعة اليوم
 let eyeTableReady = null;
 const ensureEyeTable = (env) =>
   (eyeTableReady ||= env.LEADS.exec(
-    "CREATE TABLE IF NOT EXISTS eye_rounds (day TEXT NOT NULL, lang TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'gen', json TEXT, PRIMARY KEY (day, lang))",
+    "CREATE TABLE IF NOT EXISTS eye_rounds (day TEXT NOT NULL, lang TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'gen', json TEXT, at TEXT, PRIMARY KEY (day, lang))",
   ));
+
+// ═══════════════════════════════════════════════════════════════
+//  قفل التوليد اليومي — مشترك بين عين البراند وكشف الشركة
+//
+//  ⚠️ درس 2026-08-04: التوليد بالخلفية (waitUntil) ممكن **ينقتل**
+//     قبل ما يخلص (حد زمني عند كلاودفلير) — وساعتها الـ catch نفسه
+//     ما بيشتغل، فالقفل بيضل يتيم بحالة 'gen' وبيسكّر اليوم كله.
+//     الحل: قفل أكبر من دقيقتين ونص بجانب json فاضي = ميت،
+//     منشيله ومنعيد المحاولة.
+// ═══════════════════════════════════════════════════════════════
+const GEN_STALE_MS = 150000;
+
+async function lockAndGenerate(env, ctx, table, day, lang, row, generate) {
+  const now = Date.now();
+  const tryLock = async () => {
+    const lock = await env.LEADS.prepare(
+      `INSERT INTO ${table} (day, lang, status, at) VALUES (?1, ?2, 'gen', ?3) ON CONFLICT(day, lang) DO NOTHING`,
+    )
+      .bind(day, lang, new Date(now).toISOString())
+      .run();
+    if (lock.meta && lock.meta.changes === 1) ctx.waitUntil(generate(env, day, lang));
+  };
+
+  if (!row) return tryLock();
+
+  // قفل موجود بلا نتيجة: يا توليد شغّال هلأ، يا قفل يتيم
+  const age = now - Date.parse(row.at || 0);
+  const alive = age >= 0 && age < GEN_STALE_MS;
+  if (!alive) {
+    await env.LEADS.prepare(`DELETE FROM ${table} WHERE day = ?1 AND lang = ?2 AND json IS NULL`)
+      .bind(day, lang)
+      .run();
+    return tryLock();
+  }
+}
 
 // حدود كل متغيّر — نفس DEFAULTS بملف src/data/brand-eye.js
 // (لو ضفت متغيّر هناك، ضيفه هون وإلا الموديل ما بيقدر يستعمله)
@@ -785,7 +1021,7 @@ async function handleBrandEye(request, env, origin, ctx) {
   await ensureEyeTable(env);
   const day = new Date().toISOString().slice(0, 10);
 
-  const row = await env.LEADS.prepare('SELECT status, json FROM eye_rounds WHERE day = ?1 AND lang = ?2')
+  const row = await env.LEADS.prepare('SELECT status, json, at FROM eye_rounds WHERE day = ?1 AND lang = ?2')
     .bind(day, lang)
     .first();
 
@@ -803,15 +1039,9 @@ async function handleBrandEye(request, env, origin, ctx) {
   // ما في مفتاح؟ ما منولّد — اللعبة بتشتغل بالبنك المحلي عادي
   if (!env.ANTHROPIC_KEY) return json({ ok: true, rounds: [] }, 200, origin);
 
-  // قفل التوليد: أول طلب باليوم بس هو اللي بيولّد (بالخلفية)
-  if (!row) {
-    const lock = await env.LEADS.prepare(
-      "INSERT INTO eye_rounds (day, lang, status) VALUES (?1, ?2, 'gen') ON CONFLICT(day, lang) DO NOTHING",
-    )
-      .bind(day, lang)
-      .run();
-    if (lock.meta && lock.meta.changes === 1) ctx.waitUntil(generateEyeRounds(env, day, lang));
-  }
+  // قفل التوليد: أول طلب باليوم بس هو اللي بيولّد (بالخلفية) —
+  // مع استرجاع القفل اليتيم لو التوليد السابق انقتل بنصه
+  await lockAndGenerate(env, ctx, 'eye_rounds', day, lang, row, generateEyeRounds);
 
   return json({ ok: true, rounds: [], pending: true }, 200, origin);
 }
@@ -903,6 +1133,138 @@ Return a JSON array ONLY — no text before or after, no code fences.`;
 }
 
 // ═══════════════════════════════════════════════════════════════
+//  ٤) «كشف الشركة» — جولات جديدة كل يوم
+//
+//  نفس اقتصاد عين البراند بالضبط: **مش استدعاء لكل زائر** —
+//  دفعة اليوم بتتولّد مرة وحدة وبتنخزن بـ D1، وكل اللاعبين
+//  بياخدوا منها. سقف التكلفة استدعاءان باليوم (عربي + إنجليزي).
+//
+//  الجولات الجديدة ما بتلمس القوس القصصي الأساسي (السبع جولات
+//  المكتوبة بإيد) — بتنعرض كمرحلة «جولات اليوم» اختيارية بعد
+//  النتيجة، فالحكم النهائي وعتباته بيضلوا مضبوطين.
+//
+//  ⚠️ توازن الأعلام شرط قبول: لو الدفعة كلها أعلام حمراء اللعبة
+//     بتصير «اكبس أحمر دايماً» — منرفض أي دفعة فيها أقل من
+//     علمين أو أقل من ردين طبيعيين.
+// ═══════════════════════════════════════════════════════════════
+const DET_PER_DAY = 6;
+
+let detTableReady = null;
+const ensureDetTable = (env) =>
+  (detTableReady ||= env.LEADS.exec(
+    "CREATE TABLE IF NOT EXISTS det_rounds (day TEXT NOT NULL, lang TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'gen', json TEXT, at TEXT, PRIMARY KEY (day, lang))",
+  ));
+
+function validDetRound(r) {
+  if (!r || typeof r !== 'object') return false;
+  if (typeof r.q !== 'string' || !r.q.trim() || r.q.length > 220) return false;
+  if (typeof r.a !== 'string' || !r.a.trim() || r.a.length > 420) return false;
+  if (typeof r.flag !== 'boolean') return false;
+  if (typeof r.why !== 'string' || !r.why.trim() || r.why.length > 500) return false;
+  return true;
+}
+
+async function handleDetectorRounds(request, env, origin, ctx) {
+  const body = await request.json().catch(() => null);
+  const lang = body && (body.locale || '').startsWith('ar') ? 'ar' : 'en';
+
+  await ensureDetTable(env);
+  const day = new Date().toISOString().slice(0, 10);
+
+  const row = await env.LEADS.prepare('SELECT status, json, at FROM det_rounds WHERE day = ?1 AND lang = ?2')
+    .bind(day, lang)
+    .first();
+
+  if (row && row.json) {
+    let rounds = [];
+    try {
+      rounds = JSON.parse(row.json);
+    } catch (e) {
+      /* صف معطوب — اللعبة الأساسية كاملة بدونه */
+    }
+    return json({ ok: true, rounds, day }, 200, origin);
+  }
+
+  if (!env.ANTHROPIC_KEY) return json({ ok: true, rounds: [] }, 200, origin);
+
+  await lockAndGenerate(env, ctx, 'det_rounds', day, lang, row, generateDetRounds);
+
+  return json({ ok: true, rounds: [], pending: true }, 200, origin);
+}
+
+async function generateDetRounds(env, day, lang) {
+  try {
+    const isAr = lang === 'ar';
+    const sys = isAr
+      ? `أنت محرّك جولات للعبة «كشف الشركة» بموقع ريّان الواثق. اللعبة محادثة مع شركة تسويق وهمية: الزائر بيسأل، الشركة بترد، وهو بيحكم على كل رد — طبيعي ولا علم أحمر؟ وبعد الحكم بيقرأ ليش.
+
+اكتب ${DET_PER_DAY} جولات جديدة. كل جولة:
+- q: سؤال الزائر بالعامية الأردنية (زبون محتمل بيفحص شركة تسويق — أسئلة حقيقية بتنسأل فعلاً)
+- a: رد الشركة — والشرط الذهبي: **لازم يبين منطقي ومقنع لأول وهلة**، من النوع اللي بينسمع فعلاً بالسوق. العلم الأحمر اللي بيجي «أحمر» من أول كلمة لعبة فاشلة.
+- flag: ‏true لو الرد علم أحمر، false لو رد صحي
+- why: شرح جملتين لثلاثة بالعامية بصوت مسوّق مش أكاديمي — ليش هاد علم (أو ليش هاد رد صحي)
+
+نوّع الأعلام الحمراء (لا تكرر نفس النوع مرتين): خصم ضغط «العرض بيخلص اليوم»، وعد بعدد متابعين، «منشتغل مع كل المجالات بنفس الطريقة»، تقارير أرقام استعراضية بلا قرارات، «التصميم هو كل إشي»، احتكار الحسابات (الباسوردات معهم بس)، «ما في داعي لعقد مكتوب»، نتائج فورية بأول أسبوع…
+والردود الصحية لازم تكون فعلاً منيحة: أسئلة تشخيص، صراحة عن اللي ما بينضمن، حدود واضحة للشغل، اعتراف بإنه في إشي بدو دراسة.
+
+⚠️ اللعبة الأساسية غطّت هدول — لا تكررهم: قائمة باكجات بأول رد، ضمان مبيعات من أول شهر، نتائج مطعم ومتجر كوعد، كل الحكي عن جودة التصميم والمونتاج.
+⚠️ التوازن شرط: ٣ أعلام و٣ ردود صحية (أو ٤/٢ كأقصى ميل).
+⚠️ رتّبهم بقوس قصة: ابدأ بسؤال افتتاحي طبيعي وسخّن بالتدريج.
+
+رجّع مصفوفة JSON فقط — بلا أي نص قبلها أو بعدها وبلا أسوار كود.`
+      : `You are the round engine for "The Company Detector" game on Rayan Elwathiq's site. The game is a chat with a fictional marketing company: the visitor asks, the company replies, and the visitor judges each reply — normal or red flag? After judging they read why.
+
+Write ${DET_PER_DAY} fresh rounds. Each:
+- q: the visitor's question (a potential client vetting a marketing company — real questions people actually ask)
+- a: the company's reply — the golden rule: **it must sound reasonable and convincing at first glance**, the kind actually heard in the market. A flag that arrives obviously red is a failed round.
+- flag: true if the reply is a red flag, false if it is healthy
+- why: two to three sentences in a marketer's voice, not an academic's — why this is a flag (or why it is healthy)
+
+Vary the red flags (never the same type twice): pressure discounts ("offer ends today"), follower-count promises, "we work with every industry the same way", vanity-number reports with no decisions, "design is everything", holding accounts hostage (only they keep the passwords), "no need for a written contract", instant results in week one…
+Healthy replies must be genuinely good: diagnosis questions, honesty about what cannot be guaranteed, clear scope boundaries, admitting something needs study first.
+
+⚠️ The base game already covered these — do not repeat them: a package price list as the first reply, guaranteed sales from month one, another client's results as a promise, everything about design and editing quality.
+⚠️ Balance is required: 3 flags and 3 healthy replies (4/2 at most).
+⚠️ Order them as a story arc: open naturally, heat up gradually.
+
+Return a JSON array ONLY — no text before or after, no code fences.`;
+
+    // ⚠️ Sonnet مش Opus: دفعة الكشف أطول من دفعة العين (سؤال + رد +
+    //    شرح × ٦)، وOpus كان بياخد أطول من مهلة الخلفية وبينقتل
+    //    بنصه — هيك اكتشفنا ثغرة القفل اليتيم أصلاً.
+    const raw = await askClaude(env, sys, isAr ? 'ولّد جولات اليوم.' : "Generate today's rounds.", {
+      maxTokens: 7000,
+      maxLen: 16000,
+      model: 'claude-sonnet-5',
+    });
+    if (!raw) throw new Error('empty');
+
+    const jsonText = raw.replace(/^[^\[]*/, '').replace(/[^\]]*$/, '');
+    const parsed = JSON.parse(jsonText);
+    const rounds = (Array.isArray(parsed) ? parsed : []).filter(validDetRound).slice(0, DET_PER_DAY);
+
+    // شرطا القبول: عدد كافي + توازن أعلام/طبيعي
+    const flags = rounds.filter((r) => r.flag).length;
+    if (rounds.length < 4 || flags < 2 || rounds.length - flags < 2) {
+      await env.LEADS.prepare('DELETE FROM det_rounds WHERE day = ?1 AND lang = ?2').bind(day, lang).run();
+      return;
+    }
+
+    await env.LEADS.prepare("UPDATE det_rounds SET status = 'ready', json = ?3 WHERE day = ?1 AND lang = ?2")
+      .bind(day, lang, JSON.stringify(rounds))
+      .run();
+  } catch (e) {
+    try {
+      await env.LEADS.prepare('DELETE FROM det_rounds WHERE day = ?1 AND lang = ?2 AND json IS NULL')
+        .bind(day, lang)
+        .run();
+    } catch (e2) {
+      /* ولا إشي */
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 //  تنظيف مخرجات الموديل من علامات Markdown
 //
 //  ليش بالكود مش بالبرومبت؟ لأنه البرومبت مكتوب فيه «بلا عناوين»
@@ -950,7 +1312,9 @@ async function askClaude(env, system, user, opts) {
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      model: env.CLAUDE_MODEL || CLAUDE_MODEL,
+      // ⚠️ opts.model للدفعات الطويلة: توليد بالخلفية (waitUntil)
+      //    بينقتل لو طوّل، وSonnet بيخلص الدفعة بثلث وقت Opus.
+      model: (opts && opts.model) || env.CLAUDE_MODEL || CLAUDE_MODEL,
       // ⚠️ max_tokens بيغطّي التفكير **والرد** سوا. كلود Opus 5
       //    تفكيره شغّال افتراضياً، فلو حطّينا ٤٠٠ ممكن يخلصوا كلهم
       //    بالتفكير ويطلع رد فاضي. ٢٠٠٠ بتكفي بمساحة واسعة.
@@ -1026,6 +1390,8 @@ export default {
       if (pathname === '/brief') return await handleBrief(request, env, origin, ctx);
       if (pathname === '/idea') return await handleIdea(request, env, origin);
       if (pathname === '/brand-eye') return await handleBrandEye(request, env, origin, ctx);
+      if (pathname === '/persona') return await handlePersona(request, env, origin);
+      if (pathname === '/detector-rounds') return await handleDetectorRounds(request, env, origin, ctx);
       return json({ error: 'not-found' }, 404, origin);
     } catch (e) {
       return json({ error: 'server', why: String(e && e.message || e).slice(0, 200) }, 500, origin);

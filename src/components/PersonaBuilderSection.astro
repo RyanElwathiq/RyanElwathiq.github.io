@@ -33,6 +33,16 @@ const t = isAr
       buildTitle: 'هلأ خلينا نرسمه صح',
       again: 'ارسم من جديد',
       cta: 'احجز جلسة تشخيص',
+      aiTitle: 'هلأ ارسمها لمشروعك إنت',
+      aiLede: 'اللي فوق كان تدريب بخيارات جاهزة. اكتب سطر عن مشروعك إنت — شو بتبيع ولمين — و«نبض»، مساعدي الذكي، بيرسملك مسودة أولى لبيرسونا زبونك.',
+      aiPlaceholder: 'مثال: محل حلويات بالزرقاء، بيبيع كيك مناسبات، وأغلب الطلبات بتيجي من الإنستا',
+      aiGo: 'ارسم بيرسونا زبوني',
+      aiLoading: '«نبض» عم يرسم… بياخد كم ثانية.',
+      aiCardTitle: 'بيرسونا زبونك — مسودة أولى',
+      aiFail: 'الرسّام مش متوفر هلأ — جرب كمان شوي.',
+      aiShort: 'اكتب وصف أوضح شوي — سطر واحد بيكفي.',
+      aiAgain: 'جرب وصف ثاني',
+      aiDisclosure: 'رسمها «نبض» — مساعد ريّان الذكي — من وصفك بس، بلا ما يشوف حساباتك ولا زباينك. البيرسونا الحقيقية بتنبني من محادثات زباينك الفعليين.',
     }
   : {
       eyebrow: 'Short game',
@@ -43,6 +53,16 @@ const t = isAr
       buildTitle: 'Now let us draw them properly',
       again: 'Draw again',
       cta: 'Book a diagnosis session',
+      aiTitle: 'Now draw it for your own business',
+      aiLede: 'The game above was practice with ready-made options. Write one line about YOUR business — what you sell and to whom — and Nabd, my AI assistant, will draw a first draft of your customer\'s persona.',
+      aiPlaceholder: 'Example: a sweets shop selling occasion cakes, most orders come through Instagram',
+      aiGo: "Draw my customer's persona",
+      aiLoading: 'Nabd is drawing… this takes a few seconds.',
+      aiCardTitle: 'Your customer persona — a first draft',
+      aiFail: 'The painter is unavailable right now — try again shortly.',
+      aiShort: 'Write a slightly clearer description — one line is enough.',
+      aiAgain: 'Try another description',
+      aiDisclosure: "Drawn by Nabd — Rayan's AI assistant — from your description alone, without seeing your accounts or customers. The real persona is built from your actual customer conversations.",
     };
 
 const demo = DEMO[L];
@@ -115,6 +135,26 @@ const texts = TEXTS[L];
       </div>
       <p class="pb-verdict">{texts.verdict}</p>
       <p class="pb-note">{texts.note}</p>
+
+      <!-- ═══ الرسّام الذكي: بيرسونا لمشروع الزائر نفسه ═══ -->
+      <div class="pb-ai">
+        <p class="pb-ai-title">{t.aiTitle}</p>
+        <p class="pb-ai-lede">{t.aiLede}</p>
+        <div class="pb-ai-form">
+          <textarea class="pb-ai-biz" data-pb-ai-biz rows="2" maxlength="600" placeholder={t.aiPlaceholder}
+          ></textarea>
+          <button type="button" class="btn btn-primary" data-pb-ai-go>{t.aiGo}</button>
+        </div>
+        <p class="pb-ai-status" data-pb-ai-status role="status" hidden></p>
+        <div class="pb-ai-card" data-pb-ai-card hidden>
+          <p class="pb-ai-card-title">{t.aiCardTitle}</p>
+          <p class="pb-ai-who" data-pb-ai-who></p>
+          <ul class="pb-fields" data-pb-ai-fields></ul>
+          <p class="pb-ai-text" data-pb-ai-text></p>
+          <p class="pb-note">{t.aiDisclosure}</p>
+        </div>
+      </div>
+
       <div class="pb-actions">
         <button type="button" class="btn btn-ghost" data-pb-again>{t.again}</button>
         <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
@@ -123,7 +163,15 @@ const texts = TEXTS[L];
   </div>
 </section>
 
-<script is:inline define:vars={{ questions, template, doneLabel: isAr ? 'شوف الفرق' : 'See the difference' }}>
+<script
+  is:inline
+  define:vars={{
+    questions,
+    template,
+    doneLabel: isAr ? 'شوف الفرق' : 'See the difference',
+    aiLabels: { lang: L, go: t.aiGo, again: t.aiAgain, loading: t.aiLoading, fail: t.aiFail, short: t.aiShort },
+  }}
+>
   // ═══════════════════════════════════════════════════════════
   //  محرّك الرسم
   // ═══════════════════════════════════════════════════════════
@@ -240,6 +288,87 @@ const texts = TEXTS[L];
         answers = [];
         i = 0;
       });
+
+      // ─── الرسّام الذكي: بيرسونا لمشروع الزائر نفسه ───
+      //  استدعاء واحد لكل ضغطة، والحدود اليومية عند الـ Worker.
+      //  أي فشل بيطلع رسالة لطيفة — اللعبة نفسها ما بتتأثر.
+      var AI_ENDPOINT = 'https://ryanalali-api.ryanalali-api.workers.dev/persona';
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var aiBiz = board.querySelector('[data-pb-ai-biz]');
+      var aiGo = board.querySelector('[data-pb-ai-go]');
+      var aiStatus = board.querySelector('[data-pb-ai-status]');
+      var aiCard = board.querySelector('[data-pb-ai-card]');
+      var aiBusy = false;
+
+      function aiSay(msg) {
+        aiStatus.hidden = !msg;
+        aiStatus.textContent = msg || '';
+      }
+
+      function renderPersonaAI(p) {
+        aiSay('');
+        board.querySelector('[data-pb-ai-who]').textContent = p.who || '';
+        var list = board.querySelector('[data-pb-ai-fields]');
+        list.textContent = '';
+        (Array.isArray(p.fields) ? p.fields : []).forEach(function (f) {
+          var li = document.createElement('li');
+          li.textContent = String(f);
+          list.appendChild(li);
+          requestAnimationFrame(function () {
+            li.classList.add('in');
+          });
+        });
+        board.querySelector('[data-pb-ai-text]').textContent = p.text || '';
+        aiCard.hidden = false;
+        aiCard.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+      }
+
+      if (aiGo)
+        aiGo.addEventListener('click', function () {
+          if (aiBusy) return;
+          var biz = (aiBiz.value || '').trim();
+          if (biz.length < 8) return aiSay(aiLabels.short);
+
+          aiBusy = true;
+          aiGo.disabled = true;
+          aiCard.hidden = true;
+          aiSay(aiLabels.loading);
+
+          // ⚠️ مهلة ٤٥ ثانية — الرسم الجدي بياخد ١٠-٢٠، وأطول من
+          //    هيك يعني في مشكلة والزر لازم يرجع يفك
+          var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+          var kill = ctrl
+            ? setTimeout(function () {
+                ctrl.abort();
+              }, 45000)
+            : null;
+
+          fetch(AI_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lang: aiLabels.lang, biz: biz }),
+            signal: ctrl ? ctrl.signal : undefined,
+          })
+            .then(function (r) {
+              return r.json().then(function (d) {
+                return d || {};
+              });
+            })
+            .then(function (d) {
+              if (d.ok && d.persona) renderPersonaAI(d.persona);
+              else if (d.ok && d.joke) aiSay(d.joke);
+              else aiSay(d.message || aiLabels.fail);
+            })
+            .catch(function () {
+              aiSay(aiLabels.fail);
+            })
+            .then(function () {
+              if (kill) clearTimeout(kill);
+              aiBusy = false;
+              aiGo.disabled = false;
+              aiGo.textContent = aiCard.hidden ? aiLabels.go : aiLabels.again;
+            });
+        });
     }
 
     boot();
@@ -333,6 +462,13 @@ const texts = TEXTS[L];
 
   .pb-demo > .btn {
     margin-top: 10px;
+  }
+
+  /* ⚠️ ضروري: .btn بتفرض display وبتغلب قاعدة المتصفح لـ [hidden] —
+     بدون هالسطر زر «هلأ خلينا نرسمه صح» بيبين من أول اللعبة.
+     نفس فخ عين البراند (شوف تعليقها). */
+  .pb .btn[hidden] {
+    display: none;
   }
 
   /* الفخ */
@@ -539,6 +675,96 @@ const texts = TEXTS[L];
     line-height: 1.7;
     max-width: 62ch;
     margin-bottom: 16px;
+  }
+
+  /* ─── الرسّام الذكي ─── */
+  .pb-ai {
+    border-top: 1px solid var(--line);
+    margin-top: 20px;
+    padding-top: 20px;
+    margin-bottom: 18px;
+  }
+
+  .pb-ai-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .pb-ai-lede {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 62ch;
+    margin-bottom: 12px;
+  }
+
+  .pb-ai-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .pb-ai-biz {
+    width: 100%;
+    max-width: 62ch;
+    min-height: 64px;
+    resize: vertical;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 12px 14px;
+    transition: border-color 0.25s var(--ease-out);
+  }
+
+  .pb-ai-biz:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .pb-ai-status {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 62ch;
+    margin-top: 10px;
+  }
+
+  .pb-ai-card {
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+    border-radius: var(--r-card);
+    padding: 16px;
+    margin-top: 14px;
+    max-width: 66ch;
+  }
+
+  .pb-ai-card-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .pb-ai-who {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+
+  .pb-ai-text {
+    font-size: 13.5px;
+    line-height: 1.85;
+    color: var(--text);
+    margin-top: 12px;
+    margin-bottom: 10px;
   }
 
   .pb-actions {

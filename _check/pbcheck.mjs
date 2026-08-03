@@ -11,7 +11,13 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 950 } });
 
 const errors = [];
-page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+page.on('console', (m) => {
+  if (m.type() !== 'error') return;
+  const t = m.text();
+  // فحص الحد اليومي بيزيّف رد 429 عن قصد — رسالة المتصفح عنه مش خطأ بالموقع
+  if (t.includes('429')) return;
+  errors.push(t);
+});
 page.on('pageerror', (e) => errors.push('PAGE ERROR: ' + e.message));
 
 let fail = 0;
@@ -21,6 +27,30 @@ const check = (ok, msg) => {
 };
 
 const PAGES = ['/ar/signals/ar-min-3amilak/', '/signals/en-who-is-your-customer/'];
+
+// ─── الرسّام الذكي: منزيّف ردود الـ Worker عشان الفحص ما يحرق رصيد ───
+//  بالعربي: نجاح كامل (بطاقة بيرسونا) · بالإنجليزي: رسالة حد يومي (429)
+await page.route('**/persona', (route) => {
+  const body = route.request().postData() || '';
+  if (body.includes('"lang":"ar"')) {
+    return route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        persona: {
+          who: 'صاحبة مناسبة بتدوّر على كيك مخصص وما بتعرف مين تثق فيه',
+          fields: ['المشكلة تجريبية', 'جرب قبل تجريبي', 'الخوف تجريبي', '«السؤال التجريبي؟»', '«الجملة التجريبية.»'],
+          text: 'هاد نص تجريبي من فحص Playwright بيتأكد إنه بطاقة البيرسونا بتترسم كاملة بالحقول والفقرة.',
+        },
+      }),
+    });
+  }
+  return route.fulfill({
+    status: 429,
+    contentType: 'application/json',
+    body: JSON.stringify({ error: 'quota', scope: 'visitor', message: 'Quota message from mock' }),
+  });
+});
 
 for (const path of PAGES) {
   console.log(`\n${path}`);
@@ -52,6 +82,37 @@ for (const path of PAGES) {
   console.log(`     البيرسونا: ${newT.slice(0, 90)}...`);
   check(oldT.length > 5 && oldT.split('·').length === 3, 'بطاقة الاستهداف اتركبت من الخيارات الثلاثة');
   check(newT.length > 80 && !newT.includes('{'), 'جملة البيرسونا اتركبت كاملة بلا فتحات قالب');
+
+  // ٣.٥) الرسّام الذكي — الفورم موجود وبيتصرف صح
+  check((await board.locator('.pb-ai').count()) === 1, 'قسم «ارسمها لمشروعك» موجود بشاشة النهاية');
+  const aiBiz = board.locator('[data-pb-ai-biz]');
+  const aiGo = board.locator('[data-pb-ai-go]');
+
+  // وصف قصير كثير → رسالة توضيح بلا نداء
+  await aiBiz.fill('قصير');
+  await aiGo.click();
+  await page.waitForTimeout(200);
+  check(!(await board.locator('[data-pb-ai-status]').isHidden()), 'الوصف القصير طلّع رسالة توضيح');
+
+  // وصف حقيقي → (بالعربي) بطاقة كاملة · (بالإنجليزي) رسالة الحد اليومي
+  await aiBiz.fill(
+    path.startsWith('/ar')
+      ? 'محل حلويات بالزرقاء بيبيع كيك مناسبات وأغلب الطلبات من الإنستا'
+      : 'a sweets shop selling occasion cakes, most orders come through Instagram'
+  );
+  await aiGo.click();
+  await page.waitForTimeout(600);
+  if (path.startsWith('/ar')) {
+    check(!(await board.locator('[data-pb-ai-card]').isHidden()), 'بطاقة البيرسونا الذكية ظهرت');
+    check((await board.locator('[data-pb-ai-fields] li').count()) === 5, 'الحقول الخمسة انرسمت');
+    const aiText = (await board.locator('[data-pb-ai-text]').textContent())?.trim() || '';
+    check(aiText.length > 30, 'فقرة البيرسونا انكتبت');
+    check(((await aiGo.textContent()) || '').includes('ثاني'), 'الزر تحوّل لـ«جرب وصف ثاني»');
+  } else {
+    check(await board.locator('[data-pb-ai-card]').isHidden(), 'البطاقة ما ظهرت على رد الحد اليومي');
+    const st = (await board.locator('[data-pb-ai-status]').textContent())?.trim() || '';
+    check(st.includes('Quota message'), 'رسالة الحد اليومي وصلت للزائر زي ما إجت من السيرفر');
+  }
 
   // ٤) الإعادة بترجع للبداية
   await board.locator('[data-pb-again]').click();

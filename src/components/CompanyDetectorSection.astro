@@ -46,6 +46,8 @@ const t = isAr
       scoreLine: 'حكمت صح على',
       again: 'عيد المحادثة',
       cta: 'احجز جلسة تشخيص',
+      bonusBtn: 'جولات اليوم الجديدة',
+      aiNote: 'جولات جديدة كل يوم — بيكتبها «نبض»، مساعد ريّان الذكي. نفس القاعدة: احكم على كل رد.',
     }
   : {
       eyebrow: 'Short game',
@@ -66,6 +68,8 @@ const t = isAr
       scoreLine: 'You judged correctly',
       again: 'Replay the chat',
       cta: 'Book a diagnosis session',
+      bonusBtn: "Today's new rounds",
+      aiNote: "New rounds every day — written by Nabd, Rayan's AI assistant. Same rule: judge every reply.",
     };
 
 const exchanges = EXCHANGES.map((e) => ({ flag: e.flag, q: e[L].q, a: e[L].a, why: e[L].why }));
@@ -110,6 +114,7 @@ const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
       <p class="cd-stamp" data-cd-stamp></p>
       <p class="cd-vtext" data-cd-vtext></p>
       <div class="cd-actions">
+        <button type="button" class="btn btn-primary" data-cd-bonus hidden></button>
         <button type="button" class="btn btn-ghost" data-cd-again>{t.again}</button>
         <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
       </div>
@@ -131,6 +136,8 @@ const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
       next: t.next,
       finishBtn: t.finishBtn,
       scoreLine: t.scoreLine,
+      bonusBtn: t.bonusBtn,
+      aiNote: t.aiNote,
       locale: isAr ? 'ar-EG' : 'en-US',
     },
   }}
@@ -159,6 +166,13 @@ const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
       var i = 0;
       var score = 0;
       var timers = [];
+
+      // القائمة الملعوبة حالياً: الأساسية أو «جولات اليوم» من نبض.
+      // الأساسية بتضل زي ما هي — عتبات الحكم محسوبة عليها.
+      var list = exchanges;
+      var bonus = false;
+      var aiRounds = [];
+      var aiPlayed = false;
 
       var n = function (v) {
         return v.toLocaleString(labels.locale);
@@ -202,7 +216,7 @@ const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
       }
 
       function play() {
-        var e = exchanges[i];
+        var e = list[i];
         bubble('me', e.q);
         var dots = null;
         later(function () {
@@ -220,7 +234,7 @@ const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
 
       function choose(kind) {
         judge.hidden = true;
-        var e = exchanges[i];
+        var e = list[i];
         var saidFlag = kind === 'flag';
         var ok = saidFlag === e.flag;
         if (ok) score++;
@@ -244,14 +258,14 @@ const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
         });
         note.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
 
-        nextBtn.textContent = i + 1 >= exchanges.length ? labels.finishBtn : labels.next;
+        nextBtn.textContent = i + 1 >= list.length ? labels.finishBtn : labels.next;
         nextwrap.hidden = false;
       }
 
       function next() {
         nextwrap.hidden = true;
         i++;
-        if (i >= exchanges.length) return finish();
+        if (i >= list.length) return finish();
         play();
       }
 
@@ -259,16 +273,28 @@ const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
         judge.hidden = true;
         end.hidden = false;
         board.querySelector('[data-cd-score]').textContent =
-          labels.scoreLine + ' ' + n(score) + '/' + n(exchanges.length);
+          labels.scoreLine + ' ' + n(score) + '/' + n(list.length);
         var v = verdicts[0];
-        for (var k = 0; k < verdicts.length; k++) if (score >= verdicts[k].min) v = verdicts[k];
+        for (var k = 0; k < verdicts.length; k++) {
+          // بجولات اليوم العدد أقل من ٧ — منكيّس العتبات بنفس النسبة
+          var need = bonus ? Math.round((verdicts[k].min * list.length) / exchanges.length) : verdicts[k].min;
+          if (score >= need) v = verdicts[k];
+        }
         board.querySelector('[data-cd-stamp]').textContent = v.stamp;
         board.querySelector('[data-cd-vtext]').textContent = v.text;
+
+        // زر جولات اليوم: بس بعد الجولة الأساسية، وبس إذا وصلت دفعة
+        if (bonus) aiPlayed = true;
+        bonusBtn.hidden = bonus || aiPlayed || aiRounds.length < 3;
+        if (!bonusBtn.hidden) bonusBtn.textContent = labels.bonusBtn + ' (' + n(aiRounds.length) + ')';
+
         end.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
       }
 
       function start() {
         clearTimers();
+        bonus = false;
+        list = exchanges;
         cover.hidden = true;
         end.hidden = true;
         nextwrap.hidden = true;
@@ -279,6 +305,57 @@ const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
         play();
       }
 
+      // ─── جولات اليوم من نبض ───
+      function startBonus() {
+        clearTimers();
+        bonus = true;
+        list = aiRounds;
+        end.hidden = true;
+        nextwrap.hidden = true;
+        chat.hidden = false;
+        chat.textContent = '';
+        i = 0;
+        score = 0;
+        // شفافية: مين كاتب جولات اليوم — قبل أول فقاعة
+        var note = document.createElement('div');
+        note.className = 'cd-note in';
+        note.textContent = labels.aiNote;
+        chat.appendChild(note);
+        play();
+      }
+
+      // دفعة اليوم بتنجاب مرة عند التحميل — لو ما وصلت (أول زائر
+      // باليوم بيلاقيها لسا عم تطبخ) الزر ببساطة ما بيظهر واللعبة
+      // الأساسية كاملة بدونه
+      var AI_ENDPOINT = 'https://ryanalali-api.ryanalali-api.workers.dev/detector-rounds';
+      try {
+        fetch(AI_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ locale: labels.locale }),
+        })
+          .then(function (r) {
+            return r.ok ? r.json() : null;
+          })
+          .then(function (d) {
+            if (!d || !d.ok || !Array.isArray(d.rounds)) return;
+            aiRounds = d.rounds.filter(function (r) {
+              return (
+                r &&
+                typeof r.q === 'string' &&
+                typeof r.a === 'string' &&
+                typeof r.why === 'string' &&
+                typeof r.flag === 'boolean'
+              );
+            });
+          })
+          .catch(function () {});
+      } catch (e) {
+        /* بلا شبكة بلا جولات إضافية — مش مشكلة */
+      }
+
+      var bonusBtn = board.querySelector('[data-cd-bonus]');
+      bonusBtn.addEventListener('click', startBonus);
       board.querySelector('[data-cd-start]').addEventListener('click', start);
       board.querySelector('[data-cd-again]').addEventListener('click', start);
       board.querySelectorAll('[data-cd-choose]').forEach(function (btn) {
@@ -578,6 +655,13 @@ const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+  }
+
+  /* ⚠️ ضروري: .btn بتفرض display وبتغلب قاعدة المتصفح لـ [hidden] —
+     بدون هالسطر زر «جولات اليوم» بيضل معلق بعد ما تنلعب.
+     نفس فخ عين البراند (شوف تعليقها). */
+  .cd .btn[hidden] {
+    display: none;
   }
 
   /* ─── موبايل ─── */

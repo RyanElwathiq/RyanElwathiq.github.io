@@ -40,6 +40,17 @@ const PAGES = [
   ['/signals/en-digital-decor/', 'A professional detector'],
 ];
 
+// ─── جولات اليوم من نبض: منزيّفها عشان الفحص ثابت وما يحرق رصيد ───
+const AI_ROUNDS = Array.from({ length: 6 }, (_, k) => ({
+  q: 'سؤال تجريبي رقم ' + (k + 1),
+  a: 'رد تجريبي من الشركة رقم ' + (k + 1),
+  flag: k % 2 === 0,
+  why: 'شرح تجريبي للجولة رقم ' + (k + 1),
+}));
+await page.route('**/detector-rounds', (route) =>
+  route.fulfill({ contentType: 'application/json', body: JSON.stringify({ ok: true, rounds: AI_ROUNDS, day: 'test' }) })
+);
+
 for (const [path, topStamp] of PAGES) {
   console.log(`\n${path}`);
   await page.goto(BASE + path, { waitUntil: 'networkidle' });
@@ -57,6 +68,30 @@ for (const [path, topStamp] of PAGES) {
   const stamp = (await board.locator('[data-cd-stamp]').textContent())?.trim();
   console.log(`     ${score}`);
   check(stamp === topStamp, `كل الأجوبة صح → «${stamp}»`);
+
+  // ١.٥) جولات اليوم من نبض — الزر ظهر وبينلعب صح
+  const bonusBtn = board.locator('[data-cd-bonus]');
+  check(!(await bonusBtn.isHidden()), 'زر «جولات اليوم» ظهر بعد النتيجة');
+  check(
+    ((await bonusBtn.textContent()) || '').includes(path.startsWith('/ar') ? '٦' : '6'),
+    'الزر بيبين عدد الجولات'
+  );
+  if (path.startsWith('/ar')) {
+    await bonusBtn.click();
+    await page.waitForTimeout(300);
+    check((await board.locator('.cd-note').count()) === 1, 'ملاحظة «بيكتبها نبض» ظهرت أول المحادثة');
+    for (let r = 0; r < 6; r++) {
+      await page.waitForTimeout(2200);
+      await board.locator(`[data-cd-choose="${r % 2 === 0 ? 'flag' : 'normal'}"]`).click();
+      await page.waitForTimeout(350);
+      await board.locator('[data-cd-next]').click();
+    }
+    await page.waitForTimeout(500);
+    const bScore = (await board.locator('[data-cd-score]').textContent())?.trim() || '';
+    console.log(`     جولات اليوم: ${bScore}`);
+    check(bScore.includes('٦'), 'نتيجة جولات اليوم محسوبة على ٦');
+    check(await bonusBtn.isHidden(), 'الزر اختفى بعد ما انلعبت جولات اليوم');
+  }
 
   // ٢) إعادة: كله «طبيعي» → بيمسك بس الردود النظيفة (٣ صح)
   await board.locator('[data-cd-again]').click();
