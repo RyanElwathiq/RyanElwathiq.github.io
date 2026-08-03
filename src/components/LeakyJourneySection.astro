@@ -1,0 +1,512 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «الرحلة المسرّبة» — ألف كبسة، أربع محطات، وين بتسرّب الزباين؟
+//
+//  بكل محطة بتشوف العَرَض (الأرقام والوصف) وبتختار إصلاح واحد من
+//  ثلاثة. الإصلاح الصح بيسكّر الثقب، والغلط الشائع بيخلي التسريب.
+//  خط الرحلة فوق بيتلوّن محطة محطة وبيبين كم واحد كمّل.
+//
+//  ⚠️ عناصر الخط والخيارات بتنبنى بالجافاسكربت — ستايلاتها
+//     بـ :global (فخ مترجم الباكجات نفسه).
+//  ✏️ المحطات والأحكام بـ src/data/leaky-journey.js
+//  ✏️ الاستخدام جوّا مقال:  <LeakyJourneySection lang="ar" />
+// ═══════════════════════════════════════════════════════════════
+import { STATIONS, VERDICTS } from '../data/leaky-journey.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'leaky-journey' } = Astro.props;
+const isAr = lang === 'ar';
+const L = lang;
+
+const briefHref = isAr ? '/ar/brief/' : '/brief/';
+
+const t = isAr
+  ? {
+      eyebrow: 'لعبة قصيرة',
+      title: 'الرحلة المسرّبة',
+      lede: 'ألف واحد كبسوا على إعلانك، وبين الكبسة والشراء أربع محطات كلها بتسرّب. شخّص كل محطة واختار الإصلاح الصح، وشوف كم واحد بيوصل معك للآخر.',
+      coverTitle: 'ألف كبسة دفعت حقها. وصّلها.',
+      rules: ['٤ محطات، بكل وحدة تسريب', 'اقرأ العَرَض واختار إصلاح من ثلاثة', 'الإصلاح الغلط مش غبي، هو الشائع'],
+      start: 'ابدأ الرحلة',
+      station: 'المحطة',
+      arrived: 'كمّلوا من هون',
+      next: 'المحطة الجاية',
+      finishBtn: 'شوف مين وصل',
+      finalLine: 'أتموا الشراء من أصل ١٬٠٠٠ كبسة',
+      honesty: 'الأرقام توضيحية لمنطق الرحلة، مش توقع لمشروعك. رحلة مشروعك بتنرسم من تشخيصه.',
+      again: 'عيد الرحلة',
+      cta: 'احجز جلسة تشخيص',
+    }
+  : {
+      eyebrow: 'Short game',
+      title: 'The Leaky Journey',
+      lede: 'A thousand people clicked your ad, and between the click and the purchase lie four stations, all leaking. Diagnose each one, pick the right fix, and see how many make it to the end with you.',
+      coverTitle: 'A thousand paid-for clicks. Deliver them.',
+      rules: ['4 stations, each one leaking', 'Read the symptom, pick one of three fixes', 'The wrong fix is not stupid. It is the common one'],
+      start: 'Start the journey',
+      station: 'Station',
+      arrived: 'continued from here',
+      next: 'Next station',
+      finishBtn: 'See who arrived',
+      finalLine: 'completed the purchase out of 1,000 clicks',
+      honesty: "Numbers illustrate the journey's logic, not a forecast for your project. Your project's journey comes out of its diagnosis.",
+      again: 'Replay the journey',
+      cta: 'Book a diagnosis session',
+    };
+
+const stations = STATIONS.map((s) => s[L]);
+const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
+---
+
+<section class="lj" id={id}>
+  <div class="lj-head" data-reveal>
+    <p class="lj-eyebrow">{t.eyebrow}</p>
+    <h2>{t.title}</h2>
+    <p class="lj-lede">{t.lede}</p>
+  </div>
+
+  <div class="lj-board frame frame-on" data-reveal data-leaky>
+    <!-- شاشة البداية -->
+    <div class="lj-cover" data-lj-cover>
+      <p class="lj-cover-kicker">{t.eyebrow}</p>
+      <p class="lj-cover-title">{t.coverTitle}</p>
+      <ul class="lj-rules">
+        {t.rules.map((r) => <li>{r}</li>)}
+      </ul>
+      <button type="button" class="btn btn-primary" data-lj-start>{t.start}</button>
+    </div>
+
+    <div class="lj-stage" data-lj-stage hidden>
+      <!-- خط الرحلة -->
+      <div class="lj-track" data-lj-track>
+        <div class="lj-node on"><span class="lj-n-count">١٬٠٠٠</span><span class="lj-n-name">{isAr ? 'كبسة' : 'clicks'}</span></div>
+        {
+          stations.map((s) => (
+            <div class="lj-node" data-lj-node>
+              <span class="lj-n-count" data-lj-ncount>؟</span>
+              <span class="lj-n-name">{s.name}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- المحطة الحالية -->
+      <div class="lj-round" data-lj-round>
+        <p class="lj-sname" data-lj-sname></p>
+        <p class="lj-symptom" data-lj-symptom></p>
+        <div class="lj-fixes" data-lj-fixes></div>
+        <div class="lj-result" data-lj-result hidden>
+          <p class="lj-through"><b data-lj-through></b> {t.arrived}</p>
+          <p class="lj-why" data-lj-why></p>
+          <button type="button" class="btn btn-primary" data-lj-next></button>
+        </div>
+      </div>
+
+      <!-- النهاية -->
+      <div class="lj-end" data-lj-end hidden>
+        <p class="lj-final"><b data-lj-final></b> {t.finalLine}</p>
+        <p class="lj-stamp" data-lj-stamp></p>
+        <p class="lj-vtext" data-lj-vtext></p>
+        <p class="lj-honesty">{t.honesty}</p>
+        <div class="lj-actions">
+          <button type="button" class="btn btn-ghost" data-lj-again>{t.again}</button>
+          <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    stations,
+    verdicts,
+    labels: { station: t.station, next: t.next, finishBtn: t.finishBtn, locale: isAr ? 'ar-EG' : 'en-US' },
+  }}
+>
+  // ═══════════════════════════════════════════════════════════
+  //  محرّك الرحلة
+  // ═══════════════════════════════════════════════════════════
+  (function () {
+    function boot() {
+      document.querySelectorAll('[data-leaky]').forEach(setup);
+    }
+
+    function setup(board) {
+      if (board.dataset.ready === '1') return;
+      board.dataset.ready = '1';
+
+      var cover = board.querySelector('[data-lj-cover]');
+      var stage = board.querySelector('[data-lj-stage]');
+      var nodes = board.querySelectorAll('[data-lj-node]');
+      var roundBox = board.querySelector('[data-lj-round]');
+      var snameEl = board.querySelector('[data-lj-sname]');
+      var sympEl = board.querySelector('[data-lj-symptom]');
+      var fixesEl = board.querySelector('[data-lj-fixes]');
+      var resultEl = board.querySelector('[data-lj-result]');
+      var throughEl = board.querySelector('[data-lj-through]');
+      var whyEl = board.querySelector('[data-lj-why]');
+      var nextBtn = board.querySelector('[data-lj-next]');
+      var endBox = board.querySelector('[data-lj-end]');
+
+      var flow = 1000;
+      var i = 0;
+
+      var n = function (v) {
+        return Math.round(v).toLocaleString(labels.locale);
+      };
+
+      function shuffle(a) {
+        for (var x = a.length - 1; x > 0; x--) {
+          var j = Math.floor(Math.random() * (x + 1));
+          var tmp = a[x];
+          a[x] = a[j];
+          a[j] = tmp;
+        }
+        return a;
+      }
+
+      function playStation() {
+        var s = stations[i];
+        snameEl.textContent = labels.station + ' ' + n(i + 1) + ': ' + s.name;
+        sympEl.textContent = s.symptom;
+        fixesEl.textContent = '';
+        resultEl.hidden = true;
+        shuffle(s.fixes.slice()).forEach(function (f) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'lj-fix';
+          b.textContent = f.text;
+          b.addEventListener('click', function () {
+            pick(f, b);
+          });
+          fixesEl.appendChild(b);
+        });
+      }
+
+      function pick(f, btn) {
+        fixesEl.querySelectorAll('button').forEach(function (b) {
+          b.disabled = true;
+          if (b !== btn) b.classList.add('dim');
+        });
+        btn.classList.add('picked');
+        flow = flow * f.keep;
+        var node = nodes[i];
+        node.classList.add('on');
+        node.querySelector('[data-lj-ncount]').textContent = n(flow);
+        throughEl.textContent = n(flow);
+        whyEl.textContent = f.why;
+        nextBtn.textContent = i + 1 >= stations.length ? labels.finishBtn : labels.next;
+        resultEl.hidden = false;
+      }
+
+      function next() {
+        i++;
+        if (i >= stations.length) return finish();
+        playStation();
+      }
+
+      function finish() {
+        roundBox.hidden = true;
+        endBox.hidden = false;
+        var buyers = Math.round(flow);
+        board.querySelector('[data-lj-final]').textContent = n(buyers);
+        var v = verdicts[0];
+        for (var k = 0; k < verdicts.length; k++) if (buyers >= verdicts[k].min) v = verdicts[k];
+        board.querySelector('[data-lj-stamp]').textContent = v.stamp;
+        board.querySelector('[data-lj-vtext]').textContent = v.text;
+      }
+
+      function start() {
+        cover.hidden = true;
+        stage.hidden = false;
+        endBox.hidden = true;
+        roundBox.hidden = false;
+        flow = 1000;
+        i = 0;
+        nodes.forEach(function (node) {
+          node.classList.remove('on');
+          node.querySelector('[data-lj-ncount]').textContent = '؟';
+        });
+        playStation();
+      }
+
+      board.querySelector('[data-lj-start]').addEventListener('click', start);
+      board.querySelector('[data-lj-again]').addEventListener('click', start);
+      nextBtn.addEventListener('click', next);
+    }
+
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .lj {
+    margin-block: clamp(38px, 5vh, 60px);
+  }
+
+  .lj-head {
+    margin-bottom: 22px;
+  }
+
+  .lj-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .lj-head h2 {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .lj-lede {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 58ch;
+  }
+
+  .lj-board {
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-card);
+  }
+
+  /* ─── شاشة البداية ─── */
+  .lj-cover {
+    text-align: center;
+    padding-block: clamp(18px, 3vh, 34px);
+  }
+
+  .lj-cover-kicker {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .lj-cover-title {
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .lj-rules {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* ─── خط الرحلة ─── */
+  .lj-track {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .lj-node {
+    text-align: center;
+    border: 1px dashed var(--line);
+    border-radius: var(--r-card);
+    padding: 10px 6px;
+    opacity: 0.5;
+    transition:
+      opacity 0.4s var(--ease-out),
+      border-color 0.4s var(--ease-out);
+  }
+
+  .lj-node.on {
+    opacity: 1;
+    border-style: solid;
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  .lj-n-count {
+    display: block;
+    font-family: var(--font-en);
+    font-size: clamp(15px, 1.8vw, 20px);
+    font-weight: 800;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lj-n-name {
+    display: block;
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  /* ─── المحطة ─── */
+  .lj-sname {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .lj-symptom {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.75;
+    margin-bottom: 14px;
+    max-width: 62ch;
+  }
+
+  .lj-fixes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .lj-fixes :global(.lj-fix) {
+    text-align: start;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 13px 17px;
+    cursor: pointer;
+    transition:
+      border-color 0.25s var(--ease-out),
+      opacity 0.25s var(--ease-out),
+      transform 0.15s var(--ease-out);
+  }
+
+  .lj-fixes :global(.lj-fix:hover:not(:disabled)) {
+    border-color: var(--accent);
+  }
+
+  .lj-fixes :global(.lj-fix:active) {
+    transform: scale(0.99);
+  }
+
+  .lj-fixes :global(.lj-fix.picked) {
+    border-color: var(--accent);
+  }
+
+  .lj-fixes :global(.lj-fix.dim) {
+    opacity: 0.35;
+  }
+
+  .lj-result {
+    margin-top: 16px;
+  }
+
+  .lj-through {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .lj-through b {
+    font-family: var(--font-en);
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-inline-end: 4px;
+  }
+
+  .lj-why {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 60ch;
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    border-inline-start: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+  }
+
+  /* ─── النهاية ─── */
+  .lj-final {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .lj-final b {
+    font-family: var(--font-en);
+    font-size: clamp(26px, 3vw, 36px);
+    font-weight: 800;
+    color: var(--accent);
+    margin-inline-end: 6px;
+  }
+
+  .lj-stamp {
+    display: inline-block;
+    font-size: clamp(16px, 1.9vw, 20px);
+    font-weight: 800;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 7px 16px;
+    margin-bottom: 12px;
+    transform: rotate(2deg);
+  }
+
+  html[dir='ltr'] .lj-stamp {
+    transform: rotate(-2deg);
+  }
+
+  .lj-vtext {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 60ch;
+    margin-bottom: 12px;
+  }
+
+  .lj-honesty {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 62ch;
+    margin-bottom: 16px;
+  }
+
+  .lj-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 640px) {
+    .lj-track {
+      grid-template-columns: repeat(5, minmax(60px, 1fr));
+      gap: 5px;
+    }
+
+    .lj-n-count {
+      font-size: 13px;
+    }
+
+    .lj-n-name {
+      font-size: 10px;
+    }
+  }
+</style>
