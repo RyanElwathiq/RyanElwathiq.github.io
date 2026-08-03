@@ -1,0 +1,606 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «كشف الشركة» — محادثة وهمية بتتعلم منها تصطاد الأعلام الحمراء
+//
+//  الزائر «بيسأل» شركة تسويق وهمية (الأسئلة جاهزة)، الشركة بترد،
+//  وهو بيحكم على كل رد: طبيعي ولا علم أحمر؟ بعد كل حكم بيقرأ ليش.
+//  الردود مقصود تكون من النوع اللي بينسمع فعلاً بالسوق وبيبين
+//  منطقي — التمييز هو اللعبة.
+//
+//  ⚠️ جافاسكربت عادي بلا React — نفس قرار باقي الألعاب.
+//  ⚠️ فقاعات المحادثة بتنبنى بالجافاسكربت، فستايلاتها كلها
+//     بـ :global جوّا .cd-chat — شوف فخ مترجم الباكجات نفسه.
+//  ✏️ الجولات والنصوص بـ src/data/company-detector.js
+//  ✏️ الاستخدام جوّا مقال:  <CompanyDetectorSection lang="ar" />
+// ═══════════════════════════════════════════════════════════════
+import { EXCHANGES, VERDICTS } from '../data/company-detector.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'company-detector' } = Astro.props;
+const isAr = lang === 'ar';
+const L = lang;
+
+const briefHref = isAr ? '/ar/brief/' : '/brief/';
+
+const t = isAr
+  ? {
+      eyebrow: 'لعبة قصيرة',
+      title: 'كشف الشركة',
+      lede: 'محادثة مع شركة تسويق، بس هالمرة إنت مش عم تشتري: عم تفحص. احكم على كل رد: طبيعي ولا علم أحمر؟ وبعد كل حكم بتعرف ليش.',
+      coverTitle: 'بتعرف تميّز البيع من الفهم؟',
+      rules: ['٧ ردود من شركة وهمية', 'احكم: طبيعي ولا علم أحمر', 'بعد كل حكم بتقرأ السبب'],
+      start: 'افتح المحادثة',
+      you: 'إنت',
+      co: 'الشركة',
+      normal: 'رد طبيعي',
+      flagBtn: '🚩 علم أحمر',
+      right: 'صح',
+      wrongFlag: 'هاد كان علم أحمر وفاتك',
+      wrongNormal: 'هاد رد طبيعي، مش كل شي علم',
+      next: 'كمّل المحادثة',
+      finishBtn: 'شوف نتيجتك',
+      scoreLine: 'حكمت صح على',
+      again: 'عيد المحادثة',
+      cta: 'احجز جلسة تشخيص',
+    }
+  : {
+      eyebrow: 'Short game',
+      title: 'The Company Detector',
+      lede: 'A chat with a marketing company, except this time you are not buying: you are inspecting. Judge every reply: normal or a red flag? After each call you learn why.',
+      coverTitle: 'Can you tell selling from understanding?',
+      rules: ['7 replies from a fictional company', 'Judge each: normal or red flag', 'After every call, you read why'],
+      start: 'Open the chat',
+      you: 'You',
+      co: 'The company',
+      normal: 'Normal reply',
+      flagBtn: '🚩 Red flag',
+      right: 'Right',
+      wrongFlag: 'That was a red flag and it slipped past you',
+      wrongNormal: 'That one was normal. Not everything is a flag',
+      next: 'Continue the chat',
+      finishBtn: 'See your result',
+      scoreLine: 'You judged correctly',
+      again: 'Replay the chat',
+      cta: 'Book a diagnosis session',
+    };
+
+const exchanges = EXCHANGES.map((e) => ({ flag: e.flag, q: e[L].q, a: e[L].a, why: e[L].why }));
+const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
+---
+
+<section class="cd" id={id}>
+  <div class="cd-head" data-reveal>
+    <p class="cd-eyebrow">{t.eyebrow}</p>
+    <h2>{t.title}</h2>
+    <p class="cd-lede">{t.lede}</p>
+  </div>
+
+  <div class="cd-board frame frame-on" data-reveal data-company-detector>
+    <!-- شاشة البداية — نفس منطق عين البراند: ولا إشي بيصير لحاله -->
+    <div class="cd-cover" data-cd-cover>
+      <p class="cd-cover-kicker">{t.eyebrow}</p>
+      <p class="cd-cover-title">{t.coverTitle}</p>
+      <ul class="cd-rules">
+        {t.rules.map((r) => <li>{r}</li>)}
+      </ul>
+      <button type="button" class="btn btn-primary" data-cd-start>{t.start}</button>
+    </div>
+
+    <!-- المحادثة -->
+    <div class="cd-chat" data-cd-chat aria-live="polite" hidden></div>
+
+    <!-- أزرار الحكم -->
+    <div class="cd-judge" data-cd-judge hidden>
+      <button type="button" class="cd-btn" data-cd-choose="normal">{t.normal}</button>
+      <button type="button" class="cd-btn cd-btn-flag" data-cd-choose="flag">{t.flagBtn}</button>
+    </div>
+
+    <!-- زر المتابعة بعد قراءة السبب -->
+    <div class="cd-nextwrap" data-cd-nextwrap hidden>
+      <button type="button" class="btn btn-primary" data-cd-next></button>
+    </div>
+
+    <!-- النتيجة -->
+    <div class="cd-end" data-cd-end hidden>
+      <p class="cd-score" data-cd-score></p>
+      <p class="cd-stamp" data-cd-stamp></p>
+      <p class="cd-vtext" data-cd-vtext></p>
+      <div class="cd-actions">
+        <button type="button" class="btn btn-ghost" data-cd-again>{t.again}</button>
+        <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    exchanges,
+    verdicts,
+    labels: {
+      you: t.you,
+      co: t.co,
+      right: t.right,
+      wrongFlag: t.wrongFlag,
+      wrongNormal: t.wrongNormal,
+      next: t.next,
+      finishBtn: t.finishBtn,
+      scoreLine: t.scoreLine,
+      locale: isAr ? 'ar-EG' : 'en-US',
+    },
+  }}
+>
+  // ═══════════════════════════════════════════════════════════
+  //  محرّك المحادثة
+  // ═══════════════════════════════════════════════════════════
+  (function () {
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function boot() {
+      document.querySelectorAll('[data-company-detector]').forEach(setup);
+    }
+
+    function setup(board) {
+      if (board.dataset.ready === '1') return;
+      board.dataset.ready = '1';
+
+      var cover = board.querySelector('[data-cd-cover]');
+      var chat = board.querySelector('[data-cd-chat]');
+      var judge = board.querySelector('[data-cd-judge]');
+      var nextwrap = board.querySelector('[data-cd-nextwrap]');
+      var nextBtn = board.querySelector('[data-cd-next]');
+      var end = board.querySelector('[data-cd-end]');
+
+      var i = 0;
+      var score = 0;
+      var timers = [];
+
+      var n = function (v) {
+        return v.toLocaleString(labels.locale);
+      };
+
+      function later(fn, ms) {
+        if (reduced) return fn();
+        timers.push(setTimeout(fn, ms));
+      }
+
+      function clearTimers() {
+        timers.forEach(clearTimeout);
+        timers = [];
+      }
+
+      function bubble(side, text) {
+        var b = document.createElement('div');
+        b.className = 'cd-b cd-b-' + side;
+        var who = document.createElement('span');
+        who.className = 'cd-who';
+        who.textContent = side === 'me' ? labels.you : labels.co;
+        var body = document.createElement('p');
+        body.textContent = text;
+        b.appendChild(who);
+        b.appendChild(body);
+        chat.appendChild(b);
+        requestAnimationFrame(function () {
+          b.classList.add('in');
+        });
+        b.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+        return b;
+      }
+
+      function typing() {
+        var d = document.createElement('div');
+        d.className = 'cd-b cd-b-co cd-typing in';
+        d.innerHTML = '<i></i><i></i><i></i>';
+        chat.appendChild(d);
+        d.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+        return d;
+      }
+
+      function play() {
+        var e = exchanges[i];
+        bubble('me', e.q);
+        var dots = null;
+        later(function () {
+          dots = typing();
+        }, 550);
+        later(
+          function () {
+            if (dots) dots.remove();
+            e._bubble = bubble('co', e.a);
+            judge.hidden = false;
+          },
+          reduced ? 0 : 1500,
+        );
+      }
+
+      function choose(kind) {
+        judge.hidden = true;
+        var e = exchanges[i];
+        var saidFlag = kind === 'flag';
+        var ok = saidFlag === e.flag;
+        if (ok) score++;
+
+        // وسم الفقاعة: العلم بينكشف مهما كان حكمك
+        if (e._bubble) {
+          e._bubble.classList.add(e.flag ? 'is-flag' : 'is-clean');
+          var chip = document.createElement('span');
+          chip.className = 'cd-chip ' + (ok ? 'good' : 'bad');
+          chip.textContent = ok ? '✓ ' + labels.right : e.flag ? '🚩 ' + labels.wrongFlag : labels.wrongNormal;
+          e._bubble.appendChild(chip);
+        }
+
+        // الشرح — ملاحظة نظام بنص المحادثة
+        var note = document.createElement('div');
+        note.className = 'cd-note';
+        note.textContent = e.why;
+        chat.appendChild(note);
+        requestAnimationFrame(function () {
+          note.classList.add('in');
+        });
+        note.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+
+        nextBtn.textContent = i + 1 >= exchanges.length ? labels.finishBtn : labels.next;
+        nextwrap.hidden = false;
+      }
+
+      function next() {
+        nextwrap.hidden = true;
+        i++;
+        if (i >= exchanges.length) return finish();
+        play();
+      }
+
+      function finish() {
+        judge.hidden = true;
+        end.hidden = false;
+        board.querySelector('[data-cd-score]').textContent =
+          labels.scoreLine + ' ' + n(score) + '/' + n(exchanges.length);
+        var v = verdicts[0];
+        for (var k = 0; k < verdicts.length; k++) if (score >= verdicts[k].min) v = verdicts[k];
+        board.querySelector('[data-cd-stamp]').textContent = v.stamp;
+        board.querySelector('[data-cd-vtext]').textContent = v.text;
+        end.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+      }
+
+      function start() {
+        clearTimers();
+        cover.hidden = true;
+        end.hidden = true;
+        nextwrap.hidden = true;
+        chat.hidden = false;
+        chat.textContent = '';
+        i = 0;
+        score = 0;
+        play();
+      }
+
+      board.querySelector('[data-cd-start]').addEventListener('click', start);
+      board.querySelector('[data-cd-again]').addEventListener('click', start);
+      board.querySelectorAll('[data-cd-choose]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          choose(btn.getAttribute('data-cd-choose'));
+        });
+      });
+      nextBtn.addEventListener('click', next);
+
+      document.addEventListener('astro:before-swap', clearTimers, { once: true });
+    }
+
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .cd {
+    margin-block: clamp(38px, 5vh, 60px);
+  }
+
+  .cd-head {
+    margin-bottom: 22px;
+  }
+
+  .cd-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .cd-head h2 {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .cd-lede {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 58ch;
+  }
+
+  .cd-board {
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-card);
+  }
+
+  /* ─── شاشة البداية ─── */
+  .cd-cover {
+    text-align: center;
+    padding-block: clamp(18px, 3vh, 34px);
+  }
+
+  .cd-cover-kicker {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .cd-cover-title {
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .cd-rules {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* ─── المحادثة ─── */
+  .cd-chat {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 460px;
+    overflow-y: auto;
+    padding: 4px 2px;
+    scrollbar-width: thin;
+  }
+
+  .cd-chat :global(.cd-b) {
+    max-width: 82%;
+    border-radius: var(--r-card);
+    padding: 12px 16px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 0.4s var(--ease-out),
+      transform 0.4s var(--ease-out);
+  }
+
+  .cd-chat :global(.cd-b.in) {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* فقاعة الزائر: على جهة البداية بلمسة هوية */
+  .cd-chat :global(.cd-b-me) {
+    align-self: flex-start;
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+
+  /* فقاعة الشركة: على الجهة الثانية */
+  .cd-chat :global(.cd-b-co) {
+    align-self: flex-end;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+
+  .cd-chat :global(.cd-who) {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .cd-chat :global(.cd-b p) {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--text);
+    margin: 0;
+  }
+
+  /* بعد الحكم: العلم بينكشف على الفقاعة نفسها */
+  .cd-chat :global(.cd-b.is-flag) {
+    border-color: color-mix(in srgb, #ff6b6b 55%, transparent);
+  }
+
+  .cd-chat :global(.cd-b.is-clean) {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .cd-chat :global(.cd-chip) {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: var(--r-pill);
+    padding: 3px 10px;
+    margin-top: 8px;
+  }
+
+  .cd-chat :global(.cd-chip.good) {
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .cd-chat :global(.cd-chip.bad) {
+    color: #ff8f8f;
+    border: 1px solid color-mix(in srgb, #ff6b6b 45%, transparent);
+  }
+
+  /* ملاحظة الشرح */
+  .cd-chat :global(.cd-note) {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--muted);
+    border-inline-start: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+    padding: 10px 14px;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out);
+  }
+
+  .cd-chat :global(.cd-note.in) {
+    opacity: 1;
+  }
+
+  /* مؤشر الكتابة */
+  .cd-chat :global(.cd-typing) {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    min-height: 40px;
+  }
+
+  .cd-chat :global(.cd-typing i) {
+    width: 7px;
+    height: 7px;
+    border-radius: var(--r-pill);
+    background: var(--muted);
+    animation: cd-blink 1s infinite;
+  }
+
+  .cd-chat :global(.cd-typing i:nth-child(2)) {
+    animation-delay: 0.18s;
+  }
+
+  .cd-chat :global(.cd-typing i:nth-child(3)) {
+    animation-delay: 0.36s;
+  }
+
+  @keyframes cd-blink {
+    0%,
+    100% {
+      opacity: 0.25;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  /* ─── أزرار الحكم ─── */
+  .cd-judge {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .cd-btn {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 12px 18px;
+    cursor: pointer;
+    transition:
+      border-color 0.25s var(--ease-out),
+      transform 0.15s var(--ease-out);
+  }
+
+  .cd-btn:hover {
+    border-color: var(--accent);
+  }
+
+  .cd-btn:active {
+    transform: scale(0.97);
+  }
+
+  .cd-btn-flag:hover {
+    border-color: #ff6b6b;
+  }
+
+  .cd-nextwrap {
+    margin-top: 16px;
+  }
+
+  /* ─── النتيجة ─── */
+  .cd-end {
+    border-top: 1px solid var(--line);
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+
+  .cd-score {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .cd-stamp {
+    display: inline-block;
+    font-size: clamp(16px, 1.9vw, 20px);
+    font-weight: 800;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 7px 16px;
+    margin-bottom: 12px;
+    transform: rotate(2deg);
+  }
+
+  html[dir='ltr'] .cd-stamp {
+    transform: rotate(-2deg);
+  }
+
+  .cd-vtext {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 60ch;
+    margin-bottom: 16px;
+  }
+
+  .cd-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 640px) {
+    .cd-chat :global(.cd-b) {
+      max-width: 94%;
+    }
+
+    .cd-judge {
+      flex-direction: column;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cd-chat :global(.cd-b),
+    .cd-chat :global(.cd-note) {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .cd-chat :global(.cd-typing i) {
+      animation: none;
+    }
+  }
+</style>
