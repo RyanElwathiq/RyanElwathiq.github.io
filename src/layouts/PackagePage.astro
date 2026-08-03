@@ -1,0 +1,568 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  صفحة البكج التفصيلية (/services/packages/*)
+//
+//  التركيبة (الاسم، البنود، اللمين) من services.json — القصة
+//  والملاءمة والأسئلة من package-pages.js. الرابط الأساسي لكتالوج
+//  الواتساب: كل عنصر بكج بالكتالوج بيوصل لصفحته هون.
+//
+//  البنية: هيرو ← القصة ← شو جوّاه (كل خدمة وليش هي بالذات) ←
+//  إلك/مش إلك (الصراحة اللي بتبيع) ← كيف بيبلش ← أسئلة ← CTA.
+//  ⚠️ ولا سعر بأي مكان — السعر من التشخيص، والصفحة بتقولها بفخر.
+// ═══════════════════════════════════════════════════════════════
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import servicesData from '../data/services.json';
+import { PACKS } from '../data/package-pages.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  packId: 'launch' | 'growth' | 'system';
+}
+
+const { lang, packId } = Astro.props;
+const isAr = lang === 'ar';
+const L = lang;
+const p = isAr ? '/ar' : '';
+
+const packMeta = (servicesData as any).packages[L].items.find((x: any) => x.id === packId);
+const content = (PACKS as any)[packId][L];
+const services = (servicesData as any).services;
+
+// بنود البكج مع بيانات خدماتها + سطر «ليش هي بالذات»
+const pieces = packMeta.has.map((sid: string) => {
+  const sv = services.find((s: any) => s.id === sid);
+  return { id: sid, name: sv[L].name, desc: sv[L].menuDesc, href: `${p}/services/${sv.slug}/`, why: content.whyEach[sid] || '' };
+});
+
+const briefHref = `${p}/brief/`;
+const packsHref = `${p}/services/#packs`;
+
+const t = isAr
+  ? {
+      back: 'كل البكجات',
+      eyebrow: 'بكج',
+      noPrice: 'بلا سعر جاهز: السعر بيطلع من تشخيص مشروعك، مكتوب بنطاق واضح، وثابت بعد الاتفاق.',
+      cta: 'احجز جلسة تشخيص',
+      insideTitle: 'شو جوّاه، وليش كل قطعة بالذات؟',
+      seeSvc: 'صفحة الخدمة كاملة',
+      fitTitle: 'هاد البكج إلك إذا...',
+      notFitTitle: 'ومش إلك إذا...',
+      startTitle: 'كيف بيبلش؟',
+      steps: [
+        { t: 'جلسة تشخيص', d: 'منفهم مشروعك وسوقك ووضعك الحالي — وبنعرف إذا هاد البكج فعلاً أنسب شي إلك ولا في أصح منه.' },
+        { t: 'نطاق مكتوب', d: 'شو بالضبط رح ينعمل، بأي جدول، وبكم — كل شي عالورق قبل ولا قرش.' },
+        { t: 'تنفيذ بإيقاع', d: 'شغل بجدول واضح بتعرف فيه شو صار وشو الجاي — مش «قاعدين نشتغل».' },
+        { t: 'قياس وقرارات', d: 'أرقام بتوصلك بلغة مفهومة، وقرارات الشهر الجاي بتنبنى عليها.' },
+      ],
+      faqTitle: 'أسئلة بتنسأل',
+      honesty: 'ملاحظة صريحة: ما في بكج بيضمن مبيعات. اللي بيضمنه هاد البكج إنه كل قطعة بتشتغل مع أختها، بدل ما تدفع على قطع متفرقة ما بتحكي مع بعض.',
+      ctaTitle: 'جاهز نشوف إذا هاد بكجك؟',
+      ctaBody: 'احكيلي عن مشروعك — وإذا طلع بالتشخيص إنه بكج ثاني أنسبلك، بحكيلك بصراحة.',
+      otherPacks: 'قارن مع باقي البكجات',
+    }
+  : {
+      back: 'All packages',
+      eyebrow: 'Package',
+      noPrice: 'No ready-made price: it comes from diagnosing your project, written in a clear scope, fixed after agreement.',
+      cta: 'Book a diagnosis session',
+      insideTitle: 'What is inside, and why each piece?',
+      seeSvc: 'Full service page',
+      fitTitle: 'This package is for you if...',
+      notFitTitle: 'And not for you if...',
+      startTitle: 'How does it start?',
+      steps: [
+        { t: 'A diagnosis session', d: 'We understand your project, market and current state — and find out whether this package truly fits or another fits better.' },
+        { t: 'A written scope', d: 'Exactly what will be done, on what schedule, for how much — everything on paper before a single coin.' },
+        { t: 'Execution on rhythm', d: 'Work on a clear schedule where you know what happened and what is next — not "we are working on it".' },
+        { t: 'Measurement and decisions', d: "Numbers reach you in plain language, and next month's decisions are built on them." },
+      ],
+      faqTitle: 'Common questions',
+      honesty: 'A straight note: no package guarantees sales. What this package guarantees is that every piece works with its siblings, instead of paying for scattered parts that never talk to each other.',
+      ctaTitle: 'Ready to see if this is your package?',
+      ctaBody: 'Tell me about your project — and if the diagnosis says another package fits you better, I will say so plainly.',
+      otherPacks: 'Compare with the other packages',
+    };
+
+// ═══ بيانات منظمة: Service + FAQPage ═══
+const site = 'https://ryanalali.me';
+const here = `${site}${Astro.url.pathname}`;
+const schema = [
+  {
+    '@type': 'Service',
+    '@id': here + '#service',
+    name: packMeta.name,
+    description: content.seoDesc,
+    serviceType: packMeta.name,
+    provider: { '@id': site + '/#person' },
+    areaServed: [{ '@type': 'Country', name: isAr ? 'الأردن' : 'Jordan' }],
+  },
+  {
+    '@type': 'FAQPage',
+    '@id': here + '#faq',
+    mainEntity: content.faq.map((f: any) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<Base title={`${content.seoTitle} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`} description={content.seoDesc} lang={lang} schema={schema}>
+  <Nav lang={lang} switchTo={isAr ? `/services/packages/${packId}/` : `/ar/services/packages/${packId}/`} />
+
+  <main id="top" class="pk">
+    <!-- ═══ الهيرو ═══ -->
+    <header class="hero container">
+      <a class="back" href={packsHref}>{isAr ? '→' : '←'} {t.back}</a>
+      <p class="eyebrow" data-reveal>{t.eyebrow}</p>
+      <h1 data-reveal>{packMeta.name}</h1>
+      <p class="who" data-reveal>{packMeta.who}</p>
+      <p class="story" data-reveal>{content.story}</p>
+      <div class="hero-cta" data-reveal>
+        <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
+        <p class="noprice">{t.noPrice}</p>
+      </div>
+    </header>
+
+    <!-- ═══ شو جوّاه ═══ -->
+    <section class="inside container">
+      <h2 data-reveal>{t.insideTitle}</h2>
+      <div class="pieces" data-stagger>
+        {
+          pieces.map((pc, i) => (
+            <article class="piece">
+              <span class="piece-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <h3>{pc.name}</h3>
+                <p class="piece-why">{pc.why}</p>
+                <a class="piece-link" href={pc.href}>
+                  {t.seeSvc} <span aria-hidden="true">{isAr ? '←' : '→'}</span>
+                </a>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+      <p class="line" data-reveal>{packMeta.line}</p>
+    </section>
+
+    <!-- ═══ إلك / مش إلك ═══ -->
+    <section class="fit container">
+      <div class="fit-grid">
+        <div class="fit-col is-yes" data-reveal>
+          <h2>{t.fitTitle}</h2>
+          <ul>
+            {content.fit.map((f: string) => <li>{f}</li>)}
+          </ul>
+        </div>
+        <div class="fit-col is-no" data-reveal>
+          <h2>{t.notFitTitle}</h2>
+          <ul>
+            {content.notFit.map((f: string) => <li>{f}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ كيف بيبلش ═══ -->
+    <section class="start container">
+      <h2 data-reveal>{t.startTitle}</h2>
+      <ol class="steps" data-stagger>
+        {
+          t.steps.map((s, i) => (
+            <li class="step">
+              <span class="step-n" aria-hidden="true">{i + 1}</span>
+              <div>
+                <h3>{s.t}</h3>
+                <p>{s.d}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <!-- ═══ الأسئلة ═══ -->
+    <section class="faq container">
+      <h2 data-reveal>{t.faqTitle}</h2>
+      <div class="faq-list" data-stagger>
+        {
+          content.faq.map((f: any) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+      <p class="honesty" data-reveal>{t.honesty}</p>
+    </section>
+
+    <!-- ═══ الخاتمة ═══ -->
+    <section class="cta container" data-reveal>
+      <h2>{t.ctaTitle}</h2>
+      <p>{t.ctaBody}</p>
+      <div class="cta-actions">
+        <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
+        <a class="btn btn-ghost" href={packsHref}>{t.otherPacks}</a>
+      </div>
+    </section>
+  </main>
+
+  <Footer lang={lang} />
+</Base>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .pk {
+    --title-size: clamp(34px, 5vw, 64px);
+    --gap: clamp(52px, 8vh, 96px);
+    padding-top: calc(108px + clamp(26px, 4.5vh, 50px));
+  }
+
+  .pk h2 {
+    font-size: clamp(22px, 2.7vw, 34px);
+    font-weight: 800;
+    margin-bottom: clamp(20px, 3vh, 32px);
+  }
+
+  /* ─── الهيرو ─── */
+  .hero {
+    margin-bottom: var(--gap);
+    max-width: 900px;
+  }
+
+  .back {
+    display: inline-block;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 24px;
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .back:hover {
+    color: var(--accent);
+  }
+
+  .eyebrow {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: var(--title-size);
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 14px;
+  }
+
+  .who {
+    font-size: clamp(16px, 1.8vw, 20px);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 18px;
+  }
+
+  .story {
+    color: var(--muted);
+    font-size: clamp(15px, 1.7vw, 18px);
+    line-height: 1.9;
+    max-width: 68ch;
+    margin-bottom: 26px;
+  }
+
+  .hero-cta {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .noprice {
+    font-size: 13.5px;
+    color: var(--muted);
+    max-width: 42ch;
+    line-height: 1.7;
+  }
+
+  /* ─── شو جوّاه ─── */
+  .inside {
+    margin-bottom: var(--gap);
+  }
+
+  .pieces {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+  }
+
+  .piece {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(16px, 2.5vw, 30px);
+    padding-block: clamp(20px, 3vh, 30px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .piece-n {
+    font-family: var(--font-en);
+    font-size: clamp(20px, 2.4vw, 30px);
+    font-weight: 800;
+    color: color-mix(in srgb, var(--accent) 60%, transparent);
+    line-height: 1.4;
+  }
+
+  .piece h3 {
+    font-size: clamp(18px, 2vw, 23px);
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .piece-why {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.85;
+    max-width: 64ch;
+    margin-bottom: 10px;
+  }
+
+  .piece-link {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .piece-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .line {
+    margin-top: 20px;
+    font-size: 15.5px;
+    font-weight: 600;
+    color: var(--text);
+    max-width: 62ch;
+    line-height: 1.8;
+    padding: 16px 20px;
+    border-inline-start: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+  }
+
+  /* ─── إلك / مش إلك ─── */
+  .fit {
+    margin-bottom: var(--gap);
+  }
+
+  .fit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .fit-col {
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: clamp(20px, 2.6vw, 30px);
+  }
+
+  .fit-col.is-yes {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .fit-col h2 {
+    font-size: clamp(17px, 1.9vw, 21px);
+    margin-bottom: 16px;
+  }
+
+  .fit-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+  }
+
+  .fit-col li {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--muted);
+    padding-inline-start: 22px;
+    position: relative;
+  }
+
+  .fit-col li::before {
+    position: absolute;
+    inset-inline-start: 0;
+    font-weight: 800;
+  }
+
+  .fit-col.is-yes li::before {
+    content: '✓';
+    color: var(--accent);
+  }
+
+  .fit-col.is-no li::before {
+    content: '✕';
+    color: var(--muted);
+  }
+
+  /* ─── كيف بيبلش ─── */
+  .start {
+    margin-bottom: var(--gap);
+  }
+
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 14px;
+  }
+
+  .step {
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: clamp(18px, 2.4vw, 26px);
+    display: grid;
+    gap: 10px;
+    align-content: start;
+    transition:
+      border-color 0.3s var(--ease-out),
+      transform 0.3s var(--ease-out);
+  }
+
+  .step:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    transform: translateY(-3px);
+  }
+
+  .step-n {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--r-pill);
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    color: var(--accent);
+    font-family: var(--font-en);
+    font-weight: 800;
+    font-size: 15px;
+  }
+
+  .step h3 {
+    font-size: 16.5px;
+    font-weight: 800;
+  }
+
+  .step p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  /* ─── الأسئلة ─── */
+  .faq {
+    margin-bottom: var(--gap);
+    max-width: 820px;
+  }
+
+  .faq-list {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  details {
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 16px 20px;
+    transition: border-color 0.3s var(--ease-out);
+  }
+
+  details[open] {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  summary {
+    cursor: pointer;
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--text);
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::before {
+    content: '+';
+    color: var(--accent);
+    font-weight: 800;
+    margin-inline-end: 10px;
+  }
+
+  details[open] summary::before {
+    content: '−';
+  }
+
+  details p {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.85;
+  }
+
+  .honesty {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+    padding: 14px 18px;
+    border: 1px dashed var(--line);
+    border-radius: var(--r-card);
+    max-width: 64ch;
+  }
+
+  /* ─── الخاتمة ─── */
+  .cta {
+    margin-bottom: var(--gap);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: var(--surface);
+    padding: clamp(26px, 3.6vw, 46px);
+  }
+
+  .cta h2 {
+    margin-bottom: 10px;
+  }
+
+  .cta p {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.8;
+    max-width: 56ch;
+    margin-bottom: 20px;
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 720px) {
+    .fit-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -44,10 +44,21 @@ for (const pk of services.packages.ar.items) {
     eyebrow: 'بكج',
     title: pk.name,
     line: pk.who,
-    url: 'ryanalali.me/ar/services',
+    // كل بكج إله صفحته التفصيلية (2026-08-04)
+    url: `ryanalali.me/ar/services/packages/${pk.id}`,
     descForCatalog: `${pk.who}. ${pk.line}`.slice(0, 280),
   });
 }
+
+// بطاقة «كل الخدمات» — عنصر جامع بيوصل لصفحة الخدمات كاملة
+items.push({
+  file: 'all-services',
+  eyebrow: 'الدليل الكامل',
+  title: 'كل الخدمات',
+  line: 'عشر خدمات بتكمل بعضها: من الاستراتيجية للتنفيذ للقياس — وكل وحدة إلها صفحة بتشرحها بصراحة',
+  url: 'ryanalali.me/ar/services',
+  descForCatalog: 'استراتيجية، هوية، مواقع، سوشال ميديا، مونتاج، إعلانات ممولة، سيو، واستشارات — كل خدمة إلها صفحة بتشرح شو بتحل وشو ما بتحله لحالها، وكيف بتشتغل مع باقي المنظومة.',
+});
 
 // ─── البطاقة ───
 const card = (it) => `<!doctype html><html dir="rtl"><head><meta charset="utf-8"><style>

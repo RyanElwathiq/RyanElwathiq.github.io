@@ -129,7 +129,11 @@ const schema = [
                     })}
                   </ul>
                   <p class="pack-line">{pk.line}</p>
-                  <a class="btn pack-btn" href={`${p}/brief/`}>{packages.cta}</a>
+                  <div class="pack-actions">
+                    <a class="btn pack-btn" href={`${p}/brief/`}>{packages.cta}</a>
+                    <!-- صفحة البكج التفصيلية (2026-08-04) — كتالوج الواتساب بيوصل عليها -->
+                    <a class="pack-more" href={`${p}/services/packages/${pk.id}/`}>{isAr ? 'التفاصيل كاملة ←' : 'Full details →'}</a>
+                  </div>
                 </article>
               ))}
             </div>
@@ -347,6 +351,24 @@ const schema = [
   }
 
   .pack-btn { align-self: start; }
+
+  .pack-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .pack-more {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .pack-more:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
 
   /* ملاحظة الصراحة — ظاهرة ومقروءة، هي جزء من البيع مش هامش */
   .packs-note {

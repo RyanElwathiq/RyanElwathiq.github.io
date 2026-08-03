@@ -1,0 +1,13 @@
+---
+// صفحات البكجات (إنجليزي) — /services/packages/launch|growth|system/
+import PackagePage from '../../../layouts/PackagePage.astro';
+import servicesData from '../../../data/services.json';
+
+export async function getStaticPaths() {
+  return (servicesData as any).packages.en.items.map((pk: any) => ({ params: { id: pk.id } }));
+}
+
+const { id } = Astro.params;
+---
+
+<PackagePage lang="en" packId={id as any} />
