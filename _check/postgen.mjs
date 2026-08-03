@@ -32,7 +32,7 @@ if (!cfgPath) {
   process.exit(1);
 }
 const cfg = JSON.parse(readFileSync(cfgPath, 'utf8'));
-const OUT = 'D:/Ryan-Work/Brand-Ryan/posts';
+const OUT = 'D:/Ryan-Work/Brand-Ryan/Social/_Generated';
 mkdirSync(OUT, { recursive: true });
 
 const isAr = cfg.lang !== 'en';
