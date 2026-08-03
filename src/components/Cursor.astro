@@ -182,6 +182,16 @@
     //  أو سكرول. وهاد بيوقف أحداث الماوس التقليدية (mousemove) —
     //  فكانت الدائرة تتجمّد بمكان بداية السحبة وما تلحق الإصبع.
     //  أحداث pointer ما بتتأثر بهاد، فمنعتمد عليها.
+    // ⚠️⚠️ أشرطة التمرير الداخلية (قائمة الأسئلة، شات الكشف…) ⚠️⚠️
+    //  سحب شريط التمرير ما بيبعت ولا حدث للصفحة — فالنقطة كانت
+    //  تتجمّد بمكانها ومؤشّر النظام بيبين فوقها بنفس الوقت.
+    //  الحل نفس فكرة إطارات الفيديو تحت: أول ما يدخل الماوس منطقة
+    //  الشريط منخفي مؤشّرنا ومنرجّع مؤشّر المتصفح (وهو الأنسب
+    //  للسحب أصلاً)، وأول ما يرجع للمحتوى منرجّع مؤشّرنا.
+    //  ⚠️ منرجّعه بس إذا إحنا اللي خبّيناه — عشان ما نفعّله غصب
+    //     بحالات إطفاء ثانية (لمس، برّا النافذة…).
+    let gutterHid = false;
+
     const onMove = (e: PointerEvent) => {
       if (e.pointerType && e.pointerType !== 'mouse') return;
       mx = e.clientX;
@@ -189,6 +199,25 @@
       const el = e.target as HTMLElement | null;
       const hot = !!el?.closest?.(HOT);
       root.toggleAttribute('data-cursor-hot', hot);
+
+      // فوق شريط داخلي؟ (الحدث فوق الشريط بيوصل والهدف هو العنصر
+      // نفسه — بس السحبة بعدها ما بتبعت إشي، عشان هيك منتصرف هون)
+      let gutter = false;
+      if (el && el !== root && el !== document.body && el.scrollHeight > el.clientHeight + 1) {
+        const sw = el.offsetWidth - el.clientWidth;
+        if (sw > 0) {
+          const r = el.getBoundingClientRect();
+          gutter =
+            getComputedStyle(el).direction === 'rtl' ? e.clientX < r.left + sw : e.clientX > r.right - sw;
+        }
+      }
+      if (gutter && root.hasAttribute('data-cursor-on')) {
+        gutterHid = true;
+        root.removeAttribute('data-cursor-on');
+      } else if (!gutter && gutterHid) {
+        gutterHid = false;
+        root.setAttribute('data-cursor-on', '');
+      }
     };
 
     addEventListener('pointermove', onMove, { passive: true });

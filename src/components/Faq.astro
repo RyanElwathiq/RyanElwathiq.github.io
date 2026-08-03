@@ -55,7 +55,10 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     <!-- ═══ اللوحان ═══ -->
     <div class="panes" data-faq>
       <!-- عمود الأسئلة -->
-      <ul class="list" data-faq-list>
+      <!-- ⚠️ data-lenis-prevent ضروري: السكرول الناعم بيمسك العجلة
+           والإصبعين قبل ما يوصلوا للقائمة، فالتمرير الداخلي ما كان
+           يشتغل (نفس درس قائمة Select.jsx) -->
+      <ul class="list" data-faq-list data-lenis-prevent>
         {
           items.map((it: any, i: number) => (
             <li class="row" data-tag={isAr ? it.tagAr : it.tag}>
@@ -195,13 +198,20 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
   /* مع فلتر «الكل» القائمة طويلة — تمرير داخلي بدل ما تشد الصفحة
      كلها لتحت (طلب ريّان 2026-08-04). نفس نمط شات «كشف الشركة».
      التلاشي بالأسفل بيوحي إنه في أسئلة كمان تحت. */
+  /* ⚠️ lenis.css بتحط overscroll-behavior: contain لحالها على أي
+     عنصر data-lenis-prevent — منلغيها بأولوية أعلى: لما توصل آخر
+     القائمة لازم التمرير يكمل للصفحة طبيعي، وإلا بتحس الصفحة
+     «جمدت» (درس الـ Rail) */
   @media (min-width: 861px) {
+    ul.list[data-lenis-prevent] {
+      overscroll-behavior: auto;
+    }
+
     .list {
       max-height: min(66vh, 600px);
       overflow-y: auto;
-      overscroll-behavior: contain;
       scrollbar-width: thin;
-      scrollbar-color: color-mix(in srgb, var(--accent) 30%, transparent) transparent;
+      scrollbar-color: color-mix(in srgb, var(--accent) 20%, transparent) transparent;
       padding-inline-end: 12px;
       mask-image: linear-gradient(to bottom, #000 0, #000 calc(100% - 30px), transparent 100%);
     }

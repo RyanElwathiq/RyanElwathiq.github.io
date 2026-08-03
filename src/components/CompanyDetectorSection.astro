@@ -95,7 +95,9 @@ const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
     </div>
 
     <!-- المحادثة -->
-    <div class="cd-chat" data-cd-chat aria-live="polite" hidden></div>
+    <!-- ⚠️ data-lenis-prevent: بدونها عجلة الماوس فوق الشات بتمرّر
+         الصفحة بدل فقاعات المحادثة (نفس درس قائمة الأسئلة الشائعة) -->
+    <div class="cd-chat" data-cd-chat data-lenis-prevent aria-live="polite" hidden></div>
 
     <!-- أزرار الحكم -->
     <div class="cd-judge" data-cd-judge hidden>
@@ -449,6 +451,12 @@ const verdicts = VERDICTS.map((v) => ({ min: v.min, ...v[L] }));
     overflow-y: auto;
     padding: 4px 2px;
     scrollbar-width: thin;
+  }
+
+  /* ⚠️ lenis.css بتحط overscroll contain على data-lenis-prevent —
+     منلغيها عشان عند حدود الشات يكمل التمرير للصفحة (درس الـ Rail) */
+  div.cd-chat[data-lenis-prevent] {
+    overscroll-behavior: auto;
   }
 
   .cd-chat :global(.cd-b) {
