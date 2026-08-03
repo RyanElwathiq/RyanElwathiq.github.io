@@ -351,6 +351,24 @@ const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
         });
       })();
     </script>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Cloudflare Web Analytics (2026-08-03) — مكمّل مجاني لـ GA:
+         بلا كوكيز وبيشتغل حتى مع مانعات الإعلانات اللي بتحجب جوجل.
+         ⚠️ نفس حارس GA: الدومين الحي بس — الفحوصات المحلية ما
+            بتتسجل زيارات. والسكربت بيتتبع التنقل الداخلي لحاله.
+         ✏️ الـ token مش سر (بيظهر بكود الصفحة لأي زائر).
+         ═══════════════════════════════════════════════════════ -->
+    <script is:inline>
+      (function () {
+        if (!/(^|\.)ryanalali\.me$/.test(location.hostname)) return;
+        var s = document.createElement('script');
+        s.type = 'module';
+        s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+        s.setAttribute('data-cf-beacon', '{"token": "b95c1e2121444203aeaa218f266e4e76"}');
+        document.head.appendChild(s);
+      })();
+    </script>
   </head>
   <body>
     <!-- شاشة التحميل — أول عنصر بالصفحة عشان ترسم فوراً -->

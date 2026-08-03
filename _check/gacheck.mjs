@@ -18,9 +18,11 @@ const check = (ok, msg) => {
 
 const gaLoads = [];
 const pageViews = [];
+const cfLoads = [];
 page.on('request', (r) => {
   const u = r.url();
   if (u.includes('googletagmanager.com/gtag/js')) gaLoads.push(u);
+  if (u.includes('cloudflareinsights.com')) cfLoads.push(u);
   // GA4 بيبعت الأحداث على /g/collect — و page_view بيظهر بـ en=
   if (u.includes('/g/collect')) {
     const en = new URL(u).searchParams.get('en');
@@ -33,14 +35,16 @@ await page.goto(BASE + '/ar/', { waitUntil: 'networkidle' });
 await page.waitForTimeout(2500);
 
 if (!isLive) {
-  // محلياً: الحارس لازم يمنع التحميل كلياً
+  // محلياً: الحارسان لازم يمنعوا التحميل كلياً
   check(gaLoads.length === 0, `سكربت GA ما اتحمّل محلياً (${gaLoads.length})`);
+  check(cfLoads.length === 0, `سكربت كلاودفلير ما اتحمّل محلياً (${cfLoads.length})`);
   check(pageViews.length === 0, 'ولا حدث انبعت محلياً');
   const hasTag = await page.evaluate(() => typeof window.gtag);
   check(hasTag === 'undefined', 'gtag مش معرّف محلياً');
 } else {
   // حي: التحميل + page_view الأولى
   check(gaLoads.length > 0, 'سكربت GA اتحمّل');
+  check(cfLoads.length > 0, 'سكربت كلاودفلير اتحمّل');
   const pv1 = pageViews.filter((e) => e === 'page_view').length;
   check(pv1 >= 1, `page_view انبعتت عالتحميل الأول (${pv1})`);
 
