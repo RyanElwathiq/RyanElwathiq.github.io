@@ -310,6 +310,47 @@ const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
         }
       })();
     </script>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Google Analytics 4 (مهمة #65 — 2026-08-03)
+
+         ⚠️ بيشتغل على الدومين الحي **بس**. بدون هالشرط، كل بناء
+            محلي وكل فحص Playwright كان بيتسجل كزيارة حقيقية
+            وبيخرب الأرقام اللي بنبني عليها قرارات.
+         ⚠️ send_page_view: false مقصودة: الموقع بينتقل بين الصفحات
+            بـ ClientRouter بدون إعادة تحميل، فجوجل ما بيشوف إلا أول
+            صفحة. منبعت page_view بإيدنا مع astro:page-load — وهي
+            بتشتغل عالتحميل الأول **وع**كل انتقال، فكل الصفحات بتنعد
+            وبلا عدّ مزدوج.
+         ✏️ الـ ID مش سر (بيظهر بكود أي موقع) — بس لو تغيّر يوم،
+            غيّره هون بس.
+         ═══════════════════════════════════════════════════════ -->
+    <script is:inline>
+      (function () {
+        var GA_ID = 'G-3Y35J7RN7L';
+        if (!/(^|\.)ryanalali\.me$/.test(location.hostname)) return;
+
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+        document.head.appendChild(s);
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', GA_ID, { send_page_view: false });
+
+        document.addEventListener('astro:page-load', function () {
+          gtag('event', 'page_view', {
+            page_location: location.href,
+            page_title: document.title,
+          });
+        });
+      })();
+    </script>
   </head>
   <body>
     <!-- شاشة التحميل — أول عنصر بالصفحة عشان ترسم فوراً -->
