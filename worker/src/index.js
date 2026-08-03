@@ -22,6 +22,7 @@ const ALLOWED = [
   'https://www.ryanalali.me',
   // للتجربة المحلية وقت التطوير
   'http://localhost:4321',
+  'http://localhost:4330',
   'http://localhost:4460',
   'http://localhost:4461',
   'http://localhost:4462',
@@ -719,6 +720,189 @@ If the business is real — the usual case — strict rules:
 }
 
 // ═══════════════════════════════════════════════════════════════
+//  ٣) «عين البراند» — أسئلة جديدة كل يوم
+//
+//  الفكرة الاقتصادية: **مش استدعاء لكل زائر**. دفعة اليوم بتتولّد
+//  مرة وحدة وبتنخزن بـ D1، وكل اللاعبين بياخدوا منها. يعني سقف
+//  التكلفة استدعاءان باليوم (عربي + إنجليزي) مهما لعبوا — فما في
+//  داعي لحصص زوار زي مختبر الأفكار.
+//
+//  أول زائر باليوم بياخد [] فوراً (اللعبة بتكمّل بالبنك المحلي
+//  بدون ما يحس) والتوليد بيصير بالخلفية — الزائر اللي بعده بياخد
+//  أسئلة اليوم. قفل بـ D1 بيمنع توليدين متوازيين.
+//
+//  ⚠️ الموديل ما بيكتب CSS — بيرجّع نفس عقد بنك الأسئلة بالضبط
+//     (principle / q / why / bad) والتحقق هون بيرفض أي قيمة برا
+//     الحدود، فسؤال مكسور ما بيوصل المتصفح أبداً.
+// ═══════════════════════════════════════════════════════════════
+const EYE_PER_DAY = 8; // كم سؤال جديد بدفعة اليوم
+
+let eyeTableReady = null;
+const ensureEyeTable = (env) =>
+  (eyeTableReady ||= env.LEADS.exec(
+    "CREATE TABLE IF NOT EXISTS eye_rounds (day TEXT NOT NULL, lang TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'gen', json TEXT, PRIMARY KEY (day, lang))",
+  ));
+
+// حدود كل متغيّر — نفس DEFAULTS بملف src/data/brand-eye.js
+// (لو ضفت متغيّر هناك، ضيفه هون وإلا الموديل ما بيقدر يستعمله)
+const EYE_COLORS = ['accent', 'text', 'muted', 'faint', 'pink', 'blue', 'gold', 'violet'];
+const EYE_VARS = {
+  bodyOpacity: (v) => typeof v === 'number' && v >= 0.08 && v <= 1,
+  titleSize: (v) => typeof v === 'number' && v >= 10 && v <= 40,
+  bodySize: (v) => typeof v === 'number' && v >= 8 && v <= 24,
+  titleWeight: (v) => typeof v === 'number' && v >= 100 && v <= 900,
+  bodyWeight: (v) => typeof v === 'number' && v >= 100 && v <= 900,
+  pad: (v) => typeof v === 'number' && v >= 0 && v <= 60,
+  gap: (v) => typeof v === 'number' && v >= 0 && v <= 40,
+  radius: (v) => typeof v === 'number' && v >= 0 && v <= 40,
+  ctaRadius: (v) => typeof v === 'number' && v >= 0 && v <= 48,
+  eyebrowColor: (v) => EYE_COLORS.includes(v),
+  bodyColor: (v) => EYE_COLORS.includes(v),
+  titleColor: (v) => EYE_COLORS.includes(v),
+  ctaColor: (v) => EYE_COLORS.includes(v),
+  tracking: (v) => typeof v === 'number' && v >= -5 && v <= 30,
+  align: (v) => v === 'start' || v === 'center',
+  ctas: (v) => v === 1 || v === 2 || v === 3,
+  maxWidth: (v) => typeof v === 'number' && v >= 16 && v <= 60,
+  ornament: (v) => v === 0 || v === 1,
+};
+
+function validEyeRound(r) {
+  if (!r || typeof r !== 'object') return false;
+  if (typeof r.principle !== 'string' || !r.principle.trim() || r.principle.length > 60) return false;
+  if (typeof r.q !== 'string' || !r.q.trim() || r.q.length > 200) return false;
+  if (typeof r.why !== 'string' || !r.why.trim() || r.why.length > 500) return false;
+  if (!r.bad || typeof r.bad !== 'object' || Array.isArray(r.bad)) return false;
+  const keys = Object.keys(r.bad);
+  if (!keys.length || keys.length > 2) return false;
+  return keys.every((k) => EYE_VARS[k] && EYE_VARS[k](r.bad[k]));
+}
+
+async function handleBrandEye(request, env, origin, ctx) {
+  const body = await request.json().catch(() => null);
+  const lang = body && (body.locale || '').startsWith('ar') ? 'ar' : 'en';
+
+  await ensureEyeTable(env);
+  const day = new Date().toISOString().slice(0, 10);
+
+  const row = await env.LEADS.prepare('SELECT status, json FROM eye_rounds WHERE day = ?1 AND lang = ?2')
+    .bind(day, lang)
+    .first();
+
+  // دفعة اليوم جاهزة؟ رجّعها — هاد المسار الرخيص اللي بيمشي ٩٩٪ من الوقت
+  if (row && row.json) {
+    let rounds = [];
+    try {
+      rounds = JSON.parse(row.json);
+    } catch (e) {
+      /* صف معطوب — منرجّع [] واللعبة بتكمل بالبنك المحلي */
+    }
+    return json({ ok: true, rounds, day }, 200, origin);
+  }
+
+  // ما في مفتاح؟ ما منولّد — اللعبة بتشتغل بالبنك المحلي عادي
+  if (!env.ANTHROPIC_KEY) return json({ ok: true, rounds: [] }, 200, origin);
+
+  // قفل التوليد: أول طلب باليوم بس هو اللي بيولّد (بالخلفية)
+  if (!row) {
+    const lock = await env.LEADS.prepare(
+      "INSERT INTO eye_rounds (day, lang, status) VALUES (?1, ?2, 'gen') ON CONFLICT(day, lang) DO NOTHING",
+    )
+      .bind(day, lang)
+      .run();
+    if (lock.meta && lock.meta.changes === 1) ctx.waitUntil(generateEyeRounds(env, day, lang));
+  }
+
+  return json({ ok: true, rounds: [], pending: true }, 200, origin);
+}
+
+async function generateEyeRounds(env, day, lang) {
+  try {
+    const isAr = lang === 'ar';
+    const sys = isAr
+      ? `أنت محرّك أسئلة للعبة «عين البراند» بموقع ريّان الواثق. اللعبة بتعرض نفس التصميم بنسختين: وحدة مضبوطة ووحدة فيها خلل واحد، والزائر بيختار الأقوى.
+
+النموذج بطاقة تسويقية فيها: سطر تصنيف (eyebrow)، عنوان، وصف قصير، وأزرار. أنت ما بتكتب CSS — بتختار متغيّر واحد (أو اثنين مرتبطين) وبتكسر قيمته.
+
+المتغيّرات المسموحة وقيمها المضبوطة وحدودها:
+bodyOpacity 0.78 (0.08-1 · أوطى من 0.35 = نص ما بينقرا)
+titleSize 21 (10-40) · bodySize 13 (8-24)
+titleWeight 700 · bodyWeight 400 (100-900)
+pad 26 (0-60 · مسافة داخلية) · gap 8 (0-40 · بين العناصر)
+radius 12 · ctaRadius 12 (لازم يتساووا بالنظام المضبوط · 0-48)
+eyebrowColor "accent" · bodyColor "muted" · titleColor "text" · ctaColor "accent" (المسموح: accent/text/muted/faint/pink/blue/gold/violet)
+tracking 0 (-5 لـ 30 · تباعد حروف) · align "start" ("start" أو "center")
+ctas 1 (1-3 · عدد الأزرار) · maxWidth 34 (16-60 · عرض النص بالحروف) · ornament 0 (0 أو 1 · زخرفة زايدة)
+
+اكتب ${EYE_PER_DAY} أسئلة جديدة ومتنوعة. لكل سؤال:
+- principle: اسم المبدأ بالعربي (قصير، مثل «التباين» أو «الانضباط اللوني»)
+- q: سؤال قصير بالعامية الأردنية بيحط الزائر بسياق تسويقي حقيقي
+- why: شرح جملتين لثلاثة بالعامية، بصوت مسوّق مش أكاديمي — ليش النسخة المضبوطة بتبيع أكثر
+- bad: كائن فيه متغيّر واحد (أو اثنين مرتبطين بالكثير) بقيمة مكسورة ضمن الحدود فوق
+
+نوّع المبادئ: تباين، تسلسل، ألوان، مساحة، اتساق، تركيز، قراءة. الخلل لازم يكون ملحوظ بصرياً مش خفي.
+
+رجّع مصفوفة JSON فقط — بلا أي نص قبلها أو بعدها وبلا أسوار كود.`
+      : `You are the question engine for "The Brand Eye" game on Rayan Elwathiq's site. The game shows the same design twice: one correct, one with a single flaw, and the visitor picks the stronger one.
+
+The template is a marketing card: an eyebrow line, a title, a short body, and buttons. You never write CSS — you pick one variable (or two related ones) and break its value.
+
+Allowed variables, their correct values and bounds:
+bodyOpacity 0.78 (0.08-1, below 0.35 = unreadable)
+titleSize 21 (10-40) · bodySize 13 (8-24)
+titleWeight 700 · bodyWeight 400 (100-900)
+pad 26 (0-60, inner padding) · gap 8 (0-40, between elements)
+radius 12 · ctaRadius 12 (must match in the correct system, 0-48)
+eyebrowColor "accent" · bodyColor "muted" · titleColor "text" · ctaColor "accent" (allowed: accent/text/muted/faint/pink/blue/gold/violet)
+tracking 0 (-5 to 30, letter-spacing) · align "start" ("start" or "center")
+ctas 1 (1-3, button count) · maxWidth 34 (16-60, text width in ch) · ornament 0 (0 or 1, extra decoration)
+
+Write ${EYE_PER_DAY} fresh, varied questions. Each:
+- principle: the principle's short name (e.g. "Contrast", "Color discipline")
+- q: a short question placing the visitor in a real marketing context
+- why: two to three sentences in a marketer's voice, not an academic's — why the correct version sells better
+- bad: an object with one broken variable (two related ones at most), values within the bounds above
+
+Vary the principles: contrast, hierarchy, color, spacing, consistency, focus, readability. The flaw must be visually noticeable, not subtle.
+
+Return a JSON array ONLY — no text before or after, no code fences.`;
+
+    // ⚠️ العربي بياخد توكنز أكثر من الإنجليزي لنفس الكلام —
+    //    سقف ضيّق بيقص الـ JSON بنصه وبيفشّل الدفعة كلها
+    const raw = await askClaude(env, sys, isAr ? 'ولّد أسئلة اليوم.' : "Generate today's questions.", {
+      maxTokens: 7000,
+      maxLen: 16000,
+    });
+    if (!raw) throw new Error('empty');
+
+    // الموديل أحياناً بيلف الرد بأسوار كود رغم التعليمة — منشيلها
+    const jsonText = raw.replace(/^[^\[]*/, '').replace(/[^\]]*$/, '');
+    const parsed = JSON.parse(jsonText);
+    const rounds = (Array.isArray(parsed) ? parsed : []).filter(validEyeRound).slice(0, EYE_PER_DAY);
+
+    // أقل من ٤ أسئلة سليمة = دفعة فاشلة — منشيل القفل عشان
+    // طلب جاي يجرّب من جديد بدل ما يعلق اليوم كله فاضي
+    if (rounds.length < 4) {
+      await env.LEADS.prepare('DELETE FROM eye_rounds WHERE day = ?1 AND lang = ?2').bind(day, lang).run();
+      return;
+    }
+
+    await env.LEADS.prepare("UPDATE eye_rounds SET status = 'ready', json = ?3 WHERE day = ?1 AND lang = ?2")
+      .bind(day, lang, JSON.stringify(rounds))
+      .run();
+  } catch (e) {
+    // فشل التوليد — منشيل القفل والبنك المحلي مغطّي بأي حال
+    try {
+      await env.LEADS.prepare("DELETE FROM eye_rounds WHERE day = ?1 AND lang = ?2 AND json IS NULL")
+        .bind(day, lang)
+        .run();
+    } catch (e2) {
+      /* ولا إشي */
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
 //  تنظيف مخرجات الموديل من علامات Markdown
 //
 //  ليش بالكود مش بالبرومبت؟ لأنه البرومبت مكتوب فيه «بلا عناوين»
@@ -754,7 +938,10 @@ async function askAI(env, system, user, isAr) {
   return stripMarkdown(out);
 }
 
-async function askClaude(env, system, user) {
+// opts: { maxTokens, maxLen } — دفعة أسئلة عين البراند أطول من رد
+// عادي، فالحدود الافتراضية (٢٠٠٠ توكن / ١٢٠٠ حرف) بتقصّها وبتكسر
+// الـ JSON. الافتراضي بيضل زي ما هو لكل النداءات الموجودة.
+async function askClaude(env, system, user, opts) {
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -767,7 +954,7 @@ async function askClaude(env, system, user) {
       // ⚠️ max_tokens بيغطّي التفكير **والرد** سوا. كلود Opus 5
       //    تفكيره شغّال افتراضياً، فلو حطّينا ٤٠٠ ممكن يخلصوا كلهم
       //    بالتفكير ويطلع رد فاضي. ٢٠٠٠ بتكفي بمساحة واسعة.
-      max_tokens: 2000,
+      max_tokens: (opts && opts.maxTokens) || 2000,
       // ⚠️ ما في temperature. الموديلات الجديدة بترفضه وبترجّع 400 —
       //    وهاد بالضبط اللي كان بيفشل. التحكم بالأسلوب صار بالأوامر
       //    نفسها، وبمستوى الجهد تحت.
@@ -794,7 +981,7 @@ async function askClaude(env, system, user) {
     .join('\n')
     .trim();
 
-  return clean(text, 1200) || null;
+  return clean(text, (opts && opts.maxLen) || 1200) || null;
 }
 
 // ⚠️ شبكة أمان بس. اقرأ التحذير المقاس فوق CF_MODEL قبل ما
@@ -838,6 +1025,7 @@ export default {
     try {
       if (pathname === '/brief') return await handleBrief(request, env, origin, ctx);
       if (pathname === '/idea') return await handleIdea(request, env, origin);
+      if (pathname === '/brand-eye') return await handleBrandEye(request, env, origin, ctx);
       return json({ error: 'not-found' }, 404, origin);
     } catch (e) {
       return json({ error: 'server', why: String(e && e.message || e).slice(0, 200) }, 500, origin);

@@ -61,6 +61,10 @@ const t = isAr
       ],
       scoreLine: 'جاوبت صح على',
       bestStreak: 'أطول متتالية',
+      record: 'رقمك القياسي',
+      newRecord: 'رقم قياسي جديد!',
+      focus: 'ركّز الجولة الجاية على:',
+      fresh: 'الأسئلة بتتجدد كل يوم، وبكرة في غيرها.',
     }
   : {
       eyebrow: 'Short game',
@@ -89,6 +93,10 @@ const t = isAr
       ],
       scoreLine: 'You got',
       bestStreak: 'Best streak',
+      record: 'Your record',
+      newRecord: 'New record!',
+      focus: 'Next game, watch for:',
+      fresh: 'Questions refresh daily. There will be new ones tomorrow.',
     };
 
 const mock = isAr
@@ -128,6 +136,8 @@ const mock = isAr
         <ul class="bx-rules">
           {t.rules.map((r) => <li>{r}</li>)}
         </ul>
+        <!-- الرقم القياسي المحفوظ — بيظهر من ثاني زيارة وبيحرّض على التحسين -->
+        <p class="bx-record" data-bx-record hidden></p>
         <button type="button" class="btn btn-primary bx-start" data-bx-start>{t.start}</button>
       </div>
 
@@ -176,9 +186,15 @@ const mock = isAr
 
       <!-- النتيجة -->
       <div class="bx-end" data-bx-end hidden>
+        <!-- «رقم قياسي جديد!» — احتفال صغير بيربط اللاعب بسجله -->
+        <p class="bx-newrec" data-bx-newrec hidden></p>
         <p class="bx-score" data-bx-score></p>
         <p class="bx-best" data-bx-best></p>
         <p class="bx-verdict-final" data-bx-final></p>
+        <!-- المبادئ اللي غلط فيها — سبب ملموس يعيد اللعب -->
+        <p class="bx-focus" data-bx-focus hidden></p>
+        <!-- ولما أسئلة اليوم من المحرّك: سبب يرجع بكرة -->
+        <p class="bx-fresh" data-bx-fresh hidden></p>
         <div class="bx-end-actions">
           <button type="button" class="btn btn-ghost" data-bx-again>{t.again}</button>
           {
@@ -216,6 +232,10 @@ const mock = isAr
       scores: t.scores,
       scoreLine: t.scoreLine,
       bestStreak: t.bestStreak,
+      record: t.record,
+      newRecord: t.newRecord,
+      focus: t.focus,
+      fresh: t.fresh,
       locale: isAr ? 'ar-EG' : 'en-US',
     },
   }}
@@ -228,27 +248,52 @@ const mock = isAr
   //     الموقع بينتقل بين الصفحات بدون إعادة تحميل
   // ═══════════════════════════════════════════════════════════
   (function () {
-    // 🤖 مكان توصيل الذكاء الاصطناعي:
-    //    لما ينجهز الـ Worker، بيرجّع نفس شكل عناصر البنك بالضبط
-    //    (principle / q / why / bad). لحد هديك اللحظة منستخدم
-    //    البنك المحلّي — واللعبة بتشتغل بالحالتين بدون تغيير كود.
-    var AI_ENDPOINT = null; // مثال لاحقاً: '/api/brand-eye'
+    // 🤖 محرّك الأسئلة الذكي — شغّال (2026-08-03):
+    //    الـ Worker بيولّد دفعة أسئلة **مرة وحدة باليوم لكل لغة**
+    //    وبيخزّنها بـ D1، فكل اللاعبين بياخدوا من نفس الدفعة —
+    //    سقف التكلفة استدعاءان باليوم مهما لعبوا.
+    //    أسئلة اليوم بتندمج مع البنك المحلي وبتنخلط، فكل لعبة
+    //    خليط مختلف. ولو الـ Worker سكت، البنك المحلي بيغطّي
+    //    واللعبة بتشتغل عادي — ولا زائر بيلاحظ.
+    var AI_ENDPOINT = 'https://ryanalali-api.ryanalali-api.workers.dev/brand-eye';
 
-    function pickRounds(n) {
-      // خلط ثم قص — كل لعبة أسئلة مختلفة وبدون تكرار
-      var pool = bank.slice();
+    // في أسئلة جداد من المحرّك باللعبة الحالية؟ (لرسالة «ارجع بكرة»)
+    var aiFresh = false;
+
+    function shuffle(pool) {
       for (var i = pool.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
         var tmp = pool[i];
         pool[i] = pool[j];
         pool[j] = tmp;
       }
+      return pool;
+    }
+
+    function pickRounds(n, extra) {
+      // أسئلة اليوم (لو في) + البنك المحلي، خلط ثم قص —
+      // كل لعبة أسئلة مختلفة وبدون تكرار
+      var pool = shuffle((extra || []).concat(bank));
       // البنك أصغر من المطلوب؟ منكرّر بترتيب مختلف بدل ما نقصّ اللعبة
       while (pool.length < n) pool = pool.concat(pool);
       return pool.slice(0, n);
     }
 
+    // ⚠️ حزام أمان: الـ Worker بيتحقق قبل التخزين، بس الواجهة
+    //    برضه ما بتوثق بأي سؤال ناقص — سؤال مكسور بيكسر الجولة
+    function validRound(r) {
+      return (
+        r &&
+        typeof r.principle === 'string' &&
+        typeof r.q === 'string' &&
+        typeof r.why === 'string' &&
+        r.bad &&
+        typeof r.bad === 'object'
+      );
+    }
+
     async function loadRounds(n) {
+      aiFresh = false;
       if (!AI_ENDPOINT) return pickRounds(n);
       try {
         var res = await fetch(AI_ENDPOINT, {
@@ -258,7 +303,11 @@ const mock = isAr
         });
         if (!res.ok) throw new Error('bad status');
         var data = await res.json();
-        if (Array.isArray(data.rounds) && data.rounds.length) return data.rounds;
+        var extra = (Array.isArray(data.rounds) ? data.rounds : []).filter(validRound);
+        if (extra.length) {
+          aiFresh = true;
+          return pickRounds(n, extra);
+        }
       } catch (e) {
         // المحرّك ما ردّ؟ اللعبة بتكمّل بالبنك المحلّي — ولا زائر بيلاحظ
       }
@@ -334,6 +383,11 @@ const mock = isAr
       var startBtn = board.querySelector('[data-bx-start]');
       var bar = board.querySelector('.bx-bar');
 
+      var recordEl = board.querySelector('[data-bx-record]');
+      var newrecEl = board.querySelector('[data-bx-newrec]');
+      var focusEl = board.querySelector('[data-bx-focus]');
+      var freshEl = board.querySelector('[data-bx-fresh]');
+
       var rounds = [];
       var i = 0;
       var score = 0;
@@ -343,10 +397,43 @@ const mock = isAr
       var locked = true;
       var tick = 0;
       var left = 0;
+      // المبادئ اللي غلط فيها هاللعبة — سبب ملموس يعيد اللعب
+      var missed = [];
 
       var n = function (v) {
         return v.toLocaleString(labels.locale);
       };
+
+      // ─── السجل الشخصي (localStorage) ───
+      // ⚠️ متصفح بوضع خاص بيرمي استثناء على أي كتابة — لهيك كل
+      //    وصول للتخزين جوّا try. فشل السجل ما بيوقف اللعبة أبداً.
+      var REC_KEY = 'bx-record';
+
+      function loadRec() {
+        try {
+          var r = JSON.parse(localStorage.getItem(REC_KEY) || 'null');
+          if (r && typeof r.s === 'number' && typeof r.k === 'number') return r;
+        } catch (e) {
+          /* ولا إشي */
+        }
+        return null;
+      }
+
+      function saveRec(r) {
+        try {
+          localStorage.setItem(REC_KEY, JSON.stringify(r));
+        } catch (e) {
+          /* ولا إشي */
+        }
+      }
+
+      function showCoverRecord() {
+        var rec = loadRec();
+        if (rec) {
+          recordEl.textContent = labels.record + ': ' + n(rec.s) + '/' + n(perGame);
+          recordEl.hidden = false;
+        }
+      }
 
       function stopTimer() {
         if (tick) clearInterval(tick);
@@ -415,6 +502,9 @@ const mock = isAr
           if (streak > best) best = streak;
         } else {
           streak = 0;
+          // منجمع المبادئ اللي فاتته (بلا تكرار) لملخص النهاية
+          var p = rounds[i] && rounds[i].principle;
+          if (p && missed.indexOf(p) === -1) missed.push(p);
         }
 
         for (var s = 0; s < 2; s++) {
@@ -455,6 +545,22 @@ const mock = isAr
         var pct = score / rounds.length;
         var band = pct < 0.3 ? 0 : pct < 0.6 ? 1 : pct < 0.85 ? 2 : 3;
         finalEl.textContent = labels.scores[band];
+
+        // ─── السجل: كسر رقمه القياسي؟ ───
+        var rec = loadRec() || { s: -1, k: -1 };
+        var broke = score > rec.s || (score === rec.s && best > rec.k);
+        newrecEl.hidden = !(broke && rec.s >= 0); // أول لعبة مش «رقم قياسي»
+        newrecEl.textContent = labels.newRecord;
+        if (score > rec.s || broke) saveRec({ s: Math.max(score, rec.s), k: Math.max(best, rec.k) });
+        showCoverRecord();
+
+        // ─── شو فاتك؟ سبب ملموس يعيد اللعب ───
+        focusEl.hidden = !missed.length;
+        if (missed.length) focusEl.textContent = labels.focus + ' ' + missed.slice(0, 4).join(' · ');
+
+        // ─── وأسئلة بكرة غير — سبب يرجع ───
+        freshEl.hidden = !aiFresh;
+        freshEl.textContent = labels.fresh;
       }
 
       async function start() {
@@ -466,6 +572,7 @@ const mock = isAr
         score = 0;
         streak = 0;
         best = 0;
+        missed = [];
         dots.innerHTML = '';
         for (var d = 0; d < rounds.length; d++) dots.appendChild(document.createElement('span'));
         render();
@@ -488,6 +595,7 @@ const mock = isAr
 
       // الحالة الأولى: الغطا ظاهر وكل إشي ثاني مخفي
       cover.hidden = false;
+      showCoverRecord();
       bar.hidden = true;
       timer.hidden = true;
       qEl.hidden = true;
@@ -963,6 +1071,62 @@ const mock = isAr
   @media (max-width: 620px) {
     .bx-options {
       grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<style>
+  /* ═══ عناصر التحفيز والإعادة (2026-08-03) ═══ */
+
+  /* الرقم القياسي بشاشة البداية */
+  .bx-record {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  /* «رقم قياسي جديد!» — بينط نطّة صغيرة */
+  .bx-newrec {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--bg);
+    background: var(--accent);
+    border-radius: var(--r-pill);
+    padding: 6px 16px;
+    margin-bottom: 14px;
+    animation: bx-newrec-in 0.5s var(--ease-out) both;
+  }
+
+  @keyframes bx-newrec-in {
+    from {
+      opacity: 0;
+      transform: scale(1.4);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* المبادئ اللي فاتتك */
+  .bx-focus {
+    font-size: 14px;
+    color: var(--text);
+    margin-top: 12px;
+  }
+
+  /* أسئلة بكرة غير */
+  .bx-fresh {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bx-newrec {
+      animation: none;
     }
   }
 </style>

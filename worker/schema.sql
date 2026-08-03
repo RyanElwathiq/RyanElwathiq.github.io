@@ -35,3 +35,21 @@ CREATE TABLE IF NOT EXISTS idea_quota (
   n   INTEGER NOT NULL DEFAULT 0, -- عدد الأفكار المولّدة
   PRIMARY KEY (day, who)
 );
+
+-- ═══════════════════════════════════════════════════════════════
+--  دفعة أسئلة «عين البراند» اليومية
+--
+--  صف لكل (يوم، لغة). بتتولّد مرة وحدة باليوم لكل لغة وكل اللاعبين
+--  بياخدوا منها — يعني سقف التكلفة استدعاءان باليوم مهما لعبوا.
+--  status='gen' مع json فاضي = قفل توليد شغّال بالخلفية.
+--  ⚠️ الجدول بينبنى لحاله من الـ Worker أول استعمال.
+--  شوف دفعة اليوم:
+--    npx wrangler d1 execute ryanalali-leads --remote --command "SELECT day, lang, status, length(json) FROM eye_rounds ORDER BY day DESC LIMIT 10"
+-- ═══════════════════════════════════════════════════════════════
+CREATE TABLE IF NOT EXISTS eye_rounds (
+  day    TEXT NOT NULL,           -- 2026-08-03 (يوم UTC)
+  lang   TEXT NOT NULL,           -- ar / en
+  status TEXT NOT NULL DEFAULT 'gen', -- gen = عم يتولّد · ready = جاهز
+  json   TEXT,                    -- مصفوفة الأسئلة (principle/q/why/bad)
+  PRIMARY KEY (day, lang)
+);
