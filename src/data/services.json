@@ -221,6 +221,35 @@
             "q": "بتشتغل سيو لموقع مش انت عاملهُ؟",
             "a": "أيوه. بس أول اشي بعمله فحص، وإذا طلع الموقع مبني بشكل بيمنع الترتيب أساساً بقولك بصراحة إنه إعادة البناء أرخص من محاولة إصلاحه، حتى لو هاد يعني إني ما آخد الشغلة."
           }
+        ],
+        "storiesTitle": "شو بيصير تحت الغطا",
+        "storiesIntro": "السيو من برّا بيبين «كلمات مفتاحية». من جوّا، هاي عيّنة من الطبقات اللي بشتغل عليها فعلياً:",
+        "stories": [
+          {
+            "icon": "render",
+            "t": "جوجل بيقرأ صفحتك مرتين",
+            "b": "أول مرة بياخد النص الخام، وبعدين بيرجع «يشغّل» الصفحة زي متصفح حقيقي. لو محتواك ما بيظهر إلا بعد جافاسكربت بطيئة، النسخة اللي بتتفهرس ناقصة، وإنت ولا بتعرف."
+          },
+          {
+            "icon": "index",
+            "t": "النشر إشي والفهرسة إشي ثاني",
+            "b": "إنك تنشر صفحة ما بيعني إنها فاتت مكتبة جوجل. الصفحات الضعيفة والمكررة بتنحط عالرف: «معروفة، غير مفهرسة». نص شغلي إقناع جوجل إنه كل صفحة عندك بتستاهل رف."
+          },
+          {
+            "icon": "speed",
+            "t": "السرعة بتنقاس من زوار حقيقيين",
+            "b": "جوجل ما بيقيس سرعتك بمختبر — بيجمعها من متصفحات زوارك الفعليين: أول ظهور للمحتوى، استجابة الضغطة، وثبات التصميم وهو بيحمّل. يعني تلفون أردني على شبكة عادية هو الحكم، مش جهازك."
+          },
+          {
+            "icon": "schema",
+            "t": "كيف بتطلع النجوم والأسئلة بالنتيجة",
+            "b": "في طبقة كود مخفية بتحكي مع جوجل بلغته: «هاي خدمة، هذا سعرها، هاد سؤال وجوابه». هي اللي بتخلي نتيجتك تطلع غنية وواخدة مساحة أكبر، بدل سطر أزرق زي الكل."
+          },
+          {
+            "icon": "ai",
+            "t": "مين بينذكر بجواب الذكاء الاصطناعي",
+            "b": "الناس صارت تسأل ChatGPT بدل ما تبحث. المحركات هاي بتقتبس المحتوى اللي بيجاوب سؤال محدد بوضوح وبينقرأ ببنية نظيفة. التهيئة إلها شغل مختلف عن السيو الكلاسيكي، وأنا بشتغل عالاثنين."
+          }
         ]
       },
       "en": {
@@ -259,6 +288,35 @@
           {
             "q": "Will you do SEO on a site you didn't build?",
             "a": "Yes. But I audit first, and if the site is built in a way that structurally blocks ranking I'll tell you plainly that rebuilding is cheaper than patching. Even when that means I don't get the job."
+          }
+        ],
+        "storiesTitle": "What happens under the hood",
+        "storiesIntro": "From the outside SEO looks like keywords. Inside, here is a sample of the layers I actually work on:",
+        "stories": [
+          {
+            "icon": "render",
+            "t": "Google reads your page twice",
+            "b": "First it takes the raw text, then it comes back and runs the page like a real browser. If your content only appears after slow JavaScript, the indexed copy is incomplete, and you would never know."
+          },
+          {
+            "icon": "index",
+            "t": "Publishing and indexing are different things",
+            "b": "Putting a page online does not mean it entered the library. Weak and duplicate pages get shelved as known, not indexed. Half my job is convincing Google every page of yours deserves a shelf."
+          },
+          {
+            "icon": "speed",
+            "t": "Speed is measured from real visitors",
+            "b": "Google does not time your site in a lab. It collects it from your actual visitors' browsers: first paint, tap response, and layout stability while loading. A mid-range phone on Jordanian 4G is the judge, not your laptop."
+          },
+          {
+            "icon": "schema",
+            "t": "How stars and questions appear in results",
+            "b": "A hidden code layer speaks to Google in its own language: this is a service, this is its price, this is a question and its answer. That is what makes your result rich and larger, instead of one blue line like everyone else."
+          },
+          {
+            "icon": "ai",
+            "t": "Who gets cited in the AI answer",
+            "b": "People now ask ChatGPT instead of searching. Those engines quote content that answers one specific question clearly in a clean structure. Preparing for that is different work from classic SEO, and I do both."
           }
         ]
       }

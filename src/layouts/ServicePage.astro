@@ -18,6 +18,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Particles from '../components/Particles.astro';
 import BriefSection from '../components/BriefSection.astro';
+import Service3D from '../components/Service3D.astro';
 import servicesData from '../data/services.json';
 import work from '../data/work.json';
 
@@ -41,6 +42,17 @@ const c = service[L];
 //    بيكون في نموذج تسجيل بقائمة الانتظار. ريّان: «حطها انه
 //    حاليا مش متاحه ولكن قريبا حتكون متاحه».
 const soon = service.soon === true;
+
+// ─── تجهيز بنود «شو بتاخد» لعرض المنظومة ───
+//  البند مكتوب بصيغة «عنوان: تفصيل» — منفصلهم عشان التفصيل يطلع
+//  بخط أهدى تحت العنوان. بند بلا نقطتين بيتعرض كعنوان لحاله.
+const deliverParts = (c.deliver || []).map((x: string) => {
+  const i = x.indexOf(':');
+  return i > 6 ? { head: x.slice(0, i), rest: x.slice(i + 1).trim() } : { head: x, rest: '' };
+});
+
+// «قصص تحت الغطا» — اختيارية بالبيانات (موجودة للسيو حالياً)
+const stories = c.stories || [];
 
 // باقي الخدمات — للروابط الداخلية آخر الصفحة
 const others = servicesData.services
@@ -169,24 +181,39 @@ const schema = [
   <Nav lang={lang} />
 
   <main id="top" class="svc">
-    <div class="container">
-      <a class="back" href={`${p}/services/`}>{t.back}</a>
+    <!-- ═══════════════════════════════════════════════════════════
+         ١. الافتتاحية — لوح زجاجي وجسم الخدمة الثلاثي
 
-      <!-- ═══ ١. العنوان بالمشكلة ═══ -->
-      <div class="kickers" data-reveal>
-        <p class="kicker">{c.name}</p>
-        {soon && <p class="kicker soon-badge">{t.soonBadge}</p>}
-      </div>
-      <h1 data-reveal>{c.h1}</h1>
-      <p class="intro" data-reveal>{c.intro}</p>
+         ⚠️ الجسم مش زينة: هو هوية الخدمة مجسّدة — كل خدمة إلها
+            هندستها (تضاريس ترتيب للسيو، مدارات للهوية، طبقات
+            عصبية للوكلاء…). بيدور لحاله، بيميل مع المؤشّر،
+            والضغطة بتعطيه نبضة. المحرّك: scripts/service3d.js
+         ═══════════════════════════════════════════════════════════ -->
+    <header class="svc-hero" data-s3d-stage>
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <a class="back" href={`${p}/services/`} data-reveal>{t.back}</a>
 
-      <div class="hero-cta" data-reveal>
-        <a class="btn primary" href={soon ? '#notify' : briefHref}>
-          {soon ? t.soonBtn : t.ctaBtn}
-        </a>
-        <a class="btn ghost" href={`${p}${service.proof}/`}>{t.proofLink}</a>
+          <div class="kickers" data-reveal>
+            <p class="kicker">{c.name}</p>
+            {soon && <p class="kicker soon-badge">{t.soonBadge}</p>}
+          </div>
+          <h1 data-reveal>{c.h1}</h1>
+          <p class="intro" data-reveal>{c.intro}</p>
+
+          <div class="hero-cta" data-reveal>
+            <a class="btn primary" href={soon ? '#notify' : briefHref}>
+              {soon ? t.soonBtn : t.ctaBtn}
+            </a>
+            <a class="btn ghost" href={`${p}${service.proof}/`}>{t.proofLink}</a>
+          </div>
+        </div>
+
+        <div class="stage" aria-hidden="true">
+          <Service3D service={service.id} />
+        </div>
       </div>
-    </div>
+    </header>
 
     <!-- ═══════════════════════════════════════════════════════════
          ١·٥ ليش هاي الخدمة أصلاً
@@ -212,25 +239,69 @@ const schema = [
       )
     }
 
-    <!-- ═══ ٢. الوجع ═══ -->
+    <!-- ═══ ٢. الوجع — سطور كبيرة على عمود ليموني بيضوي بالمرور ═══ -->
     <section class="band">
       <div class="container">
         <h2 data-reveal>{t.painTitle}</h2>
         <ul class="pain" data-stagger>
-          {c.pain.map((x) => <li>{x}</li>)}
+          {c.pain.map((x) => <li class="pain-row"><span>{x}</span></li>)}
         </ul>
       </div>
     </section>
 
-    <!-- ═══ ٣. شو بتاخد ═══ -->
+    <!-- ═══════════════════════════════════════════════════════════
+         ٣. شو بتاخد — منظومة على عمود فقري، مش قائمة صحّات
+
+         ⚠️ الشكل مقصود يحكي نفس رسالة التقرير: الخدمة **نظام
+            مترابط** — بنود متناوبة حول خط واحد بيربطهم، وكل بند
+            وصلته الخاصة فيه. عالموبايل بيرجعوا عمود واحد.
+         ═══════════════════════════════════════════════════════════ -->
     <section class="band">
       <div class="container">
         <h2 data-reveal>{t.deliverTitle}</h2>
-        <ul class="deliver" data-stagger>
-          {c.deliver.map((x) => <li>{x}</li>)}
-        </ul>
+        <ol class="sys" data-stagger>
+          {deliverParts.map((d) => (
+            <li class="sys-item">
+              <div class="sys-card">
+                <strong>{d.head}</strong>
+                {d.rest && <p>{d.rest}</p>}
+              </div>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ٣ب. تحت الغطا — قصص تقنية بتفرجي عمق المجال (اختيارية)
+         بلاطات بتنفتح بالضغط. طلب ريّان لصفحة السيو تحديداً:
+         «الموضوع معقد وهاد لازم يبين» — بلا ذكر أي أداة داخلية.
+         ═══════════════════════════════════════════════════════════ -->
+    {
+      stories.length > 0 && (
+        <section class="band">
+          <div class="container">
+            <h2 data-reveal>{c.storiesTitle}</h2>
+            <p class="stories-intro" data-reveal>{c.storiesIntro}</p>
+            <div class="tiles" data-stagger>
+              {stories.map((s: any) => (
+                <button class="tile" type="button" aria-expanded="false" data-tile>
+                  <span class="tile-head">
+                    <strong>{s.t}</strong>
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                  </span>
+                  <span class="tile-body">
+                    <span>{s.b}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
 
     <!-- ═══ ٤. الإثبات ═══ -->
     <section class="band">
@@ -359,6 +430,27 @@ const schema = [
 
   <Footer lang={lang} />
 
+  <script>
+    // ═══════════════════════════════════════════════════════════
+    //  بلاطات «تحت الغطا» — فتح/سكّر بالضغط
+    //  بلاطة وحدة مفتوحة بنفس الوقت، عشان القارئ يركّز بقصة قصة.
+    // ═══════════════════════════════════════════════════════════
+    function initTiles() {
+      const tiles = [...document.querySelectorAll('[data-tile]')] as HTMLElement[];
+      tiles.forEach((tile) => {
+        if (tile.dataset.wired) return;
+        tile.dataset.wired = '1';
+        tile.addEventListener('click', () => {
+          const open = tile.getAttribute('aria-expanded') === 'true';
+          tiles.forEach((x) => x.setAttribute('aria-expanded', 'false'));
+          if (!open) tile.setAttribute('aria-expanded', 'true');
+        });
+      });
+    }
+    initTiles();
+    document.addEventListener('astro:page-load', initTiles);
+  </script>
+
   <script is:inline>
     // ═══════════════════════════════════════════════════════════
     //  إرسال قائمة الانتظار
@@ -439,10 +531,94 @@ const schema = [
 <style>
   /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
   .svc {
-    --title: clamp(34px, 5.4vw, 68px);
+    /* ⚠️ العنوان جوّا لوح بنص الشاشة — أكبر من هيك بيكسر لأربع
+       أسطر بالعربي وبيطرد الأزرار برّا أول شاشة */
+    --title: clamp(27px, 3.1vw, 42px);
     --h2: clamp(24px, 3vw, 38px);
-    --band-gap: clamp(64px, 9vh, 110px);
-    padding-top: calc(108px + clamp(30px, 5vh, 60px));
+    --band-gap: clamp(72px, 10vh, 120px);
+  }
+
+  /* ═══════════════ الافتتاحية ═══════════════
+     لوح نصي بجهة البداية وجسم الخدمة الثلاثي بجهة النهاية —
+     نفس لغة هيرو الرئيسية (زجاج + خط ليموني). */
+  .svc-hero {
+    position: relative;
+    padding-top: calc(96px + clamp(18px, 3.5vh, 40px));
+    /* بيملى أول شاشة تقريباً بلا ما يجبر سكرول عالشاشات القصيرة */
+    min-height: min(92dvh, 860px);
+    display: flex;
+    align-items: center;
+    overflow: clip;
+  }
+
+  /* وهج ليموني خافت جداً ورا المسرح — بيقعّد الجسم بالفراغ */
+  .svc-hero::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: -10%;
+    width: 62%;
+    background: radial-gradient(
+      55% 48% at 60% 50%,
+      color-mix(in srgb, var(--accent) 7%, transparent),
+      transparent 75%
+    );
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    gap: clamp(24px, 4vw, 64px);
+    align-items: center;
+    width: 100%;
+  }
+
+  .hero-copy {
+    position: relative;
+    isolation: isolate;
+    padding: clamp(24px, 3vw, 44px);
+    border-radius: 26px;
+    background: linear-gradient(
+      160deg,
+      rgba(27, 30, 36, 0.72),
+      rgba(14, 15, 18, 0.62)
+    );
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    border: 1px solid rgba(242, 243, 238, 0.11);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 28px 70px rgba(0, 0, 0, 0.45);
+  }
+
+  /* خط الهوية الليموني على حافة البداية — توقيع الموقع */
+  .hero-copy::before {
+    content: '';
+    position: absolute;
+    inset-block: clamp(24px, 3vw, 44px);
+    inset-inline-start: 0;
+    width: 3px;
+    border-radius: var(--r-pill);
+    background: linear-gradient(
+      to bottom,
+      var(--accent),
+      color-mix(in srgb, var(--accent) 30%, transparent)
+    );
+  }
+
+  @supports not (backdrop-filter: blur(4px)) {
+    .hero-copy { background: rgba(14, 15, 18, 0.92); }
+  }
+
+  /* ═══ مسرح الجسم الثلاثي ═══ */
+  .stage {
+    position: relative;
+    height: clamp(360px, 58vh, 620px);
+    /* بيلمّح إنه حي: المؤشّر بيتغيّر والضغطة بتنبّضه */
+    cursor: crosshair;
+    touch-action: pan-y;
   }
 
   .back {
@@ -450,7 +626,7 @@ const schema = [
     font-size: 14.5px;
     font-weight: 600;
     color: var(--muted);
-    margin-bottom: 26px;
+    margin-bottom: 22px;
     transition: color 0.3s var(--ease-out);
   }
   .back:hover { color: var(--accent); }
@@ -567,54 +743,197 @@ const schema = [
   }
   html[lang='ar'] h2 { font-weight: 800; letter-spacing: 0; }
 
-  /* ─── الوجع: خط أحمر خفيف عاليسار ─── */
-  .pain { display: grid; gap: 12px; max-width: 68ch; }
-
-  .pain li {
+  /* ═══════════════ الوجع ═══════════════
+     سطور كبيرة عارية — بلا صناديق. كل سطر على عمود بيضوي أحمر
+     خفيف بالمرور: «هاي مشكلة» بتنحس قبل ما تنقرا. */
+  .pain {
     list-style: none;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-inline-start: 3px solid color-mix(in srgb, var(--danger) 70%, transparent);
-    border-radius: var(--r-card);
-    padding: 16px 20px;
-    color: var(--dim);
-    font-size: clamp(14.5px, 1.5vw, 16.5px);
-    line-height: 1.65;
+    margin: 0;
+    padding: 0;
+    max-width: 62ch;
   }
 
-  /* ─── التسليمات: شبكة بعلامة صح ليموني ─── */
-  .deliver {
+  .pain-row {
+    border-inline-start: 2px solid color-mix(in srgb, var(--danger) 24%, var(--line));
+    padding: clamp(16px, 2.2vh, 24px) clamp(16px, 2vw, 26px);
+    transition: border-color 0.35s var(--ease-out), background 0.35s var(--ease-out);
+  }
+
+  .pain-row + .pain-row {
+    margin-top: 2px;
+  }
+
+  .pain-row span {
+    display: block;
+    color: var(--dim);
+    font-size: clamp(16px, 2vw, 21px);
+    font-weight: 600;
+    line-height: 1.6;
+    transition: color 0.35s var(--ease-out);
+  }
+
+  .pain-row:hover {
+    border-inline-start-color: var(--danger);
+    background: color-mix(in srgb, var(--danger) 4%, transparent);
+  }
+
+  .pain-row:hover span { color: var(--text); }
+
+  /* ═══════════════ المنظومة ═══════════════
+     بنود متناوبة حول عمود فقري ليموني، وكل بند وصلة بتربطه فيه.
+     الشكل بيحكي الرسالة: هاي منظومة مترابطة مش قائمة منفصلة. */
+  .sys {
+    --spine: 2px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: clamp(40px, 6vw, 88px);
+    row-gap: clamp(14px, 2.2vh, 22px);
+    max-width: 960px;
+  }
+
+  /* العمود الفقري */
+  .sys::before {
+    content: '';
+    position: absolute;
+    inset-block: 8px;
+    left: 50%;
+    width: var(--spine);
+    transform: translateX(-50%);
+    border-radius: var(--r-pill);
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--accent) 55%, transparent),
+      color-mix(in srgb, var(--accent) 12%, transparent)
+    );
+  }
+
+  .sys-item { position: relative; }
+
+  /* التناوب: فردي يمين العمود، زوجي يساره (منطقياً حسب الاتجاه) */
+  .sys-item:nth-child(odd) { grid-column: 1; }
+  .sys-item:nth-child(even) { grid-column: 2; margin-top: clamp(28px, 5vh, 48px); }
+
+  /* الوصلة من العمود للبند */
+  .sys-item::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    width: clamp(20px, 3vw, 44px);
+    height: 2px;
+    background: color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .sys-item:nth-child(odd)::before { inset-inline-end: calc(clamp(20px, 3vw, 44px) * -1 - 1px); }
+  .sys-item:nth-child(even)::before { inset-inline-start: calc(clamp(20px, 3vw, 44px) * -1 - 1px); }
+
+  .sys-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: clamp(16px, 2vw, 22px) clamp(18px, 2.2vw, 26px);
+    transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  }
+
+  .sys-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: var(--surface-2);
+    transform: translateY(-2px);
+  }
+
+  .sys-card strong {
+    display: block;
+    font-size: clamp(15px, 1.7vw, 17.5px);
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .sys-card p {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: clamp(13.5px, 1.4vw, 15px);
+    line-height: 1.7;
+  }
+
+  /* ═══════════════ تحت الغطا ═══════════════
+     بلاطات بتنفتح بالضغط — العنوان بيشدّ والجواب بيتكشف. */
+  .stories-intro {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 17px);
+    line-height: 1.7;
+    max-width: 58ch;
+    margin-bottom: 26px;
+  }
+
+  .tiles {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
-    max-width: 90ch;
+    max-width: 960px;
   }
 
-  .deliver li {
-    list-style: none;
-    position: relative;
+  /* خمس قصص = ٢+٢+١، والأخيرة بتاخد العرض كله */
+  .tile:nth-child(5):last-child { grid-column: 1 / -1; }
+
+  .tile {
+    text-align: start;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--r-card);
-    padding: 16px 20px;
-    padding-inline-start: 46px;
-    font-size: clamp(14.5px, 1.5vw, 16px);
-    line-height: 1.6;
+    padding: 20px 22px;
     transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out);
   }
-  .deliver li:hover { border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: var(--surface-2); }
 
-  .deliver li::before {
-    content: '';
-    position: absolute;
-    inset-inline-start: 18px;
-    top: 21px;
-    width: 14px;
-    height: 8px;
-    border-inline-start: 2.4px solid var(--accent);
-    border-bottom: 2.4px solid var(--accent);
-    transform: rotate(-45deg);
+  .tile:hover { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+
+  .tile[aria-expanded='true'] {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    background: var(--surface-2);
   }
+
+  .tile-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .tile-head strong {
+    font-size: clamp(15px, 1.7vw, 17.5px);
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .tile-head svg {
+    flex-shrink: 0;
+    color: var(--accent);
+    transition: transform 0.35s var(--ease-out);
+  }
+
+  .tile[aria-expanded='true'] .tile-head svg { transform: rotate(45deg); }
+
+  /* التكشف بلا قياس ارتفاعات: صفوف الشبكة من 0fr لـ 1fr */
+  .tile-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s var(--ease-out);
+  }
+
+  .tile-body > span {
+    overflow: hidden;
+    color: var(--muted);
+    font-size: clamp(14px, 1.5vw, 15.5px);
+    line-height: 1.8;
+  }
+
+  .tile[aria-expanded='true'] .tile-body { grid-template-rows: 1fr; }
+
+  .tile[aria-expanded='true'] .tile-body > span { padding-top: 12px; }
 
   /* ─── الأرقام ─── */
   .stats {
@@ -794,7 +1113,26 @@ const schema = [
 
   /* ─── الموبايل ─── */
   @media (max-width: 860px) {
-    .deliver, .others { grid-template-columns: 1fr; }
+    /* الافتتاحية بترجع عمود: الجسم فوق (مختصر) واللوح تحته */
+    .hero-grid { grid-template-columns: 1fr; gap: 8px; }
+    .stage { order: -1; height: clamp(200px, 30dvh, 300px); }
+    .svc-hero { min-height: 0; padding-top: calc(96px + 8px); }
+    .svc-hero::before { inset-inline: 0; width: 100%; }
+    .hero-copy { padding: 22px 18px; }
+
+    /* المنظومة بترجع عمود واحد على عمود فقري ببداية السطر */
+    .sys { grid-template-columns: 1fr; max-width: none; }
+    .sys::before { left: auto; inset-inline-start: 0; transform: none; }
+    html[dir='rtl'] .sys::before { left: auto; }
+    .sys-item:nth-child(odd),
+    .sys-item:nth-child(even) { grid-column: 1; margin-top: 0; }
+    .sys-item { padding-inline-start: clamp(20px, 6vw, 32px); }
+    .sys-item::before { display: none; }
+
+    .tiles { grid-template-columns: 1fr; }
+    .tile:nth-child(5):last-child { grid-column: auto; }
+
+    .others { grid-template-columns: 1fr; }
     .stats { grid-template-columns: 1fr; }
     .nrow { grid-template-columns: 1fr; }
     h1 { max-width: none; }
