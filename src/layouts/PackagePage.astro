@@ -96,7 +96,8 @@ const schema = [
     description: content.seoDesc,
     serviceType: packMeta.name,
     provider: { '@id': site + '/#person' },
-    areaServed: [{ '@type': 'Country', name: isAr ? 'الأردن' : 'Jordan' }],
+    // ⚠️ بلا areaServed عن قصد (2026-08-04): البكجات متاحة لأي مكان،
+    //    الشغل أونلاين بالكامل — طلب ريّان ما نحصرها بالأردن
   },
   {
     '@type': 'FAQPage',

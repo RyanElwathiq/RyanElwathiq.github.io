@@ -35,7 +35,10 @@ for (const s of services.services) {
     title: s.ar.name,
     line: s.ar.menuDesc || '',
     url: `ryanalali.me/ar/services/${s.slug}`,
-    descForCatalog: (s.ar.seoDesc || s.ar.menuDesc || '').slice(0, 280),
+    // ⚠️ menuDesc مش seoDesc عن قصد: أوصاف السيو مكتوبة «بالأردن»
+    //    لترتيب البحث المحلي، بس الكتالوج بيوصل لأي حدا بالعالم —
+    //    والخدمات كلها أونلاين (طلب ريّان 2026-08-04)
+    descForCatalog: `${s.ar.menuDesc || ''} — الشغل أونلاين بالكامل، متاح لأي مكان.`.slice(0, 280),
   });
 }
 for (const pk of services.packages.ar.items) {
