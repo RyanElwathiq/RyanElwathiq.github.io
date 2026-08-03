@@ -192,6 +192,21 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
     border-top: 1px solid var(--line);
   }
 
+  /* مع فلتر «الكل» القائمة طويلة — تمرير داخلي بدل ما تشد الصفحة
+     كلها لتحت (طلب ريّان 2026-08-04). نفس نمط شات «كشف الشركة».
+     التلاشي بالأسفل بيوحي إنه في أسئلة كمان تحت. */
+  @media (min-width: 861px) {
+    .list {
+      max-height: min(66vh, 600px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in srgb, var(--accent) 30%, transparent) transparent;
+      padding-inline-end: 12px;
+      mask-image: linear-gradient(to bottom, #000 0, #000 calc(100% - 30px), transparent 100%);
+    }
+  }
+
   .row {
     border-bottom: 1px solid var(--line);
   }
@@ -504,6 +519,10 @@ const contactHref = isAr ? '/ar/#contact' : '/#contact';
 
         // نفتح أول سؤال ظاهر عشان اللوح ما يضل فاضي
         if (firstVisible !== null && !isMobile()) open(firstVisible);
+
+        // ونرجّع تمرير القائمة الداخلي لأولها — تبديل فلتر يعني بداية جديدة
+        const listEl = root.querySelector('[data-faq-list]') as HTMLElement | null;
+        if (listEl) listEl.scrollTop = 0;
       });
     });
 

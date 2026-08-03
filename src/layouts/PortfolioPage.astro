@@ -325,7 +325,7 @@ const cover = isAr ? project.coverWide || project.cover : project.coverEnWide ||
       <div class="guide-bar" data-reveal>
         <span class="guide-label">{t.guideDone}</span>
         <span class="guide-track"><i data-guide-fill></i></span>
-        <span class="guide-pct" data-guide-pct>٠٪</span>
+        <span class="guide-pct" data-guide-pct>{isAr ? '٠٪' : '0%'}</span>
       </div>
       <ol class="steps" data-stagger>
         {
@@ -457,7 +457,7 @@ const cover = isAr ? project.coverWide || project.cover : project.coverEnWide ||
       });
       const ratio = checks.length ? done.length / checks.length : 0;
       if (fill) fill.style.width = ratio * 100 + '%';
-      if (pct) pct.textContent = fmt(Math.round(ratio * 100)) + '٪';
+      if (pct) pct.textContent = fmt(Math.round(ratio * 100)) + (isAr ? '٪' : '%');
     };
 
     checks.forEach((btn, i) => {
