@@ -353,22 +353,14 @@ const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
     </script>
 
     <!-- ═══════════════════════════════════════════════════════
-         Cloudflare Web Analytics (2026-08-03) — مكمّل مجاني لـ GA:
-         بلا كوكيز وبيشتغل حتى مع مانعات الإعلانات اللي بتحجب جوجل.
-         ⚠️ نفس حارس GA: الدومين الحي بس — الفحوصات المحلية ما
-            بتتسجل زيارات. والسكربت بيتتبع التنقل الداخلي لحاله.
-         ✏️ الـ token مش سر (بيظهر بكود الصفحة لأي زائر).
+         Cloudflare Web Analytics: **ما في سكربت هون عن قصد.**
+         طلع كلاودفلير مفعّلها تلقائياً (Automatic setup) من نقلة
+         الـ DNS بـ 2026-08-02 — بيحقن سكربت القياس من السيرفر
+         مباشرة بلا أي كود منا. كنا ركّبنا نسخة يدوية هون وانشالت
+         بنفس اليوم عشان ما يصير عدّ مزدوج (سكربتين لنفس الخدمة).
+         ✏️ لو يوم بطّلت التلقائية تشتغل (مثلاً انفصل الدومين عن
+            كلاودفلير)، رجّع السكربت اليدوي من تاريخ git لهالملف.
          ═══════════════════════════════════════════════════════ -->
-    <script is:inline>
-      (function () {
-        if (!/(^|\.)ryanalali\.me$/.test(location.hostname)) return;
-        var s = document.createElement('script');
-        s.type = 'module';
-        s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
-        s.setAttribute('data-cf-beacon', '{"token": "b95c1e2121444203aeaa218f266e4e76"}');
-        document.head.appendChild(s);
-      })();
-    </script>
   </head>
   <body>
     <!-- شاشة التحميل — أول عنصر بالصفحة عشان ترسم فوراً -->
