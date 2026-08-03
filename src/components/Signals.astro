@@ -23,12 +23,19 @@ const { lang, id = 'signals' } = Astro.props;
 const isAr = lang === 'ar';
 
 // 🎛️ كم إشارة تظهر بالصفحة الرئيسية
-const LATEST_COUNT = 3;
+const LATEST_COUNT = 4;
 
-const posts = (await getCollection('blog'))
+const all = (await getCollection('blog'))
   .filter((p) => p.data.lang === lang && !p.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, LATEST_COUNT);
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const posts = all.slice(0, LATEST_COUNT);
+// كم إشارة ضلت غير المعروضات — بيظهر بالخاتمة كسبب يكبس
+const restCount = Math.max(0, all.length - LATEST_COUNT);
+
+// المقال فيه لعبة؟ منعرف من استيراد مكوّن لعبة (…Section) بنص
+// الـ MDX نفسه — بلا ما نضيف حقل يدوي بينسى مع كل مقال جديد
+const hasGame = (body: string | undefined) => /import\s+\w+Section\b/.test(body || '');
 
 const indexHref = isAr ? '/ar/signals/' : '/signals/';
 const postHref = (slug: string) => (isAr ? `/ar/signals/${slug}/` : `/signals/${slug}/`);
@@ -54,13 +61,17 @@ const t = isAr
         { t: 'آخر التطورات', d: 'شو تغيّر بالسوق والأدوات، وشو بيعني إله عليك.', soon: false },
         { t: 'حلول لمشاكل', d: 'مشكلة محددة، وخطوات تنفّذها اليوم.', soon: false },
         { t: 'قصص', d: 'قصص من الميدان، بالأرقام وبدون تجميل.', soon: false },
-        { t: 'نقاشات وأدوات تفاعلية', d: 'تجرّبها وأنت بتقرا، مش بس تقراها.', soon: true },
+        { t: 'ألعاب تفاعلية جوّا المقالات', d: 'كل إشارة فيها لعبة بتجرّب الفكرة فيها وإنت بتقرا: بتترجم باكجات، بتصلّح رحلة بيع، بتكشف شركة...', soon: false },
       ],
       soonTag: 'قريباً',
       latestTitle: 'آخر الإشارات',
       empty: 'أول الإشارات قيد الكتابة.',
       min: 'دقائق',
-      more: 'بتنضاف إشارات جديدة بشكل دوري.',
+      gameTag: 'فيها لعبة',
+      more:
+        restCount > 0
+          ? `وفي ${restCount.toLocaleString('ar-EG')} إشارات ثانية مستنياتك جوّا.`
+          : 'بتنضاف إشارات جديدة بشكل دوري.',
       cta: 'اقرأ الإشارات',
     }
   : {
@@ -78,13 +89,17 @@ const t = isAr
         { t: "What's changing", d: 'What shifted in the market and tools, and what it means for you.', soon: false },
         { t: 'Real fixes', d: 'A specific problem, and steps you can run today.', soon: false },
         { t: 'Stories', d: 'Stories from the field. With numbers, unpolished.', soon: false },
-        { t: 'Discussions and interactive tools', d: 'Things you try while reading, not just read.', soon: true },
+        { t: 'Games inside the articles', d: 'Every signal has a game that lets you try the idea as you read: translate packages, repair a sales journey, expose a company...', soon: false },
       ],
       soonTag: 'soon',
       latestTitle: 'Latest signals',
       empty: 'The first signals are being written.',
       min: 'min',
-      more: 'New signals are added regularly.',
+      gameTag: 'has a game',
+      more:
+        restCount > 0
+          ? `And ${restCount} more signals waiting inside.`
+          : 'New signals are added regularly.',
       cta: 'Read the signals',
     };
 ---
@@ -135,6 +150,7 @@ const t = isAr
                 <span class="num">{String(i + 1).padStart(2, '0')}</span>
                 <span class="t" data-scramble>{p.data.title}</span>
                 <span class="meta">
+                  {hasGame(p.body) && <i class="gchip">{t.gameTag}</i>}
                   {minutes(p.body)} {t.min}
                 </span>
               </a>
@@ -367,6 +383,25 @@ const t = isAr
     font-size: 12.5px;
     color: var(--muted);
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* وسم «فيها لعبة» — أهم مميّز للمقالات، فبياخد لون الهوية */
+  .gchip {
+    font-style: normal;
+    font-family: var(--font-ar);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: var(--r-pill);
+    padding: 2px 10px;
+  }
+
+  html[lang='en'] .gchip {
+    font-family: var(--font-en);
   }
 
   .empty {
