@@ -1,0 +1,660 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «مترجم الباكجات» — لعبة بتترجم عروض التسويق للغة النتائج
+//
+//  الفكرة: الزائر بيركّب العرض اللي انعرض عليه (١٥ تصميم، ٨ ريلز،
+//  تعزيز...) وبيكبس «ترجم». كل بند بينترجم من لغة العروض لشو
+//  بتاخد فعلاً، وبعدها «معادلة البيع» بست طبقات بتضوّي: شو مغطى
+//  وشو ضايع، وبينطبع حكم صريح (ديكور رقمي / بداية / نظام نمو).
+//
+//  ⚠️ جافاسكربت عادي مش React — نفس قرار «عين البراند»: مقال
+//     بيقرأه حدا من الأردن ما بيستاهل ٤٠ كيلوبايت زيادة.
+//  ⚠️ كل البنود والنصوص بـ src/data/pack-translator.js —
+//     بدك تضيف بند أو تعدّل حكم؟ هناك، مش هون.
+//
+//  ✏️ الاستخدام جوّا مقال:  <PackTranslatorSection lang="ar" />
+// ═══════════════════════════════════════════════════════════════
+import { LAYERS, ITEMS, PRESETS, VERDICTS } from '../data/pack-translator.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'pack-translator' } = Astro.props;
+const isAr = lang === 'ar';
+const L = lang;
+
+const briefHref = isAr ? '/ar/brief/' : '/brief/';
+const packsHref = isAr ? '/ar/services/#packs' : '/services/#packs';
+
+const t = isAr
+  ? {
+      eyebrow: 'لعبة قصيرة',
+      title: 'مترجم الباكجات',
+      lede: 'جيب العرض اللي قدامك، أو آخر عرض وصلك عالواتساب. علّم شو فيه، واللعبة بتترجمه من لغة العروض للغة النتائج.',
+      hint: 'شو في بالعرض؟ علّم البنود، أو ابدأ بعرض جاهز:',
+      clear: 'امسح الكل',
+      go: 'ترجملي هاد العرض',
+      outTitle: 'الترجمة، بند بند',
+      meterTitle: 'معادلة البيع: شو بيغطي هاد العرض؟',
+      edit: 'عدّل العرض',
+      cta: 'احجز جلسة تشخيص',
+      seePacks: 'وشوف كيف ببني أنا البكجات ←',
+    }
+  : {
+      eyebrow: 'Short game',
+      title: 'The Package Translator',
+      lede: 'Take the offer in front of you, or the last one you got on WhatsApp. Tick what it includes and the game translates it from offer language into results language.',
+      hint: 'What is in the offer? Tick the items, or start from a ready-made one:',
+      clear: 'Clear all',
+      go: 'Translate this offer',
+      outTitle: 'The translation, item by item',
+      meterTitle: 'The sales equation: what does this offer cover?',
+      edit: 'Edit the offer',
+      cta: 'Book a diagnosis session',
+      seePacks: 'And see how I build packages →',
+    };
+
+// اللي بيحتاجه المحرّك بس — بلغة الصفحة الحالية
+const items = ITEMS.map((i) => ({ id: i.id, layer: i.layer, label: i[L].label, real: i[L].real }));
+const layers = LAYERS.map((l) => ({ id: l.id, name: l[L].name }));
+const verdicts = Object.fromEntries(Object.entries(VERDICTS).map(([k, v]) => [k, v[L]]));
+---
+
+<section class="ptx" id={id}>
+  <div class="ptx-head" data-reveal>
+    <p class="ptx-eyebrow">{t.eyebrow}</p>
+    <h2>{t.title}</h2>
+    <p class="ptx-lede">{t.lede}</p>
+  </div>
+
+  <div class="ptx-board frame frame-on" data-reveal data-pack-translator>
+    <!-- ═══ مرحلة التركيب ═══ -->
+    <div class="ptx-build" data-ptx-build>
+      <p class="ptx-hint">{t.hint}</p>
+
+      <div class="ptx-presets">
+        {
+          PRESETS.map((p) => (
+            <button type="button" class="ptx-preset" data-ptx-preset={p.items.join(',')}>
+              {p[L].label}
+            </button>
+          ))
+        }
+        <button type="button" class="ptx-preset ptx-clear" data-ptx-clear>{t.clear}</button>
+      </div>
+
+      <div class="ptx-chips">
+        {
+          items.map((it) => (
+            <button type="button" class="ptx-chip" data-ptx-chip={it.id} aria-pressed="false">
+              {it.label}
+            </button>
+          ))
+        }
+      </div>
+
+      <button type="button" class="btn btn-primary ptx-go" data-ptx-go>{t.go}</button>
+    </div>
+
+    <!-- ═══ مرحلة الترجمة ═══
+         aria-live: قارئ الشاشة بيسمع النتيجة بدون ما نسرقله التركيز -->
+    <div class="ptx-out" data-ptx-out aria-live="polite" hidden>
+      <p class="ptx-sub">{t.outTitle}</p>
+      <div class="ptx-rows" data-ptx-rows></div>
+
+      <p class="ptx-sub">{t.meterTitle}</p>
+      <div class="ptx-meter">
+        {
+          LAYERS.map((ly) => (
+            <div class="ptx-layer" data-ptx-layer={ly.id}>
+              <span class="ptx-dot" aria-hidden="true" />
+              <span class="ptx-layer-name">{ly[L].name}</span>
+              <span class="ptx-layer-q">{ly[L].q}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="ptx-verdict" data-ptx-verdict hidden>
+        <p class="ptx-stamp" data-ptx-stamp></p>
+        <p class="ptx-vtext" data-ptx-vtext></p>
+      </div>
+
+      <div class="ptx-actions" data-ptx-actions hidden>
+        <button type="button" class="btn btn-ghost" data-ptx-edit>{t.edit}</button>
+        <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
+        <a class="ptx-more" href={packsHref}>{t.seePacks}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline define:vars={{ items, layers, verdicts }}>
+  // ═══════════════════════════════════════════════════════════
+  //  محرّك المترجم
+  //  ⚠️ بينشغّل مرة كل ما توصل الصفحة (astro:page-load) لأن
+  //     الموقع بينتقل بين الصفحات بدون إعادة تحميل
+  // ═══════════════════════════════════════════════════════════
+  (function () {
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function boot() {
+      document.querySelectorAll('[data-pack-translator]').forEach(setup);
+    }
+
+    function setup(board) {
+      if (board.dataset.ready === '1') return;
+      board.dataset.ready = '1';
+
+      var build = board.querySelector('[data-ptx-build]');
+      var out = board.querySelector('[data-ptx-out]');
+      var rows = board.querySelector('[data-ptx-rows]');
+      var verdictBox = board.querySelector('[data-ptx-verdict]');
+      var stamp = board.querySelector('[data-ptx-stamp]');
+      var vtext = board.querySelector('[data-ptx-vtext]');
+      var actions = board.querySelector('[data-ptx-actions]');
+      var chips = board.querySelectorAll('[data-ptx-chip]');
+      var timers = [];
+
+      function later(fn, ms) {
+        // مع reduced-motion كل شي بيظهر فوراً بدون مسرحية
+        if (reduced) return fn();
+        timers.push(setTimeout(fn, ms));
+      }
+
+      function clearTimers() {
+        timers.forEach(clearTimeout);
+        timers = [];
+      }
+
+      function setChip(chip, on) {
+        chip.setAttribute('aria-pressed', on ? 'true' : 'false');
+      }
+
+      chips.forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          setChip(chip, chip.getAttribute('aria-pressed') !== 'true');
+        });
+      });
+
+      board.querySelectorAll('[data-ptx-preset]').forEach(function (btn) {
+        var ids = (btn.getAttribute('data-ptx-preset') || '').split(',');
+        btn.addEventListener('click', function () {
+          chips.forEach(function (chip) {
+            setChip(chip, ids.indexOf(chip.getAttribute('data-ptx-chip')) !== -1);
+          });
+        });
+      });
+
+      var clearBtn = board.querySelector('[data-ptx-clear]');
+      if (clearBtn)
+        clearBtn.addEventListener('click', function () {
+          chips.forEach(function (chip) {
+            setChip(chip, false);
+          });
+        });
+
+      function selectedIds() {
+        var ids = [];
+        chips.forEach(function (chip) {
+          if (chip.getAttribute('aria-pressed') === 'true') ids.push(chip.getAttribute('data-ptx-chip'));
+        });
+        return ids;
+      }
+
+      // ── الحكم: أربع حالات محسوبة من الطبقات المغطاية ──
+      function judge(ids, covered) {
+        if (!ids.length) return 'empty';
+        var hasHands = covered.has('exec') || covered.has('reach');
+        var onlySurface = true;
+        covered.forEach(function (l) {
+          if (l !== 'exec' && l !== 'reach') onlySurface = false;
+        });
+        if (onlySurface) return 'decor'; // كله تنفيذ ووصول (أو ولا طبقة)
+        if (!hasHands) return 'lecture'; // تفكير بلا إيدين
+        if (covered.size >= 5) return 'system';
+        return 'partial';
+      }
+
+      function translate() {
+        clearTimers();
+        var ids = selectedIds();
+        var picked = items.filter(function (i) {
+          return ids.indexOf(i.id) !== -1;
+        });
+        var covered = new Set();
+        picked.forEach(function (i) {
+          if (i.layer) covered.add(i.layer);
+        });
+
+        build.hidden = true;
+        out.hidden = false;
+        verdictBox.hidden = true;
+        actions.hidden = true;
+        rows.textContent = '';
+
+        // ١) صفوف الترجمة — بند بند مع وقفة صغيرة بيناتهم
+        picked.forEach(function (i, n) {
+          var row = document.createElement('div');
+          row.className = 'ptx-row';
+          var a = document.createElement('span');
+          a.className = 'ptx-row-label';
+          a.textContent = i.label;
+          var b = document.createElement('span');
+          b.className = 'ptx-row-real';
+          b.textContent = i.real;
+          row.appendChild(a);
+          row.appendChild(b);
+          rows.appendChild(row);
+          later(function () {
+            row.classList.add('in');
+          }, 120 + n * 140);
+        });
+
+        // ٢) المقياس — الطبقات المغطاية بتضوي، والضايعة بتنطفي
+        var meterAt = 260 + picked.length * 140;
+        board.querySelectorAll('[data-ptx-layer]').forEach(function (el, n) {
+          el.classList.remove('on', 'off');
+          later(function () {
+            el.classList.add(covered.has(el.getAttribute('data-ptx-layer')) ? 'on' : 'off');
+          }, meterAt + n * 110);
+        });
+
+        // ٣) الختم + الحكم
+        var key = judge(ids, covered);
+        var v = verdicts[key];
+        later(function () {
+          stamp.textContent = v.stamp;
+          vtext.textContent = v.text;
+          verdictBox.hidden = false;
+          board.dataset.verdict = key;
+          // إعادة تشغيل أنيميشن الختم لو انلعبت أكثر من مرة
+          stamp.classList.remove('in');
+          void stamp.offsetWidth;
+          stamp.classList.add('in');
+        }, meterAt + 6 * 110 + 260);
+        later(function () {
+          actions.hidden = false;
+        }, meterAt + 6 * 110 + 700);
+
+        // مع reduced-motion كلشي صار ظاهر أصلاً — بس منتأكد
+        if (reduced) {
+          verdictBox.hidden = false;
+          actions.hidden = false;
+        }
+      }
+
+      var goBtn = board.querySelector('[data-ptx-go]');
+      if (goBtn) goBtn.addEventListener('click', translate);
+
+      var editBtn = board.querySelector('[data-ptx-edit]');
+      if (editBtn)
+        editBtn.addEventListener('click', function () {
+          clearTimers();
+          out.hidden = true;
+          build.hidden = false;
+        });
+    }
+
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .ptx {
+    --chip-size: 14px; /* حجم خط الرقاقات */
+    --real-size: 14.5px; /* حجم نص الترجمة */
+    margin-block: clamp(38px, 5vh, 60px);
+  }
+
+  /* ─── الترويسة ─── */
+  .ptx-head {
+    margin-bottom: 22px;
+  }
+
+  .ptx-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .ptx-head h2 {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .ptx-lede {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 58ch;
+  }
+
+  /* ─── اللوحة ─── */
+  .ptx-board {
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-card);
+  }
+
+  .ptx-hint {
+    font-size: 14.5px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  /* ─── العروض الجاهزة ─── */
+  .ptx-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .ptx-preset {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+    background: none;
+    border: 1px dashed var(--line);
+    border-radius: var(--r-pill);
+    padding: 7px 14px;
+    cursor: pointer;
+    transition:
+      color 0.25s var(--ease-out),
+      border-color 0.25s var(--ease-out);
+  }
+
+  .ptx-preset:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  /* ─── الرقاقات ─── */
+  .ptx-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 20px;
+  }
+
+  .ptx-chip {
+    font-size: var(--chip-size);
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 10px 18px;
+    cursor: pointer;
+    transition:
+      border-color 0.25s var(--ease-out),
+      background 0.25s var(--ease-out),
+      color 0.25s var(--ease-out),
+      transform 0.15s var(--ease-out);
+  }
+
+  .ptx-chip:active {
+    transform: scale(0.97);
+  }
+
+  /* الرقاقة المعلّمة: حد ليموني + علامة ✓ بتنرسم قبلها */
+  .ptx-chip[aria-pressed='true'] {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  .ptx-chip[aria-pressed='true']::before {
+    content: '✓ ';
+    color: var(--accent);
+    font-weight: 800;
+  }
+
+  /* ─── عناوين فرعية جوّا اللوحة ─── */
+  .ptx-sub {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+
+  .ptx-sub + .ptx-sub,
+  .ptx-meter + .ptx-sub {
+    margin-top: 26px;
+  }
+
+  /* ─── صفوف الترجمة ───
+     ⚠️⚠️ الصفوف بتنبنى بالجافاسكربت وقت الترجمة، وستايلات Astro
+     المحصورة ما بتنطبق على عناصر مبنية ديناميكياً (ما بتاخد
+     علامة الحصر). لهيك كل اللي جوّا .ptx-rows مكتوب بـ :global —
+     بدونها الصفوف بتطلع نص ملزّق ببعضه بلا أي تنسيق. */
+  .ptx-rows {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 26px;
+  }
+
+  .ptx-rows :global(.ptx-row) {
+    display: grid;
+    grid-template-columns: minmax(120px, 168px) 1fr;
+    gap: 8px 16px;
+    align-items: start;
+    padding-block: 12px;
+    border-bottom: 1px solid var(--line);
+    opacity: 0;
+    transform: translateY(9px);
+    transition:
+      opacity 0.45s var(--ease-out),
+      transform 0.45s var(--ease-out);
+  }
+
+  .ptx-rows :global(.ptx-row.in) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ptx-rows :global(.ptx-row:last-child) {
+    border-bottom: 0;
+  }
+
+  .ptx-rows :global(.ptx-row-label) {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 6px 12px;
+    justify-self: start;
+    white-space: nowrap;
+  }
+
+  .ptx-rows :global(.ptx-row-real) {
+    font-size: var(--real-size);
+    line-height: 1.75;
+    color: var(--muted);
+    padding-top: 4px;
+  }
+
+  /* ─── مقياس معادلة البيع ─── */
+  .ptx-meter {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .ptx-layer {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 10px;
+    align-items: center;
+    transition:
+      border-color 0.4s var(--ease-out),
+      opacity 0.4s var(--ease-out);
+  }
+
+  .ptx-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: var(--r-pill);
+    background: var(--line);
+    transition:
+      background 0.4s var(--ease-out),
+      box-shadow 0.4s var(--ease-out);
+  }
+
+  .ptx-layer-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .ptx-layer-q {
+    grid-column: 2;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+
+  /* طبقة مغطاية: ضوّت */
+  .ptx-layer.on {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+
+  .ptx-layer.on .ptx-dot {
+    background: var(--accent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  /* طبقة ضايعة: بتخفت — هي الفجوة اللي منحكي عنها */
+  .ptx-layer.off {
+    opacity: 0.45;
+    border-style: dashed;
+  }
+
+  /* ─── الختم والحكم ─── */
+  .ptx-verdict {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+
+  .ptx-stamp {
+    display: inline-block;
+    font-size: clamp(17px, 2vw, 21px);
+    font-weight: 800;
+    color: var(--text);
+    border: 2px solid var(--text);
+    border-radius: 10px;
+    padding: 8px 18px;
+    margin-bottom: 14px;
+    transform: rotate(-2deg);
+  }
+
+  html[dir='rtl'] .ptx-stamp {
+    transform: rotate(2deg);
+  }
+
+  /* ختم «نظام نمو» بس بلون الهوية — الباقي بلون النص عمداً:
+     الليموني للحالة اللي منتمناها، مش لكل ختم */
+  [data-verdict='system'] .ptx-stamp {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .ptx-stamp.in {
+    animation: ptx-stamp-in 0.5s var(--ease-out) both;
+  }
+
+  @keyframes ptx-stamp-in {
+    from {
+      opacity: 0;
+      transform: scale(1.5) rotate(-6deg);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) rotate(-2deg);
+    }
+  }
+
+  html[dir='rtl'] .ptx-stamp.in {
+    animation-name: ptx-stamp-in-rtl;
+  }
+
+  @keyframes ptx-stamp-in-rtl {
+    from {
+      opacity: 0;
+      transform: scale(1.5) rotate(6deg);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) rotate(2deg);
+    }
+  }
+
+  .ptx-vtext {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 60ch;
+  }
+
+  /* ─── الأزرار الختامية ─── */
+  .ptx-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 16px;
+    margin-top: 22px;
+  }
+
+  .ptx-more {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .ptx-more:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 720px) {
+    .ptx-meter {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ptx-rows :global(.ptx-row) {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .ptx-rows :global(.ptx-row-label) {
+      white-space: normal;
+    }
+  }
+
+  /* مع تقليل الحركة: بلا مسرحية دخول */
+  @media (prefers-reduced-motion: reduce) {
+    .ptx-rows :global(.ptx-row) {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .ptx-stamp.in {
+      animation: none;
+    }
+  }
+</style>
