@@ -353,6 +353,75 @@ const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
     </script>
 
     <!-- ═══════════════════════════════════════════════════════
+         ضمانة الهبوط عالبداية (2026-08-04)
+
+         ريّان لاحظ إنه أحياناً كبسة مقالة من الرئيسية بتفتحها من
+         آخرها. السبب المرجّح سباق توقيت بين محرك السكرول الناعم
+         (Lenis) وإعادة تعيين الموضع عند تبديل الصفحات — ما بينعاد
+         إنتاجه بثبات، فالحل ضمانة حتمية:
+
+         • كبسة رابط داخلي (بلا #) ← هبوط فوري عالبداية، دايماً.
+         • الرجوع/التقدم بالمتصفح ما بينلمس ← ميزة «بيرجعك لنفس
+           المكان» بتضل شغالة.
+         • روابط الـ# (زي /ar/#lab) مستثناة ← بتكمل لمرساها عادي.
+         ═══════════════════════════════════════════════════════ -->
+    <script is:inline>
+      (function () {
+        var fromLink = false;
+
+        document.addEventListener(
+          'click',
+          function (e) {
+            var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+            if (!a) return;
+            var href = a.getAttribute('href') || '';
+            if (a.target === '_blank' || href.indexOf('#') !== -1) return;
+            if (a.origin && a.origin !== location.origin) return;
+            fromLink = true;
+          },
+          true,
+        );
+
+        // ⚠️ الهبوط عالصفر مرة وحدة ما بيكفي: المستعيد بيضرب بعده
+        //    بـ~300ms (قياس فعلي) وبيرجّع سكرول الصفحة القديمة —
+        //    وبينقص لآخر المقالة. فمنحرس ثانية ونص كاملة: أي قفزة
+        //    سكرول **مش من إيد المستخدم** خلال النافذة بتنرد فوراً.
+        function toTop() {
+          window.scrollTo({ top: 0, behavior: 'instant' });
+          if (window.__lenis && window.__lenis.scrollTo) {
+            window.__lenis.scrollTo(0, { immediate: true, force: true });
+          }
+        }
+
+        document.addEventListener('astro:after-swap', function () {
+          if (!fromLink) return;
+          fromLink = false;
+          toTop();
+
+          var userMoved = false;
+          var markMoved = function () {
+            userMoved = true;
+          };
+          // اللمسة أو العجلة أو الكيبورد = المستخدم مسك الدفة، منبطل حراسة
+          window.addEventListener('wheel', markMoved, { passive: true, once: true });
+          window.addEventListener('touchstart', markMoved, { passive: true, once: true });
+          window.addEventListener('keydown', markMoved, { once: true });
+
+          var guard = function () {
+            if (!userMoved && window.scrollY > 150) toTop();
+          };
+          window.addEventListener('scroll', guard, { passive: true });
+          setTimeout(function () {
+            window.removeEventListener('scroll', guard);
+            window.removeEventListener('wheel', markMoved);
+            window.removeEventListener('touchstart', markMoved);
+            window.removeEventListener('keydown', markMoved);
+          }, 1500);
+        });
+      })();
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════
          Microsoft Clarity (2026-08-04) — الطبقة الثالثة بالقياس:
          GA بيقول «شو صار» بالأرقام، وClarity بيفرجيك «كيف وليش»:
          تسجيلات جلسات حقيقية + خرائط حرارية — وين بيكبسوا، لوين
