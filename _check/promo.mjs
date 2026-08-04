@@ -173,7 +173,7 @@ const s5 = (t) => {
   <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:44px">
     <h1 style="font-size:110px;font-weight:800;opacity:${a1};transform:scale(${0.94 + 0.06 * a1})">ما ببيع بوستات.</h1>
     <h1 style="font-size:88px;font-weight:800;opacity:${a2}">
-      <span style="color:${ACCENT}">بشخّص</span>، وبعدها <span style="color:${ACCENT}">منبني</span>.</h1>
+      <span style="color:${ACCENT}">بشخّص</span>، وبعدها <span style="color:${ACCENT}">ببني</span>.</h1>
     <p style="font-size:38px;color:${MUTED};opacity:${a3}">استراتيجية · إعلانات ممولة · هوية · مواقع بتبيع</p>
   </div>
   ${thread(win(t, 0.15, 0.85))}</body></html>`;
@@ -190,12 +190,58 @@ const s7 = (t) => {
          filter:drop-shadow(0 0 ${40 * lg}px ${ACCENT}66)">
     <p style="font-family:'Grotesk','Alexandria',sans-serif;font-size:84px;font-weight:600;direction:ltr;
        opacity:${ur};transform:translateY(${(1 - ur) * 24}px)">ryanalali<span style="color:${ACCENT}">.me</span></p>
-    <p style="font-size:40px;color:${MUTED};opacity:${cta}">جرّب طريقة تفكيري — قبل ما نحكي كلمة</p>
+    <p style="font-size:40px;color:${MUTED};opacity:${cta}">تسويق يبني، ونتائج بتنقاس بالأرقام.</p>
   </div>
   ${thread(win(t, 0.3, 0.9), 980, 0.6)}</body></html>`;
 };
 
+// ═══ STRANS — خيوط الإشارة (4 ثواني): انتقال بالكود بدل الحبر ═══
+const strans = (t) => {
+  const lines = [0, 1, 2, 3, 4]
+    .map((i) => {
+      const y = 240 + i * 150;
+      const p = easeInOut(win(t, i * 0.12, 0.55 + i * 0.1));
+      const fadeAll = 1 - easeOut(win(t, 0.82, 1));
+      const len = 2400;
+      const wob = Math.sin(t * 6.28 * 2 + i) * 14;
+      return `<svg viewBox="0 0 1920 120" style="position:absolute;top:${y + wob}px;left:0;width:100%;height:120px;opacity:${(0.25 + 0.75 * p) * fadeAll}">
+        <path d="M0,60 Q240,${20 + i * 8} 480,60 T960,60 T1440,60 T1920,60" fill="none" stroke="${ACCENT}"
+          stroke-width="${3 + i * 0.5}" stroke-dasharray="${len}" stroke-dashoffset="${len * (1 - p)}"
+          style="filter:drop-shadow(0 0 ${8 + 10 * p}px ${ACCENT}88)"/></svg>`;
+    })
+    .join('');
+  return `${head}${glow(1.2)}${lines}</body></html>`;
+};
+
+// ═══ STATS — الموقع بالأرقام (9 ثواني): عدادات بتطلع على الضربات ═══
+const stats = (t) => {
+  const items = [
+    { n: 130, plus: '+', label: 'صفحة محتوى حقيقي', at: 1 },
+    { n: 9, plus: '', label: 'مقالات بتتعلم منها وإنت بتلعب', at: 3 },
+    { n: 8, plus: '', label: 'ألعاب وأدوات مجانية بالكامل', at: 5 },
+  ];
+  const secs = 9;
+  const cols = items
+    .map((it) => {
+      const p = easeOut(win(t, it.at / secs, (it.at + 1.2) / secs));
+      const val = Math.round(it.n * p);
+      return `<div style="text-align:center;opacity:${p};transform:translateY(${(1 - p) * 30}px)">
+        <p style="font-family:'Grotesk','Alexandria',sans-serif;font-size:150px;font-weight:700;color:${ACCENT};direction:ltr">${val}${p > 0.95 ? it.plus : ''}</p>
+        <p style="font-size:34px;color:#E8EAE3;margin-top:6px">${it.label}</p></div>`;
+    })
+    .join('');
+  const cap = easeOut(win(t, 7 / secs, 8 / secs));
+  return `${head}${glow()}
+  <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:60px">
+    <div style="display:flex;gap:140px;align-items:start">${cols}</div>
+    <p style="font-size:42px;font-weight:800;color:${TEXT};opacity:${cap}">وكل هاد مش كلام — <span style="color:${ACCENT}">موقع حي جرّبه بنفسك</span></p>
+  </div>
+  ${thread(win(t, 0.15, 0.75))}</body></html>`;
+};
+
 const SCENES = [
+  { id: 'strans', fn: strans, secs: 4 },
+  { id: 'stats', fn: stats, secs: 9 },
   { id: 's2', fn: s2, secs: 5 },
   { id: 's3', fn: s3, secs: 6 },
   { id: 's4', fn: s4, secs: 17 },

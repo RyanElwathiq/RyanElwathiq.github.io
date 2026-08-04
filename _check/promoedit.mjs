@@ -59,41 +59,36 @@ const inputs = [
   `-loop 1 -t 8.53 -i "${P}/final/hook-text.png"`, // 1
   `-i "${S}/s2.mp4"`,                       // 2
   `-i "${S}/s3.mp4"`,                       // 3
-  `-i "${A}/transition kling.mp4"`,         // 4
+  `-i "${S}/strans.mp4"`,                   // 4  خيوط الإشارة (بدل الحبر)
   `-i "${S}/s4.mp4"`,                       // 5
   `-i "${S}/s5.mp4"`,                       // 6
   `-i "${C}/cap-loss.webm"`,                // 7
   `-i "${C}/cap-agent.webm"`,               // 8
-  `-i "${A}/hook.mp4"`,                     // 9  (ليل كلينغ)
-  `-i "${A}/finale-sky kling.mp4"`,         // 10
-  `-i "${S}/s7.mp4"`,                       // 11
-  `-i "${A}/pumatunes-epic-amber-music.mp3"`, // 12
+  `-i "${S}/stats.mp4"`,                    // 9  الأرقام (بدل ليل/فجر)
+  `-i "${S}/s7.mp4"`,                       // 10
+  `-i "${A}/pumatunes-epic-amber-music.mp3"`, // 11
 ].join(' ');
 
 // توحيد: 1920×1080 · 30fps · yuv420p — عشان اللحام يمشي نضيف
 const norm = 'scale=1920:1080,fps=30,format=yuv420p,setsar=1';
 
 const graph = [
-  // الهوك: إبطاء 8.08←8.53 + النص الافتتاحي (ظهور 1.5 واختفاء 7.2)
   `[0:v]setpts=PTS*${(8.53 / 8.08).toFixed(5)},${norm}[hk]`,
   `[1:v]format=rgba,fade=in:st=1.5:d=0.8:alpha=1,fade=out:st=7.2:d=0.8:alpha=1[txt]`,
   `[hk][txt]overlay=0:0:shortest=1[v0]`,
   `[2:v]${norm}[v1]`,
   `[3:v]${norm}[v2]`,
-  `[4:v]trim=0.5:4.5,setpts=PTS-STARTPTS,${norm}[v3]`,
+  `[4:v]${norm}[v3]`,
   `[5:v]${norm}[v4]`,
   `[6:v]${norm}[v5]`,
-  // الموقع الحي: منقص أفضل ٧ ثواني من كل مقطع
-  `[7:v]trim=2.5:9.5,setpts=PTS-STARTPTS,${norm}[v6]`,
-  `[8:v]trim=3:10,setpts=PTS-STARTPTS,${norm}[v7]`,
-  `[9:v]trim=0.5:4.5,setpts=PTS-STARTPTS,${norm}[v8]`,
-  `[10:v]trim=0:5,setpts=PTS-STARTPTS,${norm}[v9]`,
-  `[11:v]${norm}[v10]`,
-  // اللحام — قصّات صلبة عالضربات
-  `[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9][v10]concat=n=11:v=1:a=0[allv]`,
-  // خفوت أسود بالنهاية مع خفوت الموسيقى الطبيعي
+  // الموقع الحي: أفضل ٧ ثواني + دخول ناعم بدل القصة الجافة
+  `[7:v]trim=21.5:28.5,setpts=PTS-STARTPTS,${norm},fade=t=in:d=0.35[v6]`,
+  `[8:v]trim=5.5:12.5,setpts=PTS-STARTPTS,${norm},fade=t=in:d=0.35[v7]`,
+  `[9:v]${norm}[v8]`,
+  `[10:v]${norm}[v9]`,
+  `[v0][v1][v2][v3][v4][v5][v6][v7][v8][v9]concat=n=10:v=1:a=0[allv]`,
   `[allv]fade=t=out:st=83.2:d=1.3[vfinal]`,
-  `[12:a]atrim=0:84.56,afade=t=out:st=83.0:d=1.5[afinal]`,
+  `[11:a]atrim=0:84.56,afade=t=out:st=83.0:d=1.5[afinal]`,
 ].join(';');
 
 const cmd = `"${FFMPEG}" -y ${inputs} -filter_complex "${graph}" -map "[vfinal]" -map "[afinal]" -c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k -movflags +faststart "${P}/final/promo-ar.mp4"`;
