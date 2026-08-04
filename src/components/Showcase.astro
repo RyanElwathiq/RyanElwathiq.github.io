@@ -1,0 +1,252 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «الفيلم التعريفي» — شاشة العرض تحت الهيرو (طلب ريّان 2026-08-04)
+//
+//  التصميم: شاشة سينمائية بزوايا «فيوفايندر» ليمونية وزر تشغيل
+//  نابض — الفيديو ما بيتحمّل ولا بايت قبل الكبسة (preload=none +
+//  بوستر) احتراماً لقاعدة الموبايل والـ 4G الأردني.
+//
+//  ⚠️ الفيديو بالعربي حالياً — السكشن بينحط بالرئيسية العربية بس.
+//     النسخة الإنجليزية بتنولد من نفس خط الإنتاج لما ريّان يقرر.
+//  ✏️ الملفات: public/assets/promo/promo-ar.mp4 + promo-poster.jpg
+//  ✏️ خط الإنتاج كله: _check/promo*.mjs (مشاهد، إيقاع، مونتاج)
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'showcase' } = Astro.props;
+const isAr = lang === 'ar';
+
+const t = isAr
+  ? {
+      eyebrow: 'الفيلم التعريفي',
+      title: 'القصة كاملة — بدقيقة ونص',
+      lede: 'ليش المشاريع مش عم تبيع، شو بعمل أنا، وشو بيستناك بالموقع — بإيقاع موسيقي وصوت أحلى 🔊',
+      play: 'شغّل الفيلم',
+      dur: '١:٢٥',
+    }
+  : {
+      eyebrow: 'The film',
+      title: 'The whole story — in 85 seconds',
+      lede: 'Why businesses stop selling, what I do about it, and what awaits you on this site — best with sound on 🔊',
+      play: 'Play the film',
+      dur: '1:25',
+    };
+---
+
+<section class="shw container" id={id}>
+  <div class="shw-head" data-reveal>
+    <p class="shw-eyebrow">{t.eyebrow}</p>
+    <h2>{t.title}</h2>
+    <p class="shw-lede">{t.lede}</p>
+  </div>
+
+  <div class="shw-stage" data-reveal data-showcase>
+    <!-- زوايا الفيوفايندر -->
+    <span class="shw-c shw-c1" aria-hidden="true"></span>
+    <span class="shw-c shw-c2" aria-hidden="true"></span>
+    <span class="shw-c shw-c3" aria-hidden="true"></span>
+    <span class="shw-c shw-c4" aria-hidden="true"></span>
+
+    <div class="shw-screen">
+      <video
+        data-shw-video
+        poster="/assets/promo/promo-poster.jpg"
+        preload="none"
+        playsinline
+        src="/assets/promo/promo-ar.mp4"></video>
+
+      <!-- غطاء التشغيل — بيختفي أول كبسة -->
+      <button type="button" class="shw-cover" data-shw-play aria-label={t.play}>
+        <span class="shw-btn">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M8 5v14l11-7z"></path>
+          </svg>
+        </span>
+        <span class="shw-chip">{t.dur}</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  // ═══ تشغيل الفيلم: الغطاء بيختفي والفيديو بيبلش بالصوت ═══
+  (function () {
+    function boot() {
+      document.querySelectorAll('[data-showcase]').forEach(function (stage) {
+        if (stage.dataset.ready === '1') return;
+        stage.dataset.ready = '1';
+        var video = stage.querySelector('[data-shw-video]');
+        var cover = stage.querySelector('[data-shw-play]');
+        if (!video || !cover) return;
+
+        cover.addEventListener('click', function () {
+          cover.hidden = true;
+          video.controls = true;
+          video.play();
+          // قياس: كم زائر شغّل الفيلم فعلاً
+          if (window.gtag) window.gtag('event', 'promo_play', { event_category: 'engagement' });
+        });
+
+        // لو خلص الفيلم: منرجّع الغطاء لزائر جديد عالصفحة
+        video.addEventListener('ended', function () {
+          video.controls = false;
+          cover.hidden = false;
+        });
+      });
+    }
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .shw {
+    margin-block: clamp(46px, 7vh, 90px);
+  }
+
+  .shw-head {
+    text-align: center;
+    margin-bottom: clamp(24px, 3.5vh, 40px);
+  }
+
+  .shw-eyebrow {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .shw-head h2 {
+    font-size: clamp(24px, 3.2vw, 40px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .shw-lede {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 58ch;
+    margin-inline: auto;
+  }
+
+  /* ─── المسرح: توهج + زوايا فيوفايندر ─── */
+  .shw-stage {
+    position: relative;
+    max-width: 980px;
+    margin-inline: auto;
+    padding: clamp(14px, 2vw, 22px);
+  }
+
+  .shw-stage::before {
+    content: '';
+    position: absolute;
+    inset: -8%;
+    background: radial-gradient(55% 55% at 50% 50%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+
+  .shw-c {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    border: 3px solid var(--accent);
+    opacity: 0.9;
+  }
+
+  .shw-c1 { top: 0; inset-inline-start: 0; border-bottom: 0; border-inline-end: 0; }
+  .shw-c2 { top: 0; inset-inline-end: 0; border-bottom: 0; border-inline-start: 0; }
+  .shw-c3 { bottom: 0; inset-inline-start: 0; border-top: 0; border-inline-end: 0; }
+  .shw-c4 { bottom: 0; inset-inline-end: 0; border-top: 0; border-inline-start: 0; }
+
+  /* ─── الشاشة ─── */
+  .shw-screen {
+    position: relative;
+    border-radius: var(--r-card);
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+    aspect-ratio: 16 / 9;
+    background: #000;
+  }
+
+  .shw-screen video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* ─── غطاء التشغيل ─── */
+  .shw-cover {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, rgba(14, 15, 18, 0.05), rgba(14, 15, 18, 0.35));
+    border: 0;
+    cursor: pointer;
+    transition: background 0.3s var(--ease-out);
+  }
+
+  .shw-cover:hover {
+    background: linear-gradient(180deg, rgba(14, 15, 18, 0), rgba(14, 15, 18, 0.25));
+  }
+
+  /* ⚠️ نفس فخ [hidden] مع display — الغطاء بيختفي بالجافاسكربت */
+  .shw-cover[hidden] {
+    display: none;
+  }
+
+  .shw-btn {
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+    border-radius: var(--r-pill);
+    background: var(--accent);
+    color: var(--accent-ink, #0e0f12);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent);
+    animation: shw-pulse 2.2s infinite;
+    transition: transform 0.25s var(--ease-out);
+  }
+
+  html[dir='rtl'] .shw-btn svg {
+    transform: scaleX(-1);
+  }
+
+  .shw-cover:hover .shw-btn {
+    transform: scale(1.07);
+  }
+
+  @keyframes shw-pulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 40%, transparent); }
+    70% { box-shadow: 0 0 0 26px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+
+  .shw-chip {
+    position: absolute;
+    bottom: 16px;
+    inset-inline-end: 18px;
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    background: rgba(14, 15, 18, 0.72);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 5px 14px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shw-btn {
+      animation: none;
+    }
+  }
+</style>

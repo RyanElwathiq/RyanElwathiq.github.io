@@ -22,6 +22,7 @@ import Pricing from '../../components/Pricing.astro';
 import BudgetSection from '../../components/BudgetSection.astro';
 import LampLab from '../../components/LampLab.astro';
 import AgentTeaser from '../../components/AgentTeaser.astro';
+import Showcase from '../../components/Showcase.astro';
 import Faq from '../../components/Faq.astro';
 import BriefSection from '../../components/BriefSection.astro';
 import Signals from '../../components/Signals.astro';
@@ -74,17 +75,18 @@ const marks = [
     <Hero lang="ar" />
     <Stats lang="ar" />
 
-    <!-- ══════════════ ١) المشكلة ══════════════
-         الزائر لازم يعرف إنه عنده مشكلة قبل ما نعرض عليه حل.
-         «قدّيش عم تخسر» بتحوّل الغياب لرقم، و«عين البراند»
-         بتخلّيه يجرّب بعينه ليش تصميم بينجح وتصميم لأ. -->
+    <!-- ══════════════ الفيلم التعريفي ══════════════
+         القصة كاملة بـ ٨٥ ثانية (طلب ريّان 2026-08-04): الفيديو
+         بيعرّف بسرعة، وبعده About بتثبّت، والحاسبة بتحوّل
+         الاهتمام لرقم شخصي بيوجع. -->
+    <Showcase lang="ar" />
+
+    <!-- ══════════════ ١) مين أنا ← وين المشكلة ══════════════ -->
+    <About lang="ar" />
     <LossSection lang="ar" id="loss" />
     <BrandEyeSection lang="ar" compact href="/ar/work/luvit/#brand-eye" />
 
-    <!-- ══════════════ ٢) كيف بفكّر ══════════════
-         مين أنا، وشو بعرف، وكيف بفكّر بالميزانية وبالأفكار.
-         هون بينبني السبب اللي بيخلّي الشغل الجاي مقنع. -->
-    <About lang="ar" />
+    <!-- ══════════════ ٢) كيف بفكّر ══════════════ -->
     <Skills lang="ar" />
     <Seo lang="ar" id="seo" />
     <Data lang="ar" id="data" />
