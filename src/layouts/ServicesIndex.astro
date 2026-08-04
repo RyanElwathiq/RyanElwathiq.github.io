@@ -40,6 +40,7 @@ const t = isAr
       ctaTitle: 'مش متأكد شو بتحتاج؟',
       ctaBody: 'عبّي الطلب واحكيلي وضعك، وأنا برجعلك برأي صريح، حتى لو كان الجواب إنك مش محتاج تصرف عندي.',
       ctaBtn: 'احكيلي عن مشروعك',
+      heroCta: 'احجز جلسة تشخيص مجانية',
       more: 'اقرأ التفاصيل ←',
     }
   : {
@@ -53,6 +54,7 @@ const t = isAr
       ctaTitle: 'Not sure what you need?',
       ctaBody: 'Send me a brief describing your situation and I will come back with a straight opinion. Even if the answer is that you should not spend anything with me.',
       ctaBtn: 'Tell me about your project',
+      heroCta: 'Book a free diagnosis',
       more: 'Read the details →',
     };
 
@@ -87,6 +89,9 @@ const schema = [
       <a class="back" href={`${p}/`}>{t.back}</a>
       <h1 data-reveal>{t.h1}</h1>
       <p class="intro" data-reveal>{t.intro}</p>
+
+      <!-- زر تحويل فوق الطية — صفحة الهبوط للمجموعة الإعلانية العامة (2026-08-05) -->
+      <a class="btn hero-btn" href={`${p}/brief/`} data-reveal>{t.heroCta}</a>
 
       <div class="grid" data-stagger>
         {services.map((s, i) => (
@@ -415,6 +420,7 @@ const schema = [
     transition: transform 0.3s var(--ease-out), background 0.3s var(--ease-out);
   }
   .btn:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--accent) 85%, #fff); }
+  .hero-btn { margin: 4px 0 44px; }
 
   @media (max-width: 780px) {
     .grid { grid-template-columns: 1fr; }

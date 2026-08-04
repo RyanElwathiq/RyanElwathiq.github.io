@@ -101,6 +101,7 @@ const t = isAr
       ctaTitle: 'احكيلي عن مشروعك',
       ctaBody: 'عبّي الطلب بثلاث خطوات قصيرة وبرجعلك خلال ٢٤ ساعة برأي واضح: شو بينفع، شو لأ، ومن وين نبدأ.',
       ctaBtn: 'ابدأ الطلب',
+      heroNote: 'أول خطوة تشخيص مجاني، بلا أي التزام.',
       ctaAlt: 'أو احكيني واتساب مباشرة',
       othersTitle: 'خدمات ثانية',
       soonBadge: 'قريباً',
@@ -127,6 +128,7 @@ const t = isAr
       ctaTitle: 'Tell me about your project',
       ctaBody: 'Three short steps, and you hear back within 24 hours with a clear opinion: what works, what does not, and where to start.',
       ctaBtn: 'Start the brief',
+      heroNote: 'Step one is a free diagnosis, no commitment.',
       ctaAlt: 'Or message me on WhatsApp',
       othersTitle: 'Other services',
       soonBadge: 'Coming soon',
@@ -237,6 +239,8 @@ const schema = [
             </a>
             <a class="btn ghost" href={`${p}${service.proof}/`}>{t.proofLink}</a>
           </div>
+          <!-- وعد الإعلان الممول لازم يتحقق بأول نظرة (تطابق الرسالة) -->
+          {!soon && <p class="hero-note" data-reveal>{t.heroNote}</p>}
         </div>
 
         <div class="stage" aria-hidden="true">
@@ -776,6 +780,7 @@ const schema = [
 
   /* ─── الأزرار ─── */
   .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-note { margin-top: 12px; font-size: 0.92rem; color: var(--muted); }
 
   .btn {
     display: inline-flex;
@@ -1253,7 +1258,9 @@ const schema = [
   @media (max-width: 860px) {
     /* الافتتاحية بترجع عمود: الجسم فوق (مختصر) واللوح تحته */
     .hero-grid { grid-template-columns: 1fr; gap: 8px; }
-    .stage { order: -1; height: clamp(200px, 30dvh, 300px); }
+    /* قصير شوي عن قبل (30dvh→24dvh) عشان زر الطلب وسطر «تشخيص
+       مجاني» يطلعوا فوق طية الموبايل — شرط حملة جوجل الممولة */
+    .stage { order: -1; height: clamp(170px, 21dvh, 260px); }
     .svc-hero { min-height: 0; padding-top: calc(96px + 8px); }
     .svc-hero::before { inset-inline: 0; width: 100%; }
     .hero-copy { padding: 22px 18px; }
