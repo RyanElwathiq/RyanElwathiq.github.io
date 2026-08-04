@@ -95,8 +95,8 @@ const thread = (t, y = 940, o = 0.5) => {
 
 // ═══ S2 — القلبة (4 ثواني) ═══
 const s2 = (t) => {
-  const a1 = easeOut(win(t, 0.05, 0.35));
-  const a2 = easeOut(win(t, 0.45, 0.75));
+  const a1 = easeOut(win(t, 0.06, 0.2));
+  const a2 = easeOut(win(t, 0.44, 0.6));
   return `${head}${glow()}
   <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px">
     <h1 style="font-size:104px;font-weight:800;opacity:${a1};transform:translateY(${(1 - a1) * 40}px)">
@@ -109,9 +109,9 @@ const s2 = (t) => {
 
 // ═══ S3 — التعريف (5 ثواني) ═══
 const s3 = (t) => {
-  const ph = easeOut(win(t, 0.05, 0.4));
-  const nm = easeOut(win(t, 0.3, 0.6));
-  const tg = easeOut(win(t, 0.45, 0.75));
+  const ph = easeOut(win(t, 0.05, 0.17));
+  const nm = easeOut(win(t, 0.2, 0.33));
+  const tg = easeOut(win(t, 0.37, 0.5));
   return `${head}${glow()}
   <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:90px">
     <div style="width:400px;height:400px;border-radius:50%;overflow:hidden;flex-shrink:0;
@@ -142,13 +142,13 @@ const s4 = (t) => {
       const rx = (seeded(i) - 0.5) * 1500;
       const ry = (seeded(i + 8) - 0.5) * 800;
       const rr = (seeded(i + 16) - 0.5) * 40;
-      const p = easeInOut(win(t, 0.04 + i * 0.045, 0.44 + i * 0.045));
+      const p = easeInOut(win(t, (0.5 + i) / 17, (2 + i) / 17));
       const x = rx + (gx(i) - rx) * p;
       const y = ry + (gy(i) - ry) * p;
       const rot = rr * (1 - p);
       const sc = 0.55 + 0.45 * p;
       // بالآخر: زوم بطيء جماعي
-      const zoom = 1 + 0.035 * easeInOut(win(t, 0.75, 1));
+      const zoom = 1 + 0.045 * easeInOut(win(t, 0.82, 1));
       return `<div style="position:absolute;left:${x}px;top:${y}px;width:${CW}px;height:${CW}px;
         transform:rotate(${rot}deg) scale(${sc * zoom});border-radius:18px;overflow:hidden;
         border:2px solid ${ACCENT}55;box-shadow:0 18px 60px rgba(0,0,0,.5);opacity:${0.25 + 0.75 * p}">
@@ -156,7 +156,7 @@ const s4 = (t) => {
     })
     .join('');
 
-  const cap = easeOut(win(t, 0.62, 0.82));
+  const cap = easeOut(win(t, 0.647, 0.706));
   return `${head}${glow()}
   ${items}
   <p style="position:absolute;top:44px;left:0;width:100%;text-align:center;font-size:54px;font-weight:800;
@@ -166,9 +166,9 @@ const s4 = (t) => {
 
 // ═══ S5 — الفلسفة (6 ثواني) ═══
 const s5 = (t) => {
-  const a1 = easeOut(win(t, 0.05, 0.3));
-  const a2 = easeOut(win(t, 0.35, 0.6));
-  const a3 = easeOut(win(t, 0.6, 0.85));
+  const a1 = easeOut(win(t, 0.04, 0.125));
+  const a2 = easeOut(win(t, 0.25, 0.375));
+  const a3 = easeOut(win(t, 0.55, 0.625));
   return `${head}${glow()}
   <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:44px">
     <h1 style="font-size:110px;font-weight:800;opacity:${a1};transform:scale(${0.94 + 0.06 * a1})">ما ببيع بوستات.</h1>
@@ -181,9 +181,9 @@ const s5 = (t) => {
 
 // ═══ S7 — الختام (4.5 ثواني) ═══
 const s7 = (t) => {
-  const lg = easeOut(win(t, 0.05, 0.4));
-  const ur = easeOut(win(t, 0.35, 0.65));
-  const cta = easeOut(win(t, 0.55, 0.8));
+  const lg = easeOut(win(t, 0.04, 0.115));
+  const ur = easeOut(win(t, 0.17, 0.23));
+  const cta = easeOut(win(t, 0.27, 0.35));
   return `${head}${glow(1.4)}
   <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:38px">
     <img src="${logo}" style="width:220px;height:220px;opacity:${lg};transform:scale(${0.7 + 0.3 * lg});
@@ -196,11 +196,11 @@ const s7 = (t) => {
 };
 
 const SCENES = [
-  { id: 's2', fn: s2, secs: 4 },
-  { id: 's3', fn: s3, secs: 5 },
-  { id: 's4', fn: s4, secs: 11 },
-  { id: 's5', fn: s5, secs: 6 },
-  { id: 's7', fn: s7, secs: 4.5 },
+  { id: 's2', fn: s2, secs: 5 },
+  { id: 's3', fn: s3, secs: 6 },
+  { id: 's4', fn: s4, secs: 17 },
+  { id: 's5', fn: s5, secs: 8 },
+  { id: 's7', fn: s7, secs: 13 },
 ];
 
 const browser = await chromium.launch();
