@@ -30,25 +30,50 @@ const ACCENT = '#D9FF3F';
 const MUTED = '#A0A49B';
 
 // ─── ٤ كروت أعمال ───
+// imgs: مسار مطلق (أرشيف ريّان) أو نسبي من public/assets/work
+const RAW = 'D:/Ryan-Work/Brand-Ryan/Social/_Sources/linkedin-raw';
 const WORK = [
-  { name: '1-work-luvit', img: 'luvit/coverFinal-01.webp', chip: 'براند متكامل من الصفر', title: 'LUV IT — العناية بالبشرة', line: 'هوية، تغليف، محتوى، وموقع إلكتروني' },
-  { name: '2-work-orient', img: 'orient-enam/orient-enam-01.webp', chip: 'هوية بصرية', title: 'Orient ENAM', line: 'شعار ونظام هوية كامل' },
+  { name: '1-work-luvit', imgs: ['luvit/coverFinal-01.webp'], chip: 'براند متكامل من الصفر', title: 'LUV IT — العناية بالبشرة', line: 'هوية، تغليف، محتوى، وموقع إلكتروني' },
+  { name: '2-work-pasticcini', imgs: [`${RAW}/p05.jpg`, `${RAW}/p06.jpg`], chip: 'هوية متكاملة', title: 'Pasticcini — معجنات', line: 'لوجو ونظام هوية، وتطبيقهم عالمحل والكشك' },
+  { name: '3-work-orient', imgs: ['orient-enam/orient-enam-01.webp'], chip: 'هوية بصرية', title: 'Orient ENAM', line: 'شعار ونظام هوية كامل' },
   {
-    name: '3-work-ads',
-    duo: ['D:/Ryan-Personal/Misc/abd/WhatsApp Image 2024-09-30 at 12.43.12 AM.jpeg', 'D:/Ryan-Personal/Misc/DESIGN.jpg'],
-    chip: 'إعلانات سوشال',
-    title: 'إعلانات بتوقّف السكرول',
-    line: 'مفاهيم إبداعية لعملاء بمجالات مختلفة',
+    name: '4-work-infinity',
+    imgs: ['D:/Ryan-Personal/Misc/abd/WhatsApp Image 2024-09-30 at 12.43.12 AM.jpeg', `${RAW}/p08.jpg`, `${RAW}/p09.jpg`],
+    chip: 'حملة سوشال متكاملة',
+    title: 'INFINITY X PLUS',
+    line: 'مفهوم إبداعي واحد ماشي على الحملة كلها',
   },
-  { name: '4-work-drsamir', img: 'dr-samir/dr-samir-01.webp', chip: 'محتوى طبي', title: 'عيادات وأطباء', line: 'محتوى بيبني ثقة المريض قبل ما يوصل العيادة' },
-  { name: '5-work-mofakron', img: 'al-mofakron/al-mofakron-01.webp', chip: 'تصاميم سوشال', title: 'المفكرون للألمنيوم', line: 'حضور بصري ثابت ومتسق بالسوق' },
+  {
+    name: '5-work-products',
+    imgs: [`${RAW}/p04.jpg`, 'D:/Ryan-Personal/Misc/DESIGN.jpg'],
+    chip: 'إعلانات منتجات',
+    title: 'منتجات بتنباع من الصورة',
+    line: 'عطور وعناية بالبشرة — إعلانات بتبيع مش بس بتبيّن',
+  },
+  {
+    name: '6-work-art',
+    imgs: [`${RAW}/p03.jpg`, `${RAW}/p10.jpg`, `${RAW}/p02.jpg`],
+    chip: 'مانيبيوليشن وتصميم إبداعي',
+    title: 'خيال بينفّذ',
+    line: 'لما الفكرة بدها صورة مش موجودة — منركّبها',
+  },
+  {
+    name: '7-work-drsamir',
+    imgs: [`${RAW}/p11.jpg`, `${RAW}/p12.jpg`],
+    // ⚠️ fit: contain — طلب ريّان: التصميم كله يبين بلا ولا قصة
+    fit: 'contain',
+    chip: 'محتوى طبي',
+    title: 'د. سمير القراعين — نسائية وتوليد',
+    line: 'محتوى بيبني ثقة المريضة قبل ما توصل العيادة',
+  },
+  { name: '8-work-mofakron', imgs: ['al-mofakron/al-mofakron-01.webp'], chip: 'تصاميم سوشال', title: 'المفكرون للألمنيوم', line: 'حضور بصري ثابت ومتسق بالسوق' },
 ];
 
 // ─── ٤ كروت خدمات ───
 const SVC = [
-  { name: '6-svc-diagnosis', kicker: 'أول خطوة بأي شغل', title: 'ما ببيع بوستات.\nبشخّص، وبعدها منبني.', points: ['تشخيص للوضع قبل أي التزام', 'نطاق مكتوب بسعر ثابت', 'قرارات بالأرقام مش بالإحساس'] },
-  { name: '7-svc-websites', kicker: 'مواقع إلكترونية', title: 'موقع بيبيع،\nمش بس بيبيّن حلو', points: ['رحلة زبون مدروسة من الإعلان للطلب', 'سرعة وسيو من اليوم الأول', 'بيشتغل ٢٤/٧ — حتى وإنت نايم'] },
-  { name: '8-svc-ads', kicker: 'إعلانات ممولة', title: 'ميزانية على قرارات،\nمش على تخمين', points: ['استهداف مبني على فهم زبونك', 'قياس لكل دينار وين راح', 'تقارير بتفهمها — مش أرقام استعراض'] },
+  { name: '9-svc-diagnosis', kicker: 'أول خطوة بأي شغل', title: 'ما ببيع بوستات.\nبشخّص، وبعدها منبني.', points: ['تشخيص للوضع قبل أي التزام', 'نطاق مكتوب بسعر ثابت', 'قرارات بالأرقام مش بالإحساس'] },
+  { name: '10-svc-websites', kicker: 'مواقع إلكترونية', title: 'موقع بيبيع،\nمش بس بيبيّن حلو', points: ['رحلة زبون مدروسة من الإعلان للطلب', 'سرعة وسيو من اليوم الأول', 'بيشتغل ٢٤/٧ — حتى وإنت نايم'] },
+  { name: '11-svc-ads', kicker: 'إعلانات ممولة', title: 'ميزانية على قرارات،\nمش على تخمين', points: ['استهداف مبني على فهم زبونك', 'قياس لكل دينار وين راح', 'تقارير بتفهمها — مش أرقام استعراض'] },
 ];
 
 const head = `<!doctype html><html dir="rtl"><head><meta charset="utf-8"><style>
@@ -74,15 +99,16 @@ const workHtml = (c) => `${head}
   </div>
   <h1 style="font-size:52px;font-weight:800;line-height:1.35;margin-bottom:10px">${c.title}</h1>
   <p style="font-size:26px;color:${MUTED};line-height:1.6;margin-bottom:28px">${c.line}</p>
-  ${
-    c.duo
-      ? `<div style="flex:1;display:flex;gap:22px;margin-bottom:34px;min-height:0">
-          ${c.duo.map((p) => `<div style="flex:1;border:2px solid ${ACCENT}66;border-radius:24px;overflow:hidden;box-shadow:0 0 60px ${ACCENT}22"><img src="${raw64(p)}" style="width:100%;height:100%;object-fit:cover;display:block"></div>`).join('')}
-        </div>`
-      : `<div style="flex:1;border:2px solid ${ACCENT}66;border-radius:24px;overflow:hidden;box-shadow:0 0 60px ${ACCENT}22;margin-bottom:34px">
-          <img src="${img64(c.img)}" style="width:100%;height:100%;object-fit:cover;display:block">
-        </div>`
-  }
+  <div style="flex:1;display:flex;gap:${c.imgs.length > 2 ? 18 : 22}px;margin-bottom:34px;min-height:0">
+    ${c.imgs
+      .map(
+        (p) =>
+          `<div style="flex:1;border:2px solid ${ACCENT}66;border-radius:24px;overflow:hidden;box-shadow:0 0 60px ${ACCENT}22;background:#15161A"><img src="${
+            p.startsWith('D:') ? raw64(p) : img64(p)
+          }" style="width:100%;height:100%;object-fit:${c.fit || 'cover'};display:block"></div>`,
+      )
+      .join('')}
+  </div>
   ${footer}
 </body></html>`;
 
