@@ -349,6 +349,17 @@ const jsonld = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
             page_title: document.title,
           });
         });
+
+        // كبسة أي رابط واتساب = عميل محتمل — حدث رئيسي بـ GA4
+        // وبينستورد بإعلانات جوجل كإحالة ناجحة (2026-08-05)
+        document.addEventListener(
+          'click',
+          function (e) {
+            var a = e.target && e.target.closest && e.target.closest('a[href*="wa.me/"], a[href*="api.whatsapp.com"]');
+            if (a) gtag('event', 'wa_click', { link_url: a.href });
+          },
+          true,
+        );
       })();
     </script>
 

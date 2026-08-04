@@ -354,6 +354,8 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
       });
       if (!r.ok) throw new Error('send-failed');
       setDone(true);
+      // إرسال البريف = أقوى إحالة ناجحة عنا — GA4 ثم إعلانات جوجل
+      if (window.gtag) window.gtag('event', 'brief_submit', { lang });
     } catch {
       setErr(t.errSend);
     } finally {
