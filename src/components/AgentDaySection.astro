@@ -1,0 +1,465 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «وظّف وكيلك» — محاكاة يوم كامل من شغل وكيل ذكي
+//
+//  بتنعرض بس بصفحة خدمة «وكلاء ذكاء اصطناعي وأتمتة»: الزائر بيختار
+//  مجاله والمهام اللي بتاكل يومه، وبيتفرج على «يومه» بيصير لحاله
+//  كتايم لاين — وبالنهاية الحصيلة + دعوة قائمة الانتظار.
+//
+//  ⚠️ حتمية بالكامل (بلا AI وبلا عشوائية) — تكلفة صفر وفحص ثابت.
+//  ⚠️ صفوف التايم لاين بتنبنى بالجافاسكربت — ستايلاتها بـ :global.
+//  ✏️ المجالات والمهام والنصوص بـ src/data/agent-day.js
+//  ✏️ الاستخدام: <AgentDaySection lang="ar" cta="#notify" />
+// ═══════════════════════════════════════════════════════════════
+import { INDUSTRIES, TASKS, TEXTS } from '../data/agent-day.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  cta?: string;
+  id?: string;
+}
+
+const { lang, cta = '#notify', id = 'agent-day' } = Astro.props;
+const isAr = lang === 'ar';
+const L = lang;
+const t = TEXTS[L];
+
+const industries = INDUSTRIES.map((i) => ({ key: i.key, name: i[L].name, slots: i[L] }));
+const tasks = TASKS.map((k) => ({ key: k.key, icon: k.icon, hours: k.hours, label: k[L].label, events: k[L].events }));
+---
+
+<section class="ag" id={id}>
+  <div class="ag-head" data-reveal>
+    <p class="ag-eyebrow">{t.eyebrow}</p>
+    <h2>{t.title}</h2>
+    <p class="ag-lede">{t.lede}</p>
+  </div>
+
+  <div class="ag-board frame frame-on" data-reveal data-agent-day>
+    <!-- ═══ الإعداد: المجال + المهام ═══ -->
+    <div class="ag-setup" data-ag-setup>
+      <p class="ag-q">{t.step1}</p>
+      <div class="ag-inds">
+        {
+          industries.map((ind, i) => (
+            <button type="button" class="ag-pill" data-ag-ind={ind.key} aria-pressed={i === 0 ? 'true' : 'false'}>
+              {ind.name}
+            </button>
+          ))
+        }
+      </div>
+
+      <p class="ag-q">{t.step2}</p>
+      <div class="ag-tasks">
+        {
+          tasks.map((k) => (
+            <button type="button" class="ag-task" data-ag-task={k.key} aria-pressed="false">
+              <span class="ag-ic" aria-hidden="true">{k.icon}</span>
+              <span>{k.label}</span>
+            </button>
+          ))
+        }
+      </div>
+
+      <button type="button" class="btn btn-primary" data-ag-run>{t.run}</button>
+      <p class="ag-hint" data-ag-hint hidden>{t.runHint}</p>
+    </div>
+
+    <!-- ═══ اليوم: التايم لاين + الحصيلة ═══ -->
+    <div class="ag-day" data-ag-day hidden>
+      <p class="ag-day-title">{t.dayTitle}</p>
+      <ol class="ag-feed" data-ag-feed></ol>
+
+      <div class="ag-sum" data-ag-sum hidden>
+        <p class="ag-sum-title">{t.doneTitle}</p>
+        <p class="ag-sum-big" data-ag-count></p>
+        <p class="ag-sum-hours" data-ag-hours></p>
+        <p class="ag-human">{t.human}</p>
+        <p class="ag-note">{t.note}</p>
+        <div class="ag-actions">
+          <a class="btn btn-primary" href={cta}>{t.ctaWait}</a>
+          <button type="button" class="btn btn-ghost" data-ag-again>{t.again}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{ industries, tasks, tpl: { count: t.tasksDone, countFew: t.tasksDoneFew, hours: t.hoursBack }, isArFlag: isAr }}
+>
+  // ═══════════════════════════════════════════════════════════
+  //  محرّك المحاكاة — حتمي: نفس الاختيارات = نفس اليوم
+  // ═══════════════════════════════════════════════════════════
+  (function () {
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function boot() {
+      document.querySelectorAll('[data-agent-day]').forEach(setup);
+    }
+
+    function setup(board) {
+      if (board.dataset.ready === '1') return;
+      board.dataset.ready = '1';
+
+      var setupBox = board.querySelector('[data-ag-setup]');
+      var dayBox = board.querySelector('[data-ag-day]');
+      var feed = board.querySelector('[data-ag-feed]');
+      var sum = board.querySelector('[data-ag-sum]');
+      var hint = board.querySelector('[data-ag-hint]');
+      var indBtns = board.querySelectorAll('[data-ag-ind]');
+      var taskBtns = board.querySelectorAll('[data-ag-task]');
+      var timers = [];
+
+      function later(fn, ms) {
+        if (reduced) return fn();
+        timers.push(setTimeout(fn, ms));
+      }
+
+      function clearTimers() {
+        timers.forEach(clearTimeout);
+        timers = [];
+      }
+
+      // أرقام عربية للنسخة العربية
+      function digits(s) {
+        return isArFlag ? String(s).replace(/\d/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'[d]; }) : String(s);
+      }
+
+      // المجال: اختيار واحد
+      indBtns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          indBtns.forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+          b.setAttribute('aria-pressed', 'true');
+        });
+      });
+
+      // المهام: تعليم حر
+      taskBtns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+          hint.hidden = true;
+        });
+      });
+
+      function fill(x, slots) {
+        return x.replace(/\{(q1|q2|item|booking|follow)\}/g, function (_, k) { return slots[k] || ''; });
+      }
+
+      function addRow(e) {
+        var li = document.createElement('li');
+        var tm = document.createElement('span');
+        tm.className = 'ag-t';
+        tm.textContent = digits(e.t);
+        var tx = document.createElement('span');
+        tx.className = 'ag-x';
+        tx.textContent = e.x;
+        li.appendChild(tm);
+        li.appendChild(tx);
+        feed.appendChild(li);
+        requestAnimationFrame(function () { li.classList.add('in'); });
+      }
+
+      function finish(n, h) {
+        // قاعدة العدد بالعربي: ٣-١٠ جمع («مهام»)
+        var countTpl = n >= 3 && n <= 10 ? tpl.countFew : tpl.count;
+        board.querySelector('[data-ag-count]').textContent = countTpl.replace('{n}', digits(n));
+        board.querySelector('[data-ag-hours]').textContent = tpl.hours.replace('{h}', digits(h));
+        sum.hidden = false;
+        sum.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+      }
+
+      function run() {
+        var indKey = board.querySelector('[data-ag-ind][aria-pressed="true"]').getAttribute('data-ag-ind');
+        var slots = null;
+        industries.forEach(function (i) { if (i.key === indKey) slots = i.slots; });
+
+        var chosen = [];
+        taskBtns.forEach(function (b) {
+          if (b.getAttribute('aria-pressed') === 'true') {
+            var key = b.getAttribute('data-ag-task');
+            tasks.forEach(function (k) { if (k.key === key) chosen.push(k); });
+          }
+        });
+        if (!chosen.length) { hint.hidden = false; return; }
+
+        clearTimers();
+        setupBox.hidden = true;
+        dayBox.hidden = false;
+        sum.hidden = true;
+        feed.textContent = '';
+
+        var events = [];
+        var hours = 0;
+        chosen.forEach(function (k) {
+          hours += k.hours;
+          k.events.forEach(function (e) { events.push({ t: e.t, x: fill(e.x, slots) }); });
+        });
+        // ترتيب زمني — اليوم بيمشي من الصبح لليل
+        events.sort(function (a, b) { return a.t < b.t ? -1 : 1; });
+
+        events.forEach(function (e, i) {
+          later(function () {
+            addRow(e);
+            if (i === events.length - 1) later(function () { finish(events.length, hours); }, 650);
+          }, 480 * (i + 1));
+        });
+      }
+
+      board.querySelector('[data-ag-run]').addEventListener('click', run);
+      board.querySelector('[data-ag-again]').addEventListener('click', function () {
+        clearTimers();
+        dayBox.hidden = true;
+        setupBox.hidden = false;
+      });
+
+      document.addEventListener('astro:before-swap', clearTimers, { once: true });
+    }
+
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .ag {
+    margin-block: clamp(38px, 5vh, 60px);
+    padding-inline: var(--pad, 24px);
+    max-width: 1100px;
+    margin-inline: auto;
+  }
+
+  .ag-head {
+    margin-bottom: 22px;
+  }
+
+  .ag-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .ag-head h2 {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .ag-lede {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 58ch;
+  }
+
+  .ag-board {
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-card);
+  }
+
+  /* ─── الإعداد ─── */
+  .ag-q {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .ag-inds {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .ag-pill {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: border-color 0.25s var(--ease-out), background 0.25s var(--ease-out);
+  }
+
+  .ag-pill[aria-pressed='true'] {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  .ag-tasks {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .ag-task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: start;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: border-color 0.25s var(--ease-out), background 0.25s var(--ease-out), transform 0.15s var(--ease-out);
+  }
+
+  .ag-task:active {
+    transform: scale(0.99);
+  }
+
+  .ag-task[aria-pressed='true'] {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+  }
+
+  .ag-ic {
+    flex-shrink: 0;
+    font-size: 17px;
+  }
+
+  .ag-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  /* ─── اليوم ─── */
+  .ag-day-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  .ag-feed {
+    list-style: none;
+    margin: 0 0 18px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ag-feed :global(li) {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+  }
+
+  .ag-feed :global(li.in) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ag-feed :global(.ag-t) {
+    flex-shrink: 0;
+    font-family: var(--font-en);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: var(--r-pill);
+    padding: 3px 10px;
+    min-width: 58px;
+    text-align: center;
+  }
+
+  html[lang='ar'] .ag-feed :global(.ag-t) {
+    font-family: var(--font-ar);
+  }
+
+  .ag-feed :global(.ag-x) {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+  }
+
+  /* ─── الحصيلة ─── */
+  .ag-sum {
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+  }
+
+  .ag-sum-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .ag-sum-big {
+    font-size: clamp(18px, 2.2vw, 24px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .ag-sum-hours {
+    font-size: clamp(16px, 2vw, 20px);
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .ag-human {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--text);
+    border-inline-start: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+    padding: 12px 16px;
+    max-width: 62ch;
+    margin-bottom: 10px;
+  }
+
+  .ag-note {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 62ch;
+    margin-bottom: 16px;
+  }
+
+  .ag-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ⚠️ ضروري: .btn بتفرض display وبتغلب [hidden] — نفس فخ عين البراند */
+  .ag .btn[hidden] {
+    display: none;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 640px) {
+    .ag-tasks {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ag-feed :global(li) {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

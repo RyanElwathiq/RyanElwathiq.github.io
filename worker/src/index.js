@@ -265,6 +265,11 @@ async function handleBrief(request, env, origin, ctx) {
   //     كان بيعرضله رسالة فشل كاذبة بينما كل إشي وصل فعلاً.
   //     هلق الرد بيرجع فوراً، والباقي بيكمّل بالخلفية.
   // ═══════════════════════════════════════════════════════════
+  // ⚠️ منحفظ الطلب أول إشي ومناخد رقم صفه — أزرار تيليجرام (#50)
+  //    بتحتاجه عشان «اكتبلي رد» و«رد سريع» و«سبام» يعرفوا مين قصدهم.
+  //    والحفظ المبكر أضمن كمان: حتى لو التنبيهات فشلت، الطلب بالأرشيف.
+  const leadId = await saveLead(env, f, null);
+
   const urgent = [];
 
   if (env.RESEND_KEY) {
@@ -298,6 +303,20 @@ async function handleBrief(request, env, origin, ctx) {
           chat_id: env.TELEGRAM_CHAT_ID,
           text: msg.slice(0, 4000),
           parse_mode: 'Markdown',
+          // أزرار #50 — بس إذا الحفظ نجح ومعنا رقم صف
+          ...(leadId
+            ? {
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      { text: '✍️ اكتبلي رد', callback_data: 'w:' + leadId },
+                      { text: '📧 رد سريع', callback_data: 'r:' + leadId },
+                    ],
+                    [{ text: '🚫 سبام', callback_data: 's:' + leadId }],
+                  ],
+                },
+              }
+            : {}),
         }),
       })
     );
@@ -328,11 +347,9 @@ async function handleBrief(request, env, origin, ctx) {
   //     الرد للزائر. لو فشل، الطلب وصل ريّان بأي حال — الرد
   //     إضافة مش شرط، وما بيأثر على اللي شافه الزائر.
   // ═══════════════════════════════════════════════════════════
+  // (الطلب انحفظ فوق من أول الدالة — الرد الآلي بس اللي بالخلفية)
   if (env.ANTHROPIC_KEY) {
-    ctx.waitUntil(sendClientReply(env, f, isAr));
-  } else {
-    // ما في رد آلي — بس الطلب لازم ينحفظ بأي حال
-    ctx.waitUntil(saveLead(env, f, null));
+    ctx.waitUntil(sendClientReply(env, f, isAr, leadId));
   }
 
   return json({ ok: true, delivered }, 200, origin);
@@ -346,10 +363,11 @@ async function handleBrief(request, env, origin, ctx) {
 //  ⚠️ ولو الحفظ فشل، ما منوقف ولا نرجّع خطأ — الطلب أصلاً وصل
 //     ريّان على تيليجرام والإيميل.
 // ─────────────────────────────────────────────
+// بيرجّع رقم الصف (rowid) — أزرار تيليجرام بتحتاجه، وnull لو فشل
 async function saveLead(env, f, reply) {
-  if (!env.LEADS) return;
+  if (!env.LEADS) return null;
   try {
-    await env.LEADS.prepare(
+    const res = await env.LEADS.prepare(
       `INSERT INTO leads (at, lang, name, mail, phone, biz, budget, timing, services, details, reply)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
@@ -367,15 +385,27 @@ async function saveLead(env, f, reply) {
         reply || null
       )
       .run();
+    return (res.meta && res.meta.last_row_id) || null;
   } catch (e) {
     /* الطلب وصل بقنوات تانية — الحفظ إضافة */
+    return null;
+  }
+}
+
+// الصف انحجز من أول handleBrief — هون منكمّل عليه بالرد الآلي
+async function updateLeadReply(env, leadId, reply) {
+  if (!env.LEADS || !leadId || !reply) return;
+  try {
+    await env.LEADS.prepare('UPDATE leads SET reply = ?2 WHERE rowid = ?1').bind(leadId, reply).run();
+  } catch (e) {
+    /* إضافة مش شرط */
   }
 }
 
 // ─────────────────────────────────────────────
 //  الرد الأوّلي — بيشتغل بالخلفية بعد ما الزائر شاف «وصلني طلبك»
 // ─────────────────────────────────────────────
-async function sendClientReply(env, f, isAr) {
+async function sendClientReply(env, f, isAr, leadId) {
   try {
     const sys = isAr
      ? `انت «نبض» — المساعد الذكي تبع ريّان الواثق، مسوّق أردني بيشتغل على السبب مش العَرَض.
@@ -532,8 +562,10 @@ Strict rules:
     //    كعلامة # حرفية قدام عميل حقيقي.
     const reply = stripMarkdown(await askClaude(env, sys, facts));
 
-    // منحفظ أول إشي — حتى لو الرد فشل، الطلب لازم يضل بالأرشيف
-    await saveLead(env, f, reply);
+    // الصف محجوز من أول handleBrief — منكمّل عليه (أو منحفظ من جديد
+    // لو الحجز الأول كان فشل)
+    if (leadId) await updateLeadReply(env, leadId, reply);
+    else await saveLead(env, f, reply);
     if (!reply) return;
 
     // ═══════════════════════════════════════════════════════════
@@ -1366,6 +1398,325 @@ async function askWorkersAI(env, system, user, isAr) {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  ٥) «نبض بجيبك» — وكيل تيليجرام لريّان (2026-08-04)
+//
+//  ثلاث قدرات:
+//   • صيد من التلفون: ريّان ببعت وصف مشروع ← تشخيص مصغر +
+//     رسالة واتساب جاهزة نسخ (بنفس قواعد عدة الصيد)
+//   • أزرار الرد على الطلبات (المهمة #50 المعتمدة 2026-08-02):
+//     «اكتبلي رد» (٣ مقترحات) · «رد سريع» (يكتب بتيليجرام ←
+//     بيوصل العميل كإيميل رسمي) · «سبام»
+//   • تقرير صباحي تلقائي (كرون ٨:٠٠ بعمّان) + «الأرقام» عالطلب
+//
+//  ⚠️ الأمان بثلاث طبقات:
+//   ١) sec­ret_token مشتق من توكن البوت (SHA-256) — تيليجرام
+//      ببعته برأس كل طلب webhook، وأي طلب بدونه بينرفض. ما في
+//      داعي لسر جديد بلوحة كلاودفلير.
+//   ٢) منرد بس على محادثة ريّان (TELEGRAM_CHAT_ID) — أي حدا
+//      ثاني بيحكي مع البوت منتجاهله بصمت.
+//   ٣) سقف يومي لاستدعاءات كلود (صمّام أمان لو صار خلل).
+//
+//  ⚠️ تيليجرام بده رد سريع على الـ webhook — منرجّع 200 فوراً
+//     والشغل الثقيل بيكمل بـ waitUntil، والرد بيوصل بـ sendMessage.
+// ═══════════════════════════════════════════════════════════════
+const TG_PER_DAY = 80;
+
+async function tgSecret(env) {
+  const buf = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode('tg-webhook:' + (env.TELEGRAM_BOT_TOKEN || '')),
+  );
+  return [...new Uint8Array(buf)]
+    .slice(0, 16)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+async function tgApi(env, method, payload) {
+  try {
+    const r = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/${method}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    return await r.json().catch(() => null);
+  } catch (e) {
+    return null;
+  }
+}
+
+const tgSend = (env, text, extra) =>
+  tgApi(env, 'sendMessage', { chat_id: env.TELEGRAM_CHAT_ID, text: String(text).slice(0, 4000), ...extra });
+
+// إعداد الـ webhook — بينادى مرة وحدة بعد النشر (idempotent:
+// إعادته ما بتأذي، وما بيقدر يوجّه البوت إلا على عنواننا الثابت)
+async function handleTgSetup(request, env, origin) {
+  if (!env.TELEGRAM_BOT_TOKEN) return json({ error: 'no-token' }, 503, origin);
+  const secret = await tgSecret(env);
+  const res = await tgApi(env, 'setWebhook', {
+    url: 'https://ryanalali-api.ryanalali-api.workers.dev/tg',
+    secret_token: secret,
+    allowed_updates: ['message', 'callback_query'],
+    drop_pending_updates: true,
+  });
+  return json({ ok: !!(res && res.ok), result: res && res.description }, res && res.ok ? 200 : 502, origin);
+}
+
+async function handleTgWebhook(request, env, origin, ctx) {
+  // طبقة ١: الرأس السري اللي تيليجرام ببعته مع كل تحديث
+  const got = request.headers.get('X-Telegram-Bot-Api-Secret-Token') || '';
+  if (!env.TELEGRAM_BOT_TOKEN || got !== (await tgSecret(env))) return json({ error: 'forbidden' }, 403, origin);
+
+  const update = await request.json().catch(() => null);
+  if (update) ctx.waitUntil(handleTgUpdate(env, update));
+  return json({ ok: true }, 200, origin);
+}
+
+async function handleTgUpdate(env, update) {
+  try {
+    const msg = update.message;
+    const cb = update.callback_query;
+    const chatId = String(msg?.chat?.id ?? cb?.message?.chat?.id ?? '');
+    // طبقة ٢: محادثة ريّان بس
+    if (chatId !== String(env.TELEGRAM_CHAT_ID)) {
+      if (cb) await tgApi(env, 'answerCallbackQuery', { callback_query_id: cb.id });
+      return;
+    }
+    if (cb) return await handleTgCallback(env, cb);
+    if (msg && msg.text) return await handleTgMessage(env, msg);
+  } catch (e) {
+    /* آخر شبكة أمان — ولا إشي بيطلع لبرا */
+  }
+}
+
+// سقف يومي بسيط (صف كلي بس — المستخدم واحد وهو ريّان)
+async function reserveTgQuota(env) {
+  await ensureQuotaTable(env);
+  const day = new Date().toISOString().slice(0, 10);
+  await env.LEADS.prepare(
+    "INSERT INTO idea_quota (day, who, n) VALUES (?1, '*tg', 1) ON CONFLICT(day, who) DO UPDATE SET n = n + 1",
+  )
+    .bind(day)
+    .run();
+  const row = await env.LEADS.prepare("SELECT n FROM idea_quota WHERE day = ?1 AND who = '*tg'").bind(day).first();
+  return (row?.n || 0) <= TG_PER_DAY;
+}
+
+const TG_HELP = `أهلاً ريّان — أنا نبض 🌊
+
+• ابعتلي وصف أي مشروع بتصطاده (مجاله، شو لاحظت عليه، أرقام لو في) وبرجعلك التشخيص المصغر + رسالة واتساب جاهزة نسخ.
+• اكتب «الأرقام» وبطلعلك ملخص فوري — وبيجيك لحاله كل يوم ٨:٠٠ الصبح.
+• تحت كل طلب مشروع جديد في أزرار: «اكتبلي رد» (بقترحلك ٣ ردود) · «رد سريع» (بتكتب هون وبيوصل العميل كإيميل رسمي منك) · «سبام».`;
+
+async function handleTgMessage(env, msg) {
+  const text = (msg.text || '').trim();
+
+  // ─── رد سريع (#50): رد على رسالة «رد للطلب #N» ← إيميل رسمي ───
+  const repliedTo = msg.reply_to_message && (msg.reply_to_message.text || '');
+  const m = repliedTo && repliedTo.match(/#(\d+)/);
+  if (m && repliedTo.includes('رد للطلب')) {
+    const leadId = Number(m[1]);
+    const lead = await env.LEADS.prepare(
+      'SELECT rowid AS id, name, mail, biz, lang FROM leads WHERE rowid = ?1',
+    )
+      .bind(leadId)
+      .first()
+      .catch(() => null);
+    if (!lead || !lead.mail) return tgSend(env, `❌ ما لقيت الطلب #${leadId}`);
+
+    const isArLead = lead.lang === 'ar';
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${env.RESEND_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: env.MAIL_FROM || 'Rayan Elwathiq <onboarding@resend.dev>',
+        to: [lead.mail],
+        reply_to: env.REPLY_TO || env.MAIL_TO,
+        subject: isArLead ? `رد من ريّان — ${lead.biz || lead.name}` : `Reply from Rayan — ${lead.biz || lead.name}`,
+        text,
+        html: `<div dir="${isArLead ? 'rtl' : 'ltr'}" style="font-family:system-ui,Segoe UI,Arial;max-width:560px;font-size:16px;line-height:1.9;color:#1a1a1a">${escapeHtml(
+          text,
+        ).replace(/\n/g, '<br>')}</div>`,
+      }),
+    }).catch(() => null);
+
+    return tgSend(
+      env,
+      r && r.ok ? `✅ وصل ردك لـ ${lead.name} (${lead.mail}) كإيميل رسمي.` : `❌ الإرسال فشل — جرب كمان مرة.`,
+    );
+  }
+
+  // ─── أوامر ───
+  if (text === '/start' || text === '/help' || text === 'مساعدة') return tgSend(env, TG_HELP);
+  if (/^\/?(الأرقام|الارقام|numbers)$/i.test(text)) {
+    return tgSend(env, await buildDigest(env, false));
+  }
+  if (text.length < 12) return tgSend(env, 'اكتبلي وصف أوضح شوي — مثال: «مطعم مشاوي بالزرقاء، ١٢ ألف متابع إنستا، أسعار بالخاص، رد بطيء عالتعليقات».');
+
+  // ─── الصياد: تشخيص + رسالة جاهزة ───
+  if (!env.ANTHROPIC_KEY) return tgSend(env, 'مفتاح كلود مش مضبوط — التشخيص الآلي واقف.');
+  const okQuota = await reserveTgQuota(env).catch(() => true);
+  if (!okQuota) return tgSend(env, `وصلنا سقف اليوم (${TG_PER_DAY} استدعاء) — صمّام أمان الرصيد. بكرا بيصفّر لحاله.`);
+
+  await tgSend(env, '🔍 عم أشخّص… ثواني.');
+
+  const sys = `أنت «نبض» — مساعد ريّان الواثق الشخصي بتيليجرام. ريّان مسوّق أردني (Full Stack Marketer) عم يصطاد عملاء بالرسائل المباشرة، وببعتلك وصف سريع لمشروع شافه: مجاله، شو لاحظ عليه، وأي أرقام.
+
+لو المدخل وصف مشروع، رجّع رد بقسمين بالضبط:
+
+🔍 التشخيص:
+١) ملاحظة الرحلة — وين بتنكسر رحلة الزبون عندهم
+٢) ملاحظة الرسالة — شو بيحكوا وشو المفروض يحكوا
+٣) ملاحظة الفرصة — الشي الواضح اللي ولا حدا بمجالهم مستغله
+💡 فكرة ببلاش ينفذوها اليوم
+(ولو في شي ناقص بالمعلومات: سطر «⚠️ شيّك قبل الإرسال:» بيقول لريّان شو يتأكد منه)
+
+— — —
+
+📩 الرسالة (جاهزة نسخ لواتساب):
+نص كامل بصوت ريّان: «مرحبا، أنا ريّان — مسوّق…» ← مدح صادق محدد ← الملاحظات الثلاث بصيغة ودية مرقمة ← الفكرة المجانية ← الختام: «وإذا حابين تفهموا ليش هاد بيصير وكيف بينصلح من جذره، بعمل جلسة تشخيص بشرح فيها الصورة كاملة — بلا التزام.»
+
+قواعد صارمة:
+- عامية أردنية محكية. ممنوع «هنّ» و«أنتنّ» — «هم» للجميع.
+- الملاحظات محددة فيهم هم من كلام ريّان — ملاحظة بتنطبق على أي مشروع = ملاحظة ضعيفة.
+- صيغة الترجيح دايماً: «من اللي مبيّن…»، «الأغلب…» — ما فحصنا أرقامهم.
+- بلا إهانة لشغلهم («شغلكم حلو بس في تسريب» مش «شغلكم غلط»)، بلا مصطلحات، بلا أسعار، بلا وعود نتائج.
+- رسالة الواتساب بتنقرا بأقل من دقيقة وبلا إيموجي جوّاتها.
+- ولو المدخل مش وصف مشروع (سؤال عام عن التسويق أو الموقع أو أي إشي)، جاوب ريّان مباشرة باختصار مفيد بالعامية بدل القالب.`;
+
+  let out = null;
+  try {
+    out = stripMarkdown(await askClaude(env, sys, text, { maxTokens: 2500, maxLen: 4000 }));
+  } catch (e) {
+    /* بيتعالج تحت */
+  }
+  return tgSend(env, out || '❌ التشخيص فشل هالمرة — جرب كمان مرة بعد شوي.');
+}
+
+async function handleTgCallback(env, cb) {
+  await tgApi(env, 'answerCallbackQuery', { callback_query_id: cb.id });
+  const data = String(cb.data || '');
+  const m = data.match(/^([wrs]):(\d+)$/);
+  if (!m) return;
+  const kind = m[1];
+  const leadId = Number(m[2]);
+
+  const lead = await env.LEADS.prepare(
+    'SELECT rowid AS id, name, mail, biz, services, details, lang, reply FROM leads WHERE rowid = ?1',
+  )
+    .bind(leadId)
+    .first()
+    .catch(() => null);
+  if (!lead) return tgSend(env, `❌ ما لقيت الطلب #${leadId}`);
+
+  // ─── سبام ───
+  if (kind === 's') {
+    try {
+      await env.LEADS.prepare('UPDATE leads SET spam = 1 WHERE rowid = ?1').bind(leadId).run();
+    } catch (e) {
+      return tgSend(env, '❌ ما قدرت أعلّمه سبام.');
+    }
+    return tgSend(env, `🚫 الطلب #${leadId} (${lead.name}) انعلّم سبام — مش رح يطلع بالتقارير.`);
+  }
+
+  // ─── رد سريع: منفتح رسالة إجبارية الرد ───
+  if (kind === 'r') {
+    return tgSend(env, `✍️ رد للطلب #${leadId} — ${lead.name} (${lead.mail}).\nاكتب ردك **بالرد على هالرسالة نفسها** وبيوصله كإيميل رسمي منك.`, {
+      reply_markup: { force_reply: true },
+    });
+  }
+
+  // ─── اكتبلي رد: ٣ مقترحات من كلود ───
+  if (!env.ANTHROPIC_KEY) return tgSend(env, 'مفتاح كلود مش مضبوط.');
+  const okQuota = await reserveTgQuota(env).catch(() => true);
+  if (!okQuota) return tgSend(env, `وصلنا سقف اليوم (${TG_PER_DAY}).`);
+  await tgSend(env, '✍️ عم أكتبلك ٣ مقترحات…');
+
+  const isArLead = lead.lang === 'ar';
+  const sys = isArLead
+    ? `أنت «نبض» مساعد ريّان الواثق. اكتب ٣ مقترحات رد بيبعتهم ريّان لعميل عبّى طلب مشروع — بصوت ريّان نفسه، عامية أردنية، بلا أسعار وبلا وعود نتائج.
+
+الثلاثة بنبرات مختلفة:
+١) عملي مباشر: خطوة جاية واضحة (مكالمة قصيرة هالأسبوع)
+٢) دافي شخصي: بيقرأ وضعه بجملة وبيطمنه
+٣) سؤال توضيحي ذكي بيفتح المحادثة
+
+كل واحد ٤٠-٧٠ كلمة، بيبلش باسم العميل، وبينفصلوا بسطر «— — —». بلا إيموجي وبلا عناوين.`
+    : `You are Nabd, Rayan Elwathiq's assistant. Write 3 reply drafts Rayan can send to a client who submitted a project brief — in Rayan's own voice, plain English, no prices, no promised results.
+
+Three different tones:
+1) Practical: a clear next step (a short call this week)
+2) Warm: reads their situation back and reassures
+3) A smart clarifying question that opens the conversation
+
+Each 40-70 words, starts with the client's name, separated by a "— — —" line. No emoji, no headings.`;
+
+  const facts = `${isArLead ? 'الاسم' : 'Name'}: ${lead.name}\n${isArLead ? 'النشاط' : 'Business'}: ${lead.biz || '—'}\n${
+    isArLead ? 'طلبه' : 'Requested'
+  }: ${lead.services || '—'}\n${isArLead ? 'كلامه بالحرف' : 'In their words'}: ${lead.details || '—'}\n${
+    isArLead ? 'الرد الأولي اللي وصله من نبض' : "Nabd's first reply they received"
+  }: ${(lead.reply || '—').slice(0, 900)}`;
+
+  let out = null;
+  try {
+    out = stripMarkdown(await askClaude(env, sys, facts, { maxTokens: 2200, maxLen: 3800 }));
+  } catch (e) {
+    /* تحت */
+  }
+  if (!out) return tgSend(env, '❌ ما زبطت المقترحات — جرب كمان مرة.');
+  return tgSend(env, `مقترحات الرد على ${lead.name} (#${leadId}):\n\n${out}\n\n(انسخ اللي بيعجبك واضغط «رد سريع» تحت الطلب، أو عدّله براحتك)`);
+}
+
+// ─── التقرير: طلبات آخر ٢٤ ساعة + عدادات الذكاء + دفعات الألعاب ───
+async function buildDigest(env, isMorning) {
+  const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+  let leadsLine = '(قاعدة البيانات مش موصولة)';
+  try {
+    const rows = await env.LEADS.prepare(
+      "SELECT name, biz FROM leads WHERE at >= ?1 AND (spam IS NULL OR spam != 1) ORDER BY at DESC LIMIT 6",
+    )
+      .bind(since)
+      .all();
+    const list = rows.results || [];
+    leadsLine = list.length
+      ? list.map((r) => `• ${r.name}${r.biz ? ' — ' + r.biz : ''}`).join('\n')
+      : 'ولا طلب جديد — يوم صيد جديد 🎣';
+  } catch (e) {
+    /* منكمل بالباقي */
+  }
+
+  const day = new Date().toISOString().slice(0, 10);
+  let counters = '';
+  try {
+    const q = await env.LEADS.prepare("SELECT who, n FROM idea_quota WHERE day = ?1 AND who IN ('*', '*persona', '*tg')")
+      .bind(day)
+      .all();
+    const m = {};
+    (q.results || []).forEach((r) => (m[r.who] = r.n));
+    counters = `عدادات اليوم: أفكار المختبر ${m['*'] || 0}/${IDEA_GLOBAL_DAY} · بيرسونات ${m['*persona'] || 0}/${PERSONA_GLOBAL_DAY} · نبض بجيبك ${m['*tg'] || 0}/${TG_PER_DAY}`;
+  } catch (e) {
+    /* ولا إشي */
+  }
+
+  let batches = '';
+  try {
+    const e1 = await env.LEADS.prepare('SELECT lang FROM eye_rounds WHERE day = ?1 AND json IS NOT NULL').bind(day).all();
+    const d2 = await env.LEADS.prepare('SELECT lang FROM det_rounds WHERE day = ?1 AND json IS NOT NULL').bind(day).all();
+    batches = `دفعات ألعاب اليوم: عين البراند ${(e1.results || []).length}/٢ · كشف الشركة ${(d2.results || []).length}/٢`;
+  } catch (e) {
+    /* ولا إشي */
+  }
+
+  return `${isMorning ? '☀️ صباح الخير ريّان — تقرير نبض الصباحي' : '📊 تقرير نبض'}
+
+طلبات آخر ٢٤ ساعة:
+${leadsLine}
+
+${counters}
+${batches}`;
+}
+
 // ─────────────────────────────────────────────
 //  المدخل
 // ─────────────────────────────────────────────
@@ -1392,9 +1743,30 @@ export default {
       if (pathname === '/brand-eye') return await handleBrandEye(request, env, origin, ctx);
       if (pathname === '/persona') return await handlePersona(request, env, origin);
       if (pathname === '/detector-rounds') return await handleDetectorRounds(request, env, origin, ctx);
+      if (pathname === '/tg') return await handleTgWebhook(request, env, origin, ctx);
+      if (pathname === '/tg-setup') return await handleTgSetup(request, env, origin);
+      // فحص ذاتي: ببعت المساعدة + التقرير لمحادثة ريّان (بلا أي
+      // استدعاء كلود — فما في تكلفة لو حدا غريب كبسه، بس إزعاج
+      // محدود لريّان وبيبين فوراً إنه مش منه)
+      if (pathname === '/tg-test') {
+        if (!env.TELEGRAM_BOT_TOKEN) return json({ error: 'no-token' }, 503, origin);
+        const a = await tgSend(env, '🧪 (فحص تلقائي)\n\n' + TG_HELP);
+        const b = await tgSend(env, await buildDigest(env, false));
+        return json({ ok: !!(a && a.ok && b && b.ok) }, 200, origin);
+      }
       return json({ error: 'not-found' }, 404, origin);
     } catch (e) {
       return json({ error: 'server', why: String(e && e.message || e).slice(0, 200) }, 500, origin);
     }
+  },
+
+  // التقرير الصباحي — الكرون بـ wrangler.toml (٨:٠٠ بتوقيت عمّان)
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(
+      (async () => {
+        if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) return;
+        await tgSend(env, await buildDigest(env, true));
+      })(),
+    );
   },
 };

@@ -19,6 +19,7 @@ import Footer from '../components/Footer.astro';
 import Particles from '../components/Particles.astro';
 import BriefSection from '../components/BriefSection.astro';
 import Service3D from '../components/Service3D.astro';
+import AgentDaySection from '../components/AgentDaySection.astro';
 import servicesData from '../data/services.json';
 import work from '../data/work.json';
 
@@ -397,6 +398,11 @@ const schema = [
         </div>
       </div>
     </section>
+
+    <!-- ═══ ٥.٥ «وظّف وكيلك» — بس بصفحة وكلاء الذكاء والأتمتة ═══
+         محاكاة يوم كامل من شغل الوكيل (طلب ريّان 2026-08-04):
+         بيلعبها ← بيتحمس ← نموذج قائمة الانتظار تحتها مباشرة -->
+    {service.slug === 'ai-agents-automation' && <AgentDaySection lang={lang} cta={soon ? '#notify' : briefHref} />}
 
     <!-- ═══════════════════════════════════════════════════════════
          ٦. الطلب، الفورم نفسه، مش زر بيودّي لصفحة تانية
