@@ -1,0 +1,352 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  صفحة هبوط «وكيلك الذكي» — /agent/ (طلب ريّان 2026-08-04)
+//
+//  ليش صفحة مستقلة واللعبة أصلاً بصفحة الخدمة؟ لأنه صفحة الخدمة
+//  «قريباً» ونادراً حدا بيوصلها — وهاي معمولة كقمع تسويقي كامل
+//  للبوستات والإعلانات: وجع ← شو تغيّر بالعالم ← جرّب بنفسك
+//  (اللعبة) ← أسئلة ← قائمة الانتظار.
+//
+//  ⚠️ نفس صدق البيت: بلا وعود أرقام، والوكيل «بياخد المتكرر
+//     والقرار بيضل إلك» — مش سحر.
+//  ✏️ اللعبة نفسها: src/components/AgentDaySection.astro
+//  ✏️ الاستخدام: src/pages/agent.astro و src/pages/ar/agent.astro
+// ═══════════════════════════════════════════════════════════════
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import AgentDaySection from '../components/AgentDaySection.astro';
+
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+const p = isAr ? '/ar' : '';
+
+const t = isAr
+  ? {
+      seoTitle: 'وكيلك الذكي — جرّب يومك معه',
+      seoDesc:
+        'لعبة بدقيقة بتوريك كيف وكيل ذكاء اصطناعي بياخد الشغل المتكرر عن مشروعك: الرد على الأسئلة، تذكير المواعيد، متابعة اللي سأل وما اشترى — وكم ساعة بالأسبوع بترجعلك.',
+      back: '→ رجوع للرئيسية',
+      kicker: 'وكيل ذكاء اصطناعي لشغلك',
+      h1: 'وظّف موظف ما بينام، ما بيمل، وما بينسى',
+      sub: 'مش خيال علمي — هاد اللي بيعمله وكيل ذكاء اصطناعي متربّي على شغلك إنت بالتحديد. تحت في لعبة بدقيقة وحدة بتوريك يومك معه.',
+      heroCta: 'جرّب يومك التجريبي ↓',
+      painTitle: 'اللي بياكل يومك مش الشغل — تكراره',
+      pains: [
+        { ic: '💬', x: 'نص الدوام بيروح على نفس السؤال: «قديش؟ وين؟ في توصيل؟» — والجواب عندك محفوظ من كثر ما انكتب.' },
+        { ic: '🌙', x: 'الزبون اللي بيسأل الساعة ١١ بالليل بيشتري من أول واحد بيرد عليه — وإنت وقتها نايم.' },
+        { ic: '🔁', x: 'اللي سأل وما اشترى بيضيع بالزحمة — مش لأنه ما كان جدّي، لأنه ولا حدا فاضي يلحقه.' },
+      ],
+      visionKicker: 'شو تغيّر؟',
+      visionTitle: 'من «ذكاء بيحكي» لوكلاء بيشتغلوا',
+      visionBody:
+        'قبل سنتين الذكاء الاصطناعي كان بيجاوب أسئلة عامة وبيغلط كثير. اليوم في وكلاء بيتعلموا شغلك إنت بالتحديد — منيوك، أسعارك، أسلوب ردك — وبينفذوا مهام كاملة مش بس بيحكوا. اللي كان بده موظف وتدريب وشهور، صار نظام بينركب على مشروعك بأسابيع.',
+      visionHonest:
+        'وبصراحة البيت المعتادة: الوكيل مش سحر وما بياخد قراراتك. بياخد الشغل المتكرر اللي بياكل يومك — والقرار والذوق والعلاقة مع زباينك بيضلوا إلك. هاد بالضبط اللي بتشوفه باللعبة تحت.',
+      faqTitle: 'الأسئلة اللي أكيد براسك',
+      faqs: [
+        {
+          q: 'لازم أكون فاهم بالتقنية؟',
+          a: 'لأ. إنت بتحكيلي شو بياكل وقتك، وأنا ببني الوكيل وبسلمك إياه شغال. التعامل معه بيصير أسهل من تدريب موظف جديد.',
+        },
+        {
+          q: 'وشو بيصير لو غلط؟',
+          a: 'منحط حدود واضحة من أول يوم: اللي الوكيل مش متأكد منه بيحوّله إلك بدل ما يخترع جواب. الأتمتة الصح هي اللي بتعرف حدودها.',
+        },
+        {
+          q: 'قديش بيكلف؟',
+          a: 'حسب شغلك وحجم المهام — وما بسعّر قبل ما أفهم وضعك. أول خطوة جلسة تشخيص ببلاش، وبعدها نطاق مكتوب بسعر ثابت. وبدون اشتراكات شهرية بتقرصك للأبد.',
+        },
+      ],
+      endKicker: 'الخدمة عم تتجهز هلأ',
+      endTitle: 'أول الواصلين أول المستفيدين',
+      endBody:
+        'خدمة «وكلاء الذكاء الاصطناعي والأتمتة» قربت تفتح. سجّل بقائمة الانتظار وبحكيك أول ما تجهز — وإذا مشروعك مستعجل، احجز جلسة تشخيص ومنشوف شو ممكن نأتمت من هلأ.',
+      ctaWait: 'سجّلني بقائمة الانتظار',
+      ctaBrief: 'احجز جلسة تشخيص',
+    }
+  : {
+      seoTitle: 'Your AI Agent — Try a Day With It',
+      seoDesc:
+        'A one-minute game showing how an AI agent takes the repetitive work off your business — replies, reminders, follow-ups — and how many hours a week you get back.',
+      back: '→ Back to home',
+      kicker: 'An AI agent for your business',
+      h1: 'Hire the employee that never sleeps, never gets bored, never forgets',
+      sub: 'Not science fiction — this is what an AI agent trained on YOUR business does. Below is a one-minute game that shows you your day with one.',
+      heroCta: 'Try your trial day ↓',
+      painTitle: 'It is not the work that eats your day — it is the repetition',
+      pains: [
+        { ic: '💬', x: 'Half the day goes to the same question: "how much? where? do you deliver?" — an answer you know by heart.' },
+        { ic: '🌙', x: 'The customer asking at 11 pm buys from whoever replies first — and you are asleep.' },
+        { ic: '🔁', x: 'The person who asked and never bought gets lost in the noise — not because they were not serious, but because nobody had time to follow up.' },
+      ],
+      visionKicker: 'What changed?',
+      visionTitle: 'From "AI that talks" to agents that work',
+      visionBody:
+        'Two years ago AI answered generic questions and got a lot wrong. Today, agents learn YOUR business specifically — your menu, your prices, your tone — and execute full tasks instead of just chatting. What used to need an employee, training, and months now installs onto your business in weeks.',
+      visionHonest:
+        'And in this site’s usual honesty: an agent is not magic and it does not make your decisions. It takes the repetitive work that eats your day — the judgement, the taste, and the relationships stay yours. That is exactly what the game below shows.',
+      faqTitle: 'The questions on your mind',
+      faqs: [
+        {
+          q: 'Do I need to be technical?',
+          a: 'No. You tell me what eats your time, I build the agent and hand it over working. Dealing with it is easier than training a new employee.',
+        },
+        {
+          q: 'What if it gets things wrong?',
+          a: 'We set clear boundaries from day one: anything the agent is not sure about gets handed to you instead of invented. Good automation knows its limits.',
+        },
+        {
+          q: 'How much does it cost?',
+          a: 'Depends on your business and the size of the tasks — and I never price before understanding your situation. Step one is a free diagnosis session, then a written fixed-price scope. No monthly subscriptions that bite forever.',
+        },
+      ],
+      endKicker: 'The service is being built right now',
+      endTitle: 'First in line, first to benefit',
+      endBody:
+        'The "AI agents & automation" service is about to open. Join the waitlist and I will tell you the moment it is ready — or if your project cannot wait, book a diagnosis session and we will see what can be automated today.',
+      ctaWait: 'Put me on the waitlist',
+      ctaBrief: 'Book a diagnosis session',
+    };
+
+const notifyHref = `${p}/services/ai-agents-automation/#notify`;
+const briefHref = `${p}/brief/`;
+---
+
+<Base title={`${t.seoTitle} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`} description={t.seoDesc} lang={lang}>
+  <Nav lang={lang} />
+
+  <main id="top" class="agp">
+    <div class="container">
+      <a class="agp-back" href={`${p}/`}>{t.back}</a>
+
+      <!-- ═══ ١) الخطاف ═══ -->
+      <header class="agp-hero">
+        <p class="agp-kicker" data-reveal>{t.kicker}</p>
+        <h1 data-reveal>{t.h1}</h1>
+        <p class="agp-sub" data-reveal>{t.sub}</p>
+        <a class="btn btn-primary" href="#agent-day" data-reveal>{t.heroCta}</a>
+      </header>
+
+      <!-- ═══ ٢) الوجع ═══ -->
+      <section class="agp-pain">
+        <h2 data-reveal>{t.painTitle}</h2>
+        <div class="agp-cards">
+          {
+            t.pains.map((c) => (
+              <div class="agp-card frame frame-on" data-reveal>
+                <span class="agp-ic" aria-hidden="true">{c.ic}</span>
+                <p>{c.x}</p>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- ═══ ٣) شو تغيّر بالعالم ═══ -->
+      <section class="agp-vision" data-reveal>
+        <p class="agp-kicker">{t.visionKicker}</p>
+        <h2>{t.visionTitle}</h2>
+        <p class="agp-body">{t.visionBody}</p>
+        <p class="agp-honest">{t.visionHonest}</p>
+      </section>
+    </div>
+
+    <!-- ═══ ٤) اللعبة — قلب القمع ═══ -->
+    <AgentDaySection lang={lang} cta={notifyHref} id="agent-day" />
+
+    <div class="container">
+      <!-- ═══ ٥) الأسئلة ═══ -->
+      <section class="agp-faq">
+        <h2 data-reveal>{t.faqTitle}</h2>
+        {
+          t.faqs.map((f) => (
+            <details class="agp-q" data-reveal>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </section>
+
+      <!-- ═══ ٦) الإجراء ═══ -->
+      <section class="agp-end frame frame-on" data-reveal>
+        <p class="agp-kicker">{t.endKicker}</p>
+        <h2>{t.endTitle}</h2>
+        <p class="agp-body">{t.endBody}</p>
+        <div class="agp-actions">
+          <a class="btn btn-primary" href={notifyHref}>{t.ctaWait}</a>
+          <a class="btn btn-ghost" href={briefHref}>{t.ctaBrief}</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer lang={lang} />
+</Base>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .agp {
+    padding-top: clamp(90px, 12vh, 130px);
+  }
+
+  .agp-back {
+    display: inline-block;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: clamp(20px, 3vh, 34px);
+    transition: color 0.25s var(--ease-out);
+  }
+
+  .agp-back:hover {
+    color: var(--text);
+  }
+
+  .agp-kicker {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  /* ─── الخطاف ─── */
+  .agp-hero {
+    max-width: 780px;
+    margin-bottom: clamp(48px, 7vh, 80px);
+  }
+
+  .agp-hero h1 {
+    font-size: clamp(30px, 4.6vw, 56px);
+    font-weight: 800;
+    line-height: 1.35;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .agp-sub {
+    font-size: clamp(15.5px, 1.8vw, 18px);
+    line-height: 1.85;
+    color: var(--muted);
+    max-width: 60ch;
+    margin-bottom: 22px;
+  }
+
+  /* ─── الوجع ─── */
+  .agp-pain {
+    margin-bottom: clamp(48px, 7vh, 80px);
+  }
+
+  .agp-pain h2,
+  .agp-vision h2,
+  .agp-faq h2,
+  .agp-end h2 {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 18px;
+  }
+
+  .agp-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .agp-card {
+    border-radius: var(--r-card);
+    padding: 20px;
+  }
+
+  .agp-ic {
+    display: block;
+    font-size: 26px;
+    margin-bottom: 12px;
+  }
+
+  .agp-card p {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  /* ─── الرؤية ─── */
+  .agp-vision {
+    max-width: 720px;
+    margin-bottom: clamp(30px, 4vh, 48px);
+  }
+
+  .agp-body {
+    font-size: 15.5px;
+    line-height: 1.9;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .agp-honest {
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--text);
+    border-inline-start: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+    padding: 14px 18px;
+  }
+
+  /* ─── الأسئلة ─── */
+  .agp-faq {
+    max-width: 720px;
+    margin-block: clamp(40px, 6vh, 70px);
+  }
+
+  .agp-q {
+    border-bottom: 1px solid var(--line);
+    padding-block: 4px;
+  }
+
+  .agp-q summary {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--text);
+    padding-block: 14px;
+    cursor: pointer;
+    list-style-position: inside;
+  }
+
+  .agp-q summary:hover {
+    color: var(--accent);
+  }
+
+  .agp-q p {
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--muted);
+    padding: 0 20px 16px;
+  }
+
+  /* ─── الإجراء ─── */
+  .agp-end {
+    border-radius: var(--r-card);
+    padding: clamp(24px, 3.5vw, 40px);
+    margin-bottom: clamp(50px, 7vh, 90px);
+    max-width: 860px;
+  }
+
+  .agp-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 760px) {
+    .agp-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

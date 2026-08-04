@@ -70,6 +70,30 @@ for (const path of PAGES) {
 await page.goto(BASE + '/ar/services/websites/', { waitUntil: 'networkidle' });
 check((await page.locator('[data-agent-day]').count()) === 0, 'ما بتظهر بصفحة خدمة ثانية');
 
+// ─── صفحة الهبوط /agent/ (القمع) ───
+for (const path of ['/ar/agent/', '/agent/']) {
+  console.log(`\n${path}`);
+  await page.goto(BASE + path, { waitUntil: 'networkidle' });
+  check((await page.locator('[data-agent-day]').count()) === 1, 'اللعبة بقلب القمع');
+  check((await page.locator('.agp-card').count()) === 3, 'بطاقات الوجع الثلاث');
+  check((await page.locator('.agp-q').count()) === 3, 'أسئلة القمع الثلاثة');
+  const cta = await page.locator('.agp-end a.btn-primary').getAttribute('href');
+  check((cta || '').includes('/services/ai-agents-automation/#notify'), `زر النهاية بيودي عالقائمة (${cta})`);
+  const gameCta = await page.locator('[data-agent-day] .ag-actions a').getAttribute('href');
+  check((gameCta || '').includes('#notify'), 'وزر اللعبة نفسها كمان');
+}
+
+// ─── بطاقة الرئيسية ───
+for (const [home, target] of [
+  ['/ar/', '/ar/agent/'],
+  ['/', '/agent/'],
+]) {
+  await page.goto(BASE + home, { waitUntil: 'networkidle' });
+  const tz = page.locator('.agt-card');
+  check((await tz.count()) === 1, `بطاقة الوكيل موجودة بـ ${home}`);
+  check((await tz.getAttribute('href')) === target, `وبتودي على ${target}`);
+}
+
 // لقطات (عربي)
 await page.goto(BASE + PAGES[0], { waitUntil: 'networkidle' });
 const b2 = page.locator('[data-agent-day]');
