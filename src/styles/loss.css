@@ -52,6 +52,17 @@ html[lang='ar'] .loss h2 {
   margin-bottom: var(--gap);
 }
 
+/* ⚠️ بلا min-width: 0، أطول خيار بقائمة الاختيار (nowrap) بيفرض عرضه
+   الأدنى على الحقل والعمود كله — فالحاسبة بتطلع برا الشاشة عالموبايل
+   مع تكبير خط النظام، والقيم الليمونية بتنقص (ملاحظة ريّان
+   2026-08-04). هدول بيسمحوا للحقول تنكمش وبيصير الـ ellipsis جوّا
+   زر القائمة يشتغل. */
+.loss-grid > *,
+.loss-field,
+.loss-field .sel {
+  min-width: 0;
+}
+
 /* ─── المدخلات ─── */
 .loss-inputs {
   display: grid;
@@ -62,7 +73,10 @@ html[lang='ar'] .loss h2 {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
+  /* لو القيمة ما لحقت جنب التسمية (خط مكبّر/شاشة ضيقة) بتنزل سطر
+     لحالها بدل ما تنقص برا الشاشة */
+  flex-wrap: wrap;
+  gap: 4px 12px;
   font-size: 14px;
   font-weight: 600;
   color: var(--muted);

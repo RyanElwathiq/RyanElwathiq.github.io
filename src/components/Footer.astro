@@ -35,10 +35,24 @@ const services = [...servicesData.services]
     soon: s.soon === true,
   }));
 
-// مقالات اللغة الحالية من مجموعة المحتوى
-const posts = (await getCollection('blog'))
+// مقالات اللغة الحالية — الأحدث أولاً، وبالفوتر منعرض ٥ بس:
+// القائمة الكاملة بالعناوين الطويلة كانت ماكلة الصفحة (ملاحظة ريّان
+// 2026-08-04). الأرشيف كله وراه «كل الإشارات» + رابط «+N مقالة ثانية»،
+// وصفحة /signals/ بتضل بترتبط بكل مقالة من كل صفحة عبرهم.
+const FOOTER_POSTS = 5;
+const allPosts = (await getCollection('blog'))
   .filter((e) => e.id.startsWith(isAr ? 'ar-' : 'en-'))
+  .sort((a, b) => +new Date(b.data.date) - +new Date(a.data.date));
+const posts = allPosts
+  .slice(0, FOOTER_POSTS)
   .map((e) => ({ label: e.data.title, href: `${p}/signals/${e.id}/` }));
+const restPosts = allPosts.length - posts.length;
+// قاعدة العدد بالعربي: ٣-١٠ جمع («مقالات»)، ١١+ مفرد («مقالة»)
+const postWord = restPosts >= 3 && restPosts <= 10 ? 'مقالات' : 'مقالة';
+const morePosts =
+  restPosts > 0
+    ? [{ label: isAr ? `+ ${restPosts} ${postWord} ثانية` : `+ ${restPosts} more articles`, href: `${p}/signals/` }]
+    : [];
 
 // ─── الأعمدة ───
 const cols = isAr
@@ -57,7 +71,7 @@ const cols = isAr
       { head: 'الخدمات', links: services },
       {
         head: 'إشارات',
-        links: [{ label: 'كل الإشارات', href: '/ar/signals/' }, ...posts],
+        links: [{ label: 'كل الإشارات', href: '/ar/signals/' }, ...posts, ...morePosts],
       },
       {
         head: 'أدوات وتواصل',
@@ -86,7 +100,7 @@ const cols = isAr
       { head: 'Services', links: services },
       {
         head: 'Signals',
-        links: [{ label: 'All signals', href: '/signals/' }, ...posts],
+        links: [{ label: 'All signals', href: '/signals/' }, ...posts, ...morePosts],
       },
       {
         head: 'Tools & contact',
@@ -167,10 +181,25 @@ const cols = isAr
     margin: 0;
     padding: 0;
     display: grid;
+    /* ⚠️ minmax(0, 1fr) ضرورية مع روابط السطر الواحد: العمود التلقائي
+       بيتمدد لعرض أطول عنوان (nowrap) قبل ما الـ ellipsis تشتغل —
+       فبيصير سحب أفقي مخفي بعرض الصفحة كلها */
+    grid-template-columns: minmax(0, 1fr);
     gap: 9px;
   }
 
+  .col {
+    min-width: 0;
+  }
+
   .col a {
+    /* سطر واحد لكل رابط مع قصّة أنيقة (…) — عناوين المقالات طويلة
+       عن قصد، والفوتر مش مكان التفافها على ثلاث أسطر */
+    display: block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 13.5px;
     line-height: 1.5;
     color: var(--muted);
