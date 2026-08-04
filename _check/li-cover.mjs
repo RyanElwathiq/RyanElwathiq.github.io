@@ -36,7 +36,7 @@ const html = `<!doctype html><html dir="rtl"><head><meta charset="utf-8"><style>
   <div style="padding-inline:110px 120px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:60px">
     <div style="max-width:900px">
       <p style="font-size:30px;font-weight:700;color:${ACCENT};margin-bottom:14px">Full Stack Marketer</p>
-      <h1 style="font-size:52px;font-weight:800;line-height:1.45">ما ببيع بوستات. بشخّص ليش مشروعك مش عم يبيع، وبعدها منبني.</h1>
+      <h1 style="font-size:52px;font-weight:800;line-height:1.45">ما ببيع بوستات. بشخّص ليش مشروعك مش عم يبيع، وبعدها ببني.</h1>
       <p style="font-family:'Grotesk','Alexandria',sans-serif;font-size:27px;font-weight:600;color:${MUTED};margin-top:16px;direction:ltr;text-align:right">ryanalali.me</p>
     </div>
     <img src="${logo}" style="width:120px;height:120px;opacity:.95;flex-shrink:0">
