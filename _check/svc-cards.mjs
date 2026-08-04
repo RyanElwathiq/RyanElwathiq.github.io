@@ -12,8 +12,12 @@
 import { chromium } from '@playwright/test';
 import { mkdirSync, readFileSync } from 'fs';
 
+// ⚠️ درس 2026-08-04: ميديا صفحة الخدمات بلينكدإن بتنعرض بإطار
+//    عريض وبتقص المربع — فالرفع من نسخ wide، والمربع بيضل للبوستات
 const OUT = 'D:/Ryan-Work/Brand-Ryan/Social/LinkedIn/ServicePage';
+const OUT_SQ = 'D:/Ryan-Work/Brand-Ryan/Social/LinkedIn/Cards-Square';
 mkdirSync(OUT, { recursive: true });
+mkdirSync(OUT_SQ, { recursive: true });
 
 const logo = 'data:image/png;base64,' + readFileSync('public/assets/logo-white.png').toString('base64');
 const img64 = (p) => 'data:image/webp;base64,' + readFileSync(`public/assets/work/${p}`).toString('base64');
@@ -126,6 +130,49 @@ const svcHtml = (c) => `${head}
   ${footer}
 </body></html>`;
 
+// ─── القوالب العريضة (1536×804) — النص يمين والشغل يسار ───
+const workHtmlW = (c) => `${head}
+<body style="width:1536px;height:804px;background:radial-gradient(70% 110% at 90% 0%, ${ACCENT}12, transparent 60%), ${BG};
+  font-family:'Alexandria',system-ui,sans-serif;color:#F2F3EE;display:flex;gap:44px;padding:56px 64px;position:relative;overflow:hidden">
+  ${signal(26)}
+  <div style="width:430px;flex-shrink:0;display:flex;flex-direction:column">
+    <span style="align-self:flex-start;font-size:21px;font-weight:700;color:${ACCENT};border:2px solid ${ACCENT}55;border-radius:999px;padding:7px 20px;margin-bottom:22px">${c.chip}</span>
+    <h1 style="font-size:42px;font-weight:800;line-height:1.4;margin-bottom:12px">${c.title}</h1>
+    <p style="font-size:21px;color:${MUTED};line-height:1.7">${c.line}</p>
+    <div style="margin-top:auto;display:flex;align-items:center;gap:16px">
+      <img src="${logo}" style="width:56px;height:56px;opacity:.95">
+      <span style="font-family:'Grotesk','Alexandria',sans-serif;font-size:23px;font-weight:600;color:${MUTED};direction:ltr">ryanalali.me</span>
+    </div>
+  </div>
+  <div style="flex:1;display:flex;gap:16px;min-width:0">
+    ${c.imgs
+      .map(
+        (p) =>
+          `<div style="flex:1;border:2px solid ${ACCENT}66;border-radius:22px;overflow:hidden;box-shadow:0 0 50px ${ACCENT}22;background:#15161A"><img src="${
+            p.startsWith('D:') ? raw64(p) : img64(p)
+          }" style="width:100%;height:100%;object-fit:${c.fit || 'cover'};display:block"></div>`,
+      )
+      .join('')}
+  </div>
+</body></html>`;
+
+const svcHtmlW = (c) => `${head}
+<body style="width:1536px;height:804px;background:radial-gradient(70% 110% at 90% 0%, ${ACCENT}14, transparent 60%), ${BG};
+  font-family:'Alexandria',system-ui,sans-serif;color:#F2F3EE;display:flex;gap:70px;padding:78px 84px;position:relative;overflow:hidden">
+  ${signal(26)}
+  <div style="width:600px;flex-shrink:0;display:flex;flex-direction:column">
+    <p style="font-size:26px;font-weight:700;color:${ACCENT};margin-bottom:22px">${c.kicker}</p>
+    <h1 style="font-size:62px;font-weight:800;line-height:1.4;white-space:pre-line">${c.title}</h1>
+    <div style="margin-top:auto;display:flex;align-items:center;gap:16px">
+      <img src="${logo}" style="width:56px;height:56px;opacity:.95">
+      <span style="font-family:'Grotesk','Alexandria',sans-serif;font-size:23px;font-weight:600;color:${MUTED};direction:ltr">ryanalali.me</span>
+    </div>
+  </div>
+  <ul style="list-style:none;padding:0;margin:auto 0;display:grid;gap:22px;flex:1">
+    ${c.points.map((p) => `<li style="display:flex;gap:16px;align-items:baseline;font-size:30px;line-height:1.65;color:#E8EAE3"><span style="color:${ACCENT};font-weight:800">·</span><span>${p}</span></li>`).join('')}
+  </ul>
+</body></html>`;
+
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1080, height: 1080 } });
 await page.route('http://post.local/**', async (route) => {
@@ -135,19 +182,23 @@ await page.route('http://post.local/**', async (route) => {
 });
 await page.goto('http://post.local/');
 
-for (const c of WORK) {
-  await page.setContent(workHtml(c), { waitUntil: 'networkidle' });
+const shoot = async (html, path) => {
+  await page.setContent(html, { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(250);
-  await page.screenshot({ path: `${OUT}/${c.name}.png` });
-  console.log(`✅ ${c.name}.png`);
-}
-for (const c of SVC) {
-  await page.setContent(svcHtml(c), { waitUntil: 'networkidle' });
-  await page.evaluate(() => document.fonts.ready);
-  await page.waitForTimeout(250);
-  await page.screenshot({ path: `${OUT}/${c.name}.png` });
-  console.log(`✅ ${c.name}.png`);
-}
+  await page.screenshot({ path });
+  console.log(`✅ ${path.split('/').pop()}`);
+};
+
+// العريض (للرفع بلينكدإن)
+await page.setViewportSize({ width: 1536, height: 804 });
+for (const c of WORK) await shoot(workHtmlW(c), `${OUT}/${c.name}.png`);
+for (const c of SVC) await shoot(svcHtmlW(c), `${OUT}/${c.name}.png`);
+
+// المربع (للبوستات لاحقاً)
+await page.setViewportSize({ width: 1080, height: 1080 });
+for (const c of WORK) await shoot(workHtml(c), `${OUT_SQ}/${c.name}.png`);
+for (const c of SVC) await shoot(svcHtml(c), `${OUT_SQ}/${c.name}.png`);
+
 await browser.close();
-console.log('المخرجات:', OUT);
+console.log('العريض:', OUT, '· المربع:', OUT_SQ);
