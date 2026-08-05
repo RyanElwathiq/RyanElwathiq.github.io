@@ -18,10 +18,11 @@ interface Props {
 const { film, dur, lang } = Astro.props;
 const playLabel = lang === 'ar' ? 'شغّل الفيديو' : 'Play the video';
 
-// ⚠️ رقم النسخة بيكسر الكاش: رابط الفيديو تغيّر محتواه (صامت ← بالصوت)
-//    والمتصفحات اللي كاشيته قديم علقت على 0:00. زيد الرقم مع أي
-//    استبدال ملف مستقبلي.
-const V = '2';
+// ⚠️ قصة المجلد /lpf/ (2026-08-05): الملفات القديمة بـ /lp/ تبدّل
+//    محتواها تحت نفس الروابط (صامت ← بالصوت) فكاش كلاودفلير علق
+//    ماسك نسخ قديمة والفيديو بيجمد على 0:00 إلا بـ Shift+F5.
+//    القاعدة للأبد: أي تغيير بمحتوى فيديو = اسم ملف جديد بالكامل،
+//    بلا ?v — نفس مبدأ فيلم الرئيسية (رابط نظيف ثابت المحتوى).
 ---
 
 <div class="lpf" data-lpfilm>
@@ -33,10 +34,10 @@ const V = '2';
   <div class="lpf-screen">
     <video
       data-lpf-video
-      poster={`/assets/lp/${film}-poster.jpg?v=${V}`}
+      poster={`/assets/lpf/${film}-poster.jpg`}
       preload="none"
       playsinline
-      src={`/assets/lp/${film}.mp4?v=${V}`}></video>
+      src={`/assets/lpf/${film}.mp4`}></video>
 
     <button type="button" class="lpf-cover" data-lpf-play aria-label={playLabel}>
       <span class="lpf-btn">
