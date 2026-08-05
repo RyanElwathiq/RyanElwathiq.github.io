@@ -2,7 +2,7 @@
 import { chromium } from '@playwright/test';
 const b = await chromium.launch();
 const p = await b.newPage({ viewport: { width: 1280, height: 800 } });
-await p.goto('http://localhost:4330/', { waitUntil: 'load' });
+await p.goto('https://ryanalali.me/', { waitUntil: 'load' });
 await p.waitForTimeout(2000);
 // التنقل من القائمة (client-side navigation) للخدمات ثم المواقع
 await p.evaluate(() => { const a = [...document.querySelectorAll('a')].find((x) => x.href.endsWith('/services/')); a?.click(); });
