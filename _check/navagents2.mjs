@@ -1,14 +1,17 @@
-// فحص ما قبل النشر: تنقل ناعم رئيسية ← خدمات ← وكلاء AI ثم كبسة الفيديو (البناء المحلي)
+// فحص ما قبل النشر: تنقل ناعم رئيسية ← خدمات ← صفحة خدمة ثم كبسة الفيديو (البناء المحلي)
 // نفس فلو مشكلة ريّان اللي انصلحت بـ video.load()
+// التشغيل: node _check/navagents2.mjs <base> [slug] [ar|en]
 import { chromium } from '@playwright/test';
 const BASE = process.argv[2] || 'http://localhost:4321';
+const SLUG = process.argv[3] || 'ai-agents-automation';
+const L = process.argv[4] === 'en' ? '' : '/ar';
 const b = await chromium.launch();
 const p = await b.newPage({ viewport: { width: 1280, height: 800 } });
-await p.goto(`${BASE}/ar/`, { waitUntil: 'load' });
+await p.goto(`${BASE}${L}/`, { waitUntil: 'load' });
 await p.waitForTimeout(2000);
-await p.evaluate(() => { const a = [...document.querySelectorAll('a')].find((x) => x.href.endsWith('/ar/services/')); a?.click(); });
+await p.evaluate((l) => { const a = [...document.querySelectorAll('a')].find((x) => x.href.endsWith(`${l}/services/`)); a?.click(); }, L);
 await p.waitForTimeout(2500);
-await p.evaluate(() => { const a = [...document.querySelectorAll('a')].find((x) => x.href.includes('/services/ai-agents-automation/')); a?.click(); });
+await p.evaluate((slug) => { const a = [...document.querySelectorAll('a')].find((x) => x.href.includes(`/services/${slug}/`)); a?.click(); }, SLUG);
 await p.waitForTimeout(2500);
 const nav = await p.evaluate(() => location.pathname);
 await p.evaluate(() => document.querySelector('[data-lpfilm]')?.scrollIntoView({ block: 'center' }));
