@@ -1,0 +1,192 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  فيديو صفحة الهبوط الممولة (2026-08-05) — نفس فلسفة فيلم
+//  الرئيسية بالضبط (طلب ريّان): غطاء + زر تشغيل نابض + زوايا
+//  فيوفايندر ليمونية، والكبسة بتشغل بالصوت.
+//
+//  ⚠️ بلا تشغيل تلقائي أبداً — المتصفحات بتوقفه بوضع توفير
+//     البطارية/البيانات وبتضل الصورة جامدة بلا أي زر (صار مع
+//     ريّان فعلياً). preload=none: ولا بايت قبل الكبسة.
+//  ✏️ الملفات: public/assets/lp/<film>.mp4 + <film>-poster.jpg
+//  ✏️ خط الإنتاج: _check/promolp.mjs + مجلدات Promo-LP
+// ═══════════════════════════════════════════════════════════════
+interface Props {
+  film: string; // اسم الملف بلا امتداد جوّا /assets/lp/
+  dur: string; // المدة المعروضة عالشيبة (مثلاً «٠:٢٤»)
+  lang: 'en' | 'ar';
+}
+const { film, dur, lang } = Astro.props;
+const playLabel = lang === 'ar' ? 'شغّل الفيديو' : 'Play the video';
+---
+
+<div class="lpf" data-lpfilm>
+  <span class="lpf-c lpf-c1" aria-hidden="true"></span>
+  <span class="lpf-c lpf-c2" aria-hidden="true"></span>
+  <span class="lpf-c lpf-c3" aria-hidden="true"></span>
+  <span class="lpf-c lpf-c4" aria-hidden="true"></span>
+
+  <div class="lpf-screen">
+    <video
+      data-lpf-video
+      poster={`/assets/lp/${film}-poster.jpg`}
+      preload="none"
+      playsinline
+      src={`/assets/lp/${film}.mp4`}></video>
+
+    <button type="button" class="lpf-cover" data-lpf-play aria-label={playLabel}>
+      <span class="lpf-btn">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M8 5v14l11-7z"></path>
+        </svg>
+      </span>
+      <span class="lpf-chip">{dur}</span>
+    </button>
+  </div>
+</div>
+
+<script is:inline>
+  // ═══ نفس منطق فيلم الرئيسية: كبسة ← الغطاء بيختفي والصوت بيشتغل ═══
+  (function () {
+    function boot() {
+      document.querySelectorAll('[data-lpfilm]').forEach(function (stage) {
+        if (stage.dataset.ready === '1') return;
+        stage.dataset.ready = '1';
+        var video = stage.querySelector('[data-lpf-video]');
+        var cover = stage.querySelector('[data-lpf-play]');
+        if (!video || !cover) return;
+
+        cover.addEventListener('click', function () {
+          cover.hidden = true;
+          video.controls = true;
+          video.play();
+          // قياس: كم زائر ممول شغّل فيديو صفحته
+          if (window.gtag)
+            window.gtag('event', 'lp_film_play', {
+              film: (video.currentSrc || '').split('/').pop(),
+            });
+        });
+
+        video.addEventListener('ended', function () {
+          video.controls = false;
+          cover.hidden = false;
+        });
+      });
+    }
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  .lpf {
+    position: relative;
+    max-width: 1000px;
+    margin-inline: auto;
+    padding: clamp(12px, 1.8vw, 20px);
+  }
+
+  .lpf::before {
+    content: '';
+    position: absolute;
+    inset: -8%;
+    background: radial-gradient(55% 55% at 50% 50%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+
+  .lpf-c {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--accent);
+    opacity: 0.9;
+  }
+
+  .lpf-c1 { top: 0; inset-inline-start: 0; border-bottom: 0; border-inline-end: 0; }
+  .lpf-c2 { top: 0; inset-inline-end: 0; border-bottom: 0; border-inline-start: 0; }
+  .lpf-c3 { bottom: 0; inset-inline-start: 0; border-top: 0; border-inline-end: 0; }
+  .lpf-c4 { bottom: 0; inset-inline-end: 0; border-top: 0; border-inline-start: 0; }
+
+  .lpf-screen {
+    position: relative;
+    border-radius: var(--r-card);
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+    aspect-ratio: 16 / 9;
+    background: #000;
+  }
+
+  .lpf-screen video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  .lpf-cover {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, rgba(14, 15, 18, 0.05), rgba(14, 15, 18, 0.35));
+    border: 0;
+    cursor: pointer;
+    transition: background 0.3s var(--ease-out);
+  }
+
+  .lpf-cover:hover {
+    background: linear-gradient(180deg, rgba(14, 15, 18, 0), rgba(14, 15, 18, 0.25));
+  }
+
+  /* ⚠️ نفس فخ [hidden] مع display — الغطاء بيختفي بالجافاسكربت */
+  .lpf-cover[hidden] {
+    display: none;
+  }
+
+  .lpf-btn {
+    display: grid;
+    place-items: center;
+    width: 84px;
+    height: 84px;
+    border-radius: var(--r-pill);
+    background: var(--accent);
+    color: var(--accent-ink, #0e0f12);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 45%, transparent);
+    animation: lpf-pulse 2.2s infinite;
+    transition: transform 0.25s var(--ease-out);
+  }
+
+  html[dir='rtl'] .lpf-btn svg {
+    transform: scaleX(-1);
+  }
+
+  .lpf-cover:hover .lpf-btn {
+    transform: scale(1.07);
+  }
+
+  @keyframes lpf-pulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 40%, transparent); }
+    70% { box-shadow: 0 0 0 24px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+
+  .lpf-chip {
+    position: absolute;
+    bottom: 14px;
+    inset-inline-end: 16px;
+    font-family: var(--font-en);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    background: rgba(14, 15, 18, 0.72);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 5px 14px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lpf-btn {
+      animation: none;
+    }
+  }
+</style>

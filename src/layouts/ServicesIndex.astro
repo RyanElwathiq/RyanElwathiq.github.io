@@ -12,6 +12,7 @@ import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Particles from '../components/Particles.astro';
+import LpFilm from '../components/LpFilm.astro';
 import servicesData from '../data/services.json';
 
 interface Props {
@@ -93,18 +94,14 @@ const schema = [
       <!-- زر تحويل فوق الطية — صفحة الهبوط للمجموعة الإعلانية العامة (2026-08-05) -->
       <a class="btn hero-btn" href={`${p}/brief/`} data-reveal>{t.heroCta}</a>
 
-      <!-- فيديو الهبوط الممول: تشغيل صامت بيلف، النص جوّاه فما بده صوت -->
-      <video
-        class="lp-video"
-        src="/assets/lp/lp-services.mp4"
-        poster="/assets/lp/lp-services-poster.jpg"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="metadata"
-        aria-hidden="true"
-      />
+      <!-- فيديو الهبوط الممول: نفس فلسفة فيلم الرئيسية — كبسة بتشغل بالصوت -->
+      {
+        isAr && (
+          <div class="lp-wrap">
+            <LpFilm film="lp-services" dur="٠:٢٤" lang={lang} />
+          </div>
+        )
+      }
 
       <div class="grid" data-stagger>
         {services.map((s, i) => (
@@ -434,16 +431,7 @@ const schema = [
   }
   .btn:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--accent) 85%, #fff); }
   .hero-btn { margin: 4px 0 40px; }
-
-  .lp-video {
-    display: block;
-    width: 100%;
-    max-width: 920px;
-    margin: 0 auto 52px;
-    border-radius: 18px;
-    border: 1.5px solid color-mix(in srgb, var(--accent) 22%, transparent);
-    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.5);
-  }
+  .lp-wrap { margin: 0 0 52px; }
 
   @media (max-width: 780px) {
     .grid { grid-template-columns: 1fr; }
