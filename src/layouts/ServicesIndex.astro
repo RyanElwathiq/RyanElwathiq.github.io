@@ -93,6 +93,19 @@ const schema = [
       <!-- زر تحويل فوق الطية — صفحة الهبوط للمجموعة الإعلانية العامة (2026-08-05) -->
       <a class="btn hero-btn" href={`${p}/brief/`} data-reveal>{t.heroCta}</a>
 
+      <!-- فيديو الهبوط الممول: تشغيل صامت بيلف، النص جوّاه فما بده صوت -->
+      <video
+        class="lp-video"
+        src="/assets/lp/lp-services.mp4"
+        poster="/assets/lp/lp-services-poster.jpg"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        aria-hidden="true"
+      />
+
       <div class="grid" data-stagger>
         {services.map((s, i) => (
           <a class="card" href={`${p}/services/${s.slug}/`}>
@@ -420,7 +433,17 @@ const schema = [
     transition: transform 0.3s var(--ease-out), background 0.3s var(--ease-out);
   }
   .btn:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--accent) 85%, #fff); }
-  .hero-btn { margin: 4px 0 44px; }
+  .hero-btn { margin: 4px 0 40px; }
+
+  .lp-video {
+    display: block;
+    width: 100%;
+    max-width: 920px;
+    margin: 0 auto 52px;
+    border-radius: 18px;
+    border: 1.5px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.5);
+  }
 
   @media (max-width: 780px) {
     .grid { grid-template-columns: 1fr; }

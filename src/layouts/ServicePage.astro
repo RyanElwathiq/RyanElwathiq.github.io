@@ -170,6 +170,12 @@ const site = Astro.site ?? new URL('https://ryanalali.me');
 //    يتكتب بإيدنا هون، لأنه لو تغيّر بينسى مكان وبيروح عميل لرقم ميت.
 const whatsapp = `https://wa.me/${work.links.phone.replace(/[^0-9]/g, '')}`;
 
+// فيديو الهبوط الممول (2026-08-05): تشغيل صامت بيلف تحت الهيرو —
+// بس للصفحتين اللي بتستقبلوا إعلانات جوجل. النص جوّا الفيديو نفسه
+// فما بده صوت، والحجم ~400KB لأنه مشاهد غامقة.
+const LP_FILMS: Record<string, string> = { websites: 'lp-websites', 'paid-ads': 'lp-paid-ads' };
+const lpFilm = LP_FILMS[service.slug];
+
 // ═══════════════════════════════════════════════════════════════
 //  البيانات المنظّمة
 //  • Service — بتقول لجوجل «هاي خدمة، مقدّمها فلان، بالأردن»
@@ -248,6 +254,25 @@ const schema = [
         </div>
       </div>
     </header>
+
+    {
+      lpFilm && (
+        <section class="lp-film" aria-hidden="true">
+          <div class="container">
+            <video
+              class="lp-video"
+              src={`/assets/lp/${lpFilm}.mp4`}
+              poster={`/assets/lp/${lpFilm}-poster.jpg`}
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            />
+          </div>
+        </section>
+      )
+    }
 
     <!-- ═══════════════════════════════════════════════════════════
          ١·٥ ليش هاي الخدمة أصلاً
@@ -781,6 +806,17 @@ const schema = [
   /* ─── الأزرار ─── */
   .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
   .hero-note { margin-top: 12px; font-size: 0.92rem; color: var(--muted); }
+
+  .lp-film { padding: 34px 0 4px; }
+  .lp-video {
+    display: block;
+    width: 100%;
+    max-width: 1100px;
+    margin-inline: auto;
+    border-radius: 20px;
+    border: 1.5px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  }
 
   .btn {
     display: inline-flex;
