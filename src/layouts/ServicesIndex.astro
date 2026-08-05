@@ -94,14 +94,11 @@ const schema = [
       <!-- زر تحويل فوق الطية — صفحة الهبوط للمجموعة الإعلانية العامة (2026-08-05) -->
       <a class="btn hero-btn" href={`${p}/brief/`} data-reveal>{t.heroCta}</a>
 
-      <!-- فيديو الهبوط الممول: نفس فلسفة فيلم الرئيسية — كبسة بتشغل بالصوت -->
-      {
-        isAr && (
-          <div class="lp-wrap">
-            <LpFilm film="lp-services" dur="٠:٢٤" lang={lang} />
-          </div>
-        )
-      }
+      <!-- فيديو الهبوط الممول: نفس فلسفة فيلم الرئيسية — كبسة بتشغل بالصوت.
+           لكل لغة نسختها من نفس خط الإنتاج -->
+      <div class="lp-wrap">
+        <LpFilm film={isAr ? 'lp-services' : 'lp-services-en'} dur={isAr ? '٠:٢٤' : '0:24'} lang={lang} />
+      </div>
 
       <div class="grid" data-stagger>
         {services.map((s, i) => (

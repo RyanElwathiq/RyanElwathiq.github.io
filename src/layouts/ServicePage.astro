@@ -172,13 +172,18 @@ const site = Astro.site ?? new URL('https://ryanalali.me');
 const whatsapp = `https://wa.me/${work.links.phone.replace(/[^0-9]/g, '')}`;
 
 // فيديو الهبوط الممول (2026-08-05): نفس فلسفة فيلم الرئيسية —
-// غطاء + زر نابض والكبسة بتشغل بالصوت. بس للصفحتين اللي بتستقبلوا
-// إعلانات جوجل، وبالعربي بس (الفيديوهات عربية).
-const LP_FILMS: Record<string, { film: string; dur: string }> = {
-  websites: { film: 'lp-websites', dur: '٠:٢٤' },
-  'paid-ads': { film: 'lp-paid-ads', dur: '٠:٢٥' },
-};
-const lpFilm = isAr ? LP_FILMS[service.slug] : undefined;
+// غطاء + زر نابض والكبسة بتشغل بالصوت. لكل لغة نسختها
+// (النسخ الإنجليزية انولدت من نفس خط الإنتاج بنفس الضربات).
+const LP_FILMS: Record<string, { film: string; dur: string }> = isAr
+  ? {
+      websites: { film: 'lp-websites', dur: '٠:٢٤' },
+      'paid-ads': { film: 'lp-paid-ads', dur: '٠:٢٥' },
+    }
+  : {
+      websites: { film: 'lp-websites-en', dur: '0:24' },
+      'paid-ads': { film: 'lp-paid-ads-en', dur: '0:25' },
+    };
+const lpFilm = LP_FILMS[service.slug];
 
 // ═══════════════════════════════════════════════════════════════
 //  البيانات المنظّمة

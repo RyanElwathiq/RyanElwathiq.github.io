@@ -19,6 +19,10 @@ interface Props {
 const { lang, id = 'showcase' } = Astro.props;
 const isAr = lang === 'ar';
 
+// النسخة الإنجليزية من الفيلم انولدت 2026-08-05 من نفس خط الإنتاج
+// (promoen/promocapen/promoediten) — نفس الموسيقى والضربات والمونتاج
+const src = isAr ? '/assets/promo/promo-ar.mp4' : '/assets/promo/promo-en.mp4';
+
 const t = isAr
   ? {
       eyebrow: 'الفيلم التعريفي',
@@ -56,7 +60,7 @@ const t = isAr
         poster="/assets/promo/promo-poster.jpg"
         preload="none"
         playsinline
-        src="/assets/promo/promo-ar.mp4"></video>
+        src={src}></video>
 
       <!-- غطاء التشغيل — بيختفي أول كبسة -->
       <button type="button" class="shw-cover" data-shw-play aria-label={t.play}>

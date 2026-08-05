@@ -10,6 +10,7 @@ import { homeSchema } from '../data/home-schema.js';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import Stats from '../components/Stats.astro';
+import Showcase from '../components/Showcase.astro';
 import About from '../components/About.astro';
 import WorkStrip from '../components/WorkStrip.astro';
 import CaseRows from '../components/CaseRows.astro';
@@ -74,17 +75,15 @@ const marks = [
     <Hero lang="en" />
     <Stats lang="en" />
 
-    <!-- ══════════════ ١) المشكلة ══════════════
-         الزائر لازم يعرف إنه عنده مشكلة قبل ما نعرض عليه حل.
-         «قدّيش عم تخسر» بتحوّل الغياب لرقم، و«عين البراند»
-         بتخلّيه يجرّب بعينه ليش تصميم بينجح وتصميم لأ. -->
+    <!-- ══════════════ ١) الفيلم ثم المشكلة ══════════════
+         نفس ترتيب الرئيسية العربية (2026-08-05): الفيلم بيعرّف
+         بسرعة، وبعده About بتثبّت، والحاسبة بتحوّل الغياب لرقم. -->
+    <Showcase lang="en" />
+    <About lang="en" />
     <LossSection lang="en" id="loss" />
     <BrandEyeSection lang="en" compact href="/work/luvit/#brand-eye" />
 
-    <!-- ══════════════ ٢) كيف بفكّر ══════════════
-         مين أنا، وشو بعرف، وكيف بفكّر بالميزانية وبالأفكار.
-         هون بينبني السبب اللي بيخلّي الشغل الجاي مقنع. -->
-    <About lang="en" />
+    <!-- ══════════════ ٢) كيف بفكّر ══════════════ -->
     <Skills lang="en" />
     <Seo lang="en" id="seo" />
     <Data lang="en" id="data" />
