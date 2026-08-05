@@ -17,6 +17,11 @@ interface Props {
 }
 const { film, dur, lang } = Astro.props;
 const playLabel = lang === 'ar' ? 'شغّل الفيديو' : 'Play the video';
+
+// ⚠️ رقم النسخة بيكسر الكاش: رابط الفيديو تغيّر محتواه (صامت ← بالصوت)
+//    والمتصفحات اللي كاشيته قديم علقت على 0:00. زيد الرقم مع أي
+//    استبدال ملف مستقبلي.
+const V = '2';
 ---
 
 <div class="lpf" data-lpfilm>
@@ -28,10 +33,10 @@ const playLabel = lang === 'ar' ? 'شغّل الفيديو' : 'Play the video';
   <div class="lpf-screen">
     <video
       data-lpf-video
-      poster={`/assets/lp/${film}-poster.jpg`}
+      poster={`/assets/lp/${film}-poster.jpg?v=${V}`}
       preload="none"
       playsinline
-      src={`/assets/lp/${film}.mp4`}></video>
+      src={`/assets/lp/${film}.mp4?v=${V}`}></video>
 
     <button type="button" class="lpf-cover" data-lpf-play aria-label={playLabel}>
       <span class="lpf-btn">
