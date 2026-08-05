@@ -89,6 +89,9 @@ const t = isAr
         cover.addEventListener('click', function () {
           cover.hidden = true;
           video.controls = true;
+          // ⚠️ نفس علاج LpFilm: التنقل الناعم بيكسر مصدر الفيديو
+          //    (error 4) — load() بتعيد ربطه بالمستند الحي قبل التشغيل
+          if (video.error || video.readyState === 0) video.load();
           video.play();
           // قياس: كم زائر شغّل الفيلم فعلاً
           if (window.gtag) window.gtag('event', 'promo_play', { event_category: 'engagement' });

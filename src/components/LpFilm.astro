@@ -64,6 +64,10 @@ const playLabel = lang === 'ar' ? 'شغّل الفيديو' : 'Play the video';
         cover.addEventListener('click', function () {
           cover.hidden = true;
           video.controls = true;
+          // ⚠️ التنقل الناعم بين الصفحات بيزرع عنصر الفيديو من مستند
+          //    خامل فمصدره بيفشل (error 4 / NO_SOURCE) — رصدها ريّان
+          //    2026-08-05. load() بتعيد اختيار المصدر بالمستند الحي.
+          if (video.error || video.readyState === 0) video.load();
           video.play();
           // قياس: كم زائر ممول شغّل فيديو صفحته
           if (window.gtag)
