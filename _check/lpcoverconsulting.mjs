@@ -41,11 +41,29 @@ const site169 = (isAr, h1, h2) => `<!doctype html><html dir="${isAr ? 'rtl' : 'l
      font-family:'Grotesk','Alexandria',sans-serif;font-size:26px;font-weight:600;color:${MUTED};direction:ltr">ryanalali<span style="color:${ACCENT}">.me</span></p>
 </body></html>`;
 
-// ─── غلاف الريلز 9:16 ───
-const reel = `<!doctype html><html dir="rtl"><head><meta charset="utf-8"><style>${fontFaces}
+// ─── غلاف الريلز 9:16 (عربي وإنجليزي) ───
+const REEL_T = {
+  ar: {
+    h1: 'أحياناً مش ناقصك موظّف.',
+    h2: 'ناقصك حدا يفهّمك.',
+    badge: '🎓 استشارة وتدريب',
+    line: ['بتدفع مقابل المعرفة، ', 'وبتضل معك', '.'],
+  },
+  en: {
+    h1: "Sometimes you don't need another hire.",
+    h2: 'You need someone to explain it.',
+    badge: '🎓 Consulting and training',
+    line: ['You pay for the knowledge, ', 'and it stays with you', '.'],
+  },
+};
+
+const reel = (lang) => {
+  const t = REEL_T[lang];
+  const isAr = lang === 'ar';
+  return `<!doctype html><html dir="${isAr ? 'rtl' : 'ltr'}"><head><meta charset="utf-8"><style>${fontFaces}
   *{margin:0;box-sizing:border-box}
   body{width:1080px;height:1920px;background:${BG};position:relative;overflow:hidden;
-       font-family:'Alexandria',sans-serif;color:#F2F3EE}
+       font-family:'${isAr ? 'Alexandria' : 'Grotesk'}','Alexandria',sans-serif;color:#F2F3EE}
   h1,h2{line-height:1.42}
 </style></head><body>
   <div style="position:absolute;inset:0;background:radial-gradient(70% 30% at 85% 4%, ${ACCENT}14, transparent 60%)"></div>
@@ -55,18 +73,19 @@ const reel = `<!doctype html><html dir="rtl"><head><meta charset="utf-8"><style>
   <!-- ⚠️ سطر عادي مش بقّة: البادج تحت العنوان بقّة كمان، وبقّتين
        قريبين من بعض بيبينوا مكررين وبياكلوا الهرمية -->
   <div style="position:absolute;top:1360px;left:0;right:0;text-align:center;padding:0 70px;
-       font-size:36px;font-weight:600;color:${MUTED};white-space:nowrap">بتدفع مقابل المعرفة، <span style="color:${ACCENT}">وبتضل معك</span>.</div>
+       font-size:${isAr ? 36 : 32}px;font-weight:600;color:${MUTED};white-space:nowrap">${t.line[0]}<span style="color:${ACCENT}">${t.line[1]}</span>${t.line[2]}</div>
   <svg viewBox="0 0 1080 60" style="position:absolute;top:1560px;left:0;width:100%;height:50px;opacity:.35">
     <path d="M0,30 Q135,6 270,30 T540,30 T810,30 T1080,30" fill="none" stroke="${ACCENT}" stroke-width="2.5"/></svg>
   <div style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;padding:0 56px">
-    <h1 style="font-size:72px;font-weight:800;text-shadow:0 6px 50px rgba(0,0,0,.95)">أحياناً مش ناقصك موظّف.</h1>
-    <h2 style="font-size:66px;font-weight:800;color:${ACCENT};margin-top:18px;text-shadow:0 6px 50px rgba(0,0,0,.95)">ناقصك حدا يفهّمك.</h2>
+    <h1 style="font-size:${isAr ? 72 : 64}px;font-weight:800;text-shadow:0 6px 50px rgba(0,0,0,.95)">${t.h1}</h1>
+    <h2 style="font-size:${isAr ? 66 : 58}px;font-weight:800;color:${ACCENT};margin-top:18px;text-shadow:0 6px 50px rgba(0,0,0,.95)">${t.h2}</h2>
     <div style="display:inline-block;margin-top:52px;font-size:33px;font-weight:700;
-      border:2px solid ${ACCENT}88;border-radius:999px;padding:16px 44px;background:#12141AEE">🎓 استشارة وتدريب</div>
+      border:2px solid ${ACCENT}88;border-radius:999px;padding:16px 44px;background:#12141AEE">${t.badge}</div>
   </div>
   <p style="position:absolute;bottom:140px;left:0;right:0;text-align:center;
      font-family:'Grotesk','Alexandria',sans-serif;font-size:34px;font-weight:600;color:${MUTED};direction:ltr">ryanalali<span style="color:${ACCENT}">.me</span></p>
 </body></html>`;
+};
 
 const browser = await chromium.launch();
 
@@ -98,10 +117,15 @@ await p916.route('http://post.local/**', async (route) => {
   route.fulfill({ body: '', contentType: 'text/html' });
 });
 await p916.goto('http://post.local/');
-await p916.setContent(reel, { waitUntil: 'networkidle' });
-await p916.evaluate(() => document.fonts.ready);
-await p916.waitForTimeout(200);
-await p916.screenshot({ path: `${LP}/video-10-consulting/reel-cover.png` });
-console.log('✅ video-10-consulting/reel-cover.png');
+for (const [file, lang] of [
+  ['reel-cover.png', 'ar'],
+  ['reel-cover-en.png', 'en'],
+]) {
+  await p916.setContent(reel(lang), { waitUntil: 'networkidle' });
+  await p916.evaluate(() => document.fonts.ready);
+  await p916.waitForTimeout(200);
+  await p916.screenshot({ path: `${LP}/video-10-consulting/${file}` });
+  console.log('✅ video-10-consulting/' + file);
+}
 
 await browser.close();
