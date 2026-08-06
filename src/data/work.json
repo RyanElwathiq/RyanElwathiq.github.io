@@ -313,8 +313,36 @@
    "coverEn": "/assets/work/covers/asimah-en.webp",
    "coverEnWide": "/assets/work/covers/asimah-en-wide.webp",
    "coverOld": "/assets/project-asimah.png",
-   "desc": "Trained account managers on Meta Ads setup, objectives, targeting, budgets, and A/B testing, enabling the team to launch full paid campaigns.",
-   "descAr": "تدريب مدراء الحسابات على إعداد إعلانات ميتا: الأهداف، الاستهداف، الميزانيات، واختبارات A/B، حتى قدر الفريق يطلق حملات مدفوعة كاملة.",
+   "desc": "Trained the in-house marketing team on Meta Ads: objectives, targeting, budgets, and A/B testing, until they could run full campaigns themselves. Art direction and quality control on the seasonal destination campaigns, plus recovering their hacked accounts.",
+   "descAr": "تدريب فريق التسويق الداخلي على إعلانات ميتا: الأهداف، الاستهداف، الميزانيات، واختبارات A/B، لحد ما صاروا يطلقوا حملات كاملة بنفسهم. وتوجيه فني ومراقبة جودة على حملات الوجهات الموسمية، واسترجاع حساباتهم بعد الاختراق.",
+   "seoDesc": "تدريب فريق تسويق شركة سياحة وسفر بالأردن على إدارة إعلانات ميتا، مع توجيه فني ومراقبة جودة على تصاميم حملات الوجهات، واسترجاع الحسابات المخترقة.",
+   "credit": {
+    "name": "عماد ايرباش · Emad Airbash",
+    "roleAr": "مصمم حملات الوجهات. الفضل بالتصميم إله، ودوري كان التوجيه ومراقبة الجودة وضمان تناسق الهوية عبر الحملات.",
+    "roleEn": "Designer of the destination campaigns. The design work is his. My role was direction, quality control, and keeping the identity consistent across campaigns."
+   },
+   "gallery": [
+    "/assets/work/asimah/asimah-01.webp",
+    "/assets/work/asimah/asimah-02.webp",
+    "/assets/work/asimah/asimah-03.webp",
+    "/assets/work/asimah/asimah-04.webp",
+    "/assets/work/asimah/asimah-05.webp",
+    "/assets/work/asimah/asimah-06.webp"
+   ],
+   "storyAr": {
+    "vision": "شركة سياحة وسفر بتبيع وجهات موسمية: أذربيجان وجورجيا وشرم الشيخ واسطنبول وأنطاليا والغردقة. السوق بيتحرك بسرعة، والوجهة اللي بتبيع هالشهر ممكن تبرد الشهر الجاي. فالحاجة ما كانت حملة وحدة، كانت فريق يقدر يطلق حملة كل ما تتغير الوجهة، بلا ما يستنى حدا من برا.",
+    "goal": "إنه الفريق الداخلي يمشي لحاله: يبني الحملة، يختار الجمهور، يوزع الميزانية، ويقرأ الأرقام بعدها. والتصاميم تضل متناسقة مهما تغيرت الوجهة، عشان الزبون يعرف الحساب من أول نظرة قبل ما يقرا الاسم.",
+    "challenge": "تحديان مختلفان تماماً. الأول تعليمي: ناس شاطرة بشغلها بس ما إلها خلفية بمنصات الإعلانات، والتدريب لازم يكون بلغتهم مش بلغة ميتا. والثاني أمني: الحسابات انسرقت، والوصول ضاع، وهاد بيوقف كل شي مهما كانت الخطة حلوة.",
+    "approach": "بدأت بتدريب عملي على حسابهم الحقيقي مش على أمثلة: بنينا حملات سوا خطوة خطوة، وشرحت ليش كل خيار مش بس كيف. وبالتصميم اشتغلت توجيه فني ومراقبة جودة: نظام ثابت للوجهة الواحدة (صورة المكان، اسم الوجهة بخط واضح، شريط التواصل، الهوية بمكانها) عشان أي وجهة جديدة تنعمل بنفس القالب وتضل عيلة وحدة. والتصاميم نفذها المصمم عماد ايرباش، وشغله هو اللي بيبين بالمعرض فوق. واسترجعت الحسابات المخترقة ورجعت الوصول لأصحابه.",
+    "result": "الفريق صار يطلق حملات كاملة بنفسه، والحسابات رجعت لأصحابها، والحملات صارت تنعمل بنظام واحد بدل ما كل وجهة تطلع بشكل مختلف. وبصراحة: سلّمتهم كمان توصيات كثيرة للمرحلة اللي بعدها، وما بعرف إذا نفذوها ولا لأ. اللي بضمنه إنه الفريق صار يقدر يعملها بنفسه، وهاي كانت الغاية من البداية."
+   },
+   "story": {
+    "vision": "A travel agency selling seasonal destinations: Azerbaijan, Georgia, Sharm El Sheikh, Istanbul, Antalya, Hurghada. The market moves fast, and the destination that sells this month can go cold the next. So the need was not one campaign, it was a team that could launch a new one every time the destination changed, without waiting for anyone outside.",
+    "goal": "Make the in-house team self-sufficient: build the campaign, pick the audience, split the budget, and read the numbers afterwards. And keep the designs consistent no matter which destination came next, so the account is recognisable before the name is even read.",
+    "challenge": "Two very different problems. One educational: capable people with no background in ad platforms, needing training in their own language, not Meta's. One security: the accounts were hacked and access was lost, which stops everything regardless of how good the plan is.",
+    "approach": "I trained them hands-on inside their real account, not on examples: we built campaigns together step by step, and I explained why each choice mattered, not just how. On the design side I worked as art direction and quality control: one repeatable system per destination (the place photo, the destination name in a clear type, the contact strip, the identity in its place) so any new destination could be produced to the same template and still feel like one family. The designs themselves were created by Emad Airbash, and his work is what you see in the gallery above. I also recovered the hacked accounts and handed access back to its owners.",
+    "result": "The team now launches full campaigns on its own, the accounts are back with their owners, and campaigns follow one system instead of every destination looking different. And honestly: I also handed over a long list of recommendations for the next stage, and I do not know how many of them were implemented. What I can vouch for is that the team can do this themselves now, which was the point."
+   },
    "stats": []
   },
   {

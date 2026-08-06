@@ -1,0 +1,754 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «طبيب الإعلان» — الزائر بيلصق نص إعلانه، وبيطلع بتشخيص
+//
+//  جزئين: فحص سريع بيصير بمتصفحه (ببلاش وفوري، بيدوّر على أربع
+//  أساسيات بالنص) وبعده التشخيص من «نبض»: أقوى إشي، أضعف إشي،
+//  ثلاث ملاحظات، ونسخة معدّلة من نصه هو جاهزة نسخ.
+//
+//  ⚠️ الفحص السريع بيضل شغّال حتى لو الحصة خلصت أو الشبكة وقعت،
+//     فالزائر ما بيطلع بإيده ولا إشي بأي حال.
+//  ⚠️ بطاقات الفحص بتتبنى بالجافاسكربت — ستايلاتها بـ :global.
+//  ✏️ الكلمات والنصوص بـ src/data/ad-doctor.js
+//  ✏️ الاستخدام جوّا مقال:  <AdDoctorSection lang="ar" />
+// ═══════════════════════════════════════════════════════════════
+import { CUES, SAMPLE, TEXTS, VITALS } from '../data/ad-doctor.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'ad-doctor' } = Astro.props;
+const isAr = lang === 'ar';
+const L = lang;
+
+const briefHref = isAr ? '/ar/brief/' : '/brief/';
+
+const t = isAr
+  ? {
+      eyebrow: 'لعبة قصيرة',
+      title: 'طبيب الإعلان',
+      lede: 'الصق نص إعلانك (اللي نزّلته أو اللي ناوي تنزّله) وسطر عن نشاطك، وبيجيك تشخيص: شو أقوى إشي فيه، شو أضعف إشي، ثلاث ملاحظات تنفّذها اليوم، ونسخة معدّلة من نصك جاهزة نسخ.',
+      adLabel: 'نص إعلانك',
+      adPlaceholder: 'الصق نص الإعلان زي ما هو: أول سطر، والمتن، والجملة الأخيرة.',
+      bizLabel: 'سطر عن نشاطك',
+      bizPlaceholder: 'مثال: محل تنظيف كنب بعمّان، أغلب الطلبات بتيجي من الإنستا',
+      go: 'شخّص إعلاني',
+      again: 'شخّص نص ثاني',
+      sample: 'جرّب مثال جاهز',
+      loading: '«نبض» عم يقرأ إعلانك… بياخد كم ثانية.',
+      fail: 'الطبيب مش متوفر هلأ، جرّب كمان شوي.',
+      short: 'الصق نص إعلانك الأول، ولو سطرين بيكفوا.',
+      reset: 'فضّي وابدأ من جديد',
+      cta: 'احجز جلسة تشخيص',
+    }
+  : {
+      eyebrow: 'Short game',
+      title: 'The Ad Doctor',
+      lede: 'Paste your ad copy (the one you ran, or the one you are about to run) and a line about your business, and you get a diagnosis: the strongest thing in it, the weakest thing in it, three notes you can act on today, and a rewritten version of your own copy ready to use.',
+      adLabel: 'Your ad copy',
+      adPlaceholder: 'Paste the copy exactly as it is: the first line, the body, and the closing line.',
+      bizLabel: 'One line about your business',
+      bizPlaceholder: 'Example: a sofa cleaning business in Amman, most orders come through Instagram',
+      go: 'Diagnose my ad',
+      again: 'Diagnose another one',
+      sample: 'Try a ready example',
+      loading: 'Nabd is reading your ad… this takes a few seconds.',
+      fail: 'The doctor is unavailable right now, try again shortly.',
+      short: 'Paste your ad copy first, even two lines is enough.',
+      reset: 'Clear and start again',
+      cta: 'Book a diagnosis session',
+    };
+
+const cues = CUES[L];
+const vitals = VITALS[L];
+const texts = TEXTS[L];
+const sample = SAMPLE[L];
+---
+
+<section class="adr" id={id}>
+  <div class="adr-head" data-reveal>
+    <p class="adr-eyebrow">{t.eyebrow}</p>
+    <h2>{t.title}</h2>
+    <p class="adr-lede">{t.lede}</p>
+  </div>
+
+  <div class="adr-board frame frame-on" data-reveal data-adr>
+    <!-- ═══ الاستقبال: نص الإعلان + سطر النشاط ═══ -->
+    <div class="adr-form">
+      <label class="adr-label" for={`${id}-ad`}>{t.adLabel}</label>
+      <textarea class="adr-ta adr-ta-ad" id={`${id}-ad`} data-adr-ad rows="4" maxlength="900" placeholder={t.adPlaceholder}
+      ></textarea>
+
+      <label class="adr-label" for={`${id}-biz`}>{t.bizLabel}</label>
+      <textarea class="adr-ta" id={`${id}-biz`} data-adr-biz rows="2" maxlength="300" placeholder={t.bizPlaceholder}
+      ></textarea>
+
+      <div class="adr-actions">
+        <button type="button" class="btn btn-primary" data-adr-go>{t.go}</button>
+        <button type="button" class="btn btn-ghost" data-adr-sample>{t.sample}</button>
+      </div>
+    </div>
+
+    <p class="adr-status" data-adr-status role="status" hidden></p>
+
+    <!-- ═══ الفحص السريع: بيتبنى بالجافاسكربت ═══ -->
+    <div class="adr-vitals" data-adr-vitals hidden>
+      <p class="adr-v-title">{vitals.title}</p>
+      <p class="adr-v-score" data-adr-score></p>
+      <div class="adr-v-grid" data-adr-vgrid></div>
+      <p class="adr-v-hint">{vitals.hint}</p>
+    </div>
+
+    <!-- ═══ التشخيص ═══ -->
+    <div class="adr-dx" data-adr-dx hidden>
+      <p class="adr-dx-title">{texts.dxTitle}</p>
+
+      <div class="adr-two">
+        <div class="adr-side adr-side-good">
+          <p class="adr-side-title">{texts.strong}</p>
+          <p class="adr-side-body" data-adr-strong></p>
+        </div>
+        <div class="adr-side adr-side-bad">
+          <p class="adr-side-title">{texts.weak}</p>
+          <p class="adr-side-body" data-adr-weak></p>
+        </div>
+      </div>
+
+      <p class="adr-notes-title">{texts.notesTitle}</p>
+      <ul class="adr-notes" data-adr-notes></ul>
+
+      <!-- التحذير الصادق: بيبين بس لما العرض نفسه هو المشكلة -->
+      <div class="adr-offer" data-adr-offer hidden>
+        <p class="adr-offer-title">{texts.offerTitle}</p>
+        <p class="adr-offer-body" data-adr-offer-body></p>
+      </div>
+
+      <div class="adr-rewrite">
+        <p class="adr-rw-title">{texts.rewriteTitle}</p>
+        <p class="adr-rw-body" data-adr-rewrite></p>
+        <button type="button" class="btn btn-ghost adr-copy" data-adr-copy>{texts.copy}</button>
+        <p class="adr-note">{texts.rewriteHint}</p>
+      </div>
+
+      <p class="adr-note">{texts.disclosure}</p>
+
+      <div class="adr-end">
+        <button type="button" class="btn btn-ghost" data-adr-reset>{t.reset}</button>
+        <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    adrCues: cues,
+    adrVitals: vitals,
+    adrTexts: texts,
+    adrSample: sample,
+    adrLabels: { lang: L, go: t.go, again: t.again, loading: t.loading, fail: t.fail, short: t.short },
+  }}
+>
+  // ═══════════════════════════════════════════════════════════
+  //  محرّك العيادة
+  // ═══════════════════════════════════════════════════════════
+  (function () {
+    var AI_ENDPOINT = 'https://ryanalali-api.ryanalali-api.workers.dev/ad-doctor';
+
+    function boot() {
+      document.querySelectorAll('[data-adr]').forEach(setup);
+    }
+
+    function setup(board) {
+      if (board.dataset.ready === '1') return;
+      board.dataset.ready = '1';
+
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var adEl = board.querySelector('[data-adr-ad]');
+      var bizEl = board.querySelector('[data-adr-biz]');
+      var goBtn = board.querySelector('[data-adr-go]');
+      var sampleBtn = board.querySelector('[data-adr-sample]');
+      var statusEl = board.querySelector('[data-adr-status]');
+      var vitalsBox = board.querySelector('[data-adr-vitals]');
+      var vgrid = board.querySelector('[data-adr-vgrid]');
+      var scoreEl = board.querySelector('[data-adr-score]');
+      var dxBox = board.querySelector('[data-adr-dx]');
+      var copyBtn = board.querySelector('[data-adr-copy]');
+      var rewriteEl = board.querySelector('[data-adr-rewrite]');
+      var busy = false;
+
+      function say(msg) {
+        statusEl.hidden = !msg;
+        statusEl.textContent = msg || '';
+      }
+
+      // ─── الفحص السريع (بلا أي استدعاء) ───
+      //  الأرقام بتتحول لهندية بالعربي — باقي الموقع كله هيك
+      function num(n) {
+        var s = String(n);
+        if (adrLabels.lang !== 'ar') return s;
+        return s.replace(/[0-9]/g, function (d) {
+          return '٠١٢٣٤٥٦٧٨٩'.charAt(Number(d));
+        });
+      }
+
+      function has(hay, list) {
+        for (var i = 0; i < list.length; i++) if (hay.indexOf(list[i]) !== -1) return true;
+        return false;
+      }
+
+      function scan(text) {
+        var low = text.toLowerCase();
+        var head = low.slice(0, 70);
+        var w = text.split(/\s+/).filter(Boolean).length;
+        var items = adrVitals.items;
+        return [
+          { ok: !has(head, adrCues.self), label: items.promise.label, msg: items.promise },
+          { ok: has(low, adrCues.cta), label: items.cta.label, msg: items.cta },
+          { ok: /[0-9٠-٩]/.test(text), label: items.specific.label, msg: items.specific },
+          {
+            ok: w >= 8 && w <= 70,
+            label: items.length.label,
+            msg: items.length,
+            fail: w < 8 ? 'short' : 'long',
+          },
+        ];
+      }
+
+      function renderVitals(text) {
+        var rows = scan(text);
+        var good = 0;
+        vgrid.textContent = '';
+
+        rows.forEach(function (r, i) {
+          if (r.ok) good++;
+          var card = document.createElement('div');
+          card.className = 'adr-v ' + (r.ok ? 'is-ok' : 'is-warn');
+
+          var top = document.createElement('p');
+          top.className = 'adr-v-label';
+          var tag = document.createElement('span');
+          tag.className = 'adr-v-tag';
+          tag.textContent = r.ok ? adrVitals.ok : adrVitals.warn;
+          top.textContent = r.label + ' ';
+          top.appendChild(tag);
+
+          var body = document.createElement('p');
+          body.className = 'adr-v-body';
+          body.textContent = r.ok ? r.msg.ok : r.fail ? r.msg[r.fail] : r.msg.warn;
+
+          card.appendChild(top);
+          card.appendChild(body);
+          vgrid.appendChild(card);
+
+          // ظهور متتابع خفيف — بيخلي الفحص يبين كإجراء مش كجدول
+          setTimeout(
+            function () {
+              card.classList.add('in');
+            },
+            reduced ? 0 : 70 * i,
+          );
+        });
+
+        scoreEl.textContent = adrVitals.score.replace('{n}', num(good)).replace('{t}', num(rows.length));
+        vitalsBox.hidden = false;
+      }
+
+      // ─── بطاقة التشخيص ───
+      function renderDx(d) {
+        say('');
+        board.querySelector('[data-adr-strong]').textContent = d.strong || '';
+        board.querySelector('[data-adr-weak]').textContent = d.weak || '';
+
+        var list = board.querySelector('[data-adr-notes]');
+        list.textContent = '';
+        (Array.isArray(d.notes) ? d.notes : []).forEach(function (n, i) {
+          var li = document.createElement('li');
+          var lab = document.createElement('span');
+          lab.className = 'adr-n-label';
+          lab.textContent = adrTexts.noteLabels[i] || '';
+          var body = document.createElement('span');
+          body.className = 'adr-n-body';
+          body.textContent = String(n);
+          li.appendChild(lab);
+          li.appendChild(body);
+          list.appendChild(li);
+          requestAnimationFrame(function () {
+            li.classList.add('in');
+          });
+        });
+
+        var offerBox = board.querySelector('[data-adr-offer]');
+        if (d.offer) {
+          board.querySelector('[data-adr-offer-body]').textContent = d.offer;
+          offerBox.hidden = false;
+        } else {
+          offerBox.hidden = true;
+        }
+
+        rewriteEl.textContent = d.rewrite || '';
+        copyBtn.textContent = adrTexts.copy;
+        dxBox.hidden = false;
+        dxBox.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+      }
+
+      // ─── نسخ النسخة المعدّلة ───
+      if (copyBtn)
+        copyBtn.addEventListener('click', function () {
+          var txt = rewriteEl.textContent || '';
+          if (!txt) return;
+          function flash(m) {
+            copyBtn.textContent = m;
+            setTimeout(function () {
+              copyBtn.textContent = adrTexts.copy;
+            }, 2000);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(txt).then(
+              function () {
+                flash(adrTexts.copied);
+              },
+              function () {
+                flash(adrTexts.copyFail);
+              },
+            );
+          } else {
+            flash(adrTexts.copyFail);
+          }
+        });
+
+      if (sampleBtn)
+        sampleBtn.addEventListener('click', function () {
+          adEl.value = adrSample.ad;
+          bizEl.value = adrSample.biz;
+          say('');
+          adEl.focus();
+        });
+
+      if (board.querySelector('[data-adr-reset]'))
+        board.querySelector('[data-adr-reset]').addEventListener('click', function () {
+          adEl.value = '';
+          bizEl.value = '';
+          dxBox.hidden = true;
+          vitalsBox.hidden = true;
+          say('');
+          goBtn.textContent = adrLabels.go;
+          adEl.focus();
+        });
+
+      // ─── الضغطة: فحص فوري + نداء الطبيب ───
+      //  الفحص بيبين بأول ثانية، والتشخيص بيلحقه. أي فشل بالتشخيص
+      //  بيطلع رسالة لطيفة والفحص بيضل قدام الزائر.
+      if (goBtn)
+        goBtn.addEventListener('click', function () {
+          if (busy) return;
+          var ad = (adEl.value || '').trim();
+          var biz = (bizEl.value || '').trim();
+          if (ad.length < 12) return say(adrLabels.short);
+
+          renderVitals(ad);
+
+          busy = true;
+          goBtn.disabled = true;
+          dxBox.hidden = true;
+          say(adrLabels.loading);
+
+          // ⚠️ مهلة ٤٥ ثانية: التشخيص الجدي بياخد ١٠ لـ ٢٥، وأطول
+          //    من هيك يعني في مشكلة والزر لازم يرجع يفك
+          var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+          var kill = ctrl
+            ? setTimeout(function () {
+                ctrl.abort();
+              }, 45000)
+            : null;
+
+          fetch(AI_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lang: adrLabels.lang, ad: ad, biz: biz }),
+            signal: ctrl ? ctrl.signal : undefined,
+          })
+            .then(function (r) {
+              return r.json().then(function (d) {
+                return d || {};
+              });
+            })
+            .then(function (d) {
+              if (d.ok && d.dx) renderDx(d.dx);
+              else if (d.ok && d.joke) say(d.joke);
+              else say(d.message || adrLabels.fail);
+            })
+            .catch(function () {
+              say(adrLabels.fail);
+            })
+            .then(function () {
+              if (kill) clearTimeout(kill);
+              busy = false;
+              goBtn.disabled = false;
+              goBtn.textContent = dxBox.hidden ? adrLabels.go : adrLabels.again;
+            });
+        });
+    }
+
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .adr {
+    margin-block: clamp(38px, 5vh, 60px);
+  }
+
+  .adr-head {
+    margin-bottom: 22px;
+  }
+
+  .adr-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .adr-head h2 {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .adr-lede {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 60ch;
+  }
+
+  .adr-board {
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-card);
+  }
+
+  /* ⚠️ ضروري: .btn بتفرض display وبتغلب قاعدة المتصفح لـ [hidden] */
+  .adr [hidden] {
+    display: none;
+  }
+
+  /* ─── الاستقبال ─── */
+  .adr-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .adr-ta {
+    display: block;
+    width: 100%;
+    max-width: 64ch;
+    resize: vertical;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    transition: border-color 0.25s var(--ease-out);
+  }
+
+  .adr-ta-ad {
+    min-height: 108px;
+  }
+
+  .adr-ta:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .adr-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .adr-status {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 62ch;
+    margin-top: 14px;
+  }
+
+  /* ─── الفحص السريع ─── */
+  .adr-vitals {
+    border-top: 1px solid var(--line);
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+
+  .adr-v-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .adr-v-score {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  .adr-v-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .adr-v-grid :global(.adr-v) {
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 12px 14px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.4s var(--ease-out),
+      transform 0.4s var(--ease-out);
+  }
+
+  .adr-v-grid :global(.adr-v.in) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .adr-v-grid :global(.adr-v.is-ok) {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  .adr-v-grid :global(.adr-v-label) {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .adr-v-grid :global(.adr-v-tag) {
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: var(--r-pill);
+    padding: 2px 9px;
+    margin-inline-start: 4px;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+
+  .adr-v-grid :global(.adr-v.is-ok .adr-v-tag) {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  .adr-v-grid :global(.adr-v-body) {
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .adr-v-hint {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 62ch;
+    opacity: 0.85;
+  }
+
+  /* ─── التشخيص ─── */
+  .adr-dx {
+    border-top: 1px solid var(--line);
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+
+  .adr-dx-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 14px;
+  }
+
+  .adr-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .adr-side {
+    border-radius: var(--r-card);
+    padding: 14px 16px;
+  }
+
+  .adr-side-good {
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  .adr-side-bad {
+    border: 1px dashed var(--line);
+  }
+
+  .adr-side-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .adr-side-bad .adr-side-title {
+    color: var(--muted);
+  }
+
+  .adr-side-body {
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .adr-notes-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .adr-notes {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .adr-notes :global(li) {
+    border-inline-start: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    padding-inline-start: 14px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 0.4s var(--ease-out),
+      transform 0.4s var(--ease-out);
+  }
+
+  .adr-notes :global(li.in) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .adr-notes :global(.adr-n-label) {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .adr-notes :global(.adr-n-body) {
+    display: block;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  /* الوقفة الصادقة: بتبين بس لما العرض نفسه هو المشكلة */
+  .adr-offer {
+    border-inline-start: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    max-width: 64ch;
+  }
+
+  .adr-offer-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .adr-offer-body {
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  /* النسخة المعدّلة */
+  .adr-rewrite {
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+    border-radius: var(--r-card);
+    padding: 16px;
+    margin-bottom: 16px;
+    max-width: 66ch;
+  }
+
+  .adr-rw-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .adr-rw-body {
+    font-size: 14.5px;
+    line-height: 1.9;
+    color: var(--text);
+    white-space: pre-wrap;
+    margin-bottom: 14px;
+  }
+
+  .adr-copy {
+    margin-bottom: 12px;
+  }
+
+  .adr-note {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 62ch;
+    margin-bottom: 16px;
+  }
+
+  .adr-end {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 720px) {
+    .adr-two {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .adr-v-grid :global(.adr-v),
+    .adr-notes :global(li) {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,147 @@
+---
+title: 'How to run your first paid ad yourself (and when to hire someone instead)'
+seoTitle: 'How to Run Your First Paid Ad on Meta and Google'
+description: 'A practical guide to your first paid ad on Facebook, Instagram and Google Ads: boosted post vs real campaign, and the mistakes that burn a first budget.'
+date: 2026-08-06T09:00:00Z
+lang: 'en'
+tags: ['advertising', 'meta', 'google ads', 'campaigns']
+alt: 'ar-e3lan-mamoul'
+draft: false
+---
+
+{/* ⚠️ This line pulls in the Ad Doctor game so it plays inside the
+       article. Do not delete it if you want the game to stay. */}
+import AdDoctorSection from '../../components/AdDoctorSection.astro';
+import Callout from '../../components/post/Callout.astro';
+import Steps from '../../components/post/Steps.astro';
+import Compare from '../../components/post/Compare.astro';
+
+Almost every week someone asks me the same thing: "I want to run a paid ad, but I have no idea where to start." And most of them have already tried. They pressed the boost button on a post, spent a bit, and came out the other side with nothing they could actually read.
+
+So this is the full guide to running your first paid ad on Facebook, Instagram and Google Ads, written in the language of a business owner instead of the language of ad platforms. I am not holding anything back so you have to come back to me. Everything I know goes in here, in order. And at the end there is the other honest part: when you genuinely need someone to manage this for you, and when you do not.
+
+<Callout title="The short version">
+  A boosted post is not a campaign. A real campaign starts from a goal tied to a sale, and it needs measurement working **before** the first penny is spent. Without measurement you are not advertising, you are paying people to look at you and hoping. Set up the tracking first, then put the budget in.
+</Callout>
+
+## Boosted post vs a campaign that is actually built
+
+This is the first distinction to get straight, because it explains most of the failed attempts that reach me.
+
+<Compare
+  leftTitle="Boosted post"
+  rightTitle="A campaign that is built"
+  rows={[
+    ['Goal: more reach, or engagement', 'Goal: a sale or a qualified enquiry, measured'],
+    ['Built on a post that already exists', 'Built on a specific promise for a specific audience'],
+    ['Two clicks and done, no pixel, no event', 'Tracking wired in: a purchase or a form event'],
+    ['One version takes the whole budget', 'Several versions compete, the winner gets more'],
+    ['You read likes', 'You read cost per result'],
+  ]}
+/>
+
+To be fair to the boost button: it is not useless. It does one job well, which is widening the reach of content that already worked organically and already proved it stops people. The trouble starts when it becomes a substitute for a campaign. Then you are paying for attention with nowhere to go.
+
+## How to create a Facebook and Instagram ad: the full sequence
+
+One thing first, because it saves a lot of confusion. Facebook and Instagram are advertised from the **same place**, Meta Ads Manager. Running an ad on Instagram is not a separate system, it is the same system with a different placement selected in the same panel.
+
+<Steps items={[
+  { t: "Set the house up before the ad", d: "A Business account separate from your personal profile, a Page connected to it, an Instagram account linked, an ad account, and a payment method. The part people skip: keep ownership of all of it in your own name. Plenty of owners discover a year later that the ad account belongs to a freelancer who worked with them for two months." },
+  { t: "Install measurement before you spend anything", d: "The pixel is a piece of code on your site that tells the platform what happened after the click. Once it is in, define one event that means money: a purchase, a form submission, a started conversation. No website? You can fall back on in-platform forms and messages. That is weaker measurement, but it beats none." },
+  { t: "Choose the objective honestly, not defensively", d: "If you sell, choose sales or leads. The system literally hunts for people who do the thing you asked for, so when you ask for engagement it finds people who enjoy engaging and never buy. That is not the algorithm failing you. That is the algorithm obeying you." },
+  { t: "Define the audience with as little interference as possible", d: "In most cases now, a broad audience outperforms a narrow one, because the system learns from the events reaching it. Set country and age if there is a real reason, and leave the rest to the machine. Narrow targeting feels clever in your head and expensive in the account." },
+  { t: "Write a promise, not a description", d: "The first line has to say what they get, not what you do. \"We provide professional cleaning services\" is a description. \"We clean your sofa in place and it dries in two hours\" is a promise. The promise is what stops the scroll." },
+  { t: "Prepare three to five versions that differ in idea", d: "Not the same photo with a different filter. Real difference: one opens on the problem, one on the result, one on a customer's words, one a phone video with no editing. The winner is usually not the one you expected, which is precisely why you test rather than decide." },
+  { t: "Set a testing budget and let it breathe", d: "Every campaign starts in a learning phase, and every edit you make sends it back to the start of that phase. Make it a rule: do not touch anything in the first days unless something is obviously broken. Read the numbers once they settle, not two hours in." },
+  { t: "Read the one number that decides", d: "Not reach, not clicks, not cost per thousand impressions. The deciding number is cost per result, and right behind it, how many of those enquiries turned into actual sales. Everything else is a number that makes you feel productive without changing a decision." },
+]} />
+
+Before you move on: do you already have ad copy written, or one you are about to write? Paste it into the clinic below with a line about your business and you get a quick diagnosis. The strongest thing in it, the weakest thing in it, three notes you can act on today, and a rewritten version of your own copy.
+
+<AdDoctorSection lang="en" id="ad-doctor-article" />
+
+## Can you do any of this for free? An honest answer
+
+A lot of people search for a free way to run paid ads, and the phrase hides two different questions. Only one of them has a yes.
+
+**If you mean advertising without paying the platform:** no. Paid means paid. Anyone telling you there is a free way to run paid ads is either selling you a course or describing organic content and calling it advertising.
+
+**If you mean doing it yourself without paying someone to manage it:** yes, and that is exactly what this guide teaches. Every tool involved is free. Ads Manager, the pixel, the reports, split testing, the analytics. The only thing you pay is the media budget itself. The management fee is the part you save.
+
+And there is a third thing that genuinely costs nothing and matters more than budget size: **organic content as your laboratory**. Post the ideas on your own account first and watch which one stops people and pulls real questions. The post that worked organically is your strongest candidate for an ad, because it was tested before it cost you anything.
+
+## The pixel and measurement: why this matters more than targeting
+
+If you take one thing from this article, take this one.
+
+The platform does not know who your customer is. It learns from the signals it receives. When you install the pixel and define a purchase event, you are saying: these are the people, find me more of them. Fairly quickly it stops looking for people who click and starts looking for people who **buy**. The gap in results between a properly measured account and an unmeasured one is far wider than the gap between clever targeting and ordinary targeting.
+
+There is a second layer worth knowing. A chunk of those events never arrives, because browsers and privacy settings block part of the tracking. That is why platforms now support sending events from your server as well as from the browser. It recovers some of the missing picture, and it means your decisions are based on something closer to reality.
+
+Here is the part that stings: **this takes time.** Installing the tracking properly, testing that events actually fire, and confirming they match reality can eat a full day the first time, and can genuinely need help if your site is built in an awkward way. It is also the single day that saves the most burnt budget, and the first thing I check in any [diagnosis](/brief/) of an ad account.
+
+## Your first budget: where to start
+
+I will not hand you a number, because a number without context is a lie. The rule I work by is this: **the budget has to be big enough to learn from, not big enough to profit from in week one.** Your first budget buys information, not sales. If it is so small that no meaningful data comes out of it, you have spent and learned nothing, which is the worst of the possible outcomes.
+
+The practical rule that follows from it: split that first budget across a few different versions instead of pouring it into one. The same total produces completely different results depending on where you put it, and what the split costs you comes back as information about what actually works for you.
+
+## Setting up a Google Ads campaign: the real difference from Meta
+
+In one sentence: **on Meta you interrupt people, on Google people come looking for you.** Someone typing "emergency plumber near me" is a problem searching for a solution, not a person browsing. Intent is higher, competition is higher, and mistakes cost more.
+
+<Steps items={[
+  { t: "Wire up conversion tracking first, no exceptions", d: "Same rule as Meta. Define a real conversion (an order, a call, a form) and confirm it actually records. A Google Ads campaign with no conversions connected is spending with your eyes shut." },
+  { t: "Start with a Search campaign, nothing else", d: "Search is the only campaign type that shows you exactly what someone typed before they clicked. The automated campaigns that spread across every network are comfortable, and they hide the detail you need in order to learn. Learn first, expand later." },
+  { t: "Start with high-intent keywords, not big ones", d: "\"Marketing\" is a big, expensive keyword with a mixed audience. \"Google Ads management agency in Amman\" is narrower, searched less, and much closer to someone ready to buy. Start narrow and widen, never the other way around." },
+  { t: "Add negative keywords on day one", d: "Negatives stop your ad appearing for searches that do not look like you. If you do not offer a free version, a course, or jobs, block \"free\", \"course\" and \"jobs\" immediately. That step alone protects a noticeable slice of a first budget." },
+  { t: "Open the search terms report every week", d: "This report shows the actual phrases that triggered your ad, not the keywords you typed in. The first time you open it you will be startled by what you have been paying for. Every irrelevant phrase becomes a negative." },
+  { t: "Make the landing page match the keyword", d: "If the keyword is \"fridge repair\" and the click opens your home page, you have thrown away half of what you paid. Every ad group should land on a page that repeats the sentence the person searched for." },
+]} />
+
+## Five mistakes that burn a first budget
+
+<Steps items={[
+  { t: "Spending before the measurement exists", d: "The most common and most expensive one. You spend for two weeks, ask \"what worked?\", find no answer, stop everything, and conclude advertising does not work for your business. The ad was never the problem. The missing counter was." },
+  { t: "Judging after two days and killing everything", d: "The first days are the system experimenting. Numbers from that window are not representative, and a decision built on them is a decision built on noise. Decide in advance when you will read the account, and hold to it." },
+  { t: "Advertising to a generic page", d: "The ad promised something specific and the click opened a home page containing everything. Visitors do not search, they leave. The largest leak in the whole journey happens right here, and I broke it down in [why people click and never buy](/signals/en-clicks-no-sales/)." },
+  { t: "Mixing every audience and keyword into one campaign", d: "Put everything in one basket and succeed, and you cannot tell what succeeded. Fail, and you cannot tell what to stop. Separation is not extra complexity, it is the thing that lets you learn from the spend." },
+  { t: "Judging the ad alone and forgetting the rest", d: "The ad brings the person to the door. Price, offer, reply speed and payment method decide whether a sale happens. An excellent ad on a weak offer gets you exactly one outcome: you find out quickly that the offer is weak. That, in fairness, is information worth having." },
+]} />
+
+## When your own hands are enough, and when they are not
+
+This is the section most guides avoid, because it does not serve whoever wrote them.
+
+**You are fine on your own when:** you have one clear product or service, a local and contained market, a budget small enough that you can genuinely watch it yourself, and a fixed slot each week to sit with the account. In that situation a professional still adds something, but not enough to justify a management fee on top. Run it yourself, learn from your own account, and keep that knowledge for good, even if you hire someone later.
+
+**You need someone when:** the account spends more than you can supervise, you have several products and audiences and separating them has become a job in itself, your buying cycle is long and needs tracking deeper than a single event, or you have spent two months and still cannot explain why the numbers look the way they do. That last one is the clearest signal of all. **The problem is not that it failed. The problem is that you cannot say why.**
+
+Serious [ad management](/services/paid-ads/) is not someone pressing buttons anyway. It is a weekly decision built on numbers: what to stop, what to scale, what to test next. And if the real problem sits deeper than the campaign, in the offer or the positioning or the audience, that is [strategy](/services/marketing-strategy/) work rather than campaign work, and spending before sorting it out is the more expensive path.
+
+I will say the uncomfortable half out loud: **you may not need me.** If your campaigns are running and your numbers improve month over month, leave them alone and do not change things for the sake of changing them.
+
+## Common questions about running a campaign
+
+### How long before I can judge a campaign?
+
+Not in days, in volume of data. You need enough results for the difference you are seeing to be real rather than chance. The practical rule: do not decide until you have enough results to compare, and in the meantime do not touch the campaign daily.
+
+### Can I advertise on Instagram without a Facebook Page?
+
+You can boost a post from inside the Instagram app, but that is the simple promotion described above. To build a real campaign with objectives, tracking and multiple versions, you need Meta Ads Manager, and that runs through a Business account.
+
+### Should I start with Meta or Google?
+
+Ask one question: do people know they need what you sell and search for it? If yes (repairs, urgent services, a recognised product), start with Google. If no (something new, something people love when they see it but never look for), start with Meta. Many businesses eventually need both, just not at the same time and not on a split budget at the start.
+
+### My ad gets clicks but no sales, what now?
+
+Before blaming the ad, inspect what happened after the click: where the visitor landed, how many steps stand between them and the price, and how long a reply to their question takes. An ad that produced clicks did its job. The problem is usually one station further down.
+
+## The takeaway
+
+Running a paid ad is neither magic nor a difficult science. It is a sequence of small decisions in the right order: measure, choose the objective, make a promise, test, read, decide. Anyone willing to learn it can, and everything you need to start today is in this article.
+
+If you start and find yourself lost in the numbers, or you want a second pair of eyes on the account before you spend more, [tell me the details](/brief/) and we will work out where the problem sits. And if it turns out your account is running fine, that is exactly what I will tell you.

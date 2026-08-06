@@ -224,6 +224,17 @@ const projectSchema = [
                 </figure>
               ))}
             </div>
+
+            {/* ⚠️ نسبة التصميم لصاحبها — قاعدة ثابتة بطلب ريّان (2026-08-06):
+                 لما التصاميم مش شغله، الكريدت بينكتب بفخر وبمكان بارز مش
+                 بهامش صغير. من work.json ← "credit": { name, roleAr, roleEn } */}
+            {p.credit && (
+              <p class="credit" data-reveal>
+                <span class="credit-label">{isAr ? 'التصاميم:' : 'Designs:'}</span>{' '}
+                <strong>{p.credit.name}</strong>
+                <span class="credit-role">{isAr ? p.credit.roleAr : p.credit.roleEn}</span>
+              </p>
+            )}
           </section>
         )
       }
@@ -439,6 +450,32 @@ const projectSchema = [
     font-size: 14px;
     font-weight: 600;
     color: var(--accent);
+  }
+
+  /* كريدت المصمم — بارز ومحترم، مش هامش صغير */
+  .credit {
+    margin-top: clamp(18px, 2.6vh, 28px);
+    padding: 16px 22px;
+    border-inline-start: 3px solid var(--accent);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    font-size: clamp(14px, 1.5vw, 16px);
+    line-height: 1.7;
+  }
+
+  .credit-label {
+    color: var(--muted);
+  }
+
+  .credit strong {
+    font-weight: 700;
+  }
+
+  .credit-role {
+    display: block;
+    color: var(--muted);
+    font-size: 0.94em;
+    margin-top: 4px;
   }
 
   .films-grid {

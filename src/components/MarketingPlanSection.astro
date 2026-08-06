@@ -1,0 +1,1051 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «مولّد الخطة التسويقية» — ست أسئلة، وخطة مكتوبة لمشروعه هو
+//
+//  الزائر بيجاوب على ست أسئلة بكبسة (نوع النشاط · الجمهور ·
+//  العقدة · الميزة · القنوات · هدف ٣ شهور)، وبيقدر يزيد سطر حر
+//  عن مشروعه، وبعدين «نبض» بيكتبله خطة بسبعة أقسام لحالته هو.
+//  وبيقدر ينسخها بكبسة.
+//
+//  ⚠️ **مسارين، والزائر لازم يطلع بخطة بالحالتين:**
+//   ١) الذكي: نداء POST /plan عند الـ Worker (اقرأ handlePlan هناك).
+//   ٢) الاحتياطي: نفس التركيب القديم من قوالب src/data/marketing-plan.js،
+//      بيشتغل كامل بالمتصفح بلا أي طلب شبكة.
+//     أي فشل بالمسار الأول (شبكة · حصة · مفتاح ناقص · مهلة) بيوقع
+//     على الثاني بصمت وبرسالة مهذبة. ممنوع نعرض شاشة مكسورة.
+//
+//  ⚠️ الأسئلة والخيارات بتنبنى بالجافاسكربت — ستايلاتها بـ :global
+//     (نفس فخ «ارسم عميلك» و«الرحلة المسرّبة»).
+//  ✏️ الأسئلة ونصوص الخطة بـ src/data/marketing-plan.js
+//  ✏️ الاستخدام جوّا مقال:  <MarketingPlanSection lang="ar" />
+// ═══════════════════════════════════════════════════════════════
+import { AI_KEYS, AI_TITLES, PLAN, QUESTIONS } from '../data/marketing-plan.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'marketing-plan' } = Astro.props;
+const isAr = lang === 'ar';
+const L = lang;
+
+const briefHref = isAr ? '/ar/brief/' : '/brief/';
+
+const t = isAr
+  ? {
+      eyebrow: 'أداة قصيرة',
+      title: 'مولّد الخطة التسويقية',
+      lede: 'ست أسئلة قصيرة، وبعدها «نبض»، مساعدي الذكي، بيكتبلك مسودة خطة بسبعة أقسام لمشروعك إنت. ما بينحفظ إشي، وإذا «نبض» مش متوفر بتتركّب المسودة بمتصفحك على طول.',
+      coverTitle: 'ست أسئلة، وخطة مكتوبة لمشروعك.',
+      rules: [
+        '٦ أسئلة، كل وحدة بكبسة',
+        '«نبض» بيكتب الخطة من إجاباتك، وما بينحفظ ولا بينشارك إشي',
+        'مسودة أولى، مش خطة نهائية',
+      ],
+      start: 'ابدأ الأسئلة',
+      qLabel: 'سؤال',
+      of: 'من',
+      back: 'رجوع',
+      next: 'كمّل',
+      planTitle: 'مسودة خطتك التسويقية',
+      copy: 'انسخ الخطة',
+      copied: 'انتسخت ✓',
+      copyFail: 'ما زبطت النسخة. حدد النص بإيدك وانسخه.',
+      cta: 'احكيلي عن مشروعك',
+      again: 'جاوب من جديد',
+      // ─── النسخة الذكية ───
+      touchTitle: 'آخر إشي قبل ما تنكتب',
+      touchLede:
+        'اكتب سطر عن مشروعك إذا حابب: شو بتبيع بالضبط، ووين. هالسطر بيخلي الخطة أدق. وإذا تركته فاضي، بتنكتب من إجاباتك الستة عادي.',
+      touchPlaceholder: 'مثال: مطعم مشاوي بالزرقاء، أغلب الطلبات بتيجي من الإنستا، والزبون بيجي مرة وما بيرجع',
+      touchNote: 'إجاباتك بتوصل «نبض»، مساعدي الذكي، عشان يكتب الخطة. ما بينحفظ إشي وما بينشارك مع حدا.',
+      write: 'اكتبلي خطتي',
+      writing: '«نبض» عم يكتب خطتك… بياخد كم ثانية.',
+      writingHint: 'عم يقرأ إجاباتك الستة ويرتب السبع أقسام.',
+      aiNote:
+        'كتبها «نبض»، مساعد ريّان الذكي، من إجاباتك بس، بلا ما يشوف حسابك ولا أرقامك. الخطة الجدّية بتنبني من أرقامك الحقيقية.',
+      fallbackNote: 'ما قدرت أوصل «نبض» هلأ، فهاي مسودتك مركّبة بمتصفحك من إجاباتك. جرب النسخة المكتوبة بعدين.',
+      staticNote: 'هاي المسودة مركّبة بمتصفحك من إجاباتك.',
+    }
+  : {
+      eyebrow: 'Short tool',
+      title: 'The Marketing Plan Generator',
+      lede: 'Six short questions, then Nabd, my AI assistant, writes you a seven-part draft plan for your own business. Nothing is stored, and if Nabd is unavailable the draft is assembled in your browser instead.',
+      coverTitle: 'Six questions, and a plan written for your business.',
+      rules: [
+        '6 questions, one tap each',
+        'Nabd writes the plan from your answers. Nothing is stored or shared',
+        'A first draft, not a finished plan',
+      ],
+      start: 'Start the questions',
+      qLabel: 'Question',
+      of: 'of',
+      back: 'Back',
+      next: 'Continue',
+      planTitle: 'Your draft marketing plan',
+      copy: 'Copy the plan',
+      copied: 'Copied ✓',
+      copyFail: 'Copying did not work. Select the text and copy it manually.',
+      cta: 'Tell me about your project',
+      again: 'Answer again',
+      // ─── The AI version ───
+      touchTitle: 'One last thing before it is written',
+      touchLede:
+        'Write a line about your business if you like: what exactly you sell, and where. That line makes the plan sharper. Leave it empty and it gets written from your six answers anyway.',
+      touchPlaceholder: 'Example: a grill restaurant in Zarqa, most orders arrive through Instagram, and people rarely come back',
+      touchNote: 'Your answers go to Nabd, my AI assistant, so it can write the plan. Nothing is stored and nothing is shared.',
+      write: 'Write my plan',
+      writing: 'Nabd is writing your plan… this takes a few seconds.',
+      writingHint: 'Reading your six answers and ordering the seven parts.',
+      aiNote:
+        "Written by Nabd, Rayan's AI assistant, from your answers alone, without seeing your account or your numbers. A serious plan is built from your real numbers.",
+      fallbackNote:
+        'I could not reach Nabd right now, so this draft was assembled in your browser from your answers. Try the written version later.',
+      staticNote: 'This draft was assembled in your browser from your answers.',
+    };
+
+// الأسئلة بلغة الصفحة فقط — ما في داعي نبعت اللغتين للمتصفح
+const questions = QUESTIONS.map((q) => ({ id: q.id, multi: !!q.multi, ...q[L] }));
+const plan = PLAN[L];
+---
+
+<section class="mp" id={id}>
+  <div class="mp-head" data-reveal>
+    <p class="mp-eyebrow">{t.eyebrow}</p>
+    <h2>{t.title}</h2>
+    <p class="mp-lede">{t.lede}</p>
+  </div>
+
+  <div class="mp-board frame frame-on" data-reveal data-mplan>
+    <!-- ═══ شاشة البداية ═══ -->
+    <div class="mp-cover" data-mp-cover>
+      <p class="mp-cover-kicker">{t.eyebrow}</p>
+      <p class="mp-cover-title">{t.coverTitle}</p>
+      <ul class="mp-rules">
+        {t.rules.map((r) => <li>{r}</li>)}
+      </ul>
+      <button type="button" class="btn btn-primary" data-mp-start>{t.start}</button>
+    </div>
+
+    <!-- ═══ الأسئلة ═══ -->
+    <div class="mp-stage" data-mp-stage hidden>
+      <div class="mp-progress">
+        <p class="mp-count" data-mp-count></p>
+        <div class="mp-bar" aria-hidden="true"><span data-mp-fill></span></div>
+      </div>
+
+      <p class="mp-q" data-mp-q></p>
+      <p class="mp-hint" data-mp-hint></p>
+      <div class="mp-opts" data-mp-opts></div>
+
+      <div class="mp-nav">
+        <button type="button" class="mp-back" data-mp-back hidden>{t.back}</button>
+        <button type="button" class="btn btn-primary" data-mp-next hidden>{t.next}</button>
+      </div>
+    </div>
+
+    <!-- ═══ لمسة أخيرة: سطر حر عن المشروع (اختياري) ═══ -->
+    <div class="mp-touch" data-mp-touch hidden>
+      <p class="mp-touch-title">{t.touchTitle}</p>
+      <p class="mp-touch-lede">{t.touchLede}</p>
+      <textarea class="mp-touch-biz" data-mp-biz rows="2" maxlength="400" placeholder={t.touchPlaceholder}></textarea>
+      <div class="mp-nav">
+        <button type="button" class="mp-back" data-mp-touchback>{t.back}</button>
+        <button type="button" class="btn btn-primary" data-mp-go>{t.write}</button>
+      </div>
+      <p class="mp-touch-note">{t.touchNote}</p>
+    </div>
+
+    <!-- ═══ الانتظار ═══ -->
+    <div class="mp-wait" data-mp-wait hidden>
+      <p class="mp-wait-line" role="status">{t.writing}</p>
+      <p class="mp-wait-hint">{t.writingHint}</p>
+      <div class="mp-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+    </div>
+
+    <!-- ═══ الخطة ═══ -->
+    <div class="mp-out" data-mp-out hidden>
+      <p class="mp-out-title">{t.planTitle}</p>
+      <div class="mp-secs" data-mp-secs></div>
+      <p class="mp-source" data-mp-source hidden></p>
+      <p class="mp-honesty">{plan.honesty}</p>
+      <div class="mp-actions">
+        <button type="button" class="btn btn-primary" data-mp-copy>{t.copy}</button>
+        <a class="btn btn-ghost" href={briefHref}>{t.cta}</a>
+        <button type="button" class="mp-back" data-mp-again>{t.again}</button>
+      </div>
+      <p class="mp-copystate" data-mp-copystate role="status" hidden></p>
+    </div>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    questions,
+    plan,
+    aiTitles: AI_TITLES[L],
+    aiKeys: AI_KEYS,
+    labels: {
+      lang: L,
+      qLabel: t.qLabel,
+      of: t.of,
+      copy: t.copy,
+      copied: t.copied,
+      copyFail: t.copyFail,
+      locale: isAr ? 'ar-EG' : 'en-US',
+      aiNote: t.aiNote,
+      fallbackNote: t.fallbackNote,
+      staticNote: t.staticNote,
+    },
+  }}
+>
+  // ═══════════════════════════════════════════════════════════
+  //  محرّك الخطة
+  //
+  //  المسار الأساسي: الإجابات بتروح للـ Worker و«نبض» بيكتب.
+  //  المسار الاحتياطي: buildPlan() بتركّب نفس المسودة القديمة هون
+  //  بالمتصفح. أي فشل بالأول بينزل عالثاني بصمت — الزائر بيطلع
+  //  بخطة بأي حال، والفرق بس إنها مكتوبة له ولا مركّبة من قوالب.
+  // ═══════════════════════════════════════════════════════════
+  (function () {
+    function boot() {
+      document.querySelectorAll('[data-mplan]').forEach(setup);
+    }
+
+    function setup(board) {
+      if (board.dataset.ready === '1') return;
+      board.dataset.ready = '1';
+
+      var cover = board.querySelector('[data-mp-cover]');
+      var stage = board.querySelector('[data-mp-stage]');
+      var countEl = board.querySelector('[data-mp-count]');
+      var fillEl = board.querySelector('[data-mp-fill]');
+      var qEl = board.querySelector('[data-mp-q]');
+      var hintEl = board.querySelector('[data-mp-hint]');
+      var optsEl = board.querySelector('[data-mp-opts]');
+      var backBtn = board.querySelector('[data-mp-back]');
+      var nextBtn = board.querySelector('[data-mp-next]');
+      var outBox = board.querySelector('[data-mp-out]');
+      var secsEl = board.querySelector('[data-mp-secs]');
+      var copyBtn = board.querySelector('[data-mp-copy]');
+      var copyState = board.querySelector('[data-mp-copystate]');
+      var touchBox = board.querySelector('[data-mp-touch]');
+      var bizEl = board.querySelector('[data-mp-biz]');
+      var goBtn = board.querySelector('[data-mp-go]');
+      var waitBox = board.querySelector('[data-mp-wait]');
+      var sourceEl = board.querySelector('[data-mp-source]');
+
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var i = 0;
+      var answers = {};
+      var planText = '';
+      var copyTimer = null;
+      var busy = false;
+
+      var n = function (v) {
+        return v.toLocaleString(labels.locale);
+      };
+
+      // ─── عرض السؤال ───
+      function renderQ() {
+        var q = questions[i];
+        countEl.textContent = labels.qLabel + ' ' + n(i + 1) + ' ' + labels.of + ' ' + n(questions.length);
+        fillEl.style.width = (i / questions.length) * 100 + '%';
+        qEl.textContent = q.q;
+        hintEl.textContent = q.hint;
+        optsEl.textContent = '';
+
+        if (q.multi && !answers[q.id]) answers[q.id] = [];
+
+        q.options.forEach(function (o) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'mp-opt';
+          b.textContent = o.label;
+
+          if (q.multi) {
+            var on = answers[q.id].indexOf(o.v) > -1;
+            b.setAttribute('aria-pressed', on ? 'true' : 'false');
+            b.addEventListener('click', function () {
+              var list = answers[q.id];
+              var at = list.indexOf(o.v);
+              if (at > -1) list.splice(at, 1);
+              else list.push(o.v);
+              b.setAttribute('aria-pressed', at > -1 ? 'false' : 'true');
+            });
+          } else {
+            if (answers[q.id] && answers[q.id].v === o.v) b.classList.add('on');
+            b.addEventListener('click', function () {
+              answers[q.id] = o;
+              step(1);
+            });
+          }
+
+          optsEl.appendChild(b);
+        });
+
+        backBtn.hidden = i === 0;
+        nextBtn.hidden = !q.multi;
+      }
+
+      function step(dir) {
+        i += dir;
+        if (i >= questions.length) return finish();
+        if (i < 0) i = 0;
+        renderQ();
+      }
+
+      // ─── تركيب الخطة من الإجابات ───
+      function optOf(qid) {
+        var q = null;
+        for (var k = 0; k < questions.length; k++) if (questions[k].id === qid) q = questions[k];
+        var a = answers[qid];
+        if (!q || !a) return null;
+        if (!q.multi) return a;
+        return q.options.filter(function (o) {
+          return a.indexOf(o.v) > -1;
+        });
+      }
+
+      function buildPlan() {
+        var biz = optOf('biz');
+        var aud = optOf('aud');
+        var prob = optOf('prob');
+        var edge = optOf('edge');
+        var chans = optOf('chan') || [];
+        var goal = optOf('goal');
+        var T = plan.titles;
+        var secs = [];
+
+        // ١. وين إنت هلأ
+        secs.push({
+          title: T[0],
+          lines: [
+            plan.have + ' ' + biz.noun + plan.comma + plan.audLead + ' ' + aud.short + '. ' + biz.decide,
+            plan.knotLead + ' ' + prob.name + '. ' + plan.goalLead + ' ' + goal.short + '.',
+            plan.baseNote,
+          ],
+        });
+
+        // ٢. مين بتحكي معه
+        secs.push({ title: T[1], lines: [aud.who, aud.where, aud.talk] });
+
+        // ٣. رسالتك بجملة
+        secs.push({
+          title: T[2],
+          lines: [plan.edgeLead + ' ' + edge.msg, edge.proof, plan.edgeTail],
+        });
+
+        // ٤. العقدة اللي بتنفك أول
+        secs.push({ title: T[3], lines: [prob.diag, plan.fixLead + ' ' + prob.fix] });
+
+        // ٥. القنوات
+        var chLines = [];
+        if (!chans.length) {
+          chLines.push(plan.noChannels);
+        } else {
+          chans.forEach(function (c) {
+            chLines.push(c.label + ': ' + c.role + ' ' + plan.moveLead + ' ' + c.first);
+          });
+          if (chans.length > 3) chLines.push(plan.manyChannels);
+        }
+        secs.push({ title: T[4], lines: chLines });
+
+        // ٦. تسعين يوم
+        secs.push({
+          title: T[5],
+          lines: [
+            plan.months[0] + ' ' + prob.month1,
+            plan.months[1] + ' ' + biz.move90,
+            plan.months[2] + ' ' + goal.focus,
+          ],
+        });
+
+        // ٧. الأرقام
+        secs.push({ title: T[6], lines: [prob.watch, goal.watch, plan.weekly] });
+
+        return secs;
+      }
+
+      function renderPlan(secs) {
+        secsEl.textContent = '';
+        secs.forEach(function (s, idx) {
+          var box = document.createElement('div');
+          box.className = 'mp-sec';
+          if (!reduced) box.style.transitionDelay = idx * 70 + 'ms';
+
+          var head = document.createElement('p');
+          head.className = 'mp-sec-head';
+
+          var num = document.createElement('span');
+          num.className = 'mp-sec-num';
+          num.textContent = n(idx + 1);
+          head.appendChild(num);
+
+          var ttl = document.createElement('span');
+          ttl.textContent = s.title;
+          head.appendChild(ttl);
+          box.appendChild(head);
+
+          s.lines.forEach(function (line) {
+            var p = document.createElement('p');
+            p.className = 'mp-sec-line';
+            p.textContent = line;
+            box.appendChild(p);
+          });
+
+          secsEl.appendChild(box);
+          requestAnimationFrame(function () {
+            box.classList.add('in');
+          });
+        });
+      }
+
+      function planToText(secs, ai) {
+        var out = [plan.copyHead, ''];
+        secs.forEach(function (s, idx) {
+          out.push(idx + 1 + '. ' + s.title);
+          s.lines.forEach(function (line) {
+            out.push(line);
+          });
+          out.push('');
+        });
+        out.push(plan.copyNote + ' ' + plan.honesty);
+        out.push(ai ? labels.aiNote : labels.staticNote);
+        return out.join('\n');
+      }
+
+      // ⚠️ العناوين السبعة من عنا (AI_TITLES) مش من الموديل —
+      //    هو بيعبّي المحتوى بس. ولو وصل قسم فاضي رغم تحقق الـ
+      //    Worker، منرجع للمسودة الكاملة بدل ما نعرض خطة مثقوبة.
+      function aiSecs(p) {
+        var out = [];
+        aiKeys.forEach(function (k, idx) {
+          var lines = (p && Array.isArray(p[k]) ? p[k] : []).filter(function (s) {
+            return typeof s === 'string' && s.trim();
+          });
+          if (lines.length) out.push({ title: aiTitles[idx], lines: lines });
+        });
+        return out.length === aiKeys.length ? out : buildPlan();
+      }
+
+      // ─── آخر سؤال خلص: منوقف عند اللمسة الأخيرة قبل الكتابة ───
+      function finish() {
+        fillEl.style.width = '100%';
+        stage.hidden = true;
+        touchBox.hidden = false;
+      }
+
+      // ─── العرض: نفس الشكل، إجت من «نبض» ولا من القوالب ───
+      function showPlan(secs, ai, msg) {
+        planText = planToText(secs, ai);
+        renderPlan(secs);
+        var note = msg || (ai ? labels.aiNote : labels.staticNote);
+        sourceEl.textContent = note;
+        sourceEl.hidden = !note;
+        if (ai) sourceEl.classList.add('mp-source-ai');
+        else sourceEl.classList.remove('mp-source-ai');
+        touchBox.hidden = true;
+        waitBox.hidden = true;
+        outBox.hidden = false;
+      }
+
+      // الاحتياطي: نفس مسودة القوالب، بلا أي طلب شبكة
+      function fallbackPlan(msg) {
+        showPlan(buildPlan(), false, msg);
+      }
+
+      // ═══════════════════════════════════════════════════════
+      //  النداء الذكي
+      //
+      //  ⚠️ مهلة ٥٥ ثانية: سبع أقسام بالعربي بتاخد وقت، وأطول من
+      //     هيك يعني في مشكلة — وساعتها الاحتياطي بينزل على طول
+      //     بدل ما الزائر يقعد يستنى بلا نهاية.
+      //  ⚠️ ولا حالة فشل بتوصل شاشة مكسورة: الشبكة، الحصة، المفتاح
+      //     الناقص، والرد المشوّه كلهم بينتهوا بخطة على الشاشة.
+      // ═══════════════════════════════════════════════════════
+      var AI_ENDPOINT = 'https://ryanalali-api.ryanalali-api.workers.dev/plan';
+
+      function answerLabel(qid) {
+        var o = optOf(qid);
+        return o && o.label ? o.label : '';
+      }
+
+      function askNabd() {
+        if (busy) return;
+        busy = true;
+        goBtn.disabled = true;
+        touchBox.hidden = true;
+        waitBox.hidden = false;
+
+        var chans = optOf('chan') || [];
+        var payload = {
+          lang: labels.lang,
+          a: {
+            biz: answerLabel('biz'),
+            aud: answerLabel('aud'),
+            prob: answerLabel('prob'),
+            edge: answerLabel('edge'),
+            goal: answerLabel('goal'),
+            chans: chans.map(function (c) {
+              return c.label;
+            }),
+          },
+          note: (bizEl.value || '').trim(),
+        };
+
+        var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var kill = ctrl
+          ? setTimeout(function () {
+              ctrl.abort();
+            }, 55000)
+          : null;
+
+        fetch(AI_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: ctrl ? ctrl.signal : undefined,
+        })
+          .then(function (r) {
+            return r
+              .json()
+              .then(function (d) {
+                return d || {};
+              })
+              .catch(function () {
+                return {};
+              });
+          })
+          .then(function (d) {
+            if (d.ok && d.plan) return showPlan(aiSecs(d.plan), true);
+            // مدخل هزار: الرد المهذب فوق، والمسودة من إجاباته تحت
+            if (d.ok && d.joke) return fallbackPlan(d.joke + ' ' + labels.staticNote);
+            fallbackPlan(d.message || labels.fallbackNote);
+          })
+          .catch(function () {
+            fallbackPlan(labels.fallbackNote);
+          })
+          .then(function () {
+            if (kill) clearTimeout(kill);
+            busy = false;
+            goBtn.disabled = false;
+          });
+      }
+
+      // ─── النسخ: clipboard الحديث، وطريقة قديمة احتياط ───
+      function say(msg) {
+        copyState.hidden = !msg;
+        copyState.textContent = msg || '';
+        if (copyTimer) clearTimeout(copyTimer);
+        if (msg)
+          copyTimer = setTimeout(function () {
+            copyState.hidden = true;
+            copyState.textContent = '';
+          }, 4000);
+      }
+
+      function legacyCopy(text) {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          return ok;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      copyBtn.addEventListener('click', function () {
+        if (!planText) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard
+            .writeText(planText)
+            .then(function () {
+              say(labels.copied);
+            })
+            .catch(function () {
+              say(legacyCopy(planText) ? labels.copied : labels.copyFail);
+            });
+        } else {
+          say(legacyCopy(planText) ? labels.copied : labels.copyFail);
+        }
+      });
+
+      // ─── الأزرار ───
+      board.querySelector('[data-mp-start]').addEventListener('click', function () {
+        cover.hidden = true;
+        stage.hidden = false;
+        renderQ();
+      });
+
+      nextBtn.addEventListener('click', function () {
+        step(1);
+      });
+
+      backBtn.addEventListener('click', function () {
+        step(-1);
+      });
+
+      goBtn.addEventListener('click', askNabd);
+
+      // رجوع من اللمسة الأخيرة لآخر سؤال
+      board.querySelector('[data-mp-touchback]').addEventListener('click', function () {
+        touchBox.hidden = true;
+        stage.hidden = false;
+        i = questions.length - 1;
+        renderQ();
+      });
+
+      board.querySelector('[data-mp-again]').addEventListener('click', function () {
+        answers = {};
+        planText = '';
+        i = 0;
+        say('');
+        secsEl.textContent = '';
+        sourceEl.textContent = '';
+        sourceEl.hidden = true;
+        outBox.hidden = true;
+        touchBox.hidden = true;
+        waitBox.hidden = true;
+        stage.hidden = false;
+        renderQ();
+      });
+    }
+
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .mp {
+    margin-block: clamp(38px, 5vh, 60px);
+  }
+
+  .mp-head {
+    margin-bottom: 22px;
+  }
+
+  .mp-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .mp-head h2 {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .mp-lede {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 58ch;
+  }
+
+  .mp-board {
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-card);
+  }
+
+  /* ⚠️ ضروري: .btn بتفرض display وبتغلب قاعدة المتصفح لـ [hidden] */
+  .mp .btn[hidden] {
+    display: none;
+  }
+
+  /* ─── شاشة البداية ─── */
+  .mp-cover {
+    text-align: center;
+    padding-block: clamp(18px, 3vh, 34px);
+  }
+
+  .mp-cover-kicker {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .mp-cover-title {
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .mp-rules {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* ─── التقدّم ─── */
+  .mp-progress {
+    margin-bottom: 18px;
+  }
+
+  .mp-count {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .mp-bar {
+    height: 3px;
+    border-radius: var(--r-pill);
+    background: var(--line);
+    overflow: hidden;
+  }
+
+  .mp-bar span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--accent);
+    border-radius: var(--r-pill);
+    transition: width 0.5s var(--ease-out);
+  }
+
+  /* ─── السؤال ─── */
+  .mp-q {
+    font-size: clamp(16px, 2vw, 20px);
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .mp-hint {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 16px;
+    max-width: 60ch;
+  }
+
+  .mp-opts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .mp-opts :global(.mp-opt) {
+    text-align: start;
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 13px 17px;
+    cursor: pointer;
+    transition:
+      border-color 0.25s var(--ease-out),
+      background 0.25s var(--ease-out),
+      transform 0.15s var(--ease-out);
+  }
+
+  .mp-opts :global(.mp-opt:hover) {
+    border-color: var(--accent);
+  }
+
+  .mp-opts :global(.mp-opt:active) {
+    transform: scale(0.99);
+  }
+
+  /* المختار بالسؤال متعدد الاختيار */
+  .mp-opts :global(.mp-opt[aria-pressed='true']),
+  .mp-opts :global(.mp-opt.on) {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  .mp-nav {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .mp-back {
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    background: none;
+    border: 0;
+    padding: 6px 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color 0.25s var(--ease-out);
+  }
+
+  .mp-back:hover {
+    color: var(--text);
+  }
+
+  .mp-back[hidden] {
+    display: none;
+  }
+
+  /* ─── اللمسة الأخيرة ─── */
+  .mp-touch-title {
+    font-size: clamp(16px, 2vw, 20px);
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .mp-touch-lede {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 60ch;
+    margin-bottom: 14px;
+  }
+
+  .mp-touch-biz {
+    width: 100%;
+    max-width: 62ch;
+    min-height: 68px;
+    resize: vertical;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 12px 14px;
+    transition: border-color 0.25s var(--ease-out);
+  }
+
+  .mp-touch-biz:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .mp-touch-note {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 62ch;
+    margin-top: 14px;
+  }
+
+  /* ─── الانتظار ─── */
+  .mp-wait {
+    text-align: center;
+    padding-block: clamp(22px, 5vh, 46px);
+  }
+
+  .mp-wait-line {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 6px;
+  }
+
+  .mp-wait-hint {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+
+  .mp-dots {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+  }
+
+  .mp-dots span {
+    width: 7px;
+    height: 7px;
+    border-radius: var(--r-pill);
+    background: var(--accent);
+    opacity: 0.3;
+    animation: mp-pulse 1.2s var(--ease-out) infinite;
+  }
+
+  .mp-dots span:nth-child(2) {
+    animation-delay: 0.18s;
+  }
+
+  .mp-dots span:nth-child(3) {
+    animation-delay: 0.36s;
+  }
+
+  @keyframes mp-pulse {
+    0%,
+    100% {
+      opacity: 0.28;
+      transform: translateY(0);
+    }
+
+    50% {
+      opacity: 1;
+      transform: translateY(-3px);
+    }
+  }
+
+  /* ─── من وين إجت الخطة ─── */
+  .mp-source {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 64ch;
+    margin-bottom: 14px;
+  }
+
+  .mp-source-ai {
+    border-inline-start: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    padding-inline-start: 12px;
+  }
+
+  /* ─── الخطة ─── */
+  .mp-out-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .mp-secs {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 18px;
+  }
+
+  .mp-secs :global(.mp-sec) {
+    padding-block: clamp(14px, 2vw, 18px);
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 0.5s var(--ease-out),
+      transform 0.5s var(--ease-out);
+  }
+
+  .mp-secs :global(.mp-sec.in) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .mp-secs :global(.mp-sec + .mp-sec) {
+    border-top: 1px solid var(--line);
+  }
+
+  .mp-secs :global(.mp-sec-head) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15.5px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  .mp-secs :global(.mp-sec-num) {
+    flex: none;
+    width: 30px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-en);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-ink);
+    background: var(--accent);
+    border-radius: var(--r-pill);
+  }
+
+  .mp-secs :global(.mp-sec-line) {
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--muted);
+    max-width: 66ch;
+  }
+
+  .mp-secs :global(.mp-sec-line + .mp-sec-line) {
+    margin-top: 8px;
+  }
+
+  .mp-honesty {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 64ch;
+    border-inline-start: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+    padding: 12px 16px;
+    margin-bottom: 18px;
+  }
+
+  .mp-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .mp-copystate {
+    font-size: 13px;
+    color: var(--accent);
+    margin-top: 12px;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 640px) {
+    .mp-opts {
+      grid-template-columns: 1fr;
+    }
+
+    .mp-secs :global(.mp-sec-head) {
+      font-size: 15px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mp-secs :global(.mp-sec) {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    .mp-bar span {
+      transition: none;
+    }
+
+    .mp-dots span {
+      animation: none;
+      opacity: 0.6;
+    }
+  }
+</style>

@@ -1,0 +1,698 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  «مختبر الهوك» — أول ثانيتين بالريل
+//
+//  جزئين: التسخين (ثلاث مواجهات بين كليشيه مستهلك وبداية فيها
+//  مشهد حقيقي، والزائر بيختار وبيقرا ليش) والمختبر (بيكتب شو
+//  بيبيع ونقطة قوته، و«نبض» بيرجّع ثلاث بدايات بثلاث زوايا،
+//  كل وحدة معها وصف أول لقطة ينصوّرها بالموبايل).
+//
+//  ⚠️ خيارات المواجهات بتنبنى بالجافاسكربت — ستايلاتها بـ :global.
+//     وبطاقات النتيجة الثلاث مرسومة بالـ HTML من الأول ومخفية،
+//     فما بتحتاج :global، والجافاسكربت بس بيعبّي نصوصها.
+//  ✏️ المواجهات والزوايا بـ src/data/hook-lab.js
+//  ✏️ الاستخدام جوّا مقال:  <HookLabSection lang="ar" />
+// ═══════════════════════════════════════════════════════════════
+import { ROUNDS, ANGLES, TEXTS } from '../data/hook-lab.js';
+
+interface Props {
+  lang: 'en' | 'ar';
+  id?: string;
+}
+
+const { lang, id = 'hook-lab' } = Astro.props;
+const isAr = lang === 'ar';
+const L = lang;
+
+const briefHref = isAr ? '/ar/brief/' : '/brief/';
+
+const t = isAr
+  ? {
+      eyebrow: 'لعبة قصيرة',
+      title: 'مختبر الهوك',
+      lede: 'أول ثانيتين بالريل هما اللي بيقرروا إذا المشاهد بيوقف ولا بيمرق. جرّب عينك بثلاث مواجهات قصيرة، وبعدها اكتب شو بتبيع و«نبض» بيكتبلك ثلاث بدايات جاهزة تصوّرها بموبايلك.',
+      labTitle: 'هلأ خلينا نكتبها لمنتجك إنت',
+      labLede: 'اكتب سطر عن اللي بتبيعه، وسطر عن أقوى نقطة فيه: إشي بتعمله غير الباقي، أو عرض شغال عندك هلأ. «نبض» بيرجّعلك ثلاث بدايات بثلاث زوايا مختلفة، وكل وحدة معها شو تصوّر بأول لقطة بالضبط.',
+      sellLabel: 'شو بتبيع؟',
+      edgeLabel: 'أقوى نقطة عندك أو عرض شغال (اختياري)',
+      sellPlaceholder: 'مثال: ببيع عسل طبيعي من منحلتي بجرش، وأغلب الطلبات بتيجي من الإنستا',
+      edgePlaceholder: 'مثال: بعبّي الجرة قدام الزبون، وبعطي عينة صغيرة مع أول طلب',
+      go: 'اكتبلي ثلاث هوكات',
+      again: 'جرب منتج ثاني',
+      loading: '«نبض» عم يكتب… بياخد كم ثانية.',
+      fail: 'المختبر مش متوفر هلأ، جرب كمان شوي.',
+      short: 'اكتب وصف أوضح شوي، سطر واحد بيكفي.',
+      resTitle: 'ثلاث بدايات لريلك',
+      shotLabel: 'أول لقطة:',
+      tipLabel: 'نصيحة تصوير لمنتجك:',
+      disclosure: 'كتبها «نبض»، مساعد ريّان الذكي، من وصفك بس وبلا ما يشوف منتجك ولا حسابك. صوّر وحدة منهم بكرا وشوف بعينك أي زاوية بتوقف الناس عندك، وهاي اللي بتبني عليها.',
+      cta: 'احجز جلسة تشخيص',
+    }
+  : {
+      eyebrow: 'Short game',
+      title: 'The Hook Lab',
+      lede: 'The first two seconds of a reel decide whether a viewer stops or passes through. Test your eye on three quick rounds, then write what you sell and Nabd will draft three openings you can shoot on your phone.',
+      labTitle: 'Now let us write them for your own product',
+      labLede: 'Write one line about what you sell, and one about your strongest point: something you do differently, or an offer running right now. Nabd returns three openings from three different angles, each with the exact first frame to shoot.',
+      sellLabel: 'What do you sell?',
+      edgeLabel: 'Your strongest point or a running offer (optional)',
+      sellPlaceholder: 'Example: raw honey from my own hives in Jerash, most orders arrive through Instagram',
+      edgePlaceholder: 'Example: I fill the jar in front of the customer and send a small sample with the first order',
+      go: 'Write me three hooks',
+      again: 'Try another product',
+      loading: 'Nabd is writing… this takes a few seconds.',
+      fail: 'The lab is unavailable right now, try again shortly.',
+      short: 'Write a slightly clearer description, one line is enough.',
+      resTitle: 'Three openings for your reel',
+      shotLabel: 'First frame:',
+      tipLabel: 'A shooting note for your product:',
+      disclosure: "Written by Nabd, Rayan's AI assistant, from your description alone, without seeing your product or your account. Shoot one of them tomorrow and watch with your own eyes which angle holds people, then build on that one.",
+      cta: 'Book a diagnosis session',
+    };
+
+const rounds = ROUNDS.map((r) => r[L]);
+const angles = ANGLES.map((a) => a[L]);
+const texts = TEXTS[L];
+---
+
+<section class="hl" id={id}>
+  <div class="hl-head" data-reveal>
+    <p class="hl-eyebrow">{t.eyebrow}</p>
+    <h2>{t.title}</h2>
+    <p class="hl-lede">{t.lede}</p>
+  </div>
+
+  <div class="hl-board frame frame-on" data-reveal data-hooklab>
+    <!-- ═══ الجزء الأول: التسخين ═══ -->
+    <div class="hl-warm" data-hl-warm>
+      <p class="hl-step" data-hl-step></p>
+      <p class="hl-q" data-hl-q></p>
+      <div class="hl-opts" data-hl-opts></div>
+      <p class="hl-why" data-hl-why hidden></p>
+      <button type="button" class="btn btn-primary" data-hl-next hidden>{texts.next}</button>
+    </div>
+
+    <!-- ═══ الجزء الثاني: المختبر ═══ -->
+    <div class="hl-lab" data-hl-lab hidden>
+      <p class="hl-angles-title">{texts.anglesTitle}</p>
+      <ul class="hl-angles">
+        {
+          angles.map((a, i) => (
+            <li>
+              <span class="hl-a-num" aria-hidden="true">
+                {texts.nums[i]}
+              </span>
+              <span class="hl-a-name">{a.name}</span>
+              <span class="hl-a-hint">{a.hint}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="hl-lab-title">{t.labTitle}</p>
+      <p class="hl-lab-lede">{t.labLede}</p>
+
+      <div class="hl-form">
+        <label class="hl-field">
+          <span>{t.sellLabel}</span>
+          <textarea data-hl-sell rows="2" maxlength="600" placeholder={t.sellPlaceholder}></textarea>
+        </label>
+        <label class="hl-field">
+          <span>{t.edgeLabel}</span>
+          <textarea data-hl-edge rows="2" maxlength="400" placeholder={t.edgePlaceholder}></textarea>
+        </label>
+        <button type="button" class="btn btn-primary" data-hl-go>{t.go}</button>
+      </div>
+
+      <p class="hl-status" data-hl-status role="status" hidden></p>
+
+      <div class="hl-res" data-hl-res hidden>
+        <p class="hl-res-title">{t.resTitle}</p>
+        <div class="hl-cards">
+          {
+            [0, 1, 2].map((i) => (
+              <article class="hl-card" data-hl-card={i}>
+                <span class="hl-num" aria-hidden="true">
+                  {texts.nums[i]}
+                </span>
+                <p class="hl-angle" data-hl-angle></p>
+                <p class="hl-line" data-hl-line></p>
+                <p class="hl-shot">
+                  <b>{t.shotLabel}</b> <span data-hl-shot></span>
+                </p>
+              </article>
+            ))
+          }
+        </div>
+        <p class="hl-tip"><b>{t.tipLabel}</b> <span data-hl-tip></span></p>
+        <p class="hl-note">{t.disclosure}</p>
+      </div>
+
+      <div class="hl-actions">
+        <a class="btn btn-primary" href={briefHref}>{t.cta}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    rounds,
+    labels: {
+      lang: L,
+      steps: texts.steps,
+      right: texts.right,
+      wrong: texts.wrong,
+      next: texts.next,
+      toLab: texts.toLab,
+      go: t.go,
+      again: t.again,
+      loading: t.loading,
+      fail: t.fail,
+      short: t.short,
+    },
+  }}
+>
+  // ═══════════════════════════════════════════════════════════
+  //  محرّك المختبر
+  // ═══════════════════════════════════════════════════════════
+  (function () {
+    function boot() {
+      document.querySelectorAll('[data-hooklab]').forEach(setup);
+    }
+
+    function setup(board) {
+      if (board.dataset.ready === '1') return;
+      board.dataset.ready = '1';
+
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // ─── الجزء الأول: المواجهات ───
+      var warmBox = board.querySelector('[data-hl-warm]');
+      var stepEl = board.querySelector('[data-hl-step]');
+      var qEl = board.querySelector('[data-hl-q]');
+      var optsEl = board.querySelector('[data-hl-opts]');
+      var whyEl = board.querySelector('[data-hl-why]');
+      var nextBtn = board.querySelector('[data-hl-next]');
+      var labBox = board.querySelector('[data-hl-lab]');
+      var i = 0;
+
+      function playRound() {
+        var r = rounds[i];
+        stepEl.textContent = labels.steps[i] || '';
+        qEl.textContent = r.q;
+        whyEl.hidden = true;
+        nextBtn.hidden = true;
+        nextBtn.textContent = i === rounds.length - 1 ? labels.toLab : labels.next;
+        optsEl.textContent = '';
+
+        // ⚠️ الترتيب بينخبط كل مرة — لو الصح دايماً بنفس المكان
+        //    الزائر بيحفظ المكان بدل ما يقرا الجملتين.
+        var pair = Math.random() < 0.5 ? [r.good, r.bad] : [r.bad, r.good];
+        pair.forEach(function (text) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'hl-opt';
+          b.textContent = text;
+          b.addEventListener('click', function () {
+            answer(b, text === r.good, r);
+          });
+          optsEl.appendChild(b);
+        });
+      }
+
+      function answer(btn, correct, r) {
+        optsEl.querySelectorAll('.hl-opt').forEach(function (b) {
+          b.disabled = true;
+          if (b.textContent === r.good) b.classList.add('is-good');
+        });
+        if (!correct) btn.classList.add('is-bad');
+        whyEl.textContent = (correct ? labels.right : labels.wrong) + ' ' + r.why;
+        whyEl.hidden = false;
+        nextBtn.hidden = false;
+      }
+
+      nextBtn.addEventListener('click', function () {
+        i++;
+        if (i >= rounds.length) {
+          warmBox.hidden = true;
+          labBox.hidden = false;
+          labBox.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+          return;
+        }
+        playRound();
+      });
+
+      playRound();
+
+      // ─── الجزء الثاني: المختبر الذكي ───
+      //  استدعاء واحد لكل ضغطة، والحدود اليومية عند الـ Worker.
+      //  أي فشل بيطلع رسالة لطيفة — التسخين فوق ما بيتأثر.
+      var AI_ENDPOINT = 'https://ryanalali-api.ryanalali-api.workers.dev/hooks';
+      var sellEl = board.querySelector('[data-hl-sell]');
+      var edgeEl = board.querySelector('[data-hl-edge]');
+      var goBtn = board.querySelector('[data-hl-go]');
+      var statusEl = board.querySelector('[data-hl-status]');
+      var resBox = board.querySelector('[data-hl-res]');
+      var busy = false;
+
+      function say(msg) {
+        statusEl.hidden = !msg;
+        statusEl.textContent = msg || '';
+      }
+
+      function renderHooks(hooks, tip) {
+        say('');
+        board.querySelectorAll('[data-hl-card]').forEach(function (card, n) {
+          var h = hooks[n] || {};
+          card.querySelector('[data-hl-angle]').textContent = h.angle || '';
+          card.querySelector('[data-hl-line]').textContent = h.line || '';
+          card.querySelector('[data-hl-shot]').textContent = h.shot || '';
+          card.classList.remove('in');
+          // تأخير بسيط لكل بطاقة — بتبين وحدة ورا الثانية
+          setTimeout(
+            function () {
+              card.classList.add('in');
+            },
+            reduced ? 0 : n * 140
+          );
+        });
+        board.querySelector('[data-hl-tip]').textContent = tip || '';
+        resBox.hidden = false;
+        resBox.scrollIntoView({ block: 'nearest', behavior: reduced ? 'auto' : 'smooth' });
+      }
+
+      if (goBtn)
+        goBtn.addEventListener('click', function () {
+          if (busy) return;
+          var sell = (sellEl.value || '').trim();
+          var edge = (edgeEl.value || '').trim();
+          if (sell.length < 8) return say(labels.short);
+
+          busy = true;
+          goBtn.disabled = true;
+          resBox.hidden = true;
+          say(labels.loading);
+
+          // ⚠️ مهلة ٤٥ ثانية — الكتابة الجدية بتاخد ١٠-٢٠، وأطول من
+          //    هيك يعني في مشكلة والزر لازم يرجع يفك
+          var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+          var kill = ctrl
+            ? setTimeout(function () {
+                ctrl.abort();
+              }, 45000)
+            : null;
+
+          fetch(AI_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lang: labels.lang, sell: sell, edge: edge }),
+            signal: ctrl ? ctrl.signal : undefined,
+          })
+            .then(function (r) {
+              return r.json().then(function (d) {
+                return d || {};
+              });
+            })
+            .then(function (d) {
+              if (d.ok && Array.isArray(d.hooks) && d.hooks.length) renderHooks(d.hooks, d.tip);
+              else if (d.ok && d.joke) say(d.joke);
+              else say(d.message || labels.fail);
+            })
+            .catch(function () {
+              say(labels.fail);
+            })
+            .then(function () {
+              if (kill) clearTimeout(kill);
+              busy = false;
+              goBtn.disabled = false;
+              goBtn.textContent = resBox.hidden ? labels.go : labels.again;
+            });
+        });
+    }
+
+    boot();
+    document.addEventListener('astro:page-load', boot);
+  })();
+</script>
+
+<style>
+  /* ╔═══════════════ 🎛️ لوحة التحكم ═══════════════╗ */
+  .hl {
+    margin-block: clamp(38px, 5vh, 60px);
+  }
+
+  .hl-head {
+    margin-bottom: 22px;
+  }
+
+  .hl-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .hl-head h2 {
+    font-size: clamp(22px, 2.8vw, 32px);
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .hl-lede {
+    color: var(--muted);
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 58ch;
+  }
+
+  .hl-board {
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--r-card);
+  }
+
+  /* ⚠️ ضروري: .btn بتفرض display وبتغلب قاعدة المتصفح لـ [hidden] —
+     بدون هالسطر زر «المواجهة الجاي» بيبين من أول اللعبة.
+     نفس فخ عين البراند و«ارسم عميلك» (شوف تعليقاتهم). */
+  .hl .btn[hidden] {
+    display: none;
+  }
+
+  /* ─── الجزء الأول: المواجهات ─── */
+  .hl-step {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .hl-q {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+
+  .hl-opts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .hl-opts :global(.hl-opt) {
+    text-align: start;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 14px 16px;
+    cursor: pointer;
+    transition:
+      border-color 0.25s var(--ease-out),
+      transform 0.15s var(--ease-out);
+  }
+
+  .hl-opts :global(.hl-opt:hover:not(:disabled)) {
+    border-color: var(--accent);
+  }
+
+  .hl-opts :global(.hl-opt:active:not(:disabled)) {
+    transform: scale(0.99);
+  }
+
+  .hl-opts :global(.hl-opt:disabled) {
+    cursor: default;
+    opacity: 0.6;
+  }
+
+  .hl-opts :global(.hl-opt.is-good) {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    opacity: 1;
+  }
+
+  .hl-opts :global(.hl-opt.is-bad) {
+    border-color: color-mix(in srgb, var(--danger) 55%, transparent);
+  }
+
+  .hl-why {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--text);
+    border-inline-start: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    max-width: 64ch;
+  }
+
+  /* ─── الزوايا الثلاث ─── */
+  .hl-angles-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .hl-angles {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 22px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .hl-angles li {
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 14px 16px;
+  }
+
+  .hl-a-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .hl-a-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+
+  .hl-a-hint {
+    display: block;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  /* ─── المختبر ─── */
+  .hl-lab-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .hl-lab-lede {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 64ch;
+    margin-bottom: 14px;
+  }
+
+  .hl-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .hl-field {
+    display: block;
+    width: 100%;
+    max-width: 62ch;
+  }
+
+  .hl-field > span {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .hl-field textarea {
+    width: 100%;
+    min-height: 60px;
+    resize: vertical;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    padding: 12px 14px;
+    transition: border-color 0.25s var(--ease-out);
+  }
+
+  .hl-field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .hl-status {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.75;
+    max-width: 62ch;
+    margin-top: 12px;
+  }
+
+  /* ─── النتيجة ─── */
+  .hl-res {
+    margin-top: 18px;
+  }
+
+  .hl-res-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .hl-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .hl-card {
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: var(--r-card);
+    padding: 16px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 0.45s var(--ease-out),
+      transform 0.45s var(--ease-out);
+  }
+
+  .hl-card.in {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hl-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+    font-size: 12.5px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .hl-angle {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .hl-line {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.75;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .hl-shot {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--muted);
+    border-top: 1px dashed var(--line);
+    padding-top: 10px;
+  }
+
+  .hl-shot b {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .hl-tip {
+    font-size: 13.5px;
+    line-height: 1.85;
+    color: var(--text);
+    border-inline-start: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: var(--r-card);
+    padding: 14px 18px;
+    max-width: 66ch;
+    margin-bottom: 14px;
+  }
+
+  .hl-tip b {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .hl-note {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 64ch;
+    margin-bottom: 16px;
+  }
+
+  .hl-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+
+  /* ─── موبايل ─── */
+  @media (max-width: 720px) {
+    .hl-opts,
+    .hl-angles,
+    .hl-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hl-card {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
