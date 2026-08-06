@@ -52,9 +52,10 @@ const reel = `<!doctype html><html dir="rtl"><head><meta charset="utf-8"><style>
   <div style="position:absolute;inset:0;background:radial-gradient(90% 40% at 50% 112%, #000000AA, transparent 70%)"></div>
   <img src="${logo}" style="position:absolute;top:120px;left:50%;transform:translateX(-50%);width:125px;height:125px;
        filter:drop-shadow(0 0 30px ${ACCENT}44)">
-  <div style="position:absolute;top:1300px;left:50%;transform:translateX(-50%);background:#151A0E;
-       border:2px solid ${ACCENT}66;border-radius:22px;padding:22px 44px;font-size:34px;font-weight:700;
-       box-shadow:0 0 40px ${ACCENT}22">وبتضل معك.</div>
+  <!-- ⚠️ سطر عادي مش بقّة: البادج تحت العنوان بقّة كمان، وبقّتين
+       قريبين من بعض بيبينوا مكررين وبياكلوا الهرمية -->
+  <div style="position:absolute;top:1360px;left:0;right:0;text-align:center;padding:0 70px;
+       font-size:36px;font-weight:600;color:${MUTED};white-space:nowrap">بتدفع مقابل المعرفة، <span style="color:${ACCENT}">وبتضل معك</span>.</div>
   <svg viewBox="0 0 1080 60" style="position:absolute;top:1560px;left:0;width:100%;height:50px;opacity:.35">
     <path d="M0,30 Q135,6 270,30 T540,30 T810,30 T1080,30" fill="none" stroke="${ACCENT}" stroke-width="2.5"/></svg>
   <div style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;padding:0 56px">
