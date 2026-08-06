@@ -21,6 +21,10 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  # ⚠️ لازمة عشان job النشر يقرا رقم الناتج المرفوع من job البناء.
+  #    لما نكتب permissions صراحة، أي صلاحية مش مذكورة بتصير none،
+  #    فبلا هالسطر نداء /actions/runs/.../artifacts بيرجّع 403.
+  actions: read
 
 # لو في نشرة شغالة، خلي الجديدة تستنى بدل ما تلغيها
 concurrency:
@@ -48,29 +52,104 @@ jobs:
       - name: بناء الموقع
         run: npm run build
 
+      # ─── تنحيف الناتج قبل الرفع (2026-08-06) ───
+      # اكتشاف: مرحلة النشر عند جيت‌هب كانت تاخد ٤ دقايق وتنقتل
+      # عالمهلة. السبب إن الناتج كان ٢٣٢ ميغا، وأكبر قطعة فيه
+      # ملفات ما بيستخدمها الموقع أصلاً:
+      #  • أغلفة PNG المصدرية (٩١ ميغا) — الموقع بيقرا الـ webp بس،
+      #    وانتحقق: صفر إشارة لـ covers/*.png بكل الـ HTML والـ JS
+      #  • مجلد /assets/lp/ القديم (٥ ميغا) — انستبدل بـ /assets/lpf/
+      #    من يوم مشكلة كاش كلاودفلير، وما ضل إله ولا إشارة
+      # الملفات بتضل بمكانها بالريبو (لأنها مصدر توليد الـ webp)،
+      # بس ما بتنرفع مع النشر.
+      - name: تنحيف الناتج (ملفات مش مستخدمة عالويب)
+        run: |
+          before=$(du -sm dist | cut -f1)
+          rm -f dist/assets/work/covers/*.png
+          rm -rf dist/assets/lp
+          after=$(du -sm dist | cut -f1)
+          echo "الناتج: ${before}MB ← ${after}MB"
+
       - name: رفع الناتج
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
-  # ─── ٢) النشر ───
+  # ═══ ٢) النشر — بلا سقف العشر دقايق ═══
+  #
+  # ⚠️ ليش مش actions/deploy-pages@v4 (قرار ريّان 2026-08-06):
+  #    الأكشن الرسمي بيطلب النشر، وبعدين بيضل يراقب، **وبيلغي النشر**
+  #    لما تخلص مهلته. ومهلته مقفولة عند عشر دقايق ما بتنكسر:
+  #        const MAX_TIMEOUT = 600000
+  #        this.timeout = Math.min(timeoutInput, MAX_TIMEOUT)
+  #    يوم ٦ آب صار: ٦ دقايق بالطابور + ٣:٤٦ نشر شغال فعلياً، وبعدها
+  #    الأكشن قتله وهو بالنص. جرّبنا نمدد المهلة لنص ساعة وما تغيّر إشي.
+  #
+  # الحل: منعمل نفس النداء الرسمي بالضبط (POST /pages/deployments بـ
+  # artifact_id و pages_build_version و oidc_token) ومنوقف عند هون.
+  # جيت‌هب بيكمّل النشر عراحته وما حدا بيلغيه. المراقبة تحت **بتخبّر بس**
+  # وما بتلغي أبداً، وبتخرج بنجاح حتى لو النشر لسا ماشي.
   deploy:
     needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://ryanalali.me/
     steps:
-      - name: النشر على GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-        with:
-          # ⚠️ 2026-08-06: طابور GitHub Pages وقف عن التحرّك وكل النشرات
-          #    ماتت وهي deployment_queued (البناء بينجح بـ٤٠ ثانية).
-          #    جرّبنا نمدّد المهلة لنص ساعة وما نفع، والسبب إن الأكشن
-          #    نفسه بيقصّها: MAX_TIMEOUT = 600000 و
-          #    this.timeout = Math.min(timeoutInput, MAX_TIMEOUT)
-          #    يعني عشر دقايق سقف ما بينكسر. الحل الوحيد الانتظار.
-          # تقرير كل ١٠ ثواني بدل ٥ — طلبات أقل على واجهتهم
-          reporting_interval: 10000
-          error_count: 20
+      - name: اطلب النشر من GitHub Pages
+        id: request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          # ١) هوية OIDC — بلا audience مخصص، تماماً زي core.getIDToken()
+          oidc=$(curl -sS --fail \
+                   -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+                   "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value')
+          if [ -z "$oidc" ] || [ "$oidc" = "null" ]; then
+            echo "::error::ما قدرنا نجيب هوية OIDC"; exit 1
+          fi
+
+          # ٢) رقم الناتج اللي رفعه job البناء بهذا التشغيل
+          artifact_id=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" \
+                          --jq '[.artifacts[] | select(.name=="github-pages")][0].id')
+          if [ -z "$artifact_id" ] || [ "$artifact_id" = "null" ]; then
+            echo "::error::ما لقينا ناتج باسم github-pages"; exit 1
+          fi
+          echo "رقم الناتج: $artifact_id"
+
+          # ٣) اطلب النشر — وخلص
+          gh api --method POST "repos/$GITHUB_REPOSITORY/pages/deployments" \
+            -F artifact_id="$artifact_id" \
+            -f pages_build_version="$GITHUB_SHA" \
+            -f oidc_token="$oidc" > deployment.json
+          cat deployment.json
+
+          # رقم النشرة: زي ما بيستنتجه الأكشن الرسمي — id، وإلا آخر
+          # جزء من status_url، وإلا الكوميت نفسه
+          did=$(jq -r '.id // (.status_url // "" | split("/") | last)' deployment.json)
+          if [ -z "$did" ] || [ "$did" = "null" ]; then did="$GITHUB_SHA"; fi
+          echo "رقم النشرة: $did"
+          echo "id=$did" >> "$GITHUB_OUTPUT"
+
+      # مراقبة بتخبّر بس: بتتفرّج ٩ دقايق وبتخرج بنجاح مهما صار.
+      # ⚠️ ممنوع تلغي وممنوع ترجع فشل — هاي كانت المشكلة الأصلية.
+      - name: تابع الحالة (بلا إلغاء)
+        if: steps.request.outputs.id != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          id="${{ steps.request.outputs.id }}"
+          for i in $(seq 1 54); do
+            st=$(gh api "repos/$GITHUB_REPOSITORY/pages/deployments/$id" --jq '.status' 2>/dev/null || echo "?")
+            echo "[$i] $st"
+            # نفس الحالات النهائية اللي بيفحصها الأكشن الرسمي بالضبط
+            case "$st" in
+              succeed) echo "✅ الموقع انتشر"; exit 0 ;;
+              deployment_failed|deployment_content_failed|deployment_cancelled|deployment_lost)
+                echo "::error::النشر فشل عند جيت‌هب: $st"; exit 1 ;;
+            esac
+            sleep 10
+          done
+          echo "::notice::لسا ماشي بعد ٩ دقايق — تركناه يكمّل، وما ألغيناه."
