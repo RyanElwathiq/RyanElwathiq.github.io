@@ -73,6 +73,16 @@ async function setupOne(section, priority) {
   // باقي الفيديوهات بتتثبّت بالديسكتوب بس — عالموبايل التثبيت المتعدد
   // كان بيسبب تداخل الأقسام وتكرارها، فبتشتغل بدون تثبيت وبتضل حلوة.
   const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+
+  // طلب ريّان (2026-08-06): تسلسل الفريمات عالموبايل ثقيل مهما انضغط.
+  // القسم اللي حامل data-seq-code-mobile بياخد رسمة الكود الحية بدله:
+  // صفر تنزيل صور، والحركة CSS خالصة. الديسكتوب ما بينلمس أبداً.
+  if (isMobile && section.hasAttribute('data-seq-code-mobile')) {
+    if (fallback) fallback.style.opacity = '1';
+    section.classList.add('seq-static', 'seq-code');
+    return;
+  }
+
   const shouldPin =
     section.hasAttribute('data-seq-pin-always') ||
     (section.hasAttribute('data-seq-pin') && !isMobile);

@@ -51,13 +51,8 @@ const t = isAr
   media="(min-width: 768px)"
   fetchpriority="high"
 />
-<link
-  rel="preload"
-  as="image"
-  href="/frames/mobile/frame_0000.webp"
-  media="(max-width: 767px)"
-  fetchpriority="high"
-/>
+<!-- (فريمات الموبايل انشالت 2026-08-06: الهيرو عالموبايل صار رسمة كود
+     حية بلا أي تنزيل — طلب ريّان لأنه التسلسل كان ثقيل مهما انضغط) -->
 
 <!-- data-seq-desktop / data-seq-mobile : مسارات مجلدات الفريمات
      data-seq-pin : يعني الفيديو بيتثبّت بالشاشة طول الرحلة
@@ -66,6 +61,7 @@ const t = isAr
   class="hero"
   data-seq
   data-seq-pin-always
+  data-seq-code-mobile
   data-seq-length="3"
   data-seq-desktop="/frames/desktop/"
   data-seq-mobile="/frames/mobile/"
@@ -91,6 +87,18 @@ const t = isAr
     <!-- احتياط: لو الفريمات مش موجودة بتظهر العقدة الثابتة بدالها -->
     <div class="knot" data-seq-fallback aria-hidden="true">
       <img src="/assets/logo-white.png" alt="" width="900" height="900" loading="eager" />
+    </div>
+
+    <!-- رسمة الموبايل الحية (seq-code): خيوط البراند بتتنفس وحبات ضوء
+         عايمة — CSS خالص، صفر تنزيل، وبتحترم «تقليل الحركة» تلقائياً -->
+    <div class="code-fx" aria-hidden="true">
+      <svg viewBox="0 0 400 800" preserveAspectRatio="none">
+        <path class="fx-th fx-th1" d="M-20,170 Q110,110 200,180 T420,160" />
+        <path class="fx-th fx-th2" d="M-20,640 Q140,700 230,630 T420,660" />
+      </svg>
+      <span class="fx-dot fx-d1"></span>
+      <span class="fx-dot fx-d2"></span>
+      <span class="fx-dot fx-d3"></span>
     </div>
 
     <!-- تعتيم خفيف فوق الفيديو عشان النص يضل مقروء دايماً -->
@@ -229,14 +237,15 @@ const t = isAr
     inset: 0;
     width: 100%;
     height: 100%;
-    background-image: url('/frames/desktop/frame_0000.webp');
-    background-size: cover;
-    background-position: center;
   }
 
-  @media (max-width: 767px) {
+  /* أول فريم كخلفية CSS — للديسكتوب بس: الموبايل صار رسمة كود
+     (seq-code) وما بينزّل ولا فريم نهائياً */
+  @media (min-width: 768px) {
     .seq-canvas {
-      background-image: url('/frames/mobile/frame_0000.webp');
+      background-image: url('/frames/desktop/frame_0000.webp');
+      background-size: cover;
+      background-position: center;
     }
   }
 
@@ -589,6 +598,86 @@ const t = isAr
 
   .hero:global(.seq-static) .outro {
     display: none;
+  }
+
+  /* ═══ رسمة الموبايل الحية (seq-code) — طلب ريّان 2026-08-06 ═══
+     بدل تسلسل الفريمات الثقيل: خيوط البراند بتتنفس + العقدة بتنبض
+     + حبات ضوء عايمة. CSS خالص على GPU، وصفر تنزيل. */
+  .code-fx {
+    display: none;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hero:global(.seq-code) .code-fx {
+    display: block;
+  }
+
+  .code-fx svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .fx-th {
+    fill: none;
+    stroke: #d9ff3f;
+    stroke-width: 1.6;
+    opacity: 0.34;
+    stroke-dasharray: 620;
+    filter: drop-shadow(0 0 6px rgba(217, 255, 63, 0.4));
+  }
+
+  .fx-dot {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #d9ff3f;
+    box-shadow: 0 0 14px rgba(217, 255, 63, 0.55);
+    opacity: 0.55;
+  }
+
+  .fx-d1 { top: 22%; inset-inline-start: 16%; }
+  .fx-d2 { top: 64%; inset-inline-start: 78%; width: 5px; height: 5px; }
+  .fx-d3 { top: 82%; inset-inline-start: 30%; width: 4px; height: 4px; opacity: 0.4; }
+
+  /* العقدة بوضع الكود: أوضح من الاحتياط الباهت */
+  .hero:global(.seq-code) .knot img {
+    opacity: 0.15;
+    filter: drop-shadow(0 0 34px rgba(217, 255, 63, 0.16));
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero:global(.seq-code) .fx-th1 {
+      animation: fx-dash 16s ease-in-out infinite alternate;
+    }
+    .hero:global(.seq-code) .fx-th2 {
+      animation: fx-dash 21s ease-in-out infinite alternate-reverse;
+    }
+    .hero:global(.seq-code) .fx-d1 { animation: fx-float 11s ease-in-out infinite alternate; }
+    .hero:global(.seq-code) .fx-d2 { animation: fx-float 14s ease-in-out infinite alternate-reverse; }
+    .hero:global(.seq-code) .fx-d3 { animation: fx-float 9s ease-in-out infinite alternate; }
+    .hero:global(.seq-code) .knot img {
+      animation: fx-pulse 7s ease-in-out infinite alternate;
+    }
+  }
+
+  @keyframes fx-dash {
+    from { stroke-dashoffset: 620; opacity: 0.18; }
+    to { stroke-dashoffset: 0; opacity: 0.4; }
+  }
+
+  @keyframes fx-float {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(14px, -26px, 0); }
+  }
+
+  @keyframes fx-pulse {
+    from { opacity: 0.11; transform: scale(1); }
+    to { opacity: 0.18; transform: scale(1.035); }
   }
 
   /* ═══ شاشات أضيق من 860px: اللوح بيرجع عمود واحد ═══ */
