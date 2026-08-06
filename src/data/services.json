@@ -13,8 +13,18 @@
       "ar": {
         "name": "موقع إلكتروني",
         "menuDesc": "موقع بيشتغل، مش بس بيبيّن حلو",
-        "h1": "موقعك لازم يجيبلك شغل، مش بس يكون موجود",
-        "seoDesc": "تصميم وبرمجة مواقع إلكترونية بالأردن، متاجر، مواقع شركات، وصفحات هبوط سريعة ومهيأة لمحركات البحث. من عمّان لعملاء بالأردن وبرا.",
+        "seoTitle": "تصميم مواقع الكترونية بالأردن | موقع بيجيبلك شغل",
+        "h1": "تصميم موقع الكتروني بيجيبلك شغل، مش بس بيكون موجود",
+        "seoDesc": "تصميم وبرمجة مواقع الكترونية بالأردن: متاجر، مواقع شركات، وصفحات هبوط سريعة ومهيأة للـ SEO. موقعك لازم يجيبلك شغل، احكيلي نبلّش.",
+        "extras": [
+          {
+            "h2": "شو بيشمل تصميم موقع الكتروني",
+            "body": [
+              "تصميم موقع الكتروني عندي مش بس شكل حلو: هو بنية صفحات مدروسة، سرعة تحميل، تهيئة SEO من أول يوم، وتتبع كامل بتعرف منه مين إجا وشو عمل. الموقع بيطلع جاهز يستقبل إعلانات ويظهر بنتائج البحث، مش بس رابط بتحطه بالبايو.",
+              "وإذا شغلك بيع، انشاء متجر الكتروني كامل جزء من نفس الخدمة: صفحات منتجات، سلة ودفع، وربط مع التوصيل. المتجر بينبني عشان يبيع، مش بس يعرض صور."
+            ]
+          }
+        ],
         "intro": "أغلب المواقع بالأردن بتنعمل مرة وبينساها صاحبها. بتفتح بطيئة، ما بتطلع بجوجل، وما حدا بيعرف إذا جابت زبون ولا لأ. أنا ببني الموقع كأداة بيع: سريع، بيطلع بالبحث، وكل زر فيه إله سبب.",
         "pain": [
           "موقعك بياخد أكثر من ٣ ثواني عشان يفتح، ونص الزوار بيسكّروا قبل ما يشوفوه",
@@ -52,8 +62,18 @@
       "en": {
         "name": "Website",
         "menuDesc": "A site that works, not just one that looks good",
-        "h1": "Your website should bring you work, not just exist",
-        "seoDesc": "Web design and development in Jordan. Online stores, company sites, and fast landing pages built for search. From Amman, for clients in Jordan and abroad.",
+        "seoTitle": "Web Design in Jordan That Brings You Work | Rayan Elwathiq",
+        "h1": "Web design in Jordan should bring you work, not just exist",
+        "seoDesc": "Web design in Jordan that sells: online stores, company sites and fast landing pages built for search. From Amman. Tell me about your project.",
+        "extras": [
+          {
+            "h2": "Website design and web development in Jordan, under one roof",
+            "body": [
+              "Website design and web development in Jordan usually get split between a designer and a programmer who never talk. Here it is one person: the design, the build, the speed work and the search setup all answer to the same goal, a site that brings you work.",
+              "I work from Amman with clients across Jordan and abroad. Whatever the project is, an online store, a company site or a landing page for ads, it ships fast, reads well on any phone, and is ready for search from day one."
+            ]
+          }
+        ],
         "intro": "Most sites here get built once and forgotten. They load slowly, never rank, and nobody can tell whether they brought in a single customer. I build the site as a sales tool: fast, findable, and every button there for a reason.",
         "pain": [
           "Your site takes over 3 seconds to load: half your visitors leave before seeing it",
@@ -118,8 +138,9 @@
       "ar": {
         "name": "إعلانات مدفوعة",
         "menuDesc": "ميتا وجوجل، بميزانية بتعرف وين راحت",
-        "h1": "بطّل تدفع لميتا وانت مش عارف شو رجعلك",
-        "seoDesc": "إدارة إعلانات ممولة على فيسبوك وانستغرام وجوجل بالأردن، إعداد البكسل، تقسيم الجمهور، اختبارات A/B، وتقارير ROAS و CPL واضحة.",
+        "seoTitle": "إدارة اعلانات جوجل وفيسبوك بالأردن | ريّان الواثق",
+        "h1": "بطّل تدفع لاعلانات جوجل وميتا وانت مش عارف شو رجعلك",
+        "seoDesc": "إدارة اعلانات جوجل وفيسبوك وانستغرام بالأردن: بكسل مظبوط، جمهور مقسوم صح، اختبارات A/B، وتقارير بتوريك كل دينار وين راح. احكيلي قبل ما تصرف.",
         "intro": "«صرفنا على فيسبوك وما إجا ولا زبون»، بسمعها كثير. المشكلة نادراً بتكون بالميزانية، بالعادة بتكون إنه الإعلان بيوصل لناس غلط، أو بيوصل لناس صح برسالة غلط، أو إنه ما في تتبع أصلاً فما حدا بيعرف شو صار.",
         "pain": [
           "بتدفع كل شهر وما بتعرف كل دينار رجّعلك قديش",
@@ -156,8 +177,18 @@
       "en": {
         "name": "Paid ads",
         "menuDesc": "Meta and Google. A budget you can actually trace",
-        "h1": "Stop paying Meta without knowing what came back",
-        "seoDesc": "Facebook, Instagram, and Google ads management in Jordan. Pixel setup, audience segmentation, A/B testing, and clear ROAS and CPL reporting.",
+        "seoTitle": "Facebook Ads Management in Jordan That Answers to ROAS",
+        "h1": "Facebook ads management: stop paying Meta without knowing what came back",
+        "seoDesc": "Facebook ads management in Jordan: pixel setup, audience segmentation, A/B tests, and ROAS and CPL reports you can actually read. Ask for the plan.",
+        "extras": [
+          {
+            "h2": "What does Facebook ads management include?",
+            "body": [
+              "Facebook ads management here covers the whole Meta stack: the pixel and conversions API set up properly, audiences segmented by real behaviour, creatives A/B tested, and budget moved to whatever the numbers say is working. Meta advertising rewards structure and punishes guessing.",
+              "The same discipline applies whether you advertise on Facebook, Instagram or Google: one measurement setup, one report, and a straight answer to the only question that matters, what came back for what you spent."
+            ]
+          }
+        ],
         "intro": "\"We boosted a post and nobody came\". I hear it constantly. The problem is rarely the budget. It's usually that the ad reaches the wrong people, or the right people with the wrong message, or that nothing is tracked so nobody knows what happened.",
         "pain": [
           "You spend every month with no idea what each dinar returned",
@@ -221,8 +252,18 @@
       "ar": {
         "name": "تحسين محركات البحث",
         "menuDesc": "تطلع لما حدا يدوّر عن شغلك",
-        "h1": "الناس عم تدوّر عن خدمتك هلأ. بس مش لاقيينك",
-        "seoDesc": "خدمات SEO بالأردن: بحث كلمات مفتاحية، تحسين تقني، بناء محتوى، وتهيئة للظهور بإجابات الذكاء الاصطناعي زي ChatGPT وجوجل.",
+        "seoTitle": "خدمات SEO بالأردن | تحسين محركات البحث | ريّان الواثق",
+        "h1": "الناس عم تدوّر عن خدمتك هلأ. شغل الـ SEO إنهم يلاقوك",
+        "seoDesc": "خدمات SEO بالأردن: بحث كلمات، تحسين تقني، محتوى بيترتب، وظهور بإجابات الذكاء الاصطناعي. الناس بتدوّر هلأ، خليهم يلاقوك. احكيلي.",
+        "extras": [
+          {
+            "h2": "باقات SEO",
+            "body": [
+              "شغل الـ SEO بيمشي بباقات شهرية، لأنه الترتيب بالبحث مش ضربة وحدة: بحث كلمات، تحسينات تقنية، محتوى بيترتب، ومتابعة شهرية بالأرقام. كل باقة بتنبنى على وضع موقعك الحالي وحجم المنافسة بسوقك.",
+              "وبلا أسعار جاهزة عن قصد: السعر بيطلع من تشخيص موقعك، مكتوب بنطاق واضح، وثابت بعد الاتفاق. احكيلي وبقلك أي باقة بتناسب وضعك."
+            ]
+          }
+        ],
         "intro": "الإعلان بيوقف لما توقف تدفع. البحث بيضل يجيبلك ناس وانت نايم. بس الـ SEO مش «كلمات مفتاحية بالنص»، هو بنية تقنية ومحتوى بيجاوب على سؤال حقيقي، وهاد بياخد وقت وبيستاهل.",
         "pain": [
           "بتكتب اسم خدمتك بجوجل وبتلاقي منافسينك وانت مش موجود",
@@ -289,8 +330,18 @@
       "en": {
         "name": "SEO",
         "menuDesc": "Show up when someone searches for what you do",
-        "h1": "People are searching for your service right now, and not finding you",
-        "seoDesc": "SEO services in Jordan: keyword research, technical fixes, content built to rank, and optimisation for AI answers in ChatGPT and Google.",
+        "seoTitle": "SEO Company in Jordan? Hire the Specialist Instead",
+        "h1": "People in Jordan are searching for you right now. SEO decides if they find you",
+        "seoDesc": "Looking for an SEO company in Jordan? One specialist instead: keyword research, technical fixes, content built to rank, AI answers. Ask where to start.",
+        "extras": [
+          {
+            "h2": "SEO or search engine marketing? Both, in the right order",
+            "body": [
+              "Search engine marketing is the umbrella: SEO earns the visits, paid search buys them. Most businesses in Jordan need the earned side first, because rankings compound while ad spend stops working the day you stop paying.",
+              "That is why the work starts with keyword research and technical fixes, then content built to rank. Once the organic base holds, paid search becomes a scalpel instead of a crutch."
+            ]
+          }
+        ],
         "intro": "Ads stop the moment you stop paying. Search keeps bringing people while you sleep. But SEO isn't \"keywords in the text\". It's technical structure plus content that answers a real question. That takes time, and it's worth it.",
         "pain": [
           "You search your own service and find competitors, not yourself",
@@ -384,8 +435,9 @@
       "ar": {
         "name": "هوية بصرية",
         "menuDesc": "لوجو ونظام كامل بتقدر تشتغل فيه",
-        "h1": "الهوية مش لوجو، الهوية إنه حدا يعرفك قبل ما يقرا اسمك",
-        "seoDesc": "تصميم هوية بصرية للشركات بالأردن: لوجو، نظام ألوان وخطوط، تطبيقات مطبوعة ورقمية، ودليل استخدام كامل.",
+        "seoTitle": "تصميم لوجو وهوية بصرية بالأردن | ريّان الواثق",
+        "h1": "تصميم اللوجو أسهل جزء. الهوية إنه حدا يعرفك قبل ما يقرا اسمك",
+        "seoDesc": "تصميم لوجو وهوية بصرية كاملة بالأردن: شعار، ألوان وخطوط، تطبيقات مطبوعة ورقمية، ودليل استخدام. هوية بتتعرف عليها قبل الاسم. احكيلي.",
         "intro": "أغلب اللي بيصير: بتاخد ملف لوجو وبتنتهي القصة. بعد شهرين بتلاقي كل بوست بلون مختلف وخط مختلف، وما حدا بيعرف يميّزك. الهوية الصح نظام: قواعد بتخلي أي حدا يشتغل معك يطلع شغل شبه شغلك.",
         "pain": [
           "عندك لوجو بس كل تصميم بيطلع بشكل مختلف",
@@ -419,8 +471,9 @@
       "en": {
         "name": "Brand identity",
         "menuDesc": "A logo plus the system to actually use it",
-        "h1": "Identity isn't a logo. It's being recognised before your name is read",
-        "seoDesc": "Brand identity design for companies in Jordan: logo, colour and type system, print and digital applications, and a full usage guide.",
+        "seoTitle": "Logo Design in Jordan, and the Identity Behind It",
+        "h1": "Logo design is step one. Identity is being recognised before your name is read",
+        "seoDesc": "Logo design in Jordan inside a full identity: colour and type system, print and digital applications, and a usage guide. Tell me about your project.",
         "intro": "What usually happens: you get a logo file and that's the end of it. Two months later every post is a different colour and a different font, and nobody can tell you apart. Real identity is a system. Rules that let anyone working with you produce work that looks like yours.",
         "pain": [
           "You have a logo but every design comes out looking different",
@@ -481,8 +534,18 @@
       "ar": {
         "name": "إدارة سوشال ميديا",
         "menuDesc": "حساب بيبني جمهور، مش بيعبّي فراغ",
-        "h1": "النشر كل يوم مش استراتيجية",
-        "seoDesc": "إدارة حسابات سوشال ميديا بالأردن: خطة محتوى شهرية، تصميم ومونتاج، جدولة، ورد على العملاء وتقارير أداء.",
+        "seoTitle": "إدارة سوشيال ميديا بالأردن | النشر كل يوم مش استراتيجية",
+        "h1": "إدارة سوشيال ميديا مش إنك تنشر كل يوم. النشر بلا خطة مش استراتيجية",
+        "seoDesc": "إدارة حسابات سوشيال ميديا بالأردن: خطة محتوى شهرية، تصميم ومونتاج، جدولة، رد على العملاء وتقارير أداء. بدك حضور بيبيع مش بس بوستات؟ احكيلي.",
+        "extras": [
+          {
+            "h2": "بتدوّر على شركات سوشيال ميديا في الأردن؟",
+            "body": [
+              "أغلب شركات سوشيال ميديا في الأردن بتبيعك عدد بوستات بالشهر. أنا ببيعك نظام: خطة مبنية على جمهورك، محتوى إله هدف واضح، وأرقام آخر الشهر بتقلك شو اشتغل وشو لأ.",
+              "الفرق مش بالحجم، الفرق بالمساءلة: لما يكون في شخص واحد مسؤول عن الخطة والتنفيذ والقياس، ما في مكان تضيع فيه النتيجة بين الأقسام."
+            ]
+          }
+        ],
         "intro": "٢٣٩٥ متابع عضوي بـ ٣٠ يوم و٢٩٠ ألف مشاهدة على بوست واحد، بدون ولا دينار إعلانات. مش لأني نشرت أكثر، لأني نشرت اللي الناس بدها تشوفه. الفرق بين حساب بيكبر وحساب بيتعب هو الخطة مش الكمية.",
         "pain": [
           "بتنشر يومي والمتابعين ما بيزيدوا",
@@ -515,8 +578,18 @@
       "en": {
         "name": "Social media management",
         "menuDesc": "An account that builds an audience, not fills a gap",
-        "h1": "Posting every day is not a strategy",
-        "seoDesc": "Social media management in Jordan: monthly content planning, design and editing, scheduling, community replies, and performance reporting.",
+        "seoTitle": "Social Media Marketing in Jordan, Not Just Posting",
+        "h1": "Posting every day is not social media marketing. A system is",
+        "seoDesc": "Social media marketing and management in Jordan: monthly content plans, design, scheduling, community replies and reporting. Ask what a month looks like.",
+        "extras": [
+          {
+            "h2": "Social media management in Jordan: what a month looks like",
+            "body": [
+              "Social media management in Jordan is often sold as a stack of posts. A real month here looks different: a content plan tied to what you sell, design and editing on brand, scheduling, replies handled in your voice, and a report that reads like decisions, not screenshots.",
+              "Social media marketing only works as a system. When the plan, the content and the numbers sit with one person, you always know why something was posted and what it did."
+            ]
+          }
+        ],
         "intro": "2,395 organic followers in 30 days and 290,000 views on a single post. With zero ad spend. Not because I posted more, but because I posted what people wanted to see. The difference between an account that grows and one that grinds is the plan, not the volume.",
         "pain": [
           "You post daily and the follower count doesn't move",
@@ -576,8 +649,9 @@
       "ar": {
         "name": "مونتاج فيديو",
         "menuDesc": "ريلز وإعلانات بتوقّف الإصبع",
-        "h1": "أول ثانيتين بيقرروا إذا حدا رح يكمّل",
-        "seoDesc": "مونتاج فيديو وريلز بالأردن: إعلانات سوشال ميديا، فيديوهات منتجات، موشن جرافيك، وترجمة وتوقيت النصوص.",
+        "seoTitle": "مونتاج فيديو وريلز بالأردن | أول ثانيتين بيقرروا",
+        "h1": "فيديو ريلز عنده ثانيتين ليوقّف الإصبع، وهاد شغل المونتاج",
+        "seoDesc": "مونتاج فيديو ريلز وإعلانات سوشيال ميديا بالأردن: قصة بتمسك من أول ثانية، موشن جرافيك، وترجمة مظبوطة. فيديو بيوقّف الإصبع مش بس بينشر. احكيلي.",
         "intro": "الفيديو الحلو اللي ما حدا بيكمّله ما إله قيمة. المونتاج مش قص ولصق، هو ترتيب الأحداث بحيث المشاهد ما يلاقي لحظة يطلع فيها. الإيقاع والصوت والنص كلهم أدوات بيع.",
         "pain": [
           "الفيديو حلو بس نسبة المشاهدة بتنزل بعد ثانيتين",
@@ -610,8 +684,9 @@
       "en": {
         "name": "Video editing",
         "menuDesc": "Reels and ads that stop the thumb",
-        "h1": "The first two seconds decide whether anyone stays",
-        "seoDesc": "Video and reels editing in Jordan: social ads, product videos, motion graphics, and timed subtitles.",
+        "seoTitle": "Video Marketing and Editing That Stops the Scroll",
+        "h1": "In video marketing, the first two seconds decide whether anyone stays",
+        "seoDesc": "Video marketing needs editing that earns the first two seconds: social ads, reels, product videos and motion graphics. Tell me about your project.",
         "intro": "A beautiful video nobody finishes is worthless. Editing isn't cutting and pasting. It's ordering events so the viewer never finds a moment to leave. Pace, sound, and text are all selling tools.",
         "pain": [
           "The video looks good but retention collapses after two seconds",
@@ -671,8 +746,9 @@
       "ar": {
         "name": "استراتيجية تسويق",
         "menuDesc": "خطة مكتوبة بتعرف تنفّذها",
-        "h1": "قبل ما تصرف دينار، لازم تعرف على مين وليش",
-        "seoDesc": "بناء استراتيجية تسويق للشركات بالأردن: تحليل السوق والمنافسين، تحديد الجمهور، بناء العرض، وخطة قنوات وتنفيذ بالأرقام.",
+        "seoTitle": "استراتيجية تسويق وخطة تسويقية بالأردن | ريّان الواثق",
+        "h1": "قبل ما تصرف دينار، بدك خطة تسويقية بتقلّك على مين وليش",
+        "seoDesc": "بناء استراتيجية تسويق وخطة تسويقية للشركات بالأردن: تحليل سوق ومنافسين، جمهور، عرض، وخطة قنوات بالأرقام. قبل ما تصرف دينار، احكيلي.",
         "intro": "أكثر سبب بيضيّع ميزانيات التسويق: إنك تبدأ تنفّذ قبل ما تجاوب على سؤالين، لمين بنبيع، وليش يشتري منّا هو مش من غيرنا. الاستراتيجية هي الجواب المكتوب على هالسؤالين، وكل اشي بعدها بينبني عليها.",
         "pain": [
           "بتجرّب كل قناة تسويق وما في وحدة اشتغلت صح",
@@ -706,8 +782,9 @@
       "en": {
         "name": "Marketing strategy",
         "menuDesc": "A written plan you can actually execute",
-        "h1": "Before you spend a dinar, know who for and why",
-        "seoDesc": "Marketing strategy for companies in Jordan: market and competitor analysis, audience definition, offer building, and a channel plan with real numbers.",
+        "seoTitle": "Marketing Strategy: Know Who For and Why First | Rayan",
+        "h1": "Marketing strategy first: before you spend a dinar, know who for and why",
+        "seoDesc": "Marketing strategy for companies in Jordan: market and competitor analysis, audience, offer and a channel plan with real numbers. Start with the why.",
         "intro": "The biggest waster of marketing budgets: starting execution before answering two questions. Who are we selling to, and why would they buy from us rather than anyone else. Strategy is the written answer to those two, and everything after it is built on top.",
         "pain": [
           "You've tried every channel and none of them worked properly",
@@ -768,8 +845,9 @@
       "ar": {
         "name": "استشارة أو تدريب",
         "menuDesc": "تتعلّمها بنفسك بدل ما تدفع كل شهر",
-        "h1": "أحياناً ما بتحتاج توظّف حدا، بتحتاج حدا يفهّمك",
-        "seoDesc": "استشارات وتدريب تسويق رقمي بالأردن: جلسات فردية أو لفريقك على إعلانات ميتا، أنظمة المحتوى، والتحليل والقياس.",
+        "seoTitle": "استشارات تسويق الكتروني وتدريب بالأردن | ريّان الواثق",
+        "h1": "أحياناً مش ناقصك موظف، ناقصك خبير تسويق الكتروني يفهّمك",
+        "seoDesc": "استشارة تسويقية وتدريب بالأردن: جلسات فردية أو لفريقك على إعلانات ميتا وأنظمة المحتوى والقياس، مع خبير تسويق الكتروني بيحكي بلغتك. احجز جلسة.",
         "intro": "في حالات كثير بيكون أرخص وأذكى إنك تتعلّم بدل ما تدفع شهرياً لحدا. خصوصاً لو عندك فريق شاطر بس ناقصه اتجاه. بالاستشارة انت بتدفع مقابل المعرفة وبتضل معك، والتنفيذ بيصير عندك.",
         "pain": [
           "عندك موظف تسويق شاطر بس ما في حدا يوجّهه",
@@ -802,8 +880,9 @@
       "en": {
         "name": "Consulting or training",
         "menuDesc": "Learn it yourself instead of paying monthly",
-        "h1": "Sometimes you don't need to hire someone. You need someone to explain it",
-        "seoDesc": "Digital marketing consulting and training in Jordan: one-to-one or team sessions on Meta ads, content systems, and analytics.",
+        "seoTitle": "Digital Marketing Course, 1:1 or for Your Team | Rayan",
+        "h1": "Sometimes you don't need to hire someone. You need digital marketing explained",
+        "seoDesc": "A digital marketing course built on your own numbers: 1:1 or team training in Amman on Meta ads, content systems and analytics. Book a session.",
         "intro": "In plenty of cases it's cheaper and smarter to learn than to pay someone monthly. Especially if you have a capable team that's just missing direction. With consulting you pay for knowledge, you keep it, and execution stays in-house.",
         "pain": [
           "You have a capable marketing hire with nobody to guide them",
@@ -859,8 +938,9 @@
       "ar": {
         "name": "تحليل البيانات",
         "menuDesc": "تعرف شو بيشتغل قبل ما تصرف أكثر",
+        "seoTitle": "تحليل بيانات التسويق بالأردن | أرقامك بتحكي شو تعمل بكرا",
         "h1": "عندك أرقام كثيرة. بس ولا وحدة فيهم بتقولك شو تعمل بكرا",
-        "seoDesc": "تحليل بيانات التسويق بالأردن: توحيد أرقام الموقع والإعلانات والسوشال بلوحة وحدة، وربط الزيارة بالمبيعة، وتقرير شهري بلغة قرارات.",
+        "seoDesc": "تحليل بيانات التسويق بالأردن: توحيد أرقام الموقع والإعلانات والسوشيال بلوحة وحدة، وربط الزيارة بالمبيعة، وتقرير بلغة قرارات. احكيلي.",
         "intro": "كل منصة بتعطيك لوحة أرقام، وكل وحدة بتحكي لغة ثانية. النتيجة إنك بتفتح أربع شاشات، وبتطلع منهم بإحساس مش بقرار. تحليل البيانات مش «تقرير أحلى»، هو إنك تعرف بالضبط وين تحط الدينار الجاي.",
         "why": [
           "أغلب الشغلات هون ما بتعاني من قلّة بيانات، بتعاني من إنه ما حدا حوّل البيانات لقرار. الأرقام موجودة، بس مبعثرة وبتتناقض، فبتنتهي بإنك تقرّر بالإحساس وتسمّيه خبرة.",
@@ -903,8 +983,9 @@
       "en": {
         "name": "Data analysis",
         "menuDesc": "Know what is working before you spend more",
-        "h1": "You have plenty of numbers. Not one of them tells you what to do tomorrow",
-        "seoDesc": "Marketing data analysis in Jordan: one dashboard across site, ads, social and sales, visits tied to revenue, and a monthly report written as decisions.",
+        "seoTitle": "Marketing Funnel Analysis: Numbers That Say Do This",
+        "h1": "Your marketing funnel is full of numbers. Not one tells you what to do tomorrow",
+        "seoDesc": "See the whole marketing funnel in one dashboard: site, ads, social and sales tied to revenue, and a monthly report written as decisions. Join the list.",
         "intro": "Every platform hands you a dashboard, and every one speaks a different language. So you open four screens and come out with a feeling instead of a decision. Data analysis is not a prettier report. It is knowing exactly where the next dinar goes.",
         "why": [
           "Most businesses here do not suffer from a lack of data. They suffer because nobody turned the data into a decision. The numbers exist, scattered and contradicting each other, so you end up deciding on instinct and calling it experience.",
@@ -975,8 +1056,9 @@
       "ar": {
         "name": "وكلاء ذكاء اصطناعي وأتمتة",
         "menuDesc": "شغل بيعيد نفسه كل يوم، خليه ينعمل لحاله",
+        "seoTitle": "وكلاء ذكاء اصطناعي وأتمتة للشركات بالأردن | ريّان الواثق",
         "h1": "كل يوم بتعيد نفس الشغل بإيدك. وهو بينعمل لحاله",
-        "seoDesc": "بناء وكلاء ذكاء اصطناعي وأتمتة للشغلات بالأردن: رد آلي بمعلوماتك إنت، تجميع الطلبات من كل القنوات، وتقارير بتتجهّز لحالها.",
+        "seoDesc": "بناء وكلاء ذكاء اصطناعي وأتمتة بالأردن: رد آلي بمعلوماتك إنت، تجميع الطلبات من كل القنوات، وتقارير بتتجهز لحالها. جرّب اللعبة وشوف بنفسك.",
         "intro": "مش كل إشي بدّه موظف جديد. في شغل بتعيده كل يوم بنفس الترتيب: الرد على نفس السؤال، نقل الطلب من الإنستغرام للواتس، تجهيز نفس التقرير. هذا الشغل بينعمل لحاله، وإنت بتفضى للشغل اللي فعلاً بدّه عقلك.",
         "why": [
           "الذكاء الاصطناعي صار موضة، وأغلب اللي بينباع منه ألعاب: أداة حلوة بتشتغل بالعرض وبتنكسر أول ما تلمس شغلك الحقيقي. الفرق مش بالنموذج، الفرق إنه يكون مربوط ببياناتك وقنواتك وناسك.",
@@ -1019,8 +1101,9 @@
       "en": {
         "name": "AI agents & automation",
         "menuDesc": "Work that repeats itself every day should run itself",
-        "h1": "You redo the same work by hand every day. It can run itself",
-        "seoDesc": "AI agents and automation for businesses in Jordan: replies from your own information, requests collected from every channel, and reports that build themselves.",
+        "seoTitle": "Using AI in Digital Marketing: Agents That Work | Rayan",
+        "h1": "You redo the same work by hand every day. AI can run it itself",
+        "seoDesc": "Using AI in digital marketing: replies from your own information, requests from every channel, reports that build themselves. Join the waitlist.",
         "intro": "Not everything needs another hire. Some work repeats in exactly the same order every day: the same question answered, a request moved from Instagram to WhatsApp, the same report assembled. That work can run itself, and you get your head back for the work that actually needs it.",
         "why": [
           "AI became a trend, and most of what gets sold is a toy: a nice demo that breaks the moment it touches real work. The difference is not the model. It is whether it is wired into your data, your channels and your people.",

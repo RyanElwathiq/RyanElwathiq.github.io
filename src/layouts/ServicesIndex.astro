@@ -32,12 +32,14 @@ const packages = (servicesData as any).packages?.[L];
 const t = isAr
   ? {
       back: '→ الرئيسية',
-      title: 'خدماتي',
-      h1: 'شو بقدر أعملك',
+      // ⚠️ العنوان الكامل كما هو من تقرير المحتوى المعتمد (2026-08-06) —
+      //    ما ننبي عليه لاحقة براند إضافية، هو جاهز
+      seoTitle: 'خدمات تسويق رقمي بالأردن | شو بقدر أعملك | ريّان الواثق',
+      h1: 'شو بقدر أعملك: خدمات تسويق رقمي من أولها لآخرها',
       seoDesc:
-        'خدمات تسويق رقمي وتصميم من عمّان: مواقع إلكترونية، إعلانات ممولة، SEO، هوية بصرية، سوشال ميديا، مونتاج فيديو، استراتيجية، واستشارات.',
+        'خدمات تسويق رقمي بمكان واحد: مواقع، إعلانات ممولة، SEO، هوية بصرية، سوشيال ميديا ومونتاج فيديو. من عمّان لكل الأردن. شوف شو بناسب مشروعك واحكيلي.',
       intro:
-        'عشر خدمات، بس المنطق واحد: نفهم المشكلة الحقيقية أول، وبعدين نختار الأداة. اضغط على أي وحدة تشوف شو بتاخد بالضبط وكيف بتصير.',
+        'خدمات تسويق رقمي بالأردن، من عمّان لكل مكان. عشر خدمات، بس المنطق واحد: نفهم المشكلة الحقيقية أول، وبعدين نختار الأداة. اضغط على أي وحدة تشوف شو بتاخد بالضبط وكيف بتصير.',
       ctaTitle: 'مش متأكد شو بتحتاج؟',
       ctaBody: 'عبّي الطلب واحكيلي وضعك، وأنا برجعلك برأي صريح، حتى لو كان الجواب إنك مش محتاج تصرف عندي.',
       ctaBtn: 'احكيلي عن مشروعك',
@@ -46,10 +48,12 @@ const t = isAr
     }
   : {
       back: '← Home',
-      title: 'Services',
-      h1: 'What I can do for you',
+      // ⚠️ Full title as approved in the content report (2026-08-06) —
+      //    no brand suffix appended, it is complete as written
+      seoTitle: 'Marketing Agency in Amman? Try One Full Stack Marketer',
+      h1: 'Everything a marketing agency in Amman does. One person accountable',
       seoDesc:
-        'Digital marketing and design services from Amman: websites, paid ads, SEO, brand identity, social media, video editing, strategy, and consulting.',
+        'What a marketing agency in Amman does, from one marketer: websites, ads, SEO, identity, social and video. One person accountable. See the services.',
       intro:
         'Ten services, one logic: understand the real problem first, then pick the tool. Open any of them to see exactly what you get and how it works.',
       ctaTitle: 'Not sure what you need?',
@@ -78,7 +82,7 @@ const schema = [
 ---
 
 <Base
-  title={`${t.title} | ${isAr ? 'ريّان الواثق' : 'Rayan Elwathiq'}`}
+  title={t.seoTitle}
   description={t.seoDesc}
   lang={lang}
   schema={schema}

@@ -40,11 +40,11 @@ const TOOLS_COUNT = 10; // ٧ ألعاب مقالات + عين البراند + 
 
 const t = isAr
   ? {
-      seoTitle: 'هذا البورتفوليو: موقع حي بيشرح نفسه',
-      seoDesc: 'جولة مفصلة بالموقع اللي إنت فيه: لغتان بالكامل، عشر أدوات تفاعلية، مجسمات ثلاثية الأبعاد، ومختبر أفكار، وكل ميزة بتجربها حية بمكانها.',
+      seoTitle: 'تصميم موقع شخصي بيشرح نفسه: جولة بهذا البورتفوليو',
+      seoDesc: 'جولة بتصميم موقع شخصي حي: لغتان كاملتان، عشر أدوات تفاعلية، ومجسمات ثلاثية الأبعاد. شوف كيف انبنى، وبعدها احكيلي عن موقعك.',
       back: 'كل الأعمال',
       role: 'تصميم وبناء واجهة',
-      title: 'هذا البورتفوليو',
+      title: 'هذا البورتفوليو: تصميم موقع شخصي بيشرح نفسه',
       lede: 'أغرب صفحة أعمال رح تشوفها: إنت واقف جوّا المشروع نفسه هلأ. فبدل ما أفرجيك صور، كل ميزة تحت معها زر بيوديك عليها تجرّبها بإيدك. الموقع هو المعرض.',
       liveBadge: 'حي، وبيكبر باستمرار',
       statsTitle: 'بالأرقام',
@@ -147,15 +147,18 @@ const t = isAr
       ctaTitle: 'الموقع نفسه هو نموذج الشغل.',
       ctaBody: 'كل اللي شفته بهالصفحة أنا صممته وبنيته. إذا بدك مستوى زي هيك لمشروعك (موقع، هوية، أو منظومة تسويق كاملة)، خلينا نبلش بالتشخيص.',
       ctaBtn: 'احكيلي عن مشروعك',
-      ctaGhost: 'شوف خدمة المواقع',
+      // ⚠️ نص الرابط مقصود للسيو: «تصميم مواقع الكترونية» بيسند صفحة الخدمة
+      ctaGhost: 'شوف خدمة تصميم مواقع الكترونية',
+      // رابط ثاني لمعرض المواقع بنص «نماذج تصميم مواقع» (سيو داخلي)
+      ctaGhost2: 'نماذج تصميم مواقع',
       visit: null,
     }
   : {
-      seoTitle: 'A portfolio that explains itself',
-      seoDesc: 'A detailed tour of the site you are inside: fully bilingual, ten interactive tools, 3D wireframes per service, and an idea lab. Every feature tried live in place.',
+      seoTitle: 'Web Design in Amman: A Portfolio That Explains Itself',
+      seoDesc: 'A live web design case study from Amman: the bilingual portfolio you are inside, ten interactive tools, 3D wireframes and an idea lab. Tour it in place.',
       back: 'All work',
       role: 'Design & Front-end Build',
-      title: 'This Portfolio',
+      title: 'This portfolio: web design from Amman that explains itself',
       lede: 'The strangest case study you will see: you are standing inside the project right now. So instead of screenshots, every feature below has a button that takes you to try it yourself. The site is the gallery.',
       liveBadge: 'Live, and growing',
       statsTitle: 'In numbers',
@@ -259,6 +262,7 @@ const t = isAr
       ctaBody: 'Everything you saw on this page, I designed and built. If you want this level for your project (a website, an identity, or a full marketing system), let us start with a diagnosis.',
       ctaBtn: 'Tell me about your project',
       ctaGhost: 'See the websites service',
+      ctaGhost2: null,
       visit: null,
     };
 
@@ -373,6 +377,7 @@ const cover = isAr ? project.coverWide || project.cover : project.coverEnWide ||
       <div class="cta-actions">
         <a class="btn btn-primary" href={`${p}/brief/`}>{t.ctaBtn}</a>
         <a class="btn btn-ghost" href={`${p}/services/websites/`}>{t.ctaGhost}</a>
+        {t.ctaGhost2 && <a class="btn btn-ghost" href={`${p}/websites/`}>{t.ctaGhost2}</a>}
       </div>
     </section>
   </main>

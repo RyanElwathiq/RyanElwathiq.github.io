@@ -15,12 +15,16 @@ interface Props {
   lang: 'en' | 'ar';
   category: string; // video | design | website | marketing
   title: string;
+  h1?: string; // عنوان H1 مخصص للسيو — لو مش موجود بينسحب من العنوان
   description: string;
-  intro: string;
+  intro?: string;
+  introHtml?: string; // مقدمة فيها روابط داخلية (HTML) — بتتقدم على intro لو موجودة
+  sections?: { h2?: string; body: string }[]; // أقسام نصية قصيرة بعد الشبكة (سيو)
 }
 
-const { lang, category, title, description, intro } = Astro.props;
+const { lang, category, title, h1, description, intro, introHtml, sections = [] } = Astro.props;
 const isAr = lang === 'ar';
+const heading = h1 ?? title.split('|')[0].trim();
 
 // كل مشاريع هذا القسم مرتبة حسب order
 const projects = work.projects
@@ -48,14 +52,27 @@ const backLabel = isAr ? '→ الرئيسية' : '← Home';
   <main id="top" class="page">
     <div class="container">
       <a class="back" href={backHref}>{backLabel}</a>
-      <h1 data-reveal>{title.split('|')[0].trim()}</h1>
-      <p class="intro" data-reveal>{intro}</p>
+      <h1 data-reveal>{heading}</h1>
+      {introHtml ? <p class="intro" data-reveal set:html={introHtml} /> : <p class="intro" data-reveal>{intro}</p>}
 
       <div class="grid" data-stagger>
         {/* ⚠️ level=2: هون فوق البطاقات عنوان الصفحة h1 مباشرة،
             مش عنوان قسم، فلازم البطاقات تكون h2 عشان التسلسل يضل صح */}
         {projects.map((p) => <WorkCard project={p} lang={lang} level={2} />)}
       </div>
+
+      {
+        sections.length > 0 && (
+          <div class="notes">
+            {sections.map((s) => (
+              <section class="note" data-reveal>
+                {s.h2 && <h2>{s.h2}</h2>}
+                <Fragment set:html={s.body} />
+              </section>
+            ))}
+          </div>
+        )
+      }
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════
@@ -116,6 +133,49 @@ const backLabel = isAr ? '→ الرئيسية' : '← Home';
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--grid-gap);
+  }
+
+  /* روابط جوّا المقدمة (لما تنبعت introHtml) */
+  .intro :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* الأقسام النصية القصيرة بعد الشبكة */
+  .notes {
+    margin-top: clamp(48px, 8vh, 88px);
+    display: grid;
+    gap: clamp(28px, 4vh, 44px);
+    max-width: 62ch;
+  }
+
+  .note h2 {
+    font-size: clamp(21px, 2.4vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    margin-bottom: 10px;
+  }
+
+  html[lang='ar'] .note h2 {
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .note :global(p) {
+    color: var(--muted);
+    font-size: clamp(15px, 1.6vw, 17px);
+    line-height: 1.75;
+  }
+
+  .note :global(p + p) {
+    margin-top: 10px;
+  }
+
+  .note :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   @media (max-width: 900px) {
