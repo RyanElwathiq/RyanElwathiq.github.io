@@ -87,8 +87,8 @@ export const QUESTIONS = [
       options: [
         { text: 'يدفع كمان مرة ويطلع نفس القصة', frag: 'يدفع لحدا جديد ويطلع نفس قصة اللي قبله' },
         { text: 'ينضحك عليه لأنه مش فاهم بالتسويق', frag: 'ينضحك عليه لأنه مش من عالم التسويق وما بيعرف يميز' },
-        { text: 'يضيع وقته بشغل بيلحق ولا بيخلص', frag: 'يعلق بمشروع تسويق طويل بياخد وقته وما بيوصل لإشي' },
-        { text: 'ينجح الإعلان وما يلحق عالطلبات', frag: 'حتى النجاح بيخوفه: شو لو أجت طلبات أكثر من طاقته؟' },
+        { text: 'يضيع وقته بشغل بيطول ولا بيخلص', frag: 'يعلق بمشروع تسويق طويل بياخد وقته وما بيوصل لإشي' },
+        { text: 'ينجح الإعلان وما يلحق عالطلبات', frag: 'ينجح الإعلان وتيجي طلبات أكثر من طاقته' },
       ],
     },
     en: {
@@ -97,7 +97,7 @@ export const QUESTIONS = [
         { text: 'Paying again and getting the same story', frag: 'paying someone new and getting the same story as the last one' },
         { text: 'Being fooled because they do not know marketing', frag: 'being fooled because marketing is not their world and they cannot tell good from bad' },
         { text: 'Wasting time on work that never ends', frag: 'getting stuck in a long marketing project that eats time and arrives nowhere' },
-        { text: 'The ad working and orders overwhelming them', frag: 'that even success scares them: what if more orders come than they can handle?' },
+        { text: 'The ad working and orders overwhelming them', frag: 'the ad working too well: more orders than they can handle' },
       ],
     },
   },

@@ -39,7 +39,7 @@
       "q": "You are one person. What happens when you are busy with another client?",
       "qAr": "إنت شخص واحد. شو بيصير لما تكون مشغول مع عميل ثاني؟",
       "a": "I take a limited number of projects at a time, and I tell you the truth about my capacity before we start. Not after. You get named delivery dates in writing. If something slips, you hear it from me first, not from a missed deadline. The trade for working with one person instead of an agency is that the person who understood your business is the same person doing the work.",
-      "aAr": "بشتغل على عدد محدود من المشاريع بنفس الوقت، وبقلّك الصراحة عن وقتي **قبل** ما نبدأ مش بعدين. بتاخد تواريخ تسليم مكتوبة بالاسم. ولو تأخّر إشي بتسمعها مني أول، مش من موعد فات. المقابل إنك بتشتغل مع شخص واحد بدل وكالة: نفس الشخص اللي فهم شغلك هو اللي بينفّذه."
+      "aAr": "بشتغل على عدد محدود من المشاريع بنفس الوقت، وبقلّك الصراحة عن وقتي قبل ما نبدأ، مش بعدين. بتاخد تواريخ تسليم مكتوبة بالاسم. ولو تأخّر إشي بتسمعها مني أول، مش من موعد فات. المقابل إنك بتشتغل مع شخص واحد بدل وكالة: نفس الشخص اللي فهم شغلك هو اللي بينفّذه."
     },
     {
       "tag": "Working together",
@@ -80,7 +80,7 @@
       "q": "And the ad account and the Facebook page?",
       "qAr": "وحساب الإعلانات وصفحة الفيسبوك؟",
       "a": "They stay yours. The correct setup is that your business owns the Business Manager, the page, the ad account and the pixel, and I get partner access to work inside it. The wrong setup, the common one, is the agency building your ad account inside its own portfolio. It is faster for them and it means you own nothing: not the account, not the audiences, not the pixel history you paid to build.",
-      "aAr": "بتضل إلك. الإعداد الصح إنه شركتك بتملك الـ Business Manager والصفحة وحساب الإعلانات والبكسل، وأنا بوخذ صلاحية شريك أشتغل جوّاهم. الإعداد الغلط، وهو الشائع، إنه الوكالة تبني حساب إعلاناتك جوّا حسابها هي. أسرع إلها، ومعناه إنك ما بتملك إشي: لا الحساب ولا الجماهير ولا تاريخ البكسل اللي دفعت عشان تبنيه."
+      "aAr": "بتضل إلك. الإعداد الصح إنه شركتك بتملك الـ Business Manager والصفحة وحساب الإعلانات والبكسل، وأنا باخد صلاحية شريك أشتغل جوّاهم. الإعداد الغلط، وهو الشائع، إنه الوكالة تبني حساب إعلاناتك جوّا حسابها هي. أسرع إلها، ومعناه إنك ما بتملك إشي: لا الحساب ولا الجماهير ولا تاريخ البكسل اللي دفعت عشان تبنيه."
     },
     {
       "tag": "Ownership",
@@ -112,7 +112,7 @@
       "q": "Will you sign an NDA?",
       "qAr": "بتوقّع اتفاقية سرّية؟",
       "a": "Yes, and I will suggest one if your work touches customer data, pricing, or anything you would not want a competitor reading. It runs both ways: your numbers stay yours, and nothing goes into my portfolio without you approving it first.",
-      "aAr": "إي، وبقترحها أنا لو شغلك فيه بيانات زباين أو أسعار أو أي إشي ما بتحب منافسك يقراه. وبتمشي بالاتجاهين: أرقامك بتضل إلك، وما بينزل إشي على معرض أعمالي إلا بموافقتك أنت أولاً."
+      "aAr": "إي، وبقترحها أنا لو شغلك فيه بيانات زباين أو أسعار أو أي إشي ما بتحب منافسك يقراه. وبتمشي بالاتجاهين: أرقامك بتضل إلك، وما بينزل إشي على معرض أعمالي إلا بموافقتك إنت أولاً."
     },
     {
       "tag": "Contracts",
@@ -210,7 +210,7 @@
       "q": "How will I know it is working?",
       "qAr": "كيف بعرف إنه الشغل ماشي؟",
       "a": "You get the numbers that matter to your business, not a screenshot of likes. Before we start we agree on two or three measures. Leads, cost per lead, qualified enquiries, sales, and you see them on a fixed rhythm with what changed and what I am doing about it. A report that only ever contains good news is not a report.",
-      "aAr": "بتاخد الأرقام اللي بتهمّ شغلك، مش صورة شاشة للايكات. قبل ما نبدأ منتّفق على رقمين أو ثلاثة، عملاء محتملين، وكلفة العميل، والاستفسارات الجادّة، والمبيعات، وبتشوفهم على إيقاع ثابت مع شو تغيّر وشو عم أعمل بخصوصه. والتقرير اللي دايماً كله أخبار حلوة مش تقرير."
+      "aAr": "بتاخد الأرقام اللي بتهمّ شغلك، مش صورة شاشة للايكات. قبل ما نبدأ منتّفق على رقمين أو ثلاثة: عملاء محتملين، وكلفة العميل، والاستفسارات الجادّة، والمبيعات، وبتشوفهم على إيقاع ثابت مع شو تغيّر وشو عم أعمل بخصوصه. والتقرير اللي دايماً كله أخبار حلوة مش تقرير."
     },
     {
       "tag": "Results",

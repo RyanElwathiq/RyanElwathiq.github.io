@@ -85,7 +85,7 @@ export const EXCHANGES = [
     },
     en: {
       q: 'What makes you different from other companies?',
-      a: 'Our design quality has no competition, and our editing team is one of the strongest. You see the difference from the first post: tidy identity, studied colors, cinematic videos.',
+      a: 'Our design quality has no competition, and our editing team is one of the strongest. You see the difference from the first post: tidy identity, studied colours, cinematic videos. — وكمان بسطر 89: (designs, colours, editing)',
       why: 'Third sign: everything is about the shape (designs, colors, editing) and not a word about message, audience or results. Design stops the eye, but the message moves the decision.',
     },
   },

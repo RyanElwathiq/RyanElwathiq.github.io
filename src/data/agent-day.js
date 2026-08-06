@@ -82,7 +82,7 @@ export const INDUSTRIES = [
       q2: 'قديش صبغة الشعر؟',
       item: 'حجز العروس',
       booking: 'حجز السبت الصبح',
-      follow: 'سألت عن باكيج العروس وسكتت',
+      follow: 'سألت عن باكج العروس وسكتت',
     },
     en: {
       name: 'Salon',

@@ -146,7 +146,7 @@ async function reserveIdeaQuota(env, request, isAr) {
       ok: false,
       scope: 'day',
       message: isAr
-        ? 'المختبر أخد نصيبه اليوم وارتاح. ارجعلي بكرا الصبح — أو عبّي طلب مشروع وبوصلك رد شخصي مش مولّد.'
+        ? 'المختبر أخد نصيبه اليوم وارتاح. ارجعلي بكرا الصبح — أو عبّي طلب مشروع وبيوصلك رد شخصي مش مولّد.'
         : 'The lab has done its share for today. Come back tomorrow morning — or send a project brief and you will get a personal reply, not a generated one.',
     };
   }
@@ -583,7 +583,7 @@ Strict rules:
     //     الاستثناء. والاسم بيحوّل الشفافية من اعتذار لميزة.
     // ═══════════════════════════════════════════════════════════
     const disclosure = isAr
-      ? 'هذي قراءة أوّلية كتبها «نبض» — مساعد ريّان الذكي — فور وصول طلبك.\nريّان بيقرأ طلبك بنفسه وبيرجعلك خلال ٢٤ ساعة.'
+      ? 'هاي قراءة أوّلية كتبها «نبض» — مساعد ريّان الذكي — فور وصول طلبك.\nريّان بيقرأ طلبك بنفسه وبيرجعلك خلال ٢٤ ساعة.'
       : 'This is a first read written by Nabd — Rayan\'s AI assistant — the moment your brief arrived.\nRayan reads your brief himself and will get back to you within 24 hours.';
 
     const clientHtml = `<div dir="${isAr ? 'rtl' : 'ltr'}" style="font-family:system-ui,Segoe UI,Arial;max-width:560px;font-size:16px;line-height:1.9;color:#1a1a1a">

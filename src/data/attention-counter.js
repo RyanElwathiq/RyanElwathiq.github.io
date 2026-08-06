@@ -41,7 +41,7 @@ export const ROUNDS = [
       options: [
         { text: 'عيادتنا مجهزة بأحدث الأجهزة الألمانية وخبرة ١٥ سنة.', keep: 0.09, tag: 'حكي عن حالك', why: 'الأجهزة والخبرة مهمين، بس كمعلومة داعمة بعدين. كجملة أولى، الزائر لسا ما عرف ليش يهتم.' },
         { text: 'كشفية مجانية لأول ٥٠ حجز هالشهر.', keep: 0.24, tag: 'عرض بلا سياق', why: 'المجاني بيجذب، بس اللي انجذبوا للمجاني بس نادراً بيكملوا للعلاج المدفوع. جمهور كثير، نية قليلة.' },
-        { text: 'مأجل موعد الأسنان من سنة لأنك خايف من الألم؟ نص مرضانا أجوا بنفس الخوف.', keep: 0.52, tag: 'مشكلة العميل', why: 'سميت الخوف الحقيقي اللي بيأجل الحجز، وطمّنته إنه مش لحاله. الجملة اللي بتفهم الناس بتوقفهم.' },
+        { text: 'مؤجل موعد الأسنان من سنة لأنك خايف من الألم؟ نص مرضانا أجوا بنفس الخوف.', keep: 0.52, tag: 'مشكلة العميل', why: 'سميت الخوف الحقيقي اللي بيأجل الحجز، وطمّنته إنه مش لحاله. الجملة اللي بتفهم الناس بتوقفهم.' },
       ],
     },
     en: {
@@ -68,7 +68,7 @@ export const ROUNDS = [
       options: [
         { text: 'New collection just landed! Shop now.', keep: 0.12, tag: 'Offer with no context', why: '"New arrivals" matters to your loyal existing followers only. A stranger has no reason to open a link to a store they do not know.' },
         { text: 'We are the #1 store in Jordan, rated 4.9 stars.', keep: 0.1, tag: 'Talking about yourself', why: 'The rating is excellent trust proof, in its right place: next to the buy button. As an opening line it is a claim like every claim.' },
-        { text: 'Ordered your usual size and it came huge? Our size chart is in centimeters, not S, M and L.', keep: 0.5, tag: "The customer's problem", why: 'The biggest fear in buying clothes online is sizing. Solve that fear in one line and you get the attention of everyone burned before.' },
+        { text: 'Ordered your usual size and it came huge? Our size chart is in centimetres, not S, M and L.', keep: 0.5, tag: "The customer's problem", why: 'The biggest fear in buying clothes online is sizing. Solve that fear in one line and you get the attention of everyone burned before.' },
       ],
     },
   },

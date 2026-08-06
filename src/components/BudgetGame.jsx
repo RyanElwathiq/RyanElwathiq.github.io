@@ -37,7 +37,7 @@ const COPY = {
       },
       {
         h: 'هاي ميزانية التنفيذ، مش أتعابي.',
-        p: 'المبلغ اللي بتوزّعه بيروح لميتا، وللتصوير والإنتاج، وللاستضافة والأدوات، مصاريف بتدفعها بغض النظر عن مين بيشتغل معك. أتعابي مقابل القرارات اللي بتخلّي هالمصاريف ترجّع بدل ما تضيع، وبنتفق عليها لحال حسب حجم الشغل.',
+        p: 'المبلغ اللي بتوزّعه بيروح لميتا، وللتصوير والإنتاج، وللاستضافة والأدوات، مصاريف بتدفعها بغض النظر عن مين بيشتغل معك. أتعابي مقابل القرارات اللي بتخلّي هالمصاريف ترجّع بدل ما تضيع، وبنتفق عليها لحالها حسب حجم الشغل.',
       },
     ],
     feeReminder:
@@ -61,7 +61,7 @@ const COPY = {
     lead: 'عميل',
     compareTitle: 'شوف الفرق',
     compareWin: 'توزيعك أحسن من توزيعي 👏 وهاد مش سهل، شكلك بتفهم باللعبة.',
-    compareTie: 'توزيعك قريب كتير من توزيعي. شغل حلو.',
+    compareTie: 'توزيعك قريب كثير من توزيعي. شغل حلو.',
     compareLose: 'نفس الميزانية بالضبط، والفرق بالتوزيع بس.',
     notesTitle: 'ليش',
     ctaText: 'بدك توزيع مبني على مشروعك إنت مش على متوسطات؟',
@@ -77,7 +77,7 @@ const COPY = {
       },
       noWeb: {
         h: 'ما في موقع = بتدفع عشان توصل لناس وبعدين بتفقدهم',
-        p: 'الإعلان بيوقّف الشخص. الموقع هو اللي بيقنعه. بدون موقع، كل قنواتك بتشتغل بـ 60٪ من قوّتها، ومحدا بيقدر يلاقيك على جوجل، ومحدا بيقدر يشتري وإنت نايم.',
+        p: 'الإعلان بيوقّف الشخص. الموقع هو اللي بيقنعه. بدون موقع، كل قنواتك بتشتغل بـ ٦٠٪ من قوّتها، ومحدا بيقدر يلاقيك على جوجل، ومحدا بيقدر يشتري وإنت نايم.',
       },
       noBrand: {
         h: 'ما في هوية = الناس بتشوفك بس ما بتتذكرك',
@@ -85,10 +85,10 @@ const COPY = {
       },
       creatorHeavy: {
         h: 'المؤثرين ثقة مستعارة',
-        p: 'بتجيب قفزة كبيرة بيوم واحد، وبعدين بتنسى. لما تخلص الحملة، ما بيضلّك إشي تملكه، لا محتوى، ولا جمهور، ولا بيانات.',
+        p: 'بتجيب قفزة كبيرة بيوم واحد، وبعدين الناس بتنساك. لما تخلص الحملة، ما بيضلّك إشي تملكه، لا محتوى، ولا جمهور، ولا بيانات.',
       },
       noAds: {
-        h: 'بدون إعلانات، البداية بطيئة كتير',
+        h: 'بدون إعلانات، البداية بطيئة كثير',
         p: 'المحتوى العضوي والـ SEO بيرجّعوا أكثر على المدى الطويل، بس بيحتاجوا شهور. الإعلان بيشتري وقت، بيوصلك لناس من أول يوم بينما الباقي عم يكبر.',
       },
       noContent: {
@@ -150,7 +150,7 @@ const COPY = {
     ctaText: 'Want a split built on your business instead of averages?',
     ctaBtn: 'Tell me about your business',
     disclaimer:
-      'This is an educational simulation based on Jordanian market averages and my own client work. Numbers are estimates and shift with your industry, product, and execution quality, and this is a monthly delivery budget that does not include my fee. A "lead" means a message, enquiry, or form fill: not a closed sale.',
+      'This is an educational simulation based on Jordanian market averages and my own client work. Numbers are estimates and shift with your industry, product, and execution quality, and this is a monthly delivery budget that does not include my fee. A "lead" means a message, enquiry, or form fill, not a closed sale.',
     more: 'Open the full simulator →',
     notes: {
       close: {
