@@ -64,3 +64,12 @@ jobs:
       - name: النشر على GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          # ⚠️ 2026-08-06: طابور GitHub Pages صار أبطأ من المهلة
+          #    الافتراضية (١٠ دقايق) وكل النشرات كانت تفشل بالثانية
+          #    نفسها: البناء بينجح بـ٣٣ ثانية، والنشر بيموت وهو
+          #    deployment_queued. نصف ساعة بتعطيه مجال يخلص.
+          timeout: 1800000
+          # تقرير كل ١٠ ثواني بدل ٥ — طلبات أقل على واجهتهم
+          reporting_interval: 10000
+          error_count: 20
