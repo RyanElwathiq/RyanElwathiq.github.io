@@ -446,9 +446,9 @@ async function sendClientReply(env, f, isAr, leadId) {
 
 ١) اقرأ وضعه بكلامك انت. مش «شكراً على طلبك» — بل الجملة اللي بتوري إنك فهمت المشكلة الحقيقية ورا اللي كتبه. لو كتب «الناس بتيجي مرة وما بترجع» فالمشكلة مش التسويق، المشكلة سبب عدم الرجوع.
 
-٢) خطوة وحدة يقدر يعملها هالأسبوع بنفسه، بلا ما يدفع ولا فلس. محدّدة لنشاطه هو، مش نصيحة عامة.
+٢) خطوة وحدة يقدر يبلش فيها اليوم بنفسه، بلا ما يدفع ولا فلس. محدّدة لنشاطه هو، مش نصيحة عامة.
 
-٣) لو اشتغلنا سوا، كيف بتبدأ: مكالمة نفهم فيها الوضع، بعدها نطاق مكتوب بمخرجات وجدول وسعر ثابت. بلا أرقام ولا وعود بنتائج.
+٣) قرارك الواضح: **من وين نبدأ بحالته هو** — أي خدمة أو زاوية هي نقطة البداية الصح وليش، بجملة أو جملتين مبنيات عاللي كتبه (بصيغة ترجيح: «من كلامك، البداية الأصح…»). لو طلب خدمات كثيرة، رتّبله: شو أول وشو بيستنى. بعدها كيف بتبدأ عملياً: مكالمة نفهم فيها الوضع، بعدها نطاق مكتوب بمخرجات وجدول وسعر ثابت. بلا أرقام ولا وعود بنتائج.
 
 ٤) سطرين: ريّان بيقرأ الطلب بنفسه وبيرجعله خلال ٢٤ ساعة.
 
@@ -517,9 +517,9 @@ Write four short paragraphs, no headings, no bullets:
 
 1) Read their situation back in your own words. Not "thanks for your brief" — the sentence that shows you understood the real problem behind what they wrote. If they said "people come once and never return", the problem isn't marketing, it's whatever makes them not return.
 
-2) One step they can take this week themselves, for free. Specific to their business, not generic advice.
+2) One step they can start today themselves, for free. Specific to their business, not generic advice.
 
-3) If we work together, how it starts: a conversation to understand the situation, then a written scope with deliverables, a timeline, and a fixed price. No numbers, no promises of results.
+3) Your clear verdict: **where to start in their specific case** — which service or angle is the right starting point and why, in one or two sentences grounded in what they wrote (hedged: "from what you describe, the right place to start is…"). If they asked for several services, order them: what comes first, what waits. Then how it starts practically: a conversation to understand the situation, then a written scope with deliverables, a timeline, and a fixed price. No numbers, no promises of results.
 
 4) Two lines: Rayan reads the brief himself and gets back within 24 hours.
 
