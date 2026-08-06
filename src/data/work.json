@@ -347,7 +347,7 @@
     "result": "A store that reads as a brand instead of a template, with a hero that holds attention and a component library that keeps every new section consistent."
    },
    "storyAr": {
-    "vision": "علامة عناية بالبشرة داخلة سوق مزدحم كانت بحاجة متجر يحسّ زي المنتج نفسه: نظيف، هادي، وواضح إنه إلها هي. المرجع كان عالم تحت الماء، فصار الماء هو لغة التصميم بكل إشي.",
+    "vision": "علامة عناية بالبشرة داخلة سوق مزدحم كانت بحاجة متجر بتحسّه زي المنتج نفسه: نظيف، هادي، وواضح إنه إلها هي. المرجع كان عالم تحت الماء، فصار الماء هو لغة التصميم بكل إشي.",
     "goal": "استبدال متجر بقالب جاهز عادي بتجربة مبنية على الهوية، ترفع القيمة المدركة، وتشتغل موبايل-أولاً وتضل سريعة على شبكات الأردن.",
     "challenge": "المتجر على ووردبريس مع إضافات بتبني الماركب تبعها بنفسها، يعني تغيير الثيم لحاله ما كان بيكفي. التصميم كان لازم يعيش فوق WooCommerce وصفحات الدفع بدون ما يكسرها.",
     "approach": "بنيت طبقة توكنز تصميم واحدة ونظام حركة مشترك، وبعدين ربطتهم بماركب الإضافات بطبقة توافق. والهيرو بيستخدم سكرول-سيكوينس بأسلوب أبل بنسختين فريمات: وحدة للموبايل ووحدة للديسكتوب.",
@@ -915,7 +915,7 @@
    "descAr": "تصاميم توعية صحية لعيادة el-kay بمصر ولشركة ADjust، تحويل مواضيع طبية لإشي بيوقف عنده اللي بيسكرول.",
    "story": {
     "challenge": "Medical content has one built-in problem: it either reads like a textbook nobody finishes, or like an ad nobody believes.",
-    "approach": "Each piece leads with the question the reader already has — thyroid fatigue, smoking and oral health — and answers it in the first line, not the last.",
+    "approach": "Each piece leads with the question the reader already has, thyroid fatigue, smoking and oral health, and answers it in the first line, not the last.",
     "result": "Health topics that get read instead of scrolled past."
    },
    "storyAr": {

@@ -135,8 +135,8 @@ async function reserveIdeaQuota(env, request, isAr) {
       ok: false,
       scope: 'visitor',
       message: isAr
-        ? 'خلصت أفكار اليوم — خمسة بتكفي تبلّش فيهم. ارجعلي بكرا، أو إذا الموضوع جدّي عبّي طلب مشروع وبنحكي بتفصيل أعمق.'
-        : 'That is your five ideas for today — enough to start with. Come back tomorrow, or if this is serious, send a project brief and we will go deeper.',
+        ? 'خلصت أفكار اليوم. خمسة بتكفي تبلّش فيهم. ارجعلي بكرا، أو إذا الموضوع جدّي عبّي طلب مشروع وبنحكي بتفصيل أعمق.'
+        : 'That is your five ideas for today, enough to start with. Come back tomorrow, or if this is serious, send a project brief and we will go deeper.',
     };
   }
 
@@ -146,8 +146,8 @@ async function reserveIdeaQuota(env, request, isAr) {
       ok: false,
       scope: 'day',
       message: isAr
-        ? 'المختبر أخد نصيبه اليوم وارتاح. ارجعلي بكرا الصبح — أو عبّي طلب مشروع وبيوصلك رد شخصي مش مولّد.'
-        : 'The lab has done its share for today. Come back tomorrow morning — or send a project brief and you will get a personal reply, not a generated one.',
+        ? 'المختبر أخد نصيبه اليوم وارتاح. ارجعلي بكرا الصبح، أو عبّي طلب مشروع وبيوصلك رد شخصي مش مولّد.'
+        : 'The lab has done its share for today. Come back tomorrow morning, or send a project brief and you will get a personal reply, not a generated one.',
     };
   }
 
@@ -615,7 +615,7 @@ Strict rules:
           //    لو ضلّوا شي واحد، ما بتقدر تغيّر واحد بلا ما تكسر التاني.
           //    وبيرجع لـ MAIL_TO لحاله إذا ما انحدد.
           reply_to: env.REPLY_TO || env.MAIL_TO,
-          subject: isAr ? `وصلني طلبك — ${f.biz || f.name}` : `Got your brief — ${f.biz || f.name}`,
+          subject: isAr ? `وصلني طلبك: ${f.biz || f.name}` : `Got your brief: ${f.biz || f.name}`,
           text: `${reply}\n\n—\n${disclosure}`,
           html: clientHtml,
         }),
@@ -815,8 +815,8 @@ async function reservePersonaQuota(env, request, isAr) {
       ok: false,
       scope: 'visitor',
       message: isAr
-        ? 'رسمتلك ثلاث بيرسونات اليوم — بتكفي تبلّش فيهم. ارجعلي بكرا، أو إذا الموضوع جدّي عبّي طلب مشروع وريّان بيبني البيرسونا من محادثات زباينك الحقيقيين.'
-        : 'That is your three personas for today — enough to start with. Come back tomorrow, or if this is serious, send a project brief and Rayan will build the persona from your real customer conversations.',
+        ? 'رسمتلك ثلاث بيرسونات اليوم، بتكفي تبلّش فيهم. ارجعلي بكرا، أو إذا الموضوع جدّي عبّي طلب مشروع وريّان بيبني البيرسونا من محادثات زباينك الحقيقيين.'
+        : 'That is your three personas for today, enough to start with. Come back tomorrow, or if this is serious, send a project brief and Rayan will build the persona from your real customer conversations.',
     };
   }
 
@@ -826,8 +826,8 @@ async function reservePersonaQuota(env, request, isAr) {
       ok: false,
       scope: 'day',
       message: isAr
-        ? 'الرسّام أخد نصيبه اليوم وارتاح. ارجعلي بكرا الصبح — أو عبّي طلب مشروع وبتوصلك قراءة شخصية مش مولّدة.'
-        : 'The persona painter has done its share for today. Come back tomorrow morning — or send a project brief and you will get a personal read, not a generated one.',
+        ? 'الرسّام أخد نصيبه اليوم وارتاح. ارجعلي بكرا الصبح، أو عبّي طلب مشروع وبتوصلك قراءة شخصية مش مولّدة.'
+        : 'The persona painter has done its share for today. Come back tomorrow morning, or send a project brief and you will get a personal read, not a generated one.',
     };
   }
 
@@ -872,7 +872,7 @@ async function handlePersona(request, env, origin) {
     return json(
       {
         error: 'ai-off',
-        message: isAr ? 'الرسّام مش متوفر هلأ — جرب بعدين.' : 'The painter is unavailable right now — try again later.',
+        message: isAr ? 'الرسّام مش متوفر هلأ، جرب بعدين.' : 'The painter is unavailable right now. Try again later.',
       },
       503,
       origin,
@@ -1533,7 +1533,7 @@ async function handleTgMessage(env, msg) {
         from: env.MAIL_FROM || 'Rayan Elwathiq <onboarding@resend.dev>',
         to: [lead.mail],
         reply_to: env.REPLY_TO || env.MAIL_TO,
-        subject: isArLead ? `رد من ريّان — ${lead.biz || lead.name}` : `Reply from Rayan — ${lead.biz || lead.name}`,
+        subject: isArLead ? `رد من ريّان: ${lead.biz || lead.name}` : `Reply from Rayan: ${lead.biz || lead.name}`,
         text,
         html: `<div dir="${isArLead ? 'rtl' : 'ltr'}" style="font-family:system-ui,Segoe UI,Arial;max-width:560px;font-size:16px;line-height:1.9;color:#1a1a1a">${escapeHtml(
           text,

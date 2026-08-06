@@ -39,6 +39,8 @@ const COPY = {
       'استراتيجية تسويق',
       'تحسين محركات البحث (SEO)',
       'استشارة أو تدريب',
+      'تحليل البيانات',
+      'وكلاء ذكاء اصطناعي وأتمتة',
       'إشي ثاني',
     ],
     // ─── الخطوة ٢ ───
@@ -129,6 +131,8 @@ const COPY = {
       'Marketing strategy',
       'SEO',
       'Consulting or training',
+      'Data analysis',
+      'AI agents & automation',
       'Something else',
     ],
     q2biz: 'Business name',
@@ -302,18 +306,19 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
     const L = isAr
       ? ['الخدمات', 'المشروع', 'الميزانية', 'البداية', 'التفاصيل', 'الاسم', 'الإيميل', 'الهاتف']
       : ['Services', 'Business', 'Budget', 'Timeline', 'Details', 'Name', 'Email', 'Phone'];
+    // «-» بديل الحقل الفاضي (كانت بقايا «، /. /: » من حذف آلي قديم للشرطة)
     return [
-      `${L[0]}: ${services.join('، ') || '، '}`,
-      `${L[1]}: ${bizFull || '. '}`,
+      `${L[0]}: ${services.join('، ') || '-'}`,
+      `${L[1]}: ${bizFull || '-'}`,
       `${L[2]}: ${budget}`,
       `${L[3]}: ${when}`,
       '',
       `${L[4]}:`,
-      details || ': ',
+      details || '-',
       '',
       `${L[5]}: ${name}`,
       `${L[6]}: ${mail}`,
-      `${L[7]}: ${phone || '. '}`,
+      `${L[7]}: ${phone || '-'}`,
     ].join('\n');
   }, [services, bizFull, budget, when, details, name, mail, phone, isAr]);
 
@@ -387,12 +392,19 @@ export default function Brief({ lang = 'ar', email = '', whatsapp = '', asH1 = f
     setStep(to);
   };
 
+  // ⚠️ details صارت useMemo (مشتقة من الأسئلة الثلاثة) — القديم كان
+  //    بينادي setDetails فيرمي ReferenceError وبيكسر «ابدأ طلب جديد»
   const reset = () => {
     setDone(false);
     setStep(0);
     setServices([]);
     setBiz('');
-    setDetails('');
+    setWhat('');
+    setBudget(t.budgets[0]);
+    setWhen(t.whens[0]);
+    setPain('');
+    setTried('');
+    setWin('');
     setName('');
     setMail('');
     setPhone('');

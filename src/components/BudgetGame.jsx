@@ -421,7 +421,7 @@ export default function BudgetGame({
             <div>
               <p className="bud-stat-label">{t.statCpl}</p>
               <p className="bud-stat-value">
-                {yours.cpl ? yours.cpl.toFixed(1) : '. '}
+                {yours.cpl ? yours.cpl.toFixed(1) : '-'}
                 <span className="bud-stat-unit">{t.dinar}</span>
               </p>
             </div>
