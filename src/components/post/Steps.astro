@@ -9,8 +9,14 @@
 //  ✏️ الاستخدام:
 //     <Steps items={[
 //       { t: 'العنوان', d: 'الشرح' },
-//       { t: 'العنوان', d: 'الشرح' },
+//       { t: 'العنوان', d: 'الشرح، وفيه <a href="/…">رابط</a>' },
 //     ]} />
+//
+//  ⚠️ الوصف بينرسم كـ HTML مش نص خام. قبل هيك كان `{s.d}`، وهاد
+//     بيطبع أي رابط ماركداون حرفياً للزائر هيك: [النص](/الرابط)
+//     — صار فعلياً بمقال «أول إعلان ممول» وريّان لقاه.
+//     المحتوى كله من عندنا وبينبني وقت البناء، فما في سطح هجوم.
+//     الرابط جوّا الوصف: اكتبه <a> عادي، مش صيغة ماركداون.
 // ═══════════════════════════════════════════════════════════════
 interface Props {
   items: { t: string; d: string }[];
@@ -26,7 +32,7 @@ const { items } = Astro.props;
         <span class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
         <div class="txt">
           <p class="t">{s.t}</p>
-          <p class="d">{s.d}</p>
+          <p class="d" set:html={s.d} />
         </div>
       </li>
     ))
@@ -98,5 +104,12 @@ const { items } = Astro.props;
     font-size: 15px;
     line-height: 1.8;
     color: var(--muted);
+  }
+
+  /* نفس شكل الروابط جوّا نص المقال بالضبط (BlogPost .body a) */
+  .d :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 </style>
