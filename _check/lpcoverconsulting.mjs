@@ -44,8 +44,9 @@ const site169 = (isAr, h1, h2) => `<!doctype html><html dir="${isAr ? 'rtl' : 'l
 // ─── غلاف الريلز 9:16 (عربي وإنجليزي) ───
 const REEL_T = {
   ar: {
-    h1: 'أحياناً مش ناقصك موظّف.',
-    h2: 'ناقصك حدا يفهّمك.',
+    // تصحيح ريّان 2026-08-07: «مش ناقصك» صارت «ما بكون ناقصك … بل»
+    h1: 'أحياناً ما بكون ناقصك موظّف.',
+    h2: 'بل حدا بيفهّمك.',
     badge: '🎓 استشارة وتدريب',
     line: ['بتدفع مقابل المعرفة، ', 'وبتضل معك', '.'],
   },
@@ -98,7 +99,9 @@ await p169.route('http://post.local/**', async (route) => {
 });
 await p169.goto('http://post.local/');
 for (const [name, html] of [
-  ['lp-consulting-cover', site169(true, 'أحياناً مش ناقصك موظّف.', 'ناقصك حدا يفهّمك.')],
+  // ⚠️ اسم جديد بعد تصحيح النص (قاعدة كاش كلاودفلير: تغيير المحتوى
+  //    = اسم ملف جديد، وإلا الزائر بيضل يشوف النسخة القديمة المخزّنة)
+  ['lp-consulting-2-cover', site169(true, 'أحياناً ما بكون ناقصك موظّف.', 'بل حدا بيفهّمك.')],
   ['lp-consulting-en-cover', site169(false, "Sometimes you don't need another hire.", 'You need someone to explain it.')],
 ]) {
   await p169.setContent(html, { waitUntil: 'networkidle' });

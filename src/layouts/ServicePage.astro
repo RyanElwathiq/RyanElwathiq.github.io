@@ -207,7 +207,9 @@ const LP_FILMS: Record<string, { film: string; dur: string }> = isAr
       'data-analysis': { film: 'lp-numbers', dur: '١:٥٢' },
       seo: { film: 'lp-seo', dur: '٢:٠٥' },
       'video-editing': { film: 'lp-montage', dur: '٢:٢٥' },
-      consulting: { film: 'lp-consulting', dur: '١:٠١' },
+      // ⚠️ «-2» بعد تصحيح ريّان للنص (2026-08-07). قاعدة كاش كلاودفلير:
+      //    تغيير محتوى فيديو = اسم ملف جديد بالكامل، بلا ?v
+      consulting: { film: 'lp-consulting-2', dur: '١:٠١' },
     }
   : {
       websites: { film: 'lp-websites-en', dur: '0:24' },
