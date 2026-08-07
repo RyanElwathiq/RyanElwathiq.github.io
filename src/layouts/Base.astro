@@ -42,7 +42,10 @@ const dir = lang === 'ar' ? 'rtl' : 'ltr';
 
 // ─── روابط مطلقة (واتساب وفيسبوك بيرفضوا الروابط النسبية) ───
 const site = Astro.site ?? new URL('https://ryanalali.me');
-const ogImage = new URL(image ?? '/og.jpg', site).href;
+// ⚠️ صورة المشاركة بتتغيّر باللغة: العربية هي الافتراضية لأن أغلب
+//    روابط الواتساب بتروح لأردنيين، والإنجليزية للصفحات الإنجليزية.
+//    (الصورتان تولّدهما `_check/ogimage.mjs`)
+const ogImage = new URL(image ?? (lang === 'ar' ? '/og.jpg' : '/og-en.jpg'), site).href;
 const path = Astro.url.pathname;
 const pageUrl = new URL(path, site).href;
 
