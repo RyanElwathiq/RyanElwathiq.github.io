@@ -46,7 +46,7 @@ const REEL_T = {
   ar: {
     // تصحيح ريّان 2026-08-07: «مش ناقصك» صارت «ما بكون ناقصك … بل»
     h1: 'أحياناً ما بكون ناقصك موظّف.',
-    h2: 'بل حدا بيفهّمك.',
+    h2: 'بل حدا بيفهمك.',
     badge: '🎓 استشارة وتدريب',
     line: ['بتدفع مقابل المعرفة، ', 'وبتضل معك', '.'],
   },
@@ -101,7 +101,7 @@ await p169.goto('http://post.local/');
 for (const [name, html] of [
   // ⚠️ اسم جديد بعد تصحيح النص (قاعدة كاش كلاودفلير: تغيير المحتوى
   //    = اسم ملف جديد، وإلا الزائر بيضل يشوف النسخة القديمة المخزّنة)
-  ['lp-consulting-2-cover', site169(true, 'أحياناً ما بكون ناقصك موظّف.', 'بل حدا بيفهّمك.')],
+  ['lp-consulting-3-cover', site169(true, 'أحياناً ما بكون ناقصك موظّف.', 'بل حدا بيفهمك.')],
   ['lp-consulting-en-cover', site169(false, "Sometimes you don't need another hire.", 'You need someone to explain it.')],
 ]) {
   await p169.setContent(html, { waitUntil: 'networkidle' });

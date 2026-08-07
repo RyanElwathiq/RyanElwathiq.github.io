@@ -207,9 +207,11 @@ const LP_FILMS: Record<string, { film: string; dur: string }> = isAr
       'data-analysis': { film: 'lp-numbers', dur: '١:٥٢' },
       seo: { film: 'lp-seo', dur: '٢:٠٥' },
       'video-editing': { film: 'lp-montage', dur: '٢:٢٥' },
-      // ⚠️ «-2» بعد تصحيح ريّان للنص (2026-08-07). قاعدة كاش كلاودفلير:
-      //    تغيير محتوى فيديو = اسم ملف جديد بالكامل، بلا ?v
-      consulting: { film: 'lp-consulting-2', dur: '١:٠١' },
+      // ⚠️ «-3»: كل تعديل نص = رقم جديد، لأن كلاودفلير بيخزّن الملف
+      //    باسمه وما بينتبه إنه المحتوى تبدّل. -1 النص الأصلي،
+      //    -2 «ما بكون ناقصك… بل»، -3 بعد شيل الشدّة من «بيفهمك».
+      //    الدرس: خلّص صياغة النص قبل ما تنشر الأصل، مش بعده.
+      consulting: { film: 'lp-consulting-3', dur: '١:٠١' },
     }
   : {
       websites: { film: 'lp-websites-en', dur: '0:24' },
