@@ -10,13 +10,30 @@ const FONTS = 'D:/Ryan-Portfolio/site/node_modules/@fontsource-variable/alexandr
 const b64 = (f) => readFileSync(`${FONTS}/${f}`).toString('base64');
 const rows = JSON.parse(readFileSync(`${SRC}/dfs/partner-100.json`, 'utf8'));
 
-// ─── فحص أمان: ولا اسم من الممنوعين تسرّب ───
+// ─── فحص أمان ───
+// ⚠️ هاد الفحص كان بيطلع أخضر وهو أعمى: كان بيقارن نص خام، و«نيفين دبابنه»
+//    بهاء بالبيانات ما بتساوي «دبابنة» بتاء مربوطة بقائمة المنع. فتسرّبت
+//    لقائمة الزميل مرتين وطلعت بالـPDF. الرقم بيمسك اللي الاسم بيفلته.
 const BANNED = ['love seat', 'أمجد كنعان', 'dabour', 'بسام منصور', 'trio palace',
   'البطيخي', 'ak dental', 'sbetan', 'نيفين دبابنة', 'teal by bana', 'maya khalaf',
   'w derma', 'الدرباشي', 'chicas', 'bebek', 'amazon hall', 'white hall'];
-const leak = rows.filter((r) => BANNED.some((b) => r.name.toLowerCase().includes(b.toLowerCase())));
-if (leak.length) { console.error('🔴 تسرّب:', leak.map((l) => l.name).join(', ')); process.exit(1); }
-console.log('✅ فحص الاستبعاد: ولا اسم ممنوع بالقائمة');
+const BANNED_PHONES = ['798253922', '771909091', '65652231', '797111525',
+  '790603340', '799243111', '798282411', '799333163', '779767666'];
+
+const N = (s) => (s || '').toLowerCase().replace(/[ً-ْـ]/g, '')
+  .replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/\s+/g, ' ').trim();
+const D = (s) => (s || '').replace(/\D/g, '');
+
+const leak = rows.filter((r) => BANNED.some((b) => N(r.name).includes(N(b)))
+  || BANNED_PHONES.some((p) => D(r.phone).endsWith(p)));
+if (leak.length) { console.error('🔴 تسرّب:', leak.map((l) => `${l.name} (${l.phone})`).join(' | ')); process.exit(1); }
+
+// وتكرار: نفس الرقم بيتكرر لما النشاط مسجّل بقطاعين
+const dup = Object.entries(rows.reduce((m, r) => ((m[D(r.phone)] = (m[D(r.phone)] || 0) + 1), m), {}))
+  .filter(([k, v]) => k && v > 1);
+if (dup.length) { console.error('🔴 تكرار:', dup.map(([k, v]) => `${k}×${v}`).join(', ')); process.exit(1); }
+
+console.log(`✅ فحص الاستبعاد (بتطبيع عربي + رقم): ${rows.length} صف نضيف، بلا تكرار`);
 
 const INK = '#0E0F12', LIME = '#8FA800', SOFT = '#F4F5F0', MUTED = '#6B6F66', LINE = '#DDE0D6';
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

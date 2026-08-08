@@ -23,6 +23,7 @@
     "three": "^0.185.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.0"
+    "@playwright/test": "^1.62.0",
+    "pdfjs-dist": "^6.2.108"
   }
 }
