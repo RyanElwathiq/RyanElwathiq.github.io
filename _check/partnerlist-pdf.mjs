@@ -57,6 +57,19 @@ tr{page-break-inside:avoid}
 .ag{font-size:8px;color:${MUTED};line-height:1.4}
 .bx{width:22px;text-align:center}
 .bx span{display:inline-block;width:10px;height:10px;border:1.3px solid #A8AD9F;border-radius:2px}
+.scr{margin-bottom:12px}
+.scr h2{font-size:14px;font-weight:800;margin-bottom:5px}
+.why{font-size:9px;color:${MUTED};line-height:1.7;margin-bottom:8px}
+.why b{color:${INK}}
+.mm{border-radius:8px;padding:9px 11px;margin-bottom:7px}
+.mm.g{background:#F7F8F4;border:1px dashed #CFD3C7}
+.mm.d{background:${SOFT}}
+.ml{display:block;font-size:7.6px;font-weight:700;letter-spacing:1px;color:${LIME};margin-bottom:3px}
+.mm pre{font-family:'Alex',sans-serif;font-size:9px;line-height:1.75;white-space:pre-wrap}
+table.ex{width:100%;border-collapse:collapse;font-size:8.6px;margin-top:6px}
+table.ex th{background:${INK};color:#fff;font-size:7.8px;padding:5px}
+table.ex td{border-bottom:1px solid ${LINE};padding:5px 6px;line-height:1.6}
+table.ex td:first-child{width:118px;font-weight:700;color:${MUTED}}
 </style></head><body>
 
 <div class="top">
@@ -77,6 +90,49 @@ tr{page-break-inside:avoid}
   <br><b>وكل رد سلبي بيانات</b> — سجّل السبب، هو أثمن من الرد الإيجابي.
 </div>
 
+<div class="scr">
+  <h2>السكربت — رسالتان لكل هدف</h2>
+  <p class="why"><b>ليش رسالتان؟</b> الرقم المكتوب رقم المحل، واللي بيرد موظف ما بيقدر يقرر.
+  فالأولى <b>ما بتبيع، بتسأل</b> مين المسؤول. والتانية للشخص نفسه.
+  <b>وقبل الاثنين: افتح إنستغرام ودوّر باسمه.</b> إذا طلع عنده عشرات الآلاف من المتابعين، لا تحكي أبداً إنه مش ظاهر.</p>
+
+  <div class="mm g"><span class="ml">١) للحاجب — واتساب على الرقم المكتوب</span><pre>مرحبا،
+
+أنا [اسمك]، بشتغل مع ريّان الواثق ببناء المواقع وأنظمة الحجز.
+
+سؤال قصير: مين المسؤول عن الحضور الرقمي عندكم؟ عندي ملاحظة محددة عن [اسم النشاط] وحابب أوصلها للشخص الصح.
+
+بتقدروا تحوّلوا الرسالة أو تعطوني اسمه وأنا بكمّل معه.
+
+شكراً</pre></div>
+
+  <div class="mm d"><span class="ml">٢) لصاحب القرار — بدّل السطر الوسط بس</span><pre>مرحبا [الاسم]،
+
+أنا [اسمك]، ببني مواقع وأنظمة حجز.
+
+[⭐ التقييم] و[عدد] مراجعة. الشغل عندكم واضح إنه نظيف، وهاد الجزء الصعب اللي إنتوا خلصتوه.
+
+★ [حط هون «زاوية الفتح» من الجدول، بجملة وحدة] ★
+
+وما عندكم مكان تملكوه يستقبل اللي بيدوّر عنكم. فكل سؤال بيرجع مكالمة، وكل مكالمة وقت من طاقمكم.
+
+إذا بيهمك، منحضّرلك تشخيص مكتوب بلا أي التزام.
+
+[اسمك] · ryanalali.me</pre></div>
+
+  <table class="ex"><tr><th>لو زاوية الفتح كانت</th><th style="text-align:right">اكتب هالجملة</th></tr>
+    <tr><td>بلا ساعات عمل</td><td>«ملفكم بلا ساعات عمل، يعني لما حدا يفلتر «فاتح هلأ» ما بتظهروا. مش لأنكم مسكرين، لأنه جوجل ما بيعرف.»</td></tr>
+    <tr><td>٥ صور بس</td><td>«خمس صور بملفكم، والزبون بيقرر بالصورة قبل ما يقرا.»</td></tr>
+    <tr><td>ملفه بلا وصف</td><td>«ملفكم بلا وصف، فأول انطباع عنكم فاضي.»</td></tr>
+    <tr><td>الملف غير موثّق</td><td>«ملفكم غير موثّق، يعني أي حدا يقدر يعدّل بياناتكم وإنتوا ما بتعرفوا.»</td></tr>
+    <tr><td>نسبة نجمة وحدة عالية</td><td>لا تذكرها أبداً. افتح بالصور أو الوصف بدلها.</td></tr>
+  </table>
+
+  <p class="why" style="margin-top:8px"><b>وبعد ٤٨ ساعة بلا رد:</b> رسالة وحدة بس بزاوية مختلفة. ما ردّ عليها، اتركه وسجّل السبب.
+  <b>ولا تحذف صف</b> — اللي قال لأ اليوم بيانات لبكرا.</p>
+</div>
+
+<div style="page-break-before:always"></div>
 <table>
  <thead><tr>
   <th>#</th><th style="text-align:right">النشاط</th><th>القطاع</th><th>⭐</th><th>مراجعات</th>
