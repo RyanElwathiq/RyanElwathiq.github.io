@@ -34,7 +34,9 @@ export default defineConfig({
       // ⚠️ صفحات /blog/ القديمة صارت مجرد تحويل لـ /signals/.
       //    منشيلها من الخريطة عشان ما نقول لجوجل «افهرسها» وبنفس
       //    الوقت نقوله «لا تفهرسها» — تناقض بيضرّ الترتيب.
-      filter: (page) => !/\/blog\//.test(page),
+      //    ونفس المنطق على /li/ — هاي روابط تتبّع لبوستات لينكدإن،
+      //    صفحات تحويل بحتة عليها noindex. مالها محل بخريطة جوجل.
+      filter: (page) => !/\/blog\//.test(page) && !/\/li\//.test(page),
       i18n: {
         defaultLocale: 'en',
         locales: { en: 'en', ar: 'ar' },

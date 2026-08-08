@@ -1,0 +1,43 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  روابط لينكدإن القصيرة — ryanalali.me/li/<اسم>
+//
+//  ليش موجودة؟ عشان نعرف **أي بوست** جاب أي زائر، بلا ما نحط
+//  سلسلة UTM بطول ١٠٠ حرف جوّا البوست نفسه (بتطلع بشعة وبتقلّل
+//  الضغطات). الزائر بيشوف `ryanalali.me/li/numbers`، والصفحة هاي
+//  بتحوّله لنفس الموقع ومعه الـUTM كامل — فـGA4 بيسجّله صح.
+//
+//  الجدول نفسه بـ`src/data/li-links.js` — لازم يكون بملف مستقل
+//  لأنه getStaticPaths() ما بيشوف متغيّرات الـfrontmatter.
+//
+//  ⚠️ ما تحذف هالملف ولا تغيّر أي slug. الروابط منشورة ببوستات،
+//     وبوست لينكدإن المجدول ما بينعدّل بعد الجدولة.
+// ═══════════════════════════════════════════════════════════════
+import { LINKS, targetFor } from '../../data/li-links.js';
+
+export async function getStaticPaths() {
+  return Object.keys(LINKS).map((id) => ({ params: { id } }));
+}
+
+const { id } = Astro.params;
+const { lang, base, target } = targetFor(id);
+const isAr = lang === 'ar';
+const name = isAr ? 'ريّان الواثق' : 'Ryan Al-Wathiq';
+---
+
+<!doctype html>
+<html lang={lang} dir={isAr ? 'rtl' : 'ltr'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={`https://ryanalali.me${base}`} />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{name}</title>
+    <script is:inline define:vars={{ target }}>
+      location.replace(target);
+    </script>
+  </head>
+  <body>
+    <a href={target}>{name}</a>
+  </body>
+</html>
