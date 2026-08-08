@@ -28,26 +28,38 @@ const FLAGGED = ['love seat', 'أمجد كنعان', 'dabour', 'بسام منص�
 const N = (s) => s.toLowerCase().replace(/[ً-ْـ]/g, '')
   .replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/\s+/g, ' ');
 
+// ⚠️ pdf.js بيرجّع العربي **حرف حرف بشكله التقديمي** (U+FB50–FEFF) وبترتيب
+//    بصري معكوس. يعني «نيفين» بتطلع سلسلة أشكال مقلوبة، والبحث عنها بالنص
+//    العادي بيرجع «ما لقيت» وهو ما بحث بإشي. لازم:
+//      ١) نلزق الحروف بلا مسافات  ٢) NFKC يرجّعهم لأشكالهم الأساسية
+//      ٣) نعكس السلسلة لترتيبها المنطقي  ٤) وبعدها نطبّع ونقارن
+const unshape = (s) => [...s.normalize('NFKC')].reverse().join('');
+
 const text = async (f) => {
   const doc = await pdfjs.getDocument({ data: new Uint8Array(readFileSync(f)), useSystemFonts: true }).promise;
-  let t = '';
-  for (let i = 1; i <= doc.numPages; i++) t += (await (await doc.getPage(i)).getTextContent()).items.map((x) => x.str).join(' ') + ' ';
-  return { t, pages: doc.numPages };
+  let raw = '';
+  for (let i = 1; i <= doc.numPages; i++) raw += (await (await doc.getPage(i)).getTextContent()).items.map((x) => x.str).join('');
+  return { raw, ar: unshape(raw), pages: doc.numPages };
 };
 
-// الملفات اللي بتطلع لحدا تاني، وشو ممنوع فيها
+// الملفات اللي بتطلع لحدا تاني · وشو ممنوع فيها · وكلمة بتثبت إنه الاستخراج اشتغل
 const CHECKS = [
-  [`${HUNT}/للزميل حسام/قائمة ١٠٠ هدف + السكربت.pdf`, [...NAMES, ...FLAGGED], PHONES],
-  [`${HUNT}/أوراق العمل/٣ — ورقة متابعة فاضية.pdf`, [...NAMES, ...FLAGGED], PHONES],
+  [`${HUNT}/للزميل حسام/قائمة ١٠٠ هدف + السكربت.pdf`, [...NAMES, ...FLAGGED], PHONES, 'الهاتف'],
+  [`${HUNT}/أوراق العمل/٣ — ورقة متابعة فاضية.pdf`, [...NAMES, ...FLAGGED], PHONES, 'النشاط'],
 ];
 
-let bad = 0;
-for (const [f, names, phones] of CHECKS) {
-  const { t, pages } = await text(f);
-  const n = N(t), d = t.replace(/\D/g, '');
-  const hits = [...names.filter((x) => n.includes(N(x))), ...phones.filter((p) => d.includes(p))];
-  console.log(`${hits.length ? '🔴' : '✅'} ${f.split('/').pop()}  (${pages} صفحة · ${t.length} حرف)`);
+let bad = 0, blind = 0;
+for (const [f, names, phones, CANARY] of CHECKS) {
+  const { raw, ar, pages } = await text(f);
+  const hay = N(raw) + ' ' + N(ar);
+  const digits = raw.replace(/\D/g, '');
+
+  const canary = N(ar).includes(N(CANARY)) || N(raw).includes(N(CANARY));
+  const hits = [...names.filter((x) => hay.includes(N(x))), ...phones.filter((p) => digits.includes(p))];
+
+  console.log(`${!canary ? '⚫' : hits.length ? '🔴' : '✅'} ${f.split('/').pop()}  (${pages} صفحة · ${raw.length} حرف)`);
+  if (!canary) { console.log(`     ⚫ الاستخراج ما لقى «${CANARY}» — الفحص أعمى، ما بينعتمد عليه`); blind++; }
   if (hits.length) { console.log(`     ← ${hits.join(', ')}`); bad += hits.length; }
 }
-console.log(`\n${bad ? '🔴 ما بينبعت' : '✅ بيتبعت لحسام زي ما هو'}`);
-process.exit(bad ? 1 : 0);
+console.log(`\n${blind ? '⚫ الفحص فشل — لا تعتمد النتيجة' : bad ? '🔴 ما بينبعت' : '✅ بيتبعت لحسام زي ما هو'}`);
+process.exit(bad || blind ? 1 : 0);
