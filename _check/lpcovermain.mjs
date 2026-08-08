@@ -38,6 +38,7 @@ const site169 = (isAr, h1, h2) => `<!doctype html><html dir="${isAr ? 'rtl' : 'l
 
 const COVERS = [
   ['lp-main-en-cover', site169(false, "The problem isn't the posts.", "It's what sits behind them.")],
+  ['lp-main-cover', site169(true, 'المشكلة مش بالبوستات.', 'المشكلة باللي ورا البوستات.')],
 ];
 
 const browser = await chromium.launch();
