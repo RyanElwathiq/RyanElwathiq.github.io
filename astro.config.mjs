@@ -36,7 +36,8 @@ export default defineConfig({
       //    الوقت نقوله «لا تفهرسها» — تناقض بيضرّ الترتيب.
       //    ونفس المنطق على /li/ — هاي روابط تتبّع لبوستات لينكدإن،
       //    صفحات تحويل بحتة عليها noindex. مالها محل بخريطة جوجل.
-      filter: (page) => !/\/blog\//.test(page) && !/\/li\//.test(page),
+      //    و/ig/ كمان — رابط بايو إنستغرام، صفحة تحويل عليها noindex.
+      filter: (page) => !/\/blog\//.test(page) && !/\/li\//.test(page) && !/\/ig\/?$/.test(page),
       i18n: {
         defaultLocale: 'en',
         locales: { en: 'en', ar: 'ar' },

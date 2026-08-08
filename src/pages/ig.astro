@@ -1,0 +1,31 @@
+---
+// ═══════════════════════════════════════════════════════════════
+//  رابط البايو تبع إنستغرام — ryanalali.me/ig
+//
+//  إنستغرام ما بيسمح روابط جوّا الكابشن، فالبايو هو نقطة القياس
+//  الوحيدة. هالصفحة بتحوّل للموقع العربي ومعها UTM، فـGA4 بيفرز
+//  زوار إنستغرام عن غيرهم بدل ما يتلخبطوا مع «مباشر».
+//
+//  ⚠️ ما تحذفه ولا تغيّر العنوان — الرابط مكتوب ببايو الحساب،
+//     وتغييره بيكسر البايو بلا ما ننتبه.
+//     وبيصلح كمان لستيكر الرابط بالستوري.
+// ═══════════════════════════════════════════════════════════════
+const target = '/ar/?utm_source=instagram&utm_medium=social&utm_campaign=ig-bio';
+---
+
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href="https://ryanalali.me/ar/" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>ريّان الواثق</title>
+    <script is:inline define:vars={{ target }}>
+      location.replace(target);
+    </script>
+  </head>
+  <body>
+    <a href={target}>ريّان الواثق</a>
+  </body>
+</html>
